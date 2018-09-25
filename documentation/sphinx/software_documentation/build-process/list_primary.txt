@@ -1,0 +1,9 @@
+foxbms-application
+foxbms-common-engine
+foxbms-common-module
+foxbms-engine
+foxbms-module
+foxbms-os
+foxbms-stmhal
+foxbms_primary.elf
+'list_primary' finished successfully (0.040s)

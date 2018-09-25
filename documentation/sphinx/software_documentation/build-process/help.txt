@@ -1,0 +1,45 @@
+waf [commands] [options]
+
+Main commands (example: ./waf build -j4)
+  build             : executes the build
+  build_primary     : executes the build of primary
+  build_secondary   : executes the build of secondary
+  clean             : cleans the project
+  clean_primary     : cleans the project primary
+  clean_secondary   : cleans the project secondary
+  configure         : configures the project
+  dist              : creates an archive containing the project source code
+  distcheck         : checks if the project compiles (tarball from 'dist')
+  distclean         : removes the build directory
+  doxygen           : creates doxygen documentation
+  doxygen_primary   : creates the doxygen documentation of primary
+  doxygen_secondary : creates the doxygen documentation of secondary
+  list              : lists the targets to execute
+  list_primary      : lists the targets to execute for primary
+  list_secondary    : lists the targets to execute for secondary
+  sphinx            : creates the sphinx documentation of the project
+  step              : executes tasks in a step-by-step fashion, for debugging
+  step_primary      : executes tasks in a step-by-step fashion, for debugging of primary
+  step_secondary    : executes tasks in a step-by-step fashion, for debugging of secondary
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -c COLORS, --color=COLORS
+                        whether to use colors (yes/no/auto) [default: auto]
+  -j JOBS, --jobs=JOBS  amount of parallel jobs (8)
+  -v, --verbose         verbosity level -v -vv or -vvv [default: 0]
+  -t TARGET, --target=TARGET
+                        build target: debug (default)/release
+
+  Configuration options:
+
+  Build and installation options:
+    -p, --progress      -p: progress bar; -pp: ide output
+
+  Step options:
+    --files=FILES       files to process, by regexp, e.g. "*/main.c,*/test/main.o"
+
+  Installation and uninstallation options:
+    --distcheck-args=ARGS
+                        arguments to pass to distcheck

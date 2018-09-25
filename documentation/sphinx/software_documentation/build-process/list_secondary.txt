@@ -1,0 +1,9 @@
+foxbms-application
+foxbms-common-engine
+foxbms-common-module
+foxbms-engine
+foxbms-module
+foxbms-os
+foxbms-stmhal
+foxbms_secondary.elf
+'list_secondary' finished successfully (0.070s)
