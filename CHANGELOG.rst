@@ -2,6 +2,38 @@
 Changelog
 =========
 
+**Release 1.5.1**
+
+Software:
+
+* Toolchain:
+
+  * toolchain compatible with POSIX operating systems
+  * updated to ``waf-2.0.11`` (from ``waf-2.0.10``)
+  * fixed missing files in eclipse workspace (CHANGELOG.rst and compiler-flags.yml)
+
+* Bugfixes:
+
+  * fixed bug updating BKPSRAM values to EEPROM: BKPSRAM checksum was calculated wrong
+
+
+* Enhancements:
+
+  * modules CONTACTOR, INTERLOCK and ISOGUARD can be disabled if not needed
+  * selected new EEPROM M95M02 as default EEPROM (equipped on foxBMS-Master since v1.0.5)
+
+Hardware:
+
+* none
+
+Documentation:
+
+* added a section on how to build and include a library
+* removed references to directory ``foxbms-setup``, as it is now simply called ``foxbms``
+* removed references to script ``bootstrap.py``, as this script is no longer used
+
+------------------------------------------------------------------------------
+
 **Release 1.5.0**
 
 * **foxBMS has been migrated from Python 2.7 to Python 3.6. The foxconda3 installer is found at https://iisb-foxbms.iisb.fraunhofer.de/foxbms/. foxconda3 must be installed to C:\foxconda3.**
@@ -62,7 +94,6 @@ Documentation:
 * added documentation of algorithm module
 * added documentation of nvramhandler
 * updated isoguard documentation
-
 
 ------------------------------------------------------------------------------
 

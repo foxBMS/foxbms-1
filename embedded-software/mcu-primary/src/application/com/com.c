@@ -353,13 +353,13 @@ void COM_Decoder(void) {
         /* Get operating time */
         if (strcmp(com_receivedbyte, "getoperatingtime") == 0) {
             DEBUG_PRINTF((const uint8_t * )"Operating time: ");
-            DEBUG_PRINTF(U16ToDecascii(com_buf, &bkpsram_operating_hours.data.Timer_d, 3));
+            DEBUG_PRINTF(U16ToDecascii(com_buf, &bkpsram_op_hours.Timer_d, 3));
             DEBUG_PRINTF((const uint8_t * )"d ");
-            DEBUG_PRINTF(U8ToDecascii(com_buf, &bkpsram_operating_hours.data.Timer_h, 2));
+            DEBUG_PRINTF(U8ToDecascii(com_buf, &bkpsram_op_hours.Timer_h, 2));
             DEBUG_PRINTF((const uint8_t * )"h ");
-            DEBUG_PRINTF(U8ToDecascii(com_buf, &bkpsram_operating_hours.data.Timer_min, 2));
+            DEBUG_PRINTF(U8ToDecascii(com_buf, &bkpsram_op_hours.Timer_min, 2));
             DEBUG_PRINTF((const uint8_t * )"m ");
-            DEBUG_PRINTF(U8ToDecascii(com_buf, &bkpsram_operating_hours.data.Timer_sec, 2));
+            DEBUG_PRINTF(U8ToDecascii(com_buf, &bkpsram_op_hours.Timer_sec, 2));
             DEBUG_PRINTF((const uint8_t * )"s\n");
 
             /* Clear received command */
@@ -568,7 +568,7 @@ void COM_Decoder(void) {
 
             /* SWITCH CONTACTORS */
             switch (com_receivedbyte[0]) {
-
+#if BUILD_MODULE_ENABLE_CONTACTOR == 1
             case 'c':
                 ;   // added to get rid of compile error
                 /* Convert ascii number to int */
@@ -611,7 +611,7 @@ void COM_Decoder(void) {
                     DEBUG_PRINTF((const uint8_t * )" contactors are connected! \r\n");
                 }
                 break;
-
+#endif
             default:
                 DEBUG_PRINTF((const uint8_t * )"Invalid command!\r\n");
                 DEBUG_PRINTF((const uint8_t * )com_receivedbyte);

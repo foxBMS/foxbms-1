@@ -135,6 +135,18 @@
 */
 #define CAN_USE_CAN_NODE1                1
 
+/**
+ * @ingroup CONFIG_CAN
+ * Enables or disables transmitter standby control
+ * \par Type:
+ * int
+ * \par Range:
+ * x == 0 or x == 1
+ * \par Default:
+ * 1
+*/
+#define CAN_USE_STANDBY_CONTROL          1
+
 /* transmit buffer */
 /**
  * @ingroup CONFIG_CAN

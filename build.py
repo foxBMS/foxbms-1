@@ -53,7 +53,7 @@ __updated__ = '2018-01-25'
 
 def create_waf_run_string(waf_version, *args):
     arg_string = ' '.join(args)
-    return '{} {} {}'.format(sys.executable, waf_version, arg_string)
+    return [sys.executable, waf_version, arg_string]
 
 
 def start_process(cmd, supress_output=False):

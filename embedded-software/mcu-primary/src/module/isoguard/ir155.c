@@ -58,6 +58,7 @@
 
 #include "diag.h"
 
+#if BUILD_MODULE_ENABLE_ISOGUARD == 1
 /*================== Macros and Definitions ===============================*/
 /* Defines for diagnosis handling */
 #define DIAG_TIMER_OVERFLOW     0
@@ -472,3 +473,4 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
 
     return retVal;
 }
+#endif

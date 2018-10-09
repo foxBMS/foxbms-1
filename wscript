@@ -51,12 +51,12 @@ from waflib import Utils, Options, Errors
 from waflib import Task, TaskGen
 from waflib.Tools.compiler_c import c_compiler
 
-__version__ = '1.5'
+__version__ = '1.5.1'
 __date__ = '2017-11-29'
 __updated__ = '2018-08-15'
 
 out = 'build'
-variants = ['primary', 'secondary']
+variants = ['primary', 'secondary', 'libs']
 from waflib.Build import BuildContext, CleanContext, ListContext, StepContext  # noqa: E402
 for x in variants:
     for y in (BuildContext,
@@ -93,7 +93,8 @@ def options(opt):
              tooldir=os.path.join('tools', 'waftools'))
     opt.add_option('-t', '--target', action='store', default='debug',
                    help='build target: debug (default)/release', dest='target')
-
+    opt.add_option('-l', '--libs', action='store', default='',
+                   help='name of the library to be used')
     for k in ('--keep',
               '--targets',
               '--out',
@@ -274,6 +275,22 @@ def configure(conf):
     with open(os.path.join(out, 'cflags.log'), 'w') as f:
         f.write('\n'.join(conf.env.CFLAGS) + '\n')
 
+    conf.path.get_bld().make_node('lib').mkdir()
+    x = conf.path.get_bld().find_node('lib')
+    conf.env.LIBPATH_USER = x.abspath()
+    print('Library directory:   {}'.format(x, x.path_from(conf.path)))
+
+    conf.path.get_bld().make_node('include').mkdir()
+    x = conf.path.get_bld().find_node('include')
+    conf.env.INCLUDES_USER = x.abspath()
+    print('Include directory:   {}'.format(x, x.path_from(conf.path)))
+
+    if conf.options.libs:
+        conf.env.LIB_USER = conf.options.libs
+        print('Using library:       {}'.format(conf.options.libs))
+    else:
+        conf.env.LIB_USER = None
+
 
 def build(bld):
     import sys
@@ -283,38 +300,38 @@ def build(bld):
         bld.fatal('A {} variant must be specified, run \'{} {} --help\'\
 '.format(bld.cmd, sys.executable, sys.argv[0]))
 
-    bld.env.__sw_dir = os.path.normpath('embedded-software')
-
-    src_dir = os.path.normpath('mcu-{}'.format(bld.variant))
-    ldscript = os.path.join(bld.env.__sw_dir, src_dir, 'src', bld.env.ldscript_filename)
-    bld.env.ldscript = os.path.join(bld.srcnode.abspath(), ldscript)
-    bld.env.stscript = bld.env.startupscript_filename
-    bld.env.checksum_config_rel_path = os.path.join('tools', 'checksum', 'checksum_conf.yml')
-    bld.env.checksum_config = os.path.abspath(bld.env.checksum_config_rel_path)
-    bld.env.__bld_project = src_dir
-
-    bld.env.__bld_common = os.path.normpath('mcu-common')
-
-    bld.env.__inc_FreeRTOS = ' '.join([
-        os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-freertos', 'Source'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-freertos', 'Source', 'include'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-freertos', 'Source', 'portable', 'GCC', 'ARM_CM4F'),
-        ])
-    bld.env.__inc_hal = ' '.join([
-        os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-hal', 'CMSIS', 'Device', 'ST', bld.env.CPU_MAJOR, 'Include'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-hal', 'CMSIS', 'Include'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-hal', bld.env.CPU_MAJOR + '_HAL_Driver', 'Inc'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-hal', bld.env.CPU_MAJOR + '_HAL_Driver', 'Inc', 'Legacy'),
-        ])
-
     log_file = os.path.join(out, 'build_' + bld.variant + '.log')
     bld.logger = Logs.make_logger(log_file, out)
     hdlr = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter('%(message)s')
     hdlr.setFormatter(formatter)
     bld.logger.addHandler(hdlr)
-    t = os.path.dirname(bld.env.cfg_files[0])
-    bld.env.append_value('INCLUDES', t)
+
+    bld.env.__sw_dir = os.path.normpath('embedded-software')
+    if bld.variant == 'libs':
+        src_dir = os.path.normpath('{}'.format(bld.variant))
+    else:
+        src_dir = os.path.normpath('mcu-{}'.format(bld.variant))
+        ldscript = os.path.join(bld.env.__sw_dir, src_dir, 'src', bld.env.ldscript_filename)
+        bld.env.ldscript = os.path.join(bld.srcnode.abspath(), ldscript)
+        bld.env.stscript = bld.env.startupscript_filename
+        bld.env.checksum_config_rel_path = os.path.join('tools', 'checksum', 'checksum_conf.yml')
+        bld.env.checksum_config = os.path.abspath(bld.env.checksum_config_rel_path)
+        bld.env.__bld_project = src_dir
+
+        bld.env.__bld_common = os.path.normpath('mcu-common')
+
+        bld.env.__inc_FreeRTOS = ' '.join([
+            os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-freertos', 'Source'),
+            os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-freertos', 'Source', 'include'),
+            os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-freertos', 'Source', 'portable', 'GCC', 'ARM_CM4F')])
+        bld.env.__inc_hal = ' '.join([
+            os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-hal', 'CMSIS', 'Device', 'ST', bld.env.CPU_MAJOR, 'Include'),
+            os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-hal', 'CMSIS', 'Include'),
+            os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-hal', bld.env.CPU_MAJOR + '_HAL_Driver', 'Inc'),
+            os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-hal', bld.env.CPU_MAJOR + '_HAL_Driver', 'Inc', 'Legacy')])
+        t = os.path.dirname(bld.env.cfg_files[0])
+        bld.env.append_value('INCLUDES', t)
     bld.recurse(os.path.join(bld.env.__sw_dir, src_dir))
     bld.add_post_fun(size)
 
@@ -334,6 +351,22 @@ def size(bld):
     size_log_file = os.path.join(bld.bldnode.abspath(), 'size_' + bld.variant + '.log')
     with open(size_log_file, 'w') as f:
         f.write(_out)
+
+
+def clean_all(bld):
+    """cleans all parts of the project"""
+    from waflib import Options
+    commands_after = Options.commands
+    Options.commands = ['clean_primary', 'clean_secondary', 'clean_libs']
+    Options.commands += commands_after
+
+
+def build_all(bld):
+    """builds all parts of the project (binaries and documentation)"""
+    from waflib import Options
+    commands_after = Options.commands
+    Options.commands = ['build_libs', 'build_primary', 'build_secondary', 'doxygen_primary', 'doxygen_secondary', 'sphinx']
+    Options.commands += commands_after
 
 
 def dist(conf):
@@ -457,12 +490,12 @@ def cpplint(bld):
                 continue
             else:
                 to_lint_files.append(filename)
-    cmd = Utils.subst_vars('${CPPLINT}', bld.env)
-    cmd += ' --output={} --linelength={} --filter={}'.format(output_format,
-                                                             linelength,
-                                                             filters)
+    cmd = [Utils.subst_vars('${CPPLINT}', bld.env)]
+    cmd += ['--output={}'.format(output_format)]
+    cmd += ['--linelength={}'.format(linelength)]
+    cmd += ['--filter=' + filters]
     for f in to_lint_files:
-        _cmd = '{} {}'.format(cmd, f)
+        _cmd = cmd + [f]
         print(_cmd)
         proc = Utils.subprocess.Popen(_cmd)
         proc.communicate()
@@ -558,8 +591,8 @@ def add_bingen_task(self):
     self.binflashheaderpatch_task = self.create_task('tsk_binflashheaderpatch', src=[link_task.outputs[0], self.binflashheadergen_task.outputs[0]])
 
 
-import waflib.Tools.asm  # import before redefining
-from waflib.TaskGen import extension
+import waflib.Tools.asm    # noqa: E402 import before redefining
+from waflib.TaskGen import extension  # noqa: E402
 
 
 class Sasm(Task.Task):

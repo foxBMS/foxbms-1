@@ -47,80 +47,75 @@ import os
 
 def build(bld):
     srcs = ' '.join([
-        os.path.join('hwinfo', 'hwinfo.c'),
-        os.path.join('interlock', 'interlock.c'),
-        os.path.join('meas', 'meas.c'),
-        os.path.join('ltc', 'ltc.c'),
-        os.path.join('ltc', 'ltc_pec.c'),
-        os.path.join('led', 'led.c'),
+           os.path.join('hwinfo', 'hwinfo.c'),
+           os.path.join('interlock', 'interlock.c'),
+           os.path.join('meas', 'meas.c'),
+           os.path.join('ltc', 'ltc.c'),
+           os.path.join('ltc', 'ltc_pec.c'),
+           os.path.join('led', 'led.c'),
 
-        os.path.join('..', '..', '..', bld.env.__bld_project, 'src', 'module', 'config', 'interlock_cfg.c'),
-        os.path.join('..', '..', '..', bld.env.__bld_project, 'src', 'module', 'config', 'ltc_cfg.c'),
-        os.path.join('..', '..', '..', bld.env.__bld_project, 'src', 'module', 'config', 'meas_cfg.c'),
-        os.path.join('..', '..', '..', bld.env.__bld_project, 'src', 'module', 'config', 'nvram_cfg.c'),
-        ])
+           os.path.join('..', '..', '..', bld.env.__bld_project, 'src', 'module', 'config', 'interlock_cfg.c'),
+           os.path.join('..', '..', '..', bld.env.__bld_project, 'src', 'module', 'config', 'ltc_cfg.c'),
+           os.path.join('..', '..', '..', bld.env.__bld_project, 'src', 'module', 'config', 'meas_cfg.c'),
+           os.path.join('..', '..', '..', bld.env.__bld_project, 'src', 'module', 'config', 'nvram_cfg.c')])
 
     if bld.variant == 'primary':
         srcs += ' ' + ' '.join([
-            os.path.join('cansignal', 'cansignal.c'),
-            os.path.join('..', '..', '..', bld.env.__bld_project, 'src', 'module', 'config', 'cansignal_cfg.c'),
-            ])
+                os.path.join('cansignal', 'cansignal.c'),
+                os.path.join('..', '..', '..', bld.env.__bld_project, 'src', 'module', 'config', 'cansignal_cfg.c')])
     elif bld.variant == 'secondary':
-        srcs += ' ' + ' '.join([
-            ])
+        srcs += ' ' + ' '.join([])
 
     includes = os.path.join(bld.bldnode.abspath()) + ' '
     includes += bld.env.__inc_FreeRTOS + ' '
     includes += bld.env.__inc_hal + ' '
     includes += ' '.join([
-        '.',
-        os.path.join('ltc'),
+                '.',
+                os.path.join('ltc'),
 
-        os.path.join('..', 'driver', 'adc'),
-        os.path.join('..', 'driver', 'dma'),
-        os.path.join('..', 'driver', 'io'),
-        os.path.join('..', 'driver', 'mcu'),
-        os.path.join('..', 'driver', 'rcc'),
-        os.path.join('..', 'driver', 'rtc'),
-        os.path.join('..', 'driver', 'spi'),
-        os.path.join('..', 'driver', 'uart'),
+                os.path.join('..', 'driver', 'adc'),
+                os.path.join('..', 'driver', 'dma'),
+                os.path.join('..', 'driver', 'io'),
+                os.path.join('..', 'driver', 'mcu'),
+                os.path.join('..', 'driver', 'rcc'),
+                os.path.join('..', 'driver', 'rtc'),
+                os.path.join('..', 'driver', 'spi'),
+                os.path.join('..', 'driver', 'uart'),
 
-        os.path.join('..', 'engine', 'database'),
+                os.path.join('..', 'engine', 'database'),
 
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'application', 'config'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'application', 'config'),
 
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'driver', 'config'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'driver', 'config'),
 
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'engine', 'config'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'engine', 'diag'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'engine', 'sys'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'engine', 'config'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'engine', 'diag'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'engine', 'sys'),
 
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general', 'config'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general', 'config', bld.env.CPU_MAJOR),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general', 'includes'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general', 'config'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general', 'config', bld.env.CPU_MAJOR),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general', 'includes'),
 
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'module', 'config'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'module', 'nvram'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'module', 'config'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'module', 'nvram'),
 
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'os')
-        ])
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'os')])
+
+    includes += ' '
 
     if bld.variant == 'primary':
         includes += ' '.join([
-            '.',
-            os.path.join('cansignal'),
+                    '.',
+                    os.path.join('cansignal'),
 
-            os.path.join('..', 'driver', 'can'),
+                    os.path.join('..', 'driver', 'can'),
 
-            os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'application', 'bal'),
-            os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'application', 'sox'),
-            ])
+                    os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'application', 'bal'),
+                    os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'application', 'sox')])
     elif bld.variant == 'secondary':
         includes += ' '.join([
-            '.',
-            ])
+                    '.'])
 
     bld.stlib(target='foxbms-common-module',
               source=srcs,
-              includes=includes
-             )
+              includes=includes)

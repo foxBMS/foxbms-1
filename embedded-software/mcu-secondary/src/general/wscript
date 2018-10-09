@@ -60,60 +60,58 @@ def build(bld):
     """
     if bld.env.CPU_MAJOR == "STM32F4xx":
             srcs = ' '.join([
-                os.path.join('config', bld.env.CPU_MAJOR, 'stm32f4xx_hal_msp.c'),
-                os.path.join('config', bld.env.CPU_MAJOR, 'stm32f4xx_it.c'),
-                os.path.join('config', bld.env.CPU_MAJOR, 'system_stm32f4xx.c'),
-            ])
+                   os.path.join('config', bld.env.CPU_MAJOR, 'stm32f4xx_hal_msp.c'),
+                   os.path.join('config', bld.env.CPU_MAJOR, 'stm32f4xx_it.c'),
+                   os.path.join('config', bld.env.CPU_MAJOR, 'system_stm32f4xx.c')])
 
     srcs += ' ' + ' '.join([
             os.path.join('main.c'),
-            os.path.join('version.c'),
-            ])
+            os.path.join('version.c')])
+
     includes = os.path.join(bld.bldnode.abspath()) + ' '
     includes += bld.env.__inc_FreeRTOS + ' ' + bld.env.__inc_hal
     includes += ' '.join([
-        '.',
-        os.path.join('config'),
-        os.path.join('config', bld.env.CPU_MAJOR),
-        os.path.join('includes'),
+                '.',
+                os.path.join('config'),
+                os.path.join('config', bld.env.CPU_MAJOR),
+                os.path.join('includes'),
 
-        os.path.join('..', 'application', 'config'),
+                os.path.join('..', 'application', 'config'),
 
-        os.path.join('..', 'driver', 'config'),
+                os.path.join('..', 'driver', 'config'),
 
-        os.path.join('..', 'engine', 'bms'),
-        os.path.join('..', 'engine', 'config'),
-        os.path.join('..', 'engine', 'diag'),
-        os.path.join('..', 'engine', 'sys'),
-        os.path.join('..', 'engine', 'task'),
+                os.path.join('..', 'engine', 'bms'),
+                os.path.join('..', 'engine', 'config'),
+                os.path.join('..', 'engine', 'diag'),
+                os.path.join('..', 'engine', 'sys'),
+                os.path.join('..', 'engine', 'task'),
 
-        os.path.join('..', 'general'),
+                os.path.join('..', 'general'),
 
-        os.path.join('..', 'module', 'config'),
+                os.path.join('..', 'module', 'config'),
 
-        os.path.join('..', 'os'),
+                os.path.join('..', 'os'),
 
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'adc'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'can'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'chksum'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'dma'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'io'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'mcu'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'rcc'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'rtc'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'spi'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'uart'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'vic'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'watchdog'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'adc'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'can'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'chksum'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'dma'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'io'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'mcu'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'rcc'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'rtc'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'spi'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'uart'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'vic'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'watchdog'),
 
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'engine', 'database'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'engine', 'database'),
 
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'module', 'interlock'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'module', 'led'),
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'module', 'meas'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'module', 'interlock'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'module', 'led'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'module', 'meas'),
 
-        os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'util'),
-        ])
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'util')])
 
     startupscript = os.path.join('config', bld.env.CPU_MAJOR, bld.env.stscript)
 
@@ -125,8 +123,7 @@ def build(bld):
         'foxbms-common-module',
         'foxbms-common-driver',
         'foxbms-stmhal',
-        'foxbms-common-util'
-        ]
+        'foxbms-common-util']
 
     if bld.env.target == 'release':
         bld.program(source=srcs + ' ' + startupscript,

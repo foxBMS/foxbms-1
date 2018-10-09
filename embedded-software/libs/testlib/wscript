@@ -37,26 +37,23 @@
 #
 # &Prime;This product is derived from foxBMS&reg;&Prime;
 
-"""WAF script for building "foxbms-module" library.
-location of this wscript:
-    /src/module/wscript
-"""
-
 import os
 
 
 def build(bld):
+    header_files_src = bld.path.ant_glob('*.h')
+    header_files_tar = [os.path.join(bld.env.INCLUDES_USER,
+                        x.path_from(bld.path)) for x in header_files_src]
     srcs = ' '.join([
-           os.path.join('foxmath.c'),
-           os.path.join('misc.c')])
+        os.path.join('testlib.c')])
 
     includes = os.path.join(bld.bldnode.abspath()) + ' '
-    includes += ' '.join([
-                '.',
+    includes += ' '.join(['.'])
 
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general', 'config'),
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general', 'includes')])
-
-    bld.stlib(target='foxbms-common-util',
+    bld.stlib(target=os.path.join(bld.env.LIBPATH_USER, 'foxbms-user-lib'),
               source=srcs,
               includes=includes)
+    bld(features='subst',
+        source=header_files_src,
+        target=header_files_tar,
+        is_copy=True)

@@ -209,7 +209,9 @@ uint32_t CAN_Init(void) {
 
     /* set DBF bit to 0 for CAN activity while in debug mode */
     __HAL_CAN_DBG_FREEZE(&hcan0, DISABLE);
+#if CAN_USE_STANDBY_CONTROL == 1
     IO_WritePin(CAN_0_TRANS_STANDBY_CONTROL, IO_PIN_SET);
+#endif
 #endif
 
 
@@ -247,7 +249,9 @@ uint32_t CAN_Init(void) {
 
     /* set DBF bit to 0 for CAN activity while in debug mode */
     __HAL_CAN_DBG_FREEZE(&hcan1, DISABLE);
+#if CAN_USE_STANDBY_CONTROL == 1
     IO_WritePin(CAN_1_TRANS_STANDBY_CONTROL, IO_PIN_SET);
+#endif
 #endif
     return retval;
 }

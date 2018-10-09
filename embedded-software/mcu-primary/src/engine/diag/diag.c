@@ -752,11 +752,12 @@ void DIAG_SysMon(void) {
                     if(diag_sysmon_ch_cfg[module_id].enablerecording == DIAG_RECORDING_ENABLED) {
                         DIAG_Handler(DIAG_CH_SYSTEMMONITORING_TIMEOUT,DIAG_EVENT_NOK,module_id, NULL);
                     }
-
+#if BUILD_MODULE_ENABLE_CONTACTOR == 1
                     if(diag_sysmon_ch_cfg[module_id].handlingtype == DIAG_SYSMON_HANDLING_SWITCHOFFCONTACTOR) {
                         // system not working trustfully, switch off contactors!
                         CONT_SwitchAllContactorsOff();
                     }
+#endif
                     diag_sysmon_cnt[module_id] = 0;
 
                     // @todo: call callback function if error occurred

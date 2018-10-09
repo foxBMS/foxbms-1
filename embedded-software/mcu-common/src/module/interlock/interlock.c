@@ -58,6 +58,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#if BUILD_MODULE_ENABLE_ILCK == 1
 /*================== Macros and Definitions ===============================*/
 
 /**
@@ -454,3 +455,4 @@ void ILCK_CheckFeedback(void) {
 
 
 }
+#endif

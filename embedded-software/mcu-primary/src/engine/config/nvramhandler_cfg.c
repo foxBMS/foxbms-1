@@ -102,7 +102,7 @@ STD_RETURN_TYPE_e NVM_setSOC(SOX_SOC_s* ptr) {
         bkpsram_nvsoc.previous_timestamp = bkpsram_nvsoc.timestamp;
         bkpsram_nvsoc.timestamp = RTC_getUnixTime();
         /* calculate checksum*/
-        bkpsram_nvsoc.checksum = EEPR_CalcChecksum((uint8_t*)(ptr), sizeof(bkpsram_nvsoc) - 4);
+        bkpsram_nvsoc.checksum = EEPR_CalcChecksum((uint8_t*)&bkpsram_nvsoc, sizeof(bkpsram_nvsoc) - 4);
 
         /* Enable interrupts */
         MCU_RestoreINT(interrupt_status);
@@ -145,7 +145,7 @@ STD_RETURN_TYPE_e NVM_Set_contactorcnt(DIAG_CONTACTOR_s *ptr) {
         bkpsram_contactors_count.previous_timestamp = bkpsram_contactors_count.timestamp;
         bkpsram_contactors_count.timestamp = RTC_getUnixTime();
         /* calculate checksum*/
-        bkpsram_contactors_count.checksum = EEPR_CalcChecksum((uint8_t *)(ptr),sizeof(bkpsram_contactors_count)-4);
+        bkpsram_contactors_count.checksum = EEPR_CalcChecksum((uint8_t*)&bkpsram_contactors_count, sizeof(bkpsram_contactors_count)-4);
 
         /* Enable interrupts */
         MCU_RestoreINT(interrupt_status);
@@ -208,9 +208,6 @@ STD_RETURN_TYPE_e NVM_setOperatingHours(NVRAM_OPERATING_HOURS_s *timer) {
                 }
             }
         }
-
-        bkpsram_operating_hours.data = *timer;
-
     } else {
         retval = E_NOT_OK;
     }
@@ -246,6 +243,9 @@ STD_RETURN_TYPE_e NVM_operatingHoursUpdateNVRAM(void) {
      */
     /* Disable interrupts */
     interrupt_status = MCU_DisableINT();
+
+    /* Set data value */
+    bkpsram_operating_hours.data = bkpsram_op_hours;
 
     /* Set timestamp bkpsram values */
     bkpsram_operating_hours.previous_timestamp = bkpsram_operating_hours.timestamp;

@@ -37,26 +37,9 @@
 #
 # &Prime;This product is derived from foxBMS&reg;&Prime;
 
-"""WAF script for building "foxbms-module" library.
-location of this wscript:
-    /src/module/wscript
+"""WAF script lists the subdirectories of src/ to be built
 """
-
-import os
 
 
 def build(bld):
-    srcs = ' '.join([
-           os.path.join('foxmath.c'),
-           os.path.join('misc.c')])
-
-    includes = os.path.join(bld.bldnode.abspath()) + ' '
-    includes += ' '.join([
-                '.',
-
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general', 'config'),
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general', 'includes')])
-
-    bld.stlib(target='foxbms-common-util',
-              source=srcs,
-              includes=includes)
+    bld.recurse('testlib')

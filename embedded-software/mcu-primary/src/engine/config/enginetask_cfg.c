@@ -199,8 +199,12 @@ void ENG_Cyclic_1ms(void) {
 
 void ENG_Cyclic_10ms(void) {
     SYS_Trigger();
+#if BUILD_MODULE_ENABLE_CONTACTOR
     CONT_Trigger();
+#endif
+#if BUILD_MODULE_ENABLE_ILCK
     ILCK_Trigger();
+#endif
 #if CAN_USE_CAN_NODE0
     CANS_TransmitBuffer(CAN_NODE0);
 #endif
@@ -215,16 +219,17 @@ void ENG_Cyclic_10ms(void) {
 }
 
 void ENG_Cyclic_100ms(void) {
-    static uint8_t counter = 0;
     EEPR_DataHandler();
     ADC_Ctrl();
     NVRAM_dataHandler();
-
+#if BUILD_MODULE_ENABLE_ISOGUARD == 1
     // Read every 200ms because of possible jitter and lowest Bender frequency 10Hz -> 100ms
+    static uint8_t counter = 0;
     if (counter % 2 == 0) {
         ISO_MeasureInsulation();
     }
     counter++;
+#endif
 }
 
 void ENG_IdleTask(void) {

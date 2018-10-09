@@ -34,9 +34,9 @@ Checksum is an after-build process.
 
 .. code:: bash
 
-    python tools\waf-1.8.12 configure
-    python tools\waf-1.8.12 build_primary
-    python tools\waf-1.8.12 build_secondary
+    python tools\waf configure
+    python tools\waf build_primary
+    python tools\waf build_secondary
 
 Principle
 ~~~~~~~~~
@@ -45,7 +45,7 @@ Principle
 
     .. code:: bash
 
-        python tools\waf-1.8.12 configure
+        python tools\waf configure
 
     configures waf as needed to build.
 
@@ -53,7 +53,7 @@ Principle
 
     .. code:: bash
 
-        python tools\waf-1.8.12 build
+        python tools\waf build
 
     builds the files
 
