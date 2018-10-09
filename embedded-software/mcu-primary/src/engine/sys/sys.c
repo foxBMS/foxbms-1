@@ -276,10 +276,17 @@ void SYS_Trigger(void) {
         case SYS_STATEMACH_INITIALIZED:
             SYS_SAVELASTSTATES();
             sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
+#if BUILD_MODULE_ENABLE_ILCK == 1
             sys_state.state = SYS_STATEMACH_INITIALIZE_INTERLOCK;
+#elif BUILD_MODULE_ENABLE_CONTACTOR == 1
+            sys_state.state = SYS_STATEMACH_INITIALIZE_CONTACTORS;
+#else
+            sys_state.state = SYS_STATEMACH_INITIALIZE_BALANCING;
+#endif
             sys_state.substate = SYS_ENTRY;
             break;
 
+#if BUILD_MODULE_ENABLE_ILCK == 1
         /****************************INITIALIZE INTERLOCK*************************************/
         case SYS_STATEMACH_INITIALIZE_INTERLOCK:
             SYS_SAVELASTSTATES();
@@ -295,7 +302,11 @@ void SYS_Trigger(void) {
                 if (ilckstate == ILCK_STATEMACH_WAIT_FIRST_REQUEST) {
                     ILCK_SetStateRequest(ILCK_STATE_OPEN_REQUEST);
                     sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
+#if BUILD_MODULE_ENABLE_CONTACTOR == 1
                     sys_state.state = SYS_STATEMACH_INITIALIZE_CONTACTORS;
+#else
+                    sys_state.state = SYS_STATEMACH_INITIALIZE_BALANCING;
+#endif
                     sys_state.substate = SYS_ENTRY;
                     break;
                 } else {
@@ -312,13 +323,17 @@ void SYS_Trigger(void) {
             }
 
             break;
+#endif
 
+#if BUILD_MODULE_ENABLE_CONTACTOR == 1
         /****************************INITIALIZE CONTACTORS*************************************/
         case SYS_STATEMACH_INITIALIZE_CONTACTORS:
             SYS_SAVELASTSTATES();
 
             if (sys_state.substate == SYS_ENTRY) {
+
                 CONT_SetStateRequest(CONT_STATE_INIT_REQUEST);
+
                 sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
                 sys_state.substate = SYS_WAIT_INITIALIZATION_CONT;
                 sys_state.InitCounter = 0;
@@ -344,7 +359,7 @@ void SYS_Trigger(void) {
             }
 
             break;
-
+#endif
             /****************************INITIALIZE BALANCING*************************************/
             case SYS_STATEMACH_INITIALIZE_BALANCING:
                 SYS_SAVELASTSTATES();
@@ -455,7 +470,9 @@ void SYS_Trigger(void) {
                     CANS_Enable_Periodic(TRUE);
                     SOC_Init(FALSE);
                 }
+#if BUILD_MODULE_ENABLE_ISOGUARD == 1
                 ISO_Init();
+#endif
 
                 sys_state.timer = SYS_STATEMACH_MEDIUMTIME_MS;
                 sys_state.state = SYS_STATEMACH_INITIALIZE_BMS;

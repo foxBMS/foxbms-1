@@ -61,6 +61,7 @@
 #include "diag.h"
 #include "ir155.h"
 
+#if BUILD_MODULE_ENABLE_ISOGUARD == 1
 /*================== Macros and Definitions ===============================*/
 
 /*================== Constant and Variable Definitions ====================*/
@@ -172,3 +173,4 @@ void ISO_MeasureInsulation(void) {
 
     DIAG_SysMonNotify(DIAG_SYSMON_ISOGUARD_ID, 0);        // task is running, state = ok
 }
+#endif

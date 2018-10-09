@@ -120,6 +120,37 @@
 
 /**
  * @ingroup CONFIG_GENERAL
+ * enables CONTACTOR module.
+ * \par Type:
+ * select(2)
+ * \par Default:
+ * 0
+*/
+#define BUILD_MODULE_ENABLE_CONTACTOR           1
+
+/**
+ * @ingroup CONFIG_GENERAL
+ * enables INTERLOCK module.
+ * \par Type:
+ * select(2)
+ * \par Default:
+ * 0
+*/
+#define BUILD_MODULE_ENABLE_ILCK          1
+
+/**
+ * @ingroup CONFIG_GENERAL
+ * enables ISOGUARD module.
+ * \par Type:
+ * select(2)
+ * \par Default:
+ * 0
+*/
+#define BUILD_MODULE_ENABLE_ISOGUARD          1
+
+
+/**
+ * @ingroup CONFIG_GENERAL
  * enables printf debugging with serial interface
  * \par Type:
  * select(2)

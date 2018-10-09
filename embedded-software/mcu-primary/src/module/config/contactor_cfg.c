@@ -53,6 +53,7 @@
 /*================== Includes =============================================*/
 #include "contactor_cfg.h"
 
+#if BUILD_MODULE_ENABLE_CONTACTOR == 1
 /*================== Macros and Definitions ===============================*/
 
 /*================== Constant and Variable Definitions ====================*/
@@ -85,3 +86,4 @@ const uint8_t cont_contactors_states_length = sizeof(cont_contactor_states)/size
 /*================== Function Prototypes ==================================*/
 
 /*================== Function Implementations =============================*/
+#endif // BUILD_MODULE_ENABLE_CONTACTOR

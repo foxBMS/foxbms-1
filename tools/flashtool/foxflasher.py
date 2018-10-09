@@ -38,22 +38,12 @@
 # &Prime;This product is derived from foxBMS&reg;&Prime;
 
 import argparse
-import ast
 import logging
 import os
 import sys
 import time
 import yaml
-
-# import yaml
-
 import stm32flasher
-
-
-try:
-    from configparser import ConfigParser
-except ImportError:
-    from ConfigParser import ConfigParser
 
 
 class FoxFlasher(stm32flasher.STM32Flasher):
@@ -164,8 +154,6 @@ This program has been released under the conditions of the BSD 3-Clause License.
     parser.add_argument('--extendederase', '-ee', action='store_true', help='erase complete flash but the bootloader memory section')
     parser.add_argument('--fullerase', '-fe', action='store_true', help='erases complete flash')
 
-    # FIXME add command line option to specify mcuconfig.ini
-
     args = parser.parse_args()
 
     if args.verbosity == 1:
@@ -200,8 +188,8 @@ This program has been released under the conditions of the BSD 3-Clause License.
 
     # If invalid flash address or file too big: exit
     if ((args.address < start_address_flashmemory) or
-        (args.address > end_address_flashmemory) or
-        (args.address + binsize > end_address_flashmemory)):
+            (args.address > end_address_flashmemory) or
+            (args.address + binsize > end_address_flashmemory)):
         sys.exit('Params are not legit. Please check your config and start the script again!')
 
     # Calculate sections that are to be deleted

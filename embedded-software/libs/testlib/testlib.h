@@ -40,34 +40,30 @@
  */
 
 /**
- * @file    interlock_cfg.c
+ * @file    testlib.h
  * @author  foxBMS Team
- * @date    23.09.2015 (date of creation)
- * @ingroup DRIVERS_CONF
- * @prefix  CONT
+ * @date    05.10.2018 (date of creation)
+ * @ingroup USER_LIB
+ * @prefix  none
  *
- * @brief   Configuration for the driver for the interlock.
+ * @brief   Example on how to create a user library that is included in foxBMS
  *
  */
 
-/*================== Includes =============================================*/
-#include "interlock_cfg.h"
+#ifndef TESTLIB_H_
+#define TESTLIB_H_
 
-#if BUILD_MODULE_ENABLE_ILCK == 1
+/*================== Includes =============================================*/
+#include <stdint.h>
+
 /*================== Macros and Definitions ===============================*/
 
 /*================== Constant and Variable Definitions ====================*/
-
-
-ILCK_CONFIG_s ilck_interlock_config = {
-        ILCK_INTERLOCK_CONTROL,         ILCK_INTERLOCK_FEEDBACK,        ILCK_FEEDBACK_TYPE_DONT_CARE
-};
-
-ILCK_ELECTRICAL_STATE_s ilck_interlock_state = {
-        FALSE,     ILCK_SWITCH_OFF
-};
+extern uint8_t super_variable;
 
 /*================== Function Prototypes ==================================*/
+extern uint16_t super_function(uint8_t a, uint8_t b);
 
 /*================== Function Implementations =============================*/
-#endif
+
+#endif /* TESTLIB_H_ */

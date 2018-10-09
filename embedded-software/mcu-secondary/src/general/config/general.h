@@ -140,6 +140,36 @@
 #define BUILD_MODULE_ENABLE_RTC           1
 //  #define BUILD_MODULE_ENABLE_RTC           0
 
+/**
+ * @ingroup CONFIG_GENERAL
+ * enables CONTACTOR peripheral
+ * \par Type:
+ * select(2)
+ * \par Default:
+ * 0
+*/
+#define BUILD_MODULE_ENABLE_CONTACTOR           1
+
+/**
+ * @ingroup CONFIG_GENERAL
+ * enables INTERLOCK peripheral
+ * \par Type:
+ * select(2)
+ * \par Default:
+ * 0
+*/
+#define BUILD_MODULE_ENABLE_ILCK           1
+
+/**
+ * @ingroup CONFIG_GENERAL
+ * enables ISOGUARD module.
+ * \par Type:
+ * select(2)
+ * \par Default:
+ * 0
+*/
+#define BUILD_MODULE_ENABLE_ISOGUARD          1
+
 
 /**
  * @ingroup CONFIG_GENERAL

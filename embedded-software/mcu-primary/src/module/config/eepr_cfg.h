@@ -63,8 +63,8 @@
  * @ingroup CONFIG_EEPR
  * selects the used Eeprom Hardware (IC), which are supported by this driver
 */
-#define EEPROM_VERSION_AT25128
-//#define EEPROM_VERSION_M95M02
+//#define EEPROM_VERSION_AT25128
+#define EEPROM_VERSION_M95M02
 
 
 #define EEPR_HW_PROTECTION_NONE       0x00  /*!< no protection          */

@@ -58,6 +58,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#if BUILD_MODULE_ENABLE_CONTACTOR == 1
 /*================== Macros and Definitions ===============================*/
 
 /**
@@ -985,3 +986,4 @@ static STD_RETURN_TYPE_e CONT_CheckVoltages(void) {
     }
     return retVal;
 }
+#endif // BUILD_MODULE_ENABLE_CONTACTOR

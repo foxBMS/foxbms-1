@@ -222,7 +222,6 @@ htmlhelp_basename = 'foxbmsdoc'
 pdf_documents = [('index',
                   u'EMSDocumentation',
                   u'EMS Documentation',
-                  u'Thyag Sundaramoorthy'),
-                ]
+                  u'Thyag Sundaramoorthy')]
 
 # vim: set fenc=utf-8 ft=python :

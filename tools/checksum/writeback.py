@@ -139,7 +139,7 @@ be written into')
     print('\nWriting checksum {} into {}'.format(checksum, elffile))
 
     # Get information on .flashheader section in ELF file
-    cmd = '''{} --section=".flashheader" -h {}'''.format(tool, elffile)
+    cmd = [tool, '--section=.flashheader', '-h', elffile]
     print(cmd)
     proc_write_to_elf = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                                          stderr=subprocess.PIPE)
@@ -157,7 +157,7 @@ be written into')
                              std_out.splitlines()[5].split()))
 
     # Get location of struct ver_sw_validation in .flasheader section
-    cmd = '''{} --section=".flashheader" -t {}'''.format(tool, elffile)
+    cmd = [tool, '--section=.flashheader', '-t', elffile]
     print(cmd)
     proc_write_to_elf = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                                          stderr=subprocess.PIPE)

@@ -315,8 +315,12 @@ void BMS_Trigger(void) {
 
             if (bms_state.substate == BMS_ENTRY){
                 BAL_SetStateRequest(BAL_STATE_ALLOWBALANCING_REQUEST);
+#if BUILD_MODULE_ENABLE_CONTACTOR == 1
                 CONT_SetStateRequest(CONT_STATE_STANDBY_REQUEST);
+#endif
+#if BUILD_MODULE_ENABLE_ILCK == 1
                 ILCK_SetStateRequest(ILCK_STATE_CLOSE_REQUEST);
+#endif
 
                 bms_state.timer = BMS_STATEMACH_MEDIUMTIME_MS;
                 bms_state.substate = BMS_CHECK_ERROR_FLAGS_INTERLOCK;
@@ -380,8 +384,9 @@ void BMS_Trigger(void) {
                 DB_ReadBlock(&systemstate, DATA_BLOCK_ID_SYSTEMSTATE);
                 systemstate.bms_state = BMS_STATEMACH_PRECHARGE;
                 DB_WriteBlock(&systemstate, DATA_BLOCK_ID_SYSTEMSTATE);
-
+#if BUILD_MODULE_ENABLE_CONTACTOR == 1
                 CONT_SetStateRequest(CONT_STATE_NORMAL_REQUEST);
+#endif
                 bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                 bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                 break;
@@ -404,9 +409,15 @@ void BMS_Trigger(void) {
                     break;
                 } else {
                     bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
+#if BUILD_MODULE_ENABLE_CONTACTOR == 1
                     bms_state.substate = BMS_CHECK_CONTACTOR_NORMAL_STATE;
+#else
+                    bms_state.state = BMS_STATEMACH_NORMAL;
+                    bms_state.substate = BMS_ENTRY;
+#endif
                     break;
                 }
+#if BUILD_MODULE_ENABLE_CONTACTOR == 1
             } else if (bms_state.substate == BMS_CHECK_CONTACTOR_NORMAL_STATE) {
                 contstate = CONT_GetState();
                 if (contstate == CONT_STATEMACH_NORMAL) {
@@ -423,6 +434,7 @@ void BMS_Trigger(void) {
                     bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                     bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                 }
+#endif
             }
             break;
 
@@ -471,8 +483,9 @@ void BMS_Trigger(void) {
                     DB_ReadBlock(&systemstate, DATA_BLOCK_ID_SYSTEMSTATE);
                     systemstate.bms_state = BMS_STATEMACH_CHARGE_PRECHARGE;
                     DB_WriteBlock(&systemstate, DATA_BLOCK_ID_SYSTEMSTATE);
-
+#if BUILD_MODULE_ENABLE_CONTACTOR == 1
                     CONT_SetStateRequest(CONT_STATE_CHARGE_REQUEST);
+#endif
                     bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                     bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                     break;
@@ -496,11 +509,16 @@ void BMS_Trigger(void) {
                         break;
                     } else {
                         bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
+#if BUILD_MODULE_ENABLE_CONTACTOR == 1
                         bms_state.substate = BMS_CHECK_CONTACTOR_CHARGE_STATE;
+#else
+                        bms_state.state = BMS_STATEMACH_CHARGE;
+                        bms_state.substate = BMS_ENTRY;
+#endif
                         break;
                     }
-                }
-                else if (bms_state.substate == BMS_CHECK_CONTACTOR_CHARGE_STATE){
+#if BUILD_MODULE_ENABLE_CONTACTOR == 1
+                } else if (bms_state.substate == BMS_CHECK_CONTACTOR_CHARGE_STATE){
                     contstate = CONT_GetState();
                     if (contstate == CONT_STATEMACH_CHARGE){
                         bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
@@ -516,6 +534,7 @@ void BMS_Trigger(void) {
                         bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                         bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                     }
+#endif
                 }
                 break;
 
@@ -564,18 +583,26 @@ void BMS_Trigger(void) {
 
             if (bms_state.substate == BMS_ENTRY) {
                 BAL_SetStateRequest(BAL_STATE_NOBALANCING_REQUEST);
+#if BUILD_MODULE_ENABLE_CONTACTOR == 1
                 CONT_SetStateRequest(CONT_STATE_ERROR_REQUEST);
+#endif
                 bms_state.timer = BMS_STATEMACH_MEDIUMTIME_MS;
+#if BUILD_MODULE_ENABLE_ILCK == 1
                 bms_state.substate = BMS_OPEN_INTERLOCK;
+#else
+                bms_state.substate = BMS_CHECK_ERROR_FLAGS;
+#endif
                 DB_ReadBlock(&systemstate, DATA_BLOCK_ID_SYSTEMSTATE);
                 systemstate.bms_state = BMS_STATEMACH_ERROR;
                 DB_WriteBlock(&systemstate, DATA_BLOCK_ID_SYSTEMSTATE);
                 break;
+#if BUILD_MODULE_ENABLE_ILCK == 1
             } else if (bms_state.substate == BMS_OPEN_INTERLOCK) {
                 ILCK_SetStateRequest(ILCK_STATE_OPEN_REQUEST);
                 bms_state.timer = BMS_STATEMACH_VERYLONGTIME_MS;
                 bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                 break;
+#endif
             } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS) {
                 if (BMS_CheckAnyErrorFlagSet() == E_NOT_OK) {
                     // we stay already in requested state, nothing to do
@@ -586,15 +613,21 @@ void BMS_Trigger(void) {
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
                 if (BMS_CheckCANRequests() == BMS_REQ_ID_STANDBY) {
+#if BUILD_MODULE_ENABLE_ILCK == 1
                     ILCK_SetStateRequest(ILCK_STATE_CLOSE_REQUEST);
-                    bms_state.timer = BMS_STATEMACH_MEDIUMTIME_MS;
                     bms_state.substate = BMS_CHECK_INTERLOCK_CLOSE_AFTER_ERROR;
+#else
+                    bms_state.state = BMS_STATEMACH_STANDBY;
+                    bms_state.substate = BMS_ENTRY;
+#endif
+                    bms_state.timer = BMS_STATEMACH_MEDIUMTIME_MS;
                     break;
                 } else {
                     bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                     bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                     break;
                 }
+#if BUILD_MODULE_ENABLE_ILCK == 1
             } else if (bms_state.substate == BMS_CHECK_INTERLOCK_CLOSE_AFTER_ERROR) {
                 if (ILCK_GetInterlockFeedback() == ILCK_SWITCH_ON) {
                     //TODO: check
@@ -608,6 +641,7 @@ void BMS_Trigger(void) {
                     bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                     break;
                 }
+#endif
             }
             break;
         default:
