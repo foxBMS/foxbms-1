@@ -117,10 +117,10 @@ typedef enum {
  * recommendation: use single buffer for small data (e.g.,one variable) and less concurrent read and write accesses
  */
 typedef enum {
-    // Init-Sequence
+    /* Init-Sequence */
     SINGLE_BUFFERING    = 1,    /*!< single buffering   */
     DOUBLE_BUFFERING    = 2,    /*!< double buffering   */
-    // TRIPLEBUFFERING     = 3,    /* actually not supported*/
+    /* TRIPLEBUFFERING     = 3,     actually not supported */
 } DATA_BLOCK_BUFFER_TYPE_e;
 
 /**
@@ -142,7 +142,7 @@ typedef struct {
 
 
 /*================== Macros and Definitions [USER CONFIGURATION] =============*/
-// FIXME comments doxygen, is comment necessary?
+/* FIXME comments doxygen, is comment necessary? */
 /*Macros and Definitions for User Configuration*/
 #define     DATA_BLOCK_ID_CELLVOLTAGE                   DATA_BLOCK_00
 #define     DATA_BLOCK_ID_CELLTEMPERATURE               DATA_BLOCK_01
@@ -427,23 +427,24 @@ typedef struct {
  */
 typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
-    uint32_t timestamp;                              /*!< timestamp of database entry                */
-    uint32_t previous_timestamp;                     /*!< timestamp of last database entry           */
-    uint8_t general_error;                           /*!< 0 -> no error, 1 -> error         */
-    uint8_t currentsensorresponding;                 /*!< 0 -> no error, 1 -> error         */
-    uint8_t main_plus;                               /*!< 0 -> no error, 1 -> error         */
-    uint8_t main_minus;                              /*!< 0 -> no error, 1 -> error         */
-    uint8_t precharge;                               /*!< 0 -> no error, 1 -> error         */
-    uint8_t charge_main_plus;                        /*!< 0 -> no error, 1 -> error         */
-    uint8_t charge_main_minus;                       /*!< 0 -> no error, 1 -> error         */
-    uint8_t charge_precharge;                        /*!< 0 -> no error, 1 -> error         */
-    uint8_t interlock;                               /*!< 0 -> no error, 1 -> error         */
-    uint8_t crc_error;                               /*!< 0 -> no error, 1 -> error         */
-    uint8_t mux_error;                               /*!< 0 -> no error, 1 -> error         */
-    uint8_t spi_error;                               /*!< 0 -> no error, 1 -> error         */
-    uint8_t can_timing;                              /*!< 0 -> no error, 1 -> error         */
-    uint8_t can_timing_cc;                           /*!< 0 -> no error, 1 -> error         */
-    uint8_t can_cc_used;                             /*!< 0 -> not present, 1 -> present    */
+    uint32_t timestamp;                              /*!< timestamp of database entry      */
+    uint32_t previous_timestamp;                     /*!< timestamp of last database entry */
+    uint8_t general_error;                           /*!< 0 -> no error, 1 -> error        */
+    uint8_t currentsensorresponding;                 /*!< 0 -> no error, 1 -> error        */
+    uint8_t main_plus;                               /*!< 0 -> no error, 1 -> error        */
+    uint8_t main_minus;                              /*!< 0 -> no error, 1 -> error        */
+    uint8_t precharge;                               /*!< 0 -> no error, 1 -> error        */
+    uint8_t charge_main_plus;                        /*!< 0 -> no error, 1 -> error        */
+    uint8_t charge_main_minus;                       /*!< 0 -> no error, 1 -> error        */
+    uint8_t charge_precharge;                        /*!< 0 -> no error, 1 -> error        */
+    uint8_t interlock;                               /*!< 0 -> no error, 1 -> error        */
+    uint8_t crc_error;                               /*!< 0 -> no error, 1 -> error        */
+    uint8_t mux_error;                               /*!< 0 -> no error, 1 -> error        */
+    uint8_t spi_error;                               /*!< 0 -> no error, 1 -> error        */
+    uint8_t insulation_error;                        /*!< 0 -> no error, 1 -> error        */
+    uint8_t can_timing;                              /*!< 0 -> no error, 1 -> error        */
+    uint8_t can_timing_cc;                           /*!< 0 -> no error, 1 -> error        */
+    uint8_t can_cc_used;                             /*!< 0 -> not present, 1 -> present   */
 } DATA_BLOCK_ERRORSTATE_s;
 
 

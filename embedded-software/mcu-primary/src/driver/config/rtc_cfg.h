@@ -64,11 +64,11 @@ typedef RTC_TimeTypeDef     RTC_Time_s;
 typedef RTC_DateTypeDef     RTC_Date_s;
 
 /* backup size of the registers 80 Byte */
-#define RTC_DATAVALID_VARIABLE              (hrtc.Instance->BKP0R)  // rtc backup register valid
-#define RTC_BKPSRAM_DATAVALID_VARIABLE      (hrtc.Instance->BKP1R)  // bkpsram data valid
-#define RTC_BKPDIAG_DATAVALID_VARIABLE      (hrtc.Instance->BKP2R)  // bpksram diag data valid
-#define RTC_NVMRAM_DATAVALID_VARIABLE       (hrtc.Instance->BKP3R)  // non-volatile data backups valid
-#define RTC_WDG_RESETCOUNTER                (hrtc.Instance->BKP5R)  // wdg resetcounter
+#define RTC_DATAVALID_VARIABLE              (hrtc.Instance->BKP0R)  /* rtc backup register valid */
+#define RTC_BKPSRAM_DATAVALID_VARIABLE      (hrtc.Instance->BKP1R)  /* bkpsram data valid */
+#define RTC_BKPDIAG_DATAVALID_VARIABLE      (hrtc.Instance->BKP2R)  /* bpksram diag data valid */
+#define RTC_NVMRAM_DATAVALID_VARIABLE       (hrtc.Instance->BKP3R)  /* non-volatile data backups valid */
+#define RTC_WDG_RESETCOUNTER                (hrtc.Instance->BKP5R)  /* wdg resetcounter */
 
 /**
  * struct for the initialization and configuration of RTC
@@ -103,9 +103,14 @@ extern RTC_HandleTypeDef hrtc;
 
 /*================== Function Prototypes ===================================*/
 
+/**
+ * @brief   get backup register value
+ */
 uint32_t RTC_getRegisterValueBKPSRAM(RTC_BKPREGISTER_e registerNumber);
 
-
+/**
+ * @brief   set backup register value
+ */
 void RTC_setRegisterValueBKPSRAM(RTC_BKPREGISTER_e registerNumber, uint32_t value);
 
 /*================== Function Implementations ==============================*/

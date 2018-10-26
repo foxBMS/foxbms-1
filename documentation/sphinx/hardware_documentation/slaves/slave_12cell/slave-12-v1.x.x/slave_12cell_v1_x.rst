@@ -133,8 +133,6 @@ If less than 12 battery cells are used, information on how to connect them can b
 
 In case no cells are available, they can be simulated with a series of voltage divider. A voltage supplied of 30V should be used and 12 resistors with the same value connected in series between the positive and negative connectors of the voltage supply. The positive connector is linked to VBAT+, the negative connector to VBAT- and each pole of a resistor correspond to  a pole of a battery cell. The voltage of 30V  is chosen so that every simulated cell voltage lies around 2.5V, which lies in the center of the safe operating area defined by default in the |foxbms| software.
 
-.. _slave_voltage_divider:
-
 Cell Temperature Connector on the |slaves|
 ------------------------------------------
 

@@ -115,6 +115,8 @@ Global Cell Balancing Feedback
 
 In order to check the proper function of the balancing process or to detect a malfunction in the balancing circuit, a global balancing feedback signal is connected to the |LTC|. This allows the |BMS-Master| to check wheather any balancing action is currently taking place. The feedback signal is connected to the GPIO3 of the |LTC|. The signal remains in a logic zero state until any balancing action on at least one cell in the module starts.
 
+.. _slave_voltage_divider:
+
 ------------------------------
 Temperature Sensor Measurement
 ------------------------------

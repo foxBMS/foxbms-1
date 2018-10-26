@@ -180,7 +180,7 @@ static uint8_t ILCK_CheckReEntrance(void) {
     if (!ilck_state.triggerentry) {
         ilck_state.triggerentry++;
     } else {
-        retval = 0xFF;    // multiple calls of function
+        retval = 0xFF;    /* multiple calls of function */
     }
     taskEXIT_CRITICAL();
 
@@ -286,7 +286,7 @@ static ILCK_RETURN_TYPE_e ILCK_CheckStateRequest(ILCK_STATE_REQUEST_e statereq) 
     }
 
     if (ilck_state.statereq == ILCK_STATE_NO_REQUEST) {
-        //  init only allowed from the uninitialized state
+        /* init only allowed from the uninitialized state */
         if (statereq == ILCK_STATE_INIT_REQUEST) {
             if (ilck_state.state == ILCK_STATEMACH_UNINITIALIZED) {
                 return ILCK_OK;
@@ -322,12 +322,12 @@ void ILCK_SetFeedbackIgnoreCounter(uint32_t ignores) {
 void ILCK_Trigger(void) {
     ILCK_STATE_REQUEST_e statereq = ILCK_STATE_NO_REQUEST;
 
-    // Check re-entrance of function
+    /* Check re-entrance of function */
     if (ILCK_CheckReEntrance()) {
         return;
     }
 
-    DIAG_SysMonNotify(DIAG_SYSMON_ILCK_ID,0);        // task is running, state = ok
+    DIAG_SysMonNotify(DIAG_SYSMON_ILCK_ID,0);        /* task is running, state = ok */
 
     /****Happens every time the state machine is triggered**************/
     if (ilck_state.state != ILCK_STATEMACH_UNINITIALIZED) {
@@ -341,7 +341,7 @@ void ILCK_Trigger(void) {
     if (ilck_state.timer) {
         if (--ilck_state.timer) {
             ilck_state.triggerentry--;
-            return;    // handle state machine only if timer has elapsed
+            return;    /* handle state machine only if timer has elapsed */
         }
     }
 
@@ -349,7 +349,7 @@ void ILCK_Trigger(void) {
     switch (ilck_state.state) {
         /****************************UNINITIALIZED***********************************/
         case ILCK_STATEMACH_UNINITIALIZED:
-            // waiting for Initialization Request
+            /* waiting for Initialization Request */
             statereq = ILCK_TransferStateRequest();
             if (statereq == ILCK_STATE_INIT_REQUEST) {
                 ILCK_SAVELASTSTATES();
@@ -357,9 +357,9 @@ void ILCK_Trigger(void) {
                 ilck_state.state = ILCK_STATEMACH_INITIALIZATION;
                 ilck_state.substate = ILCK_ENTRY;
             } else if (statereq == ILCK_STATE_NO_REQUEST) {
-                // no actual request pending //
+                /* no actual request pending   */
             } else {
-                ilck_state.ErrRequestCounter++;   // illegal request pending
+                ilck_state.ErrRequestCounter++;   /* illegal request pending */
             }
             break;
 
@@ -431,7 +431,7 @@ void ILCK_Trigger(void) {
 
         default:
             break;
-    }  // end switch(ilck_state.state)
+    }  /* end switch(ilck_state.state) */
 
     ilck_state.triggerentry--;
 }

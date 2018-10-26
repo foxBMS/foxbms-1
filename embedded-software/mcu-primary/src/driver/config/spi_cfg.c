@@ -52,6 +52,7 @@
 
 /*================== Includes =============================================*/
 #include "spi_cfg.h"
+
 #include "dma.h"
 
 /*================== Macros and Definitions ===============================*/
@@ -65,13 +66,13 @@ SPI_HandleType_s spi_devices[] = {
         .Init.Mode = SPI_MODE_MASTER,
         .Init.Direction = SPI_DIRECTION_2LINES,
         .Init.DataSize = SPI_DATASIZE_8BIT,
-        .Init.CLKPolarity = SPI_POLARITY_LOW,   // CPOL = 0
-        .Init.CLKPhase = SPI_PHASE_1EDGE,       // CPHA = 0
-        //.Init.CLKPolarity = SPI_POLARITY_HIGH,  // CPOL = 1
-        //.Init.CLKPhase = SPI_PHASE_2EDGE,       // CPHA = 1
+        .Init.CLKPolarity = SPI_POLARITY_LOW,   /* CPOL = 0 */
+        .Init.CLKPhase = SPI_PHASE_1EDGE,       /* CPHA = 0 */
+        /* .Init.CLKPolarity = SPI_POLARITY_HIGH,    CPOL = 1 */
+        /* .Init.CLKPhase = SPI_PHASE_2EDGE,         CPHA = 1 */
         .Init.NSS = SPI_NSS_SOFT,
         .Init.FirstBit = SPI_FIRSTBIT_MSB,
-        .Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128,    // SPI clock = APB2_CLOCK / 128 = 84 / 128 = 656.25 kHz
+        .Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128,    /* SPI clock = APB2_CLOCK / 128 = 90 / 128 = 703.125 kHz */
         .Init.TIMode = SPI_TIMODE_DISABLED,
         .Init.CRCCalculation = SPI_CRCCALCULATION_DISABLED,
         .Init.CRCPolynomial = 1,

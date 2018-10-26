@@ -52,13 +52,14 @@
 
 /*================== Includes =============================================*/
 #include "dma_cfg.h"
+
 #include "spi.h"
 
 /*================== Macros and Definitions ===============================*/
 
 /*================== Constant and Variable Definitions ====================*/
 DMA_HandleTypeDef dma_devices[] = {
-// SPI1 RX
+/* SPI1 RX */
     {
         .Instance = DMA2_Stream2,
         .Init.Channel = DMA_CHANNEL_3,
@@ -75,7 +76,7 @@ DMA_HandleTypeDef dma_devices[] = {
         .Init.PeriphBurst = DMA_PBURST_SINGLE,
         .Parent = &spi_devices[0]
     },
-// SPI1 TX
+/* SPI1 TX */
     {
         .Instance = DMA2_Stream3,
         .Init.Channel = DMA_CHANNEL_3,

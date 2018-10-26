@@ -59,15 +59,15 @@
 
 #if 0       /* Configuration with RTC clock source: LSI oscillator */
 RTC_CFG_s rtc_cfg = {
-    .oscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI,       // MCU1: LSE (external 32 kHz oscillator) not implemented,
-    .oscInitStruct.LSIState      = RCC_LSI_ON,                   // so use LSI (Internal low-speed oscillator)
+    .oscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI,      /* MCU1: LSE (external 32 kHz oscillator) not implemented, */
+    .oscInitStruct.LSIState      = RCC_LSI_ON,                   /* so use LSI (Internal low-speed oscillator) */
 
     .clkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC,
-    .clkInitStruct.RTCClockSelection   = RCC_RTCCLKSOURCE_LSI,   // RTC Clocksourse is LSI
+    .clkInitStruct.RTCClockSelection   = RCC_RTCCLKSOURCE_LSI,   /* RTC Clocksourse is LSI */
 
     .initconfig.HourFormat     = RTC_HOURFORMAT_24,
-    .initconfig.AsynchPrediv   = (125-1),                 // LSI = 32kHz:    32kHz/(125*256) = 1Hz
-    .initconfig.SynchPrediv    = (256-1),                 // Subsecond runs with 32kHz/125
+    .initconfig.AsynchPrediv   = (125-1),                 /* LSI = 32kHz:    32kHz/(125*256) = 1Hz */
+    .initconfig.SynchPrediv    = (256-1),                 /* Subsecond runs with 32kHz/125 */
     .initconfig.OutPut         = RTC_OUTPUT_ALARMA,
     .initconfig.OutPutPolarity = RTC_OUTPUT_POLARITY_LOW,
     .initconfig.OutPutType     = RTC_OUTPUT_TYPE_OPENDRAIN,
@@ -91,15 +91,15 @@ RTC_CFG_s rtc_cfg = {
 
 /* Configuration with RTC clock source: HSE cyrstal */
 RTC_CFG_s rtc_cfg = {
-    .oscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE,      // MCU1: LSE (external 32 kHz oscillator) not implemented,
-    .oscInitStruct.HSEState      = RCC_HSE_ON,                   // so use HSE 8 MHz (external high-speed oscillator)
+    .oscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE,      /* MCU1: LSE (external 32 kHz oscillator) not implemented, */
+    .oscInitStruct.HSEState      = RCC_HSE_ON,                   /* so use HSE 8 MHz (external high-speed oscillator) */
 
     .clkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC,
-    .clkInitStruct.RTCClockSelection   = RCC_RTCCLKSOURCE_HSE_DIV16,   // RTC Clocksourse is HSE, HSE_RTC = 8MHz/16 = 500kHz
+    .clkInitStruct.RTCClockSelection   = RCC_RTCCLKSOURCE_HSE_DIV16,   /* RTC Clocksourse is HSE, HSE_RTC = 8MHz/16 = 500kHz */
 
     .initconfig.HourFormat     = RTC_HOURFORMAT_24,
-    .initconfig.AsynchPrediv   = (125-1),                 // HSE_RTC = 500kHz:    500kHz/(125*4000) = 1Hz
-    .initconfig.SynchPrediv    = (4000-1),                 // Subsecond runs with 500kHz/125 = 250us
+    .initconfig.AsynchPrediv   = (125-1),                 /* HSE_RTC = 500kHz:    500kHz/(125*4000) = 1Hz */
+    .initconfig.SynchPrediv    = (4000-1),                /* Subsecond runs with 500kHz/125 = 250us */
     .initconfig.OutPut         = RTC_OUTPUT_ALARMA,
     .initconfig.OutPutPolarity = RTC_OUTPUT_POLARITY_LOW,
     .initconfig.OutPutType     = RTC_OUTPUT_TYPE_OPENDRAIN,

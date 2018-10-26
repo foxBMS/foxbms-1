@@ -99,7 +99,7 @@
  *
  * Possible values: 2-63
  */
-#define RCC_PLL_M    8
+#define RCC_PLL_M    4
 
 /**
  * Multiplies the input of Main PLL with the factor RCC_PLL_N. This clock frequency
@@ -108,14 +108,14 @@
  * Possible values for RCC_PLL_N:       192 - 432
  * Possible values for RCC_PLL_P_NUM:   2, 4, 6, 8
  */
-#define RCC_PLL_N       336
+#define RCC_PLL_N       180
 
 #define RCC_PLL_P_NUM   2
 
 /** Divides the multiplied clock frequency (after RCC_PLL_N) by the factor RCC_PLL_Q.
  * This frequency supplies the I2S clock (currently not used)
  */
-#define RCC_PLL_Q    7
+#define RCC_PLL_Q    8
 
 /**
  * AHB Prescaler for HCLK. Divides the SYSCLK frequency by factor RCC_AHBCLKDivider_NUM

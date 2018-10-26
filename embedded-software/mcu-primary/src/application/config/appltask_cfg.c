@@ -83,7 +83,7 @@ static DATA_BLOCK_SLAVE_CONTROL_s example_slave_control;
 /*================== Function Implementations =============================*/
 void APPL_Cyclic_1ms(void) {
 
-    DIAG_SysMonNotify(DIAG_SYSMON_APPL_CYCLIC_1ms, 0);        // task is running, state = ok
+    DIAG_SysMonNotify(DIAG_SYSMON_APPL_CYCLIC_1ms, 0);        /* task is running, state = ok */
 
     /* User specific implementations:   */
     /*   ...                            */
@@ -93,7 +93,7 @@ void APPL_Cyclic_1ms(void) {
 
 void APPL_Cyclic_10ms(void) {
 
-    DIAG_SysMonNotify(DIAG_SYSMON_APPL_CYCLIC_10ms, 0);        // task is running, state = ok
+    DIAG_SysMonNotify(DIAG_SYSMON_APPL_CYCLIC_10ms, 0);        /* task is running, state = ok */
 
     /* User specific implementations:   */
     /*   ...                            */
@@ -115,9 +115,9 @@ void APPL_Cyclic_10ms(void) {
 
 void APPL_Cyclic_100ms(void) {
     uint8_t i;
-    //uint8_t j; //used for DEMO only
+    /* uint8_t j; /* used for DEMO only */
 
-    DIAG_SysMonNotify(DIAG_SYSMON_APPL_CYCLIC_100ms, 0);        // task is running, state = ok
+    DIAG_SysMonNotify(DIAG_SYSMON_APPL_CYCLIC_100ms, 0);        /* task is running, state = ok */
 
     /* User specific implementations:   */
     /*   ...                            */
@@ -134,18 +134,18 @@ void APPL_Cyclic_100ms(void) {
         first_cycle++;
     } else if (first_cycle == 10){
         /************************************************************
-        //DEMO, write to external slave EEPROM, must NOT be done to often, or EEPROM will be worn out
+        DEMO, write to external slave EEPROM, must NOT be done to often, or EEPROM will be worn out
         DB_ReadBlock(&example_slave_control, DATA_BLOCK_ID_SLAVE_CONTROL);
         example_slave_control.eeprom_write_address_to_use = 0x162;
         for (j=0; j<BS_NR_OF_MODULES; j++) {
             example_slave_control.eeprom_value_write[j] = 0x3E;
         }
         DB_WriteBlock(&example_slave_control, DATA_BLOCK_ID_SLAVE_CONTROL);
-        //MEAS_Request_EEPROM_Write();
+        MEAS_Request_EEPROM_Write();
         ************************************************************/
         first_cycle++;
     } else {
-        //Shifting 1 up and down (light cycle demo if LEDs are connected to the port-expander)
+        /* Shifting 1 up and down (light cycle demo if LEDs are connected to the port-expander) */
         if (io_initialized == FALSE) {
             io_initialized = TRUE;
             for (i=0; i<BS_NR_OF_MODULES; i++) {
@@ -180,35 +180,35 @@ void APPL_Cyclic_100ms(void) {
         if (io_counter%2 == 0) {
 
             /************************************************************
-            //DEMO, write to port-expander
-            //DB_WriteBlock(&example_slave_control, DATA_BLOCK_ID_SLAVE_CONTROL);
-            //MEAS_Request_IO_Write();
+            DEMO, write to port-expander
+            DB_WriteBlock(&example_slave_control, DATA_BLOCK_ID_SLAVE_CONTROL);
+            MEAS_Request_IO_Write();
             ************************************************************/
         }
         else if (io_counter%3 == 0) {
             /************************************************************
-            //DEMO, read from port-expander
-            //MEAS_Request_IO_Read();
+            DEMO, read from port-expander
+            MEAS_Request_IO_Read();
             ************************************************************/
         }
         else if (io_counter%11 == 0) {
             /************************************************************
-            //DEMO, read external temperature sensor on slaves
-            //MEAS_Request_Temperature_Read();
+            DEMO, read external temperature sensor on slaves
+            MEAS_Request_Temperature_Read();
             ************************************************************/
         }
         else if (io_counter%17 == 0) {
             /************************************************************
-            //DEMO, read balancing feedback on slaves
-            //MEAS_Request_BalancingFeedback_Read();
+            DEMO, read balancing feedback on slaves
+            MEAS_Request_BalancingFeedback_Read();
             ************************************************************/
         }
         else if (io_counter%29 == 0) {
             /************************************************************
-            //DEMO, read from external slave EEPROM
+            DEMO, read from external slave EEPROM
             example_slave_control.eeprom_read_address_to_use = 0x162;
             DB_WriteBlock(&example_slave_control, DATA_BLOCK_ID_SLAVE_CONTROL);
-            //MEAS_Request_EEPROM_Read();
+            MEAS_Request_EEPROM_Read();
             ************************************************************/
 
         }

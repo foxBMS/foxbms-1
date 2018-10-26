@@ -69,13 +69,13 @@
 
 
 
-//#define LTC_DISCARD_PEC TRUE
+/* #define LTC_DISCARD_PEC TRUE */
 #define LTC_DISCARD_PEC FALSE
 
 #define LTC_GOTO_MUX_CHECK TRUE
-//#define LTC_GOTO_MUX_CHECK FALSE
+/* #define LTC_GOTO_MUX_CHECK FALSE */
 
-//#define LTC_DISCARD_MUX_CHECK TRUE
+/* #define LTC_DISCARD_MUX_CHECK TRUE */
 #define LTC_DISCARD_MUX_CHECK FALSE
 
 
@@ -114,15 +114,15 @@
  * Measurement modus for voltages
  */
 #define LTC_VOLTAGE_MEASUREMENT_MODE    LTC_ADCMODE_NORMAL_DCP0
-//#define LTC_VOLTAGE_MEASUREMENT_MODE LTC_ADCMODE_FILTERED_DCP0
-//#define LTC_VOLTAGE_MEASUREMENT_MODE LTC_ADCMODE_FAST_DCP0
+/* #define LTC_VOLTAGE_MEASUREMENT_MODE LTC_ADCMODE_FILTERED_DCP0 */
+/* #define LTC_VOLTAGE_MEASUREMENT_MODE LTC_ADCMODE_FAST_DCP0 */
 
 /**
  *  Measurement modus for GPIOs
  */
 #define LTC_GPIO_MEASUREMENT_MODE   LTC_ADCMODE_NORMAL_DCP0
-// #define LTC_GPIO_MEASUREMENT_MODE LTC_ADCMODE_FILTERED_DCP0
-// #define LTC_GPIO_MEASUREMENT_MODE LTC_ADCMODE_FAST_DCP0
+/* #define LTC_GPIO_MEASUREMENT_MODE LTC_ADCMODE_FILTERED_DCP0 */
+/* #define LTC_GPIO_MEASUREMENT_MODE LTC_ADCMODE_FAST_DCP0 */
 
 /**
  * SPI1 is used for communication with LTC
@@ -261,7 +261,7 @@
 #define LTC_N_BYTES_FOR_DATA_TRANSMISSION_DATA_ONLY   (0+(6*LTC_N_LTC))
 
 
-//Transmit functions
+/* Transmit functions */
 #define LTC_SendWakeUp()                SPI_Transmit(LTC_SPI_HANDLE, (uint8_t *) ltc_cmdDummy, 1)
 #define LTC_SendI2CCmd(txbuf)           SPI_Transmit(LTC_SPI_HANDLE, txbuf, 4+9)
 #define LTC_SendData(txbuf)             SPI_Transmit(LTC_SPI_HANDLE, txbuf, LTC_N_BYTES_FOR_DATA_TRANSMISSION)

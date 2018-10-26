@@ -138,7 +138,7 @@ extern STD_RETURN_TYPE_e CONT_SwitchAllContactorsOff(void);
  * States of the CONT state machine
  */
 typedef enum {
-    // Init-Sequence
+    /* Init-Sequence */
     CONT_STATEMACH_UNINITIALIZED             = 0,    /*!<    */
     CONT_STATEMACH_INITIALIZATION            = 1,    /*!<    */
     CONT_STATEMACH_INITIALIZED               = 2,    /*!<    */
@@ -215,6 +215,7 @@ typedef struct {
     uint8_t triggerentry;                    /*!< counter for re-entrance protection (function running flag) */
     uint8_t counter;                         /*!< general purpose counter */
 } CONT_STATE_s;
+
 
 /*================== Function Prototypes ==================================*/
 

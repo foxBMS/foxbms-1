@@ -97,7 +97,7 @@ IR155_MEASUREMENT_s ir155_DC = {
 
 #ifdef IR155_HISTORYENABLE
 unsigned char isoIR_his_idx = 0;
-IR155_MEASUREMENT_HISTORY_s isoIR_his[IR155_HISTORY_LENGTH];  // Initialization of array in ISOIR_Init()
+IR155_MEASUREMENT_HISTORY_s isoIR_his[IR155_HISTORY_LENGTH];  /* Initialization of array in ISOIR_Init() */
 #endif
 
 /*================== Function Prototypes ==================================*/
@@ -164,7 +164,7 @@ static IR155_SIGMODE_e IR155_GetMode(uint32_t signalperiod) {
     if((signalperiod >= IR155_NORMALCONDITION_PERIODE_MIN) && (signalperiod < IR155_NORMALCONDITION_PERIODE_MAX))
         ret_val = IR155_NORMAL_MODE;
     else if((signalperiod >= IR155_UNDERVOLATGE_PERIODE_MIN) && (signalperiod < IR155_UNDERVOLATGE_PERIODE_MAX))
-        ret_val = IR155_UNDERVOLATGE_MODE;        // should not be detected as default threshold 0V, EOL Bender configurable!
+        ret_val = IR155_UNDERVOLATGE_MODE;        /* should not be detected as default threshold 0V, EOL Bender configurable! */
     else if((signalperiod >= IR155_SPEEDSTART_PERIODE_MIN) && (signalperiod < IR155_SPEEDSTART_PERIODE_MAX))
         ret_val = IR155_SPEEDSTART_MODE;
     else if((signalperiod >= IR155_IMDERROR_PERIODE_MIN) && (signalperiod < IR155_IMDERROR_PERIODE_MAX))
@@ -175,17 +175,17 @@ static IR155_SIGMODE_e IR155_GetMode(uint32_t signalperiod) {
         ret_val = IR155_UNDEFINED_FRQMAX;
     else  if(signalperiod >= IR155_PERIODE_MAX) {
         if (IR155_GET_MHS()) {
-            ret_val = IR155_SHORT_KL15;        // level at port: high
+            ret_val = IR155_SHORT_KL15;        /* level at port: high */
         }
         else {
-            ret_val = IR155_SHORT_KL31;     // level at port: low
+            ret_val = IR155_SHORT_KL31;     /* level at port: low */
         }
     }
     return ret_val;
 }
 
 
-STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resistance) {
+STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resistance, IO_PIN_STATE_e* ohks_state) {
 #ifdef IR155_HISTORYENABLE
     static IR155_INSULATION_s ir155_insulation_loc = {
             .state = IR155_UNINITIALIZED,
@@ -206,19 +206,19 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
     uint8_t retDiag = DIAG_HANDLER_RETURN_OK;
     STD_RETURN_TYPE_e retVal = E_OK;
 
-    // read value of IsoGuard Insulation_Good digital input
+    /* read value of IsoGuard Insulation_Good digital input */
     ir155_DC.OKHS_state = IR155_GET_OKHS();
 
     /* get actual active-time (t_ON)) and period from ICU */
     retValTim = IR155_GET_DUTYCYCLE(&sig_ir155_dutycycle);
 
-    sig_ir155_dutycycle.ActiveTime *= TIM9_CLOCK_TICK_DURATION_IN_US * 75; // in units of  (1/75) us
-    sig_ir155_dutycycle.PeriodTime *= TIM9_CLOCK_TICK_DURATION_IN_US * 75; // in units of  (1/75) us
+    sig_ir155_dutycycle.ActiveTime *= TIM9_CLOCK_TICK_DURATION_IN_US * 75; /* in units of  (1/75) us */
+    sig_ir155_dutycycle.PeriodTime *= TIM9_CLOCK_TICK_DURATION_IN_US * 75; /* in units of  (1/75) us */
 
     if(retValTim == DIAG_TIM_OK) {
 
-        ir155_DC.sigICU.ActiveTime = sig_ir155_dutycycle.ActiveTime;            // in units of  (1/75) us
-        ir155_DC.sigICU.PeriodTime = (sig_ir155_dutycycle.PeriodTime+500)/1000; // in units of  (1/75) ms
+        ir155_DC.sigICU.ActiveTime = sig_ir155_dutycycle.ActiveTime;            /* in units of  (1/75) us */
+        ir155_DC.sigICU.PeriodTime = (sig_ir155_dutycycle.PeriodTime+500)/1000; /* in units of  (1/75) ms */
 
         DIAG_Handler(DIAG_CH_ISOMETER_TIM_ERROR, DIAG_EVENT_OK, DIAG_TIMER_NO_VALUE, NULL);
     }
@@ -241,27 +241,27 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
     /* calculate actual duty cycle and frequency (which identifies mode)  */
     if(sig_ir155_dutycycle.ActiveTime < sig_ir155_dutycycle.PeriodTime) {
 
-        // both edges (high and low) have been detected within call time of this function
-        ir155_DC.dutycycle = ((ir155_DC .sigICU.ActiveTime)/ir155_DC .sigICU.PeriodTime + 5)/10;    // in units of % with rounding
+        /* both edges (high and low) have been detected within call time of this function */
+        ir155_DC.dutycycle = ((ir155_DC .sigICU.ActiveTime)/ir155_DC .sigICU.PeriodTime + 5)/10;    /*  in units of % with rounding */
         ir155_DC.mode      = IR155_GetMode(ir155_DC .sigICU.PeriodTime);
     }
     else {
-        // this branch should never be entered if duty cycle-measurement works fine
+        /* this branch should never be entered if duty cycle-measurement works fine */
         if(sig_ir155_dutycycle.PeriodTime != 0) {
-           //implausible, SW-system error,Spikes...?
+           /* implausible, SW-system error,Spikes...? */
             ir155_DC.mode      = IR155_DCM_CORRUPT;
         }
         else {
-            // no signal edges detected,
-            // HW-system error? -> sensor wire break (pullup)
-            // SW-system error? -> ICU not working
+            /* no signal edges detected, */
+            /* HW-system error? -> sensor wire break (pullup) */
+            /* SW-system error? -> ICU not working */
             ir155_DC.mode      = IR155_DCM_NOSIGNAL;
         }
-        //Nevertheless, use pin level for low (0%) and high (100%) differentiation
+        /* Nevertheless, use pin level for low (0%) and high (100%) differentiation */
         if (IR155_GET_MHS())
-            ir155_DC.dutycycle = 100;   // max in units of %
+            ir155_DC.dutycycle = 100;   /* max in units of % */
         else
-            ir155_DC.dutycycle = 0;     // min in units of %
+            ir155_DC.dutycycle = 0;     /* min in units of % */
 
         retDiag = DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_NOK, DIAG_ERR_MEAS_CORRUPT, NULL);
 
@@ -270,8 +270,8 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
     }
 
 
-    // calculate resistance if possible which depends on mode of measurement output signal of isometer
-    // (identified by frequency)
+    /* calculate resistance if possible which depends on mode of measurement output signal of isometer */
+    /* (identified by frequency) */
     if (ir155_DC.mode == IR155_NORMAL_MODE ) {
 
         /* 5%..10%*: because of measuring inaccuracy it is used [3%..12%]*/
@@ -280,7 +280,7 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
             ir155_DC.state = IR155_RESIST_MEAS_GOOD;
 
             if(ir155_DC.dutycycle<=5) {
-                ir155_DC.resistance = 106800;        // max 106.8 MOhm
+                ir155_DC.resistance = 106800;        /* max 106.8 MOhm */
             }
             else {
                 ir155_DC.resistance= (90*1200)/(ir155_DC.dutycycle-5)-1200;
@@ -289,15 +289,15 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
         }
         else if (ir155_DC.dutycycle<3) {
             /* insulation unknown, sensor working bad */
-            ir155_DC.state = IR155_RESIST_MEAS_UNKNOWN; // sensor error dc < 3%
-            ir155_DC.resistance = 0;                    // resistance not readable
+            ir155_DC.state = IR155_RESIST_MEAS_UNKNOWN; /* sensor error dc < 3% */
+            ir155_DC.resistance = 0;                    /* resistance not readable */
         }
         else if (ir155_DC .dutycycle>12 && ir155_DC.dutycycle<=90) {
           /* 10%..90%*: because of measuring inaccuracy it is used ]12%..90%]*/
 
             /* insulation getting worse, sensor working good */
-            // sensor dc < 10%..90%
-            ir155_DC.resistance= (90*1200)/(ir155_DC.dutycycle-5)-1200; // resistance  20MOhm...70kOhm
+            /* sensor dc < 10%..90% */
+            ir155_DC.resistance= (90*1200)/(ir155_DC.dutycycle-5)-1200; /* resistance  20MOhm...70kOhm */
             if(ir155_DC.resistance > IR155_RESISTANCE_RESPONSE_VALUE)
                 ir155_DC.state = IR155_RESIST_MEAS_GOOD;
             else
@@ -307,47 +307,47 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
             /* 90%..95%*: because of measuring inaccuracy it is used ]90%..97%]*/
 
             /* insulation bad, sensor working good */
-            // sensor dc < 90%..95%
+            /* sensor dc < 90%..95% */
             if(ir155_DC .dutycycle >= 95) {
                 ir155_DC.state = IR155_RESIST_MEAS_BAD;
-                ir155_DC.resistance = 1;                // 0kOhm will be interpreted as "not readable", so use 1kOhm
+                ir155_DC.resistance = 1;                /* 0kOhm will be interpreted as "not readable", so use 1kOhm */
             }
             else {
                 ir155_DC.state = IR155_RESIST_MEAS_BAD;
-                ir155_DC.resistance= (90*1200)/(ir155_DC.dutycycle-5)-1200;    // resistance  70kOhm..0kOhm
+                ir155_DC.resistance= (90*1200)/(ir155_DC.dutycycle-5)-1200;    /* resistance  70kOhm..0kOhm */
             }
         }
         else if (ir155_DC.dutycycle>97 && ir155_DC.dutycycle<=100) { /* ]97%..100%] */
             /* insulation unknown, sensor working bad */
-            ir155_DC.state = IR155_RESIST_MEAS_UNKNOWN;    // sensor error dc > 95%
-            ir155_DC.resistance = 0;                        // resistance not readable
+            ir155_DC.state = IR155_RESIST_MEAS_UNKNOWN;    /* sensor error dc > 95% */
+            ir155_DC.resistance = 0;                        /* resistance not readable */
         }
     }
     else if (ir155_DC.mode == IR155_SPEEDSTART_MODE ) {
-         // SSD Mode (SPEED STARTUP) will be entered first after startup (within 2sec.) for resistance estimation
-        // as NORMAL MODE (Normal Condition measurement) could take maximum time of 17.5sec.
+         /* SSD Mode (SPEED STARTUP) will be entered first after startup (within 2sec.) for resistance estimation */
+        /* as NORMAL MODE (Normal Condition measurement) could take maximum time of 17.5sec. */
 
         /* 5%..10%*: because of measuring inaccuracy it is used [3%..12%]*/
         if (ir155_DC.dutycycle>=3 && ir155_DC.dutycycle<=12) {
             /* insulation good estimation, sensor working good */
-            ir155_DC.state = IR155_RESIST_ESTIM_GOOD;    // sensor error dc = 5..10%
-            ir155_DC.resistance= 200;                      // R >= 200kOhm
+            ir155_DC.state = IR155_RESIST_ESTIM_GOOD;    /* sensor error dc = 5..10% */
+            ir155_DC.resistance= 200;                      /* R >= 200kOhm */
         }
         else if (ir155_DC.dutycycle>=88 && ir155_DC.dutycycle<=97) {
             /* 90%..95%*: because of measuring inaccuracy it is used [88%..97%]*/
             /* insulation bad, sensor working good */
-            ir155_DC.state = IR155_RESIST_ESTIM_BAD;    // sensor error dc = 90..95%
-            ir155_DC.resistance= 50;           // R <= 50kOhm
+            ir155_DC.state = IR155_RESIST_ESTIM_BAD;    /* sensor error dc = 90..95% */
+            ir155_DC.resistance= 50;           /* R <= 50kOhm */
         }
         else {
             /* insulation unknown, sensor working good, dc measurement corrupt */
-            ir155_DC.state = IR155_RESIST_ESTIM_UNKNOWN;    // sensor error dc = 0..5%, dc = 10..90% or dc > 95%
-            ir155_DC.resistance = 0;                    // resistance not readable
+            ir155_DC.state = IR155_RESIST_ESTIM_UNKNOWN;    /* sensor error dc = 0..5%, dc = 10..90% or dc > 95% */
+            ir155_DC.resistance = 0;                    /* resistance not readable */
         }
     }
     else if (ir155_DC.mode == IR155_GROUNDERROR_MODE) {
-        //Condition "KL31 fault"  is identified by base frequency 50Hz
-        // and duty cycle  47.5% ... 52.5%
+        /* Condition "KL31 fault"  is identified by base frequency 50Hz */
+        /* and duty cycle  47.5% ... 52.5% */
 
         /* 47.5%..52.5%*: because of measuring inaccuracy it is used ]40%..60%]  */
         if (ir155_DC.dutycycle>40 && ir155_DC.dutycycle<=60) {
@@ -364,12 +364,12 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
             /* insulation unknown, sensor working good, DC measurement corrupt */
             ir155_DC.state = IR155_STATE_UNDEFINED;
         }
-        ir155_DC.resistance = 0;          // resistance unknown
+        ir155_DC.resistance = 0;          /* resistance unknown */
 
     }
     else if (ir155_DC.mode == IR155_IMDERROR_MODE) {
-        //Condition "device error" is identified by base frequency 40Hz
-        // with dutycycle  47.5% ... 52.5%
+        /* Condition "device error" is identified by base frequency 40Hz */
+        /* with dutycycle  47.5% ... 52.5% */
 
         /* 47.5%..52.5%*: because of measuring inaccuracy it is used ]40%..60%]  */
         if (ir155_DC.dutycycle>40 && ir155_DC.dutycycle<=60) {
@@ -380,7 +380,7 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
             /* insulation unknown, sensor working unknown, DC measurement corrupt */
             ir155_DC.state = IR155_STATE_UNDEFINED;
         }
-        ir155_DC.resistance = 0;          // resistance unknown
+        ir155_DC.resistance = 0;          /* resistance unknown */
         retDiag = DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_NOK, DIAG_ERR_DEVICE_ERROR, NULL);
     }
     else if (ir155_DC.mode == IR155_SHORT_KL15) {
@@ -441,6 +441,7 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
     /* Write measurement result into insulation_meas pointer */
     *resistance = ir155_DC.resistance;
     *state = ir155_DC.state;
+    *ohks_state = ir155_DC.OKHS_state;
 
 
     /* Reduce diag-counter if no error occurred */

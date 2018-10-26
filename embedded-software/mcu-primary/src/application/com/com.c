@@ -388,7 +388,7 @@ void COM_Decoder(void) {
             }
 
             /* SETTIME */
-//            if(strcmp(com_receivedbyte, "settime") == 0) {
+/*             if(strcmp(com_receivedbyte, "settime") == 0) { */
             if(com_receivedbyte[0] == 's' && com_receivedbyte[1] == 'e' && com_receivedbyte[2] == 't'
                     && com_receivedbyte[3] == 't' && com_receivedbyte[4] == 'i' && com_receivedbyte[5] == 'm'
                             && com_receivedbyte[6] == 'e') {
@@ -520,7 +520,7 @@ void COM_Decoder(void) {
 
             if (strcmp(com_receivedbyte, "watchdogtest") == 0) {
                 DEBUG_PRINTF((const uint8_t * )"WDG");
-              //  DEBUG_PRINTF((const uint8_t * )"\r\n");
+              /* DEBUG_PRINTF((const uint8_t * )"\r\n"); */
 
                 /* Clear received command */
                 memset(com_receivedbyte, 0, sizeof(com_receivedbyte));
@@ -570,7 +570,7 @@ void COM_Decoder(void) {
             switch (com_receivedbyte[0]) {
 #if BUILD_MODULE_ENABLE_CONTACTOR == 1
             case 'c':
-                ;   // added to get rid of compile error
+                ;   /* added to get rid of compile error */
                 /* Convert ascii number to int */
                 uint8_t contNumber;
                 contNumber = com_receivedbyte[2] - '0';
@@ -651,4 +651,4 @@ void COM_Decoder(void) {
     }
 
 }
-#endif //BUILD_MODULE_ENABLE_COM
+#endif /* BUILD_MODULE_ENABLE_COM */

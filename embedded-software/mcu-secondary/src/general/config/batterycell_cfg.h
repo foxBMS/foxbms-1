@@ -92,7 +92,7 @@
  * \par Default:
  * -20
 */
-#define BC_TEMPMIN_DISCHARGE_MSL      -20  //&deg;C
+#define BC_TEMPMIN_DISCHARGE_MSL      -20  /* &deg;C */
 
 /**
  * @ingroup CONFIG_BATTERYCELL

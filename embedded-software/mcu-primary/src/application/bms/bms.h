@@ -71,7 +71,7 @@ typedef enum {
 
 typedef enum {
   BMS_MODE_STARTUP_EVENT    = 0,    /*!< syscontrol startup                 */
-// BMS_MODE_EVENT_INIT      = 1,    /*!< todo                               */
+/*  BMS_MODE_EVENT_INIT      = 1,   /*!< todo                               */
   BMS_MODE_CYCLIC_EVENT     = 2,    /*!< for cyclic events                  */
   BMS_MODE_TRIGGERED_EVENT  = 3,    /*!< for triggered events               */
   BMS_MODE_ABNORMAL_EVENT   = 4,    /*!< for abnormal (error etc.) events   */
@@ -83,7 +83,7 @@ typedef enum {
  * States of the SYS state machine
  */
 typedef enum {
-    // Init-Sequence
+    /* Init-Sequence */
     BMS_STATEMACH_UNINITIALIZED             = 0,    /*!<    */
     BMS_STATEMACH_INITIALIZATION            = 1,    /*!<    */
     BMS_STATEMACH_INITIALIZED               = 2,    /*!<    */

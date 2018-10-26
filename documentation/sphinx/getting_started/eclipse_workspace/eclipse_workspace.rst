@@ -601,6 +601,13 @@ USB-connector must be used. The ``primary`` project must be select. Clicking on
 the dropdown menu of the |ECLIPSEHAMMER| button and selecting
 ``3 flash_primary`` allows flashing the |foxbms| binaries of the primary mcu.
 
+.. note::
+
+    Make sure that CAN0 connector is either disconnected or that there is no
+    traffic on CAN0 bus while flashing ``primary`` MCU. If this is not the case,
+    the internal bootloader of the controller will select a wrong boot source
+    and the flashing fails.
+
 The connection state can also be checked by watching the LEDs on the |master|
 hardware: for a running board, the green power LED is on, and the two indicator
 LEDs (green and red) are blinking alternately. If the device is connected and

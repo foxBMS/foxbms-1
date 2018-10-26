@@ -79,6 +79,7 @@ def build(bld):
                 os.path.join('..', 'driver', 'config'),
                 os.path.join('..', 'driver', 'sdram'),
 
+                os.path.join('..', 'general'),
                 os.path.join('..', 'general', 'config'),
                 os.path.join('..', 'general', 'config', bld.env.CPU_MAJOR),
                 os.path.join('..', 'general', 'includes'),

@@ -100,7 +100,7 @@ int main(void)
 #if BUILD_MODULE_ENABLE_WATCHDOG
     WDG_Init();        /* initialize and start watchdog*/
 #endif
-    BKP_SRAM_Init();    // at this point diagnosis event memory in BKP_SRAM will be available
+    BKP_SRAM_Init();    /* at this point diagnosis event memory in BKP_SRAM will be available */
     SystemClock_Config();
 
     retval = DIAG_Init(&diag_dev, RTC_getRegisterValueBKPSRAM(BKPREGISTER_BKPSRAM_DIAG_VALID));
@@ -144,8 +144,8 @@ int main(void)
         }
     }
 
-    os_boot = OS_INIT_OSSTARTKERNEL;    // start scheduler
-    vTaskStartScheduler();              // vTaskStartScheduler() should never return
+    os_boot = OS_INIT_OSSTARTKERNEL;    /* start scheduler */
+    vTaskStartScheduler();              /* vTaskStartScheduler() should never return */
 
     while(1)
     {
@@ -177,11 +177,11 @@ void BOOT_Init(void)
 
     RTC_getTime(&currTime);
     RTC_getDate(&currDate);
-    main_state.boot_rtcdate = currDate;      // set boot date and time
+    main_state.boot_rtcdate = currDate;      /* set boot date and time */
     main_state.boot_rtctime = currTime;
     RTC_WDG_RESETCOUNTER++;
 
     MCU_GetDeviceID(&mcu_unique_deviceID);
 
-    //@todo akdere: check diagnosis memory
+    /* @todo akdere: check diagnosis memory */
 }

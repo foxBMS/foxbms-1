@@ -71,6 +71,15 @@ extern uint8_t *U8ToHexascii(uint8_t *destptr, uint8_t *dataptr);
 extern uint8_t *I32ToDecascii(uint8_t *destptr, int32_t *dataptr);
 extern uint8_t *U16ToDecascii(uint8_t *destptr, uint16_t *dataptr, uint8_t minDigits);
 
+/**
+ * @brief   Converts one ASCII number to its corresponding integer value
+ *
+ * @param   number between 0-9 in ASCII format
+ *
+ * @return  uint8_t integer value
+ */
+extern uint8_t AsciiNumberToU8(uint8_t asciiChar);
+
 /*================== Function Implementations =============================*/
 
 #endif /* MISC_H_ */

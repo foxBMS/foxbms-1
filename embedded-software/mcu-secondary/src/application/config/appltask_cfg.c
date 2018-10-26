@@ -52,6 +52,7 @@
 
 /*================== Includes =============================================*/
 #include "appltask_cfg.h"
+
 #include "bms.h"
 #include "diag.h"
 #include "led.h"
@@ -68,7 +69,7 @@ OS_Task_Definition_s appl_tskdef_cyclic_100ms  = {    58,    100,  OS_PRIORITY_L
 /*================== Function Implementations =============================*/
 void APPL_Cyclic_1ms(void) {
 
-    DIAG_SysMonNotify(DIAG_SYSMON_APPL_CYCLIC_1ms, 0);        // task is running, state = ok
+    DIAG_SysMonNotify(DIAG_SYSMON_APPL_CYCLIC_1ms, 0);        /* task is running, state = ok */
 
     /* User specific implementations:   */
     /*   ...                            */
@@ -78,7 +79,7 @@ void APPL_Cyclic_1ms(void) {
 
 void APPL_Cyclic_10ms(void) {
 
-    DIAG_SysMonNotify(DIAG_SYSMON_APPL_CYCLIC_10ms, 0);        // task is running, state = ok
+    DIAG_SysMonNotify(DIAG_SYSMON_APPL_CYCLIC_10ms, 0);        /* task is running, state = ok */
 
     /* User specific implementations:   */
     /*   ...                            */

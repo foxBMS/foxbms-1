@@ -249,7 +249,7 @@ static void BAL_Activate_Balancing_History(void) {
                 difference = (BAL_STATEMACH_BALANCINGTIME_100MS/10) * (uint32_t)(cellBalancingCurrent);
                 bal_state.active = TRUE;
                 bal_balancing.enable_balancing = 1;
-                //we are working with unsigned integers
+                /* we are working with unsigned integers */
                 if (difference>bal_balancing.delta_charge[i]){
                     bal_balancing.delta_charge[i] = 0;
                 } else {
@@ -290,7 +290,7 @@ static uint8_t BAL_CheckReEntrance(void)
         bal_state.triggerentry++;
     }
     else
-        retval = 0xFF;    // multiple calls of function
+        retval = 0xFF;    /* multiple calls of function */
     taskEXIT_CRITICAL();
 
     return (retval);
@@ -412,14 +412,14 @@ static BAL_RETURN_TYPE_e BAL_CheckStateRequest(BAL_STATE_REQUEST_e statereq) {
     }
 
     if (bal_state.statereq == BAL_STATE_NO_REQUEST){
-        //init only allowed from the uninitialized state
+        /* init only allowed from the uninitialized state */
         if (statereq == BAL_STATE_INIT_REQUEST) {
             if (bal_state.state==BAL_STATEMACH_UNINITIALIZED) {
                 return BAL_OK;
             } else {
                 return BAL_ALREADY_INITIALIZED;
             }
-        //request to forbid balancing
+        /* request to forbid balancing */
         } else {
             return BAL_ILLEGAL_REQUEST;
         }
@@ -449,7 +449,7 @@ void BAL_Trigger(void)
         bal_state.rest_timer--;
     }
 
-    // Check re-entrance of function
+    /* Check re-entrance of function */
     if (BAL_CheckReEntrance()) {
         return;
     }
@@ -457,7 +457,7 @@ void BAL_Trigger(void)
     if(bal_state.timer) {
         if(--bal_state.timer) {
             bal_state.triggerentry--;
-            return;    // handle state machine only if timer has elapsed
+            return;    /* handle state machine only if timer has elapsed */
         }
     }
 
@@ -475,7 +475,7 @@ void BAL_Trigger(void)
 
         /****************************UNINITIALIZED***********************************/
         case BAL_STATEMACH_UNINITIALIZED:
-            // waiting for Initialization Request
+            /* waiting for Initialization Request */
             statereq = BAL_TransferStateRequest();
             if(statereq == BAL_STATE_INIT_REQUEST) {
                 BAL_SAVELASTSTATES();
@@ -483,9 +483,9 @@ void BAL_Trigger(void)
                 bal_state.state = BAL_STATEMACH_INITIALIZATION;
                 bal_state.substate = BAL_ENTRY;
             } else if(statereq == BAL_STATE_NO_REQUEST) {
-                // no actual request pending //
+                /* no actual request pending */
             } else{
-                bal_state.ErrRequestCounter++;   // illegal request pending
+                bal_state.ErrRequestCounter++;   /* illegal request pending */
             }
             break;
 
@@ -574,7 +574,7 @@ void BAL_Trigger(void)
                     break;
                 } else if (bal_state.substate == BAL_ACTIVATE_BALANCING) {
                     DB_ReadBlock(&bal_minmax,DATA_BLOCK_ID_MINMAX);
-                    //do not balance under a certain voltage level
+                    /* do not balance under a certain voltage level */
                     if (bal_minmax.voltage_min <= BAL_LOWER_VOLTAGE_LIMIT_MV ||
                         bal_minmax.temperature_max >= BAL_UPPER_TEMPERATURE_LIMIT_DEG ||
                         BAL_Check_Imbalances() == FALSE ||
@@ -594,7 +594,7 @@ void BAL_Trigger(void)
 
                 break;
 
-    #else //voltage-based balancing
+    #else /* voltage-based balancing */
         case BAL_STATEMACH_CHECK_BALANCING:
             BAL_SAVELASTSTATES();
 
@@ -659,7 +659,7 @@ void BAL_Trigger(void)
                 break;
             } else if (bal_state.substate == BAL_CHECK_LOWEST_VOLTAGE) {
                 DB_ReadBlock(&bal_minmax, DATA_BLOCK_ID_MINMAX);
-                // stop balacing if minimum voltage is below minimum threshold or maximum cell temperature breached upper temperature limit
+                /* stop balacing if minimum voltage is below minimum threshold or maximum cell temperature breached upper temperature limit */
                 if (bal_minmax.voltage_min <= BAL_LOWER_VOLTAGE_LIMIT_MV ||
                         bal_minmax.temperature_max >= BAL_UPPER_TEMPERATURE_LIMIT_DEG) {
                     if (bal_state.active == TRUE) {
@@ -709,12 +709,12 @@ void BAL_Trigger(void)
             }
             break;
 
-    #endif //endif balancing type
+    #endif /* endif balancing type */
 
         default:
             break;
 
-    } // end switch(bal_state.state)
+    } /*  end switch(bal_state.state) */
 
     bal_state.triggerentry--;
 

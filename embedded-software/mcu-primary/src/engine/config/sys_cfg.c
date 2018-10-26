@@ -52,8 +52,30 @@
 /*================== Includes =============================================*/
 #include "sys_cfg.h"
 
+#include "can.h"
+#include "misc.h"
+#include "version.h"
+
 /*================== Macros and Definitions ===============================*/
 
 /*================== Function Prototypes ==================================*/
 
 /*================== Function Implementations =============================*/
+void SYS_SendBootMessage(uint8_t directTransmission) {
+
+    /* Send CAN boot successful message */
+    uint8_t data[8];
+    data[0] = AsciiNumberToU8(ver_sw_validation.Version[0]);          /* SW-Version number: major */
+    data[1] = AsciiNumberToU8(ver_sw_validation.Version[2]);          /* SW-Version number: minor */
+    data[2] = AsciiNumberToU8(ver_sw_validation.Version[4]);          /* SW-Version number: bugfix */
+    data[3] = 0;
+    data[4] = 0xFF & ver_sw_validation.Checksum_u32;
+    data[5] = 0xFF & (ver_sw_validation.Checksum_u32 >> 8);
+    data[6] = 0xFF & (ver_sw_validation.Checksum_u32 >> 16);
+    data[7] = 0xFF & (ver_sw_validation.Checksum_u32 >> 24);
+    if (directTransmission == 0) {
+        CAN_Send(CAN_NODE0, 0x101, &data[0], 8, 0);
+    } else {
+        CAN_TxMsg(CAN_NODE0, 0x101, &data[0], 8, 0);
+    }
+}

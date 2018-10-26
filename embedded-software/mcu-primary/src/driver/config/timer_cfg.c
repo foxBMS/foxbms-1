@@ -68,17 +68,17 @@
 
 /*================== Function Implementations =============================*/
 
-// Timer-Handle Configuration
+/* Timer-Handle Configuration */
 
 TIM_HandleTypeDef htim4 = {
-    // PWM Output
+    /* PWM Output */
     .Instance = TIM4,
     .Init.CounterMode = TIM_COUNTERMODE_UP,
     .Init.ClockDivision = TIM_CLOCKDIVISION_DIV1,
 };
 
 TIM_HandleTypeDef htim9 = {
-    // PWM IC timer
+    /* PWM IC timer */
     .Instance = TIM9,
     .Init.CounterMode = TIM_COUNTERMODE_UP,
     .Init.Period = 0xFFFF,

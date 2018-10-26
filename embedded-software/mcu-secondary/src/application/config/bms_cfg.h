@@ -56,11 +56,11 @@
 #include "general.h"
 
 /*================== Macros and Definitions ===============================*/
-#define BMS_ECU_GOTOSLEEP()         // CPU_GoToSleep(60)/* EcuMode_GoToSleep();         //TODO Review: dummy macro with no effect
-#define BMS_STARTAWAKESELFCHECK()   // Start SelfCheck in case of awaking from sleep    //TODO Review: dummy macro with no effect
-#define BMS_STARTPOWERONSELFCHECK() // Start SelfCheck in case of starting by power on  //TODO Review: dummy macro with no effect
+#define BMS_ECU_GOTOSLEEP()          /* CPU_GoToSleep(60)/* EcuMode_GoToSleep();         TODO Review: dummy macro with no effect */
+#define BMS_STARTAWAKESELFCHECK()    /* Start SelfCheck in case of awaking from sleep    TODO Review: dummy macro with no effect */
+#define BMS_STARTPOWERONSELFCHECK()  /* Start SelfCheck in case of starting by power on  TODO Review: dummy macro with no effect */
 
-// #define BMS_RESETSLEEPFLAG() RTC_IF_ResetSleepFlag () //TODO Review: function RTC_IF_ResetSleepFlag not existing
+/* #define BMS_RESETSLEEPFLAG() RTC_IF_ResetSleepFlag () TODO Review: function RTC_IF_ResetSleepFlag not existing */
 
 /**
  * @ingroup CONFIG_BMS
@@ -96,7 +96,7 @@
  * \par Default:
  * 1
 */
-//#define BMS_TEST_CELL_SOF_LIMITS  TRUE
+/* #define BMS_TEST_CELL_SOF_LIMITS  TRUE */
 #define BMS_TEST_CELL_SOF_LIMITS FALSE
 
 
@@ -148,40 +148,23 @@
 /**
  * BMS statemachine short time definition in ms
  */
-
-#define BMS_STATEMACH_SHORTTIME_MS     1
+#define BMS_STATEMACH_SHORTTIME_MS 1
 
 /**
  * BMS statemachine medium time definition in ms
  */
-
-#define BMS_STATEMACH_MEDIUMTIME_MS     5
+#define BMS_STATEMACH_MEDIUMTIME_MS 5
 
 /**
  * BMS statemachine long time definition in ms
  */
-
-#define BMS_STATEMACH_LONGTIME_MS     100
+#define BMS_STATEMACH_LONGTIME_MS 100
 
 /**
  * BMS statemachine very long time definition in ms
  */
+#define BMS_STATEMACH_VERYLONGTIME_MS 2000
 
-#define BMS_STATEMACH_VERYLONGTIME_MS     2000
-
-
-/**
- * @ingroup CONFIG_BMS
- * \par Type:
- * int
- * \par Default:
- * 10
- * \par Range:
- * [5,15]
- * \par Unit:
- * 10*ms
-*/
-#define BMS_SELFPOWERONCHECK_TIMEOUT    10 // 100ms
 
 /**
  * @ingroup CONFIG_BMS
@@ -194,7 +177,20 @@
  * \par Unit:
  * 10*ms
 */
-#define BMS_SELFAWAKECHECK_TIMEOUT      10 // 100ms
+#define BMS_SELFPOWERONCHECK_TIMEOUT    10  /* 100ms */
+
+/**
+ * @ingroup CONFIG_BMS
+ * \par Type:
+ * int
+ * \par Default:
+ * 10
+ * \par Range:
+ * [5,15]
+ * \par Unit:
+ * 10*ms
+*/
+#define BMS_SELFAWAKECHECK_TIMEOUT      10  /* 100ms */
 
 
 /**
@@ -208,89 +204,11 @@
  * \par Unit:
  * 10*ms
 */
-#define BMS_IDLE_TIMEOUT                500 // 5s timeout to go to sleep or power off in idle state
+#define BMS_IDLE_TIMEOUT                500  /* 5s timeout to go to sleep or power off in idle state */
 
-/**
- * @ingroup CONFIG_BMS
- * \par Type:
- * int
- * \par Default:
- * 10
- * \par Range:
- * [5,15]
- * \par Unit:
- * V
-*/
-#define BMS_PRECHARGE_VOLTAGE_THRESHOLD 10 // V
-
-/**
- * @ingroup CONFIG_BMS
- * \par Type:
- * int
- * \par Default:
- * 10
- * \par Range:
- * [5,15]
- * \par Unit:
- * mA
-*/
-#define BMS_PRECHARGE_CURRENT_THRESHOLD 10 // mA
-
-/**
- * @ingroup CONFIG_BMS
- * \par Type:
- * int
- * \par Default:
- * 600
- * \par Range:
- * [500,700]
- * \par Unit:
- * 10*ms
-*/
-#define BMS_PRECHARGE_TIMEOUT 600 // 6s
-
-/**
- * @ingroup CONFIG_BMS
- * \par Type:
- * int
- * \par Default:
- * 100
- * \par Range:
- * [50,150]
- * \par Unit:
- * 10*ms
-*/
-#define BMS_TIMER_MAINMINUS 100 // 1s
-
-/**
- * @ingroup CONFIG_BMS
- * \par Type:
- * int
- * \par Default:
- * 200
- * \par Unit:
- * 10*ms
- * \par Range:
- * [150,250]
-*/
-#define BMS_TIMER_MAINPRECHARGE 200 // 2s
-
-/**
- * @ingroup CONFIG_BMS
- * \par Type:
- * int
- * \par Default:
- * 50
- * \par Range:
- * [40,60]
- * \par Unit:
- * 10*ms
-*/
-#define BMS_TIMER_MAINPLUS 50 // 500ms
-
-#define BMS_GETSELFCHECK_STATE()            BMS_CHECK_OK            // function could return: BMS_CHECK_NOT_OK or OK BMS_CHECK_BUSY //TODO Review: dummy
-#define BMS_GETPOWERONSELFCHECK_STATE()     BMS_CHECK_OK            // function could return: BMS_CHECK_NOT_OK or OK BMS_CHECK_BUSY //TODO Review: dummy
-#define BMS_CHECKPRECHARGE()                BMS_CheckPrecharge()    // DIAG_CheckPrecharge()
+#define BMS_GETSELFCHECK_STATE()            BMS_CHECK_OK            /* function could return: BMS_CHECK_NOT_OK or OK BMS_CHECK_BUSY */
+#define BMS_GETPOWERONSELFCHECK_STATE()     BMS_CHECK_OK            /* function could return: BMS_CHECK_NOT_OK or OK BMS_CHECK_BUSY */
+#define BMS_CHECKPRECHARGE()                BMS_CheckPrecharge()    /* DIAG_CheckPrecharge() */
 
 
 /*================== Function Prototypes ==================================*/

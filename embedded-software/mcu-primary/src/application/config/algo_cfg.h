@@ -72,8 +72,8 @@
  * \par Default:
  * 2
 */
-//#define ALGO_TICK_MS 1
-//#define ALGO_TICK_MS 10
+/* #define ALGO_TICK_MS 1 */
+/* #define ALGO_TICK_MS 10 */
 #define ALGO_TICK_MS 100
 
 

@@ -70,7 +70,7 @@
  * States of the BAL state machine
  */
 typedef enum {
-    // Init-Sequence
+    /* Init-Sequence */
     BAL_STATEMACH_UNINITIALIZED             = 0,    /*!<    */
     BAL_STATEMACH_INITIALIZATION            = 1,    /*!<    */
     BAL_STATEMACH_INITIALIZED               = 2,    /*!<    */

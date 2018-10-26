@@ -102,8 +102,8 @@
  */
 
 #define IO_PACKAGE_LQFP100
-//#define IO_PACKAGE_LQFP144
-//#define IO_PACKAGE_LQFP176
+/* #define IO_PACKAGE_LQFP144 */
+/* #define IO_PACKAGE_LQFP176 */
 
 /*================== Constant and Variable Definitions ====================*/
 #if defined(IO_PACKAGE_LQFP100) || defined(IO_PACKAGE_LQFP144) || defined(IO_PACKAGE_LQFP176)
@@ -195,7 +195,7 @@ typedef enum {
     IO_PE_13    =   77,     /*!< Port E, Pin 13 */
     IO_PE_14    =   78,     /*!< Port E, Pin 14 */
     IO_PE_15    =   79      /*!< Port E, Pin 15 */
-#endif // IO_PACKAGE_LQFP100
+#endif /* IO_PACKAGE_LQFP100 */
 
 #if defined(IO_PACKAGE_LQFP144) || defined(IO_PACKAGE_LQFP176)
     ,
@@ -235,7 +235,7 @@ typedef enum {
 
     IO_PH_0     =   112,    /*!< Port H, Pin 0  */
     IO_PH_1     =   113     /*!< Port H, Pin 1  */
-#endif // IO_PACKAGE_LQFP144
+#endif /* IO_PACKAGE_LQFP144 */
 
 #if defined(IO_PACKAGE_LQFP176)
     ,
@@ -266,7 +266,7 @@ typedef enum {
     IO_PI_9     =   137,    /*!< Port I, Pin 9  */
     IO_PI_10    =   138,    /*!< Port I, Pin 10 */
     IO_PI_11    =   139     /*!< Port I, Pin 11 */
-#endif // IO_PACKAGE_LQFP176
+#endif /* IO_PACKAGE_LQFP176 */
 } IO_PORTS_e;
 
 /*================== Function Prototypes ==================================*/

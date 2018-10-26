@@ -87,7 +87,7 @@ CAN_RX_BUFFER_s can0_rxbuffer = {
 #endif
 
 #if CAN0_BUFFER_BYPASS_NUMBER_OF_IDs > 0
-uint8_t can0_fastLinkIndex[CAN0_BUFFER_BYPASS_NUMBER_OF_IDs];   // Link Table for bufferBypassing
+uint8_t can0_fastLinkIndex[CAN0_BUFFER_BYPASS_NUMBER_OF_IDs];   /* Link Table for bufferBypassing */
 #endif
 
 CAN_ERROR_s CAN0_errorStruct = {
@@ -115,7 +115,7 @@ CAN_RX_BUFFER_s can1_rxbuffer = {
 #endif
 
 #if CAN1_BUFFER_BYPASS_NUMBER_OF_IDs > 0
-uint8_t can1_fastLinkIndex[CAN1_BUFFER_BYPASS_NUMBER_OF_IDs];   // Link Table for bufferBypassing
+uint8_t can1_fastLinkIndex[CAN1_BUFFER_BYPASS_NUMBER_OF_IDs];   /* Link Table for bufferBypassing */
 #endif
 
 CAN_ERROR_s CAN1_errorStruct = {
@@ -134,16 +134,16 @@ uint8_t fastLinkBuffer[8]; /* data buffer for bypassed message, therefore size =
  *************************************************************/
 
 CAN_FilterConfTypeDef sFilterConfig = {
-        // No need to insert here something
-        .FilterActivation = ENABLE,     // enable the filter
+        /* No need to insert here something */
+        .FilterActivation = ENABLE,     /* enable the filter */
 };
 
 CanRxMsgTypeDef sReceiveStruct0 = {
-        // No need to insert here something
+        /* No need to insert here something */
 };
 
 CanRxMsgTypeDef sReceiveStruct1 = {
-        // No need to insert here something
+        /* No need to insert here something */
 };
 
 /*================== Function Prototypes ==================================*/
@@ -187,7 +187,7 @@ uint32_t CAN_Init(void) {
         /* Error intializing handle -> set error bit */
         retval |= STD_ERR_BIT_1;
     }
-    hcan0.pRxMsg = &sReceiveStruct0;    // default message for handle
+    hcan0.pRxMsg = &sReceiveStruct0;    /* default message for handle */
 
     /* Configure CAN0 hardware filter */
     retval |= CAN_InitFilter(&hcan0, &can0_RxMsgs[0], can_CAN0_rx_length);
@@ -227,7 +227,7 @@ uint32_t CAN_Init(void) {
         /* Error intializing handle -> set error bit */
         retval |= STD_ERR_BIT_11;
     }
-    hcan1.pRxMsg = &sReceiveStruct1;    // default message for handle
+    hcan1.pRxMsg = &sReceiveStruct1;    /* default message for handle */
 
     /* Configure CAN1 hardware filter */
     retval |= CAN_InitFilter(&hcan1, &can1_RxMsgs[0], can_CAN1_rx_length);
@@ -270,60 +270,60 @@ static uint32_t CAN_InitFilter(CAN_HandleTypeDef* ptrHcan, CAN_MSG_RX_TYPE_s* ca
      * [5] - Mask mode 16bit routed on FIFO1                        *
      * [6] - Mask mode 32bit                                        */
     uint8_t numberOfDifferentIDs[7] = { 0, 0, 0, 0, 0, 0, 0 };
-    static uint8_t filterNumber = 0;   // Number of the filter to be initialized
+    static uint8_t filterNumber = 0;   /* Number of the filter to be initialized */
     uint32_t retval = 0;
 
     /* Calculate number of needed filter banks */
     uint8_t numberNeededFilters = CAN_NumberOfNeededFilters(can_RxMsgs, &numberOfDifferentIDs[0], &retval);
 
     if (numberNeededFilters <= CAN_NUMBER_OF_FILTERBANKS) {
-        uint8_t j = 0;  // Counts the number of initialized instances per case
-        uint8_t posRxMsgs = 0;  // Iterator for can_RxMsgs[]
-        uint8_t numberRegistersUsed = 0;  // Counts how many register space is already used in each filter bank (max. 64bit)
-        uint8_t caseID = 0;  // indicates the actual filter mode that will be initialized
+        uint8_t j = 0;  /* Counts the number of initialized instances per case */
+        uint8_t posRxMsgs = 0;  /* Iterator for can_RxMsgs[] */
+        uint8_t numberRegistersUsed = 0;  /* Counts how many register space is already used in each filter bank (max. 64bit) */
+        uint8_t caseID = 0;  /* indicates the actual filter mode that will be initialized */
 
         if (ptrHcan->Instance  ==  CAN2) {
-            // Set start slave bank filter
+            /* Set start slave bank filter */
             sFilterConfig.BankNumber = filterNumber;
         }
         for (caseID = 0; caseID < 2; caseID++) {
-            // ID List mode 16bit routed on FIFO0 or FIFO1
+            /* ID List mode 16bit routed on FIFO0 or FIFO1 */
 
             if (numberOfDifferentIDs[caseID] > 0) {
                 j = 0;
                 while (j < numberOfDifferentIDs[caseID]) {
-                    // Until all IDs in that filter case are treated
+                    /* Until all IDs in that filter case are treated */
 
-                    posRxMsgs = CAN_GetNextID(can_RxMsgs, numberOfRxMsgs, posRxMsgs, caseID);  // Get array position of next ID
+                    posRxMsgs = CAN_GetNextID(can_RxMsgs, numberOfRxMsgs, posRxMsgs, caseID);  /*  Get array position of next ID */
 
                     switch (numberRegistersUsed) {
-                        case 0:  // 1st ID per filter bank
+                        case 0:  /* 1st ID per filter bank */
                             sFilterConfig.FilterIdHigh = ((can_RxMsgs[posRxMsgs].ID << 5)
                                     | can_RxMsgs[posRxMsgs].RTR << 4);
                             j++;
                             break;
 
-                        case 1:  // 2nd ID
+                        case 1:  /* 2nd ID */
                             sFilterConfig.FilterIdLow = ((can_RxMsgs[posRxMsgs].ID << 5)
                                     | can_RxMsgs[posRxMsgs].RTR << 4);
                             j++;
                             break;
 
-                        case 2:  // 3rd ID
+                        case 2:  /* 3rd ID */
                             sFilterConfig.FilterMaskIdHigh = ((can_RxMsgs[posRxMsgs].ID << 5)
                                     | can_RxMsgs[posRxMsgs].RTR << 4);
                             j++;
                             break;
 
-                        case 3:  // 4th ID
+                        case 3:  /* 4th ID */
                             sFilterConfig.FilterMaskIdLow = ((can_RxMsgs[posRxMsgs].ID << 5)
                                     | can_RxMsgs[posRxMsgs].RTR << 4);
                             j++;
                             break;
                     }
-                    numberRegistersUsed = j % 4;    // space for 4 IDs a 16 bit in one filter bank
+                    numberRegistersUsed = j % 4;    /* space for 4 IDs a 16 bit in one filter bank */
                     if ((numberRegistersUsed  ==  0 && j > 1) || j  ==  numberOfDifferentIDs[caseID]) {
-                        // all registers in filter bank used OR no more IDs in that case
+                        /* all registers in filter bank used OR no more IDs in that case */
                         sFilterConfig.FilterMode = CAN_FILTERMODE_IDLIST;
                         sFilterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
                         if (caseID  ==  ID_16BIT_FIFO0) {
@@ -332,49 +332,49 @@ static uint32_t CAN_InitFilter(CAN_HandleTypeDef* ptrHcan, CAN_MSG_RX_TYPE_s* ca
                             sFilterConfig.FilterFIFOAssignment = CAN_FIFO1;
                         }
                         sFilterConfig.FilterNumber = filterNumber;
-                        HAL_CAN_ConfigFilter(ptrHcan, &sFilterConfig);    // initialize filter bank
-                        filterNumber++;     // increment filter number
+                        HAL_CAN_ConfigFilter(ptrHcan, &sFilterConfig);    /* initialize filter bank */
+                        filterNumber++;     /* increment filter number */
                     }
-                    posRxMsgs++;    // increment array position to find next valid ID
+                    posRxMsgs++;    /* increment array position to find next valid ID */
                 }
-                posRxMsgs = 0;      // reset variables for next case
+                posRxMsgs = 0;      /* reset variables for next case */
                 numberRegistersUsed = 0;
             }
         }
         for (caseID = 2; caseID < 6; caseID++) {
-            // ID List mode 32bit routed on FIFO0 or FIFO1; Mask mode 16bit routed on FIFO0 or FIFO1
+            /* ID List mode 32bit routed on FIFO0 or FIFO1; Mask mode 16bit routed on FIFO0 or FIFO1 */
             j = 0;
             if (numberOfDifferentIDs[caseID] > 0) {
                 while (j < numberOfDifferentIDs[caseID]) {
-                    // Until all IDs in that filter case are treated
+                    /* Until all IDs in that filter case are treated */
 
-                    posRxMsgs = CAN_GetNextID(can_RxMsgs, numberOfRxMsgs, posRxMsgs, caseID);  // Get array position of next ID
+                    posRxMsgs = CAN_GetNextID(can_RxMsgs, numberOfRxMsgs, posRxMsgs, caseID);  /*  Get array position of next ID */
 
                     switch (numberRegistersUsed) {
-                        case 0:  // first 32bit per filter bank
-                            if (caseID  ==  ID_32BIT_FIFO0 || caseID  ==  ID_32BIT_FIFO1) {   // list mode 32bit
+                        case 0:  /* first 32bit per filter bank */
+                            if (caseID  ==  ID_32BIT_FIFO0 || caseID  ==  ID_32BIT_FIFO1) {   /* list mode 32bit */
 
-                                sFilterConfig.FilterIdHigh = ((can_RxMsgs[posRxMsgs].ID << 3) >> 16);  // 1 << 2 is for setting IDE bit to receive extended identifiers
+                                sFilterConfig.FilterIdHigh = ((can_RxMsgs[posRxMsgs].ID << 3) >> 16);  /* 1 << 2 is for setting IDE bit to receive extended identifiers */
                                 sFilterConfig.FilterIdLow = (uint16_t)((can_RxMsgs[posRxMsgs].ID << 3) | 1 << 2
                                         | can_RxMsgs[posRxMsgs].RTR << 1);
-                            } else if (caseID  ==  MSK_16BIT_FIFO0 || caseID  ==  MSK_16BIT_FIFO1) {  // mask mode 16bit
+                            } else if (caseID  ==  MSK_16BIT_FIFO0 || caseID  ==  MSK_16BIT_FIFO1) {  /* mask mode 16bit */
 
                                 sFilterConfig.FilterIdHigh = ((can_RxMsgs[posRxMsgs].ID << 5)
                                         | can_RxMsgs[posRxMsgs].RTR << 4);
                                 sFilterConfig.FilterMaskIdHigh = can_RxMsgs[posRxMsgs].mask;
-                                sFilterConfig.FilterIdLow = 0x0000;      // set second register to 0xFFFF,
-                                sFilterConfig.FilterMaskIdLow = 0xFFFF;  // otherwise all messages would be received
+                                sFilterConfig.FilterIdLow = 0x0000;      /* set second register to 0xFFFF, */
+                                sFilterConfig.FilterMaskIdLow = 0xFFFF;  /* otherwise all messages would be received */
                             }
                             j++;
                             break;
 
-                        case 1:  // second 32bit per filter bank
-                            if (caseID  ==  ID_32BIT_FIFO0 || caseID  ==  ID_32BIT_FIFO1) {   // list mode 32bit
+                        case 1:  /* second 32bit per filter bank */
+                            if (caseID  ==  ID_32BIT_FIFO0 || caseID  ==  ID_32BIT_FIFO1) {   /* list mode 32bit */
 
-                                sFilterConfig.FilterMaskIdHigh = ((can_RxMsgs[posRxMsgs].ID << 3) >> 16);  // 1 << 2 is for setting IDE bit to receive extended identifiers
+                                sFilterConfig.FilterMaskIdHigh = ((can_RxMsgs[posRxMsgs].ID << 3) >> 16);  /*  1 << 2 is for setting IDE bit to receive extended identifiers */
                                 sFilterConfig.FilterMaskIdLow = (uint16_t)((can_RxMsgs[posRxMsgs].ID << 3) | 1 << 2
                                         | can_RxMsgs[posRxMsgs].RTR << 1);
-                            } else if (caseID  ==  MSK_16BIT_FIFO0 || caseID  ==  MSK_16BIT_FIFO1) {  // mask mode 16bit
+                            } else if (caseID  ==  MSK_16BIT_FIFO0 || caseID  ==  MSK_16BIT_FIFO1) {  /* mask mode 16bit */
 
                                 sFilterConfig.FilterIdLow = ((can_RxMsgs[posRxMsgs].ID << 5)
                                         | can_RxMsgs[posRxMsgs].RTR << 4);
@@ -383,9 +383,9 @@ static uint32_t CAN_InitFilter(CAN_HandleTypeDef* ptrHcan, CAN_MSG_RX_TYPE_s* ca
                             j++;
                             break;
                     }
-                    numberRegistersUsed = j % 2;    // Space for two IDs a 32bit or two mask a 16bit
+                    numberRegistersUsed = j % 2;    /* Space for two IDs a 32bit or two mask a 16bit */
                     if ((numberRegistersUsed  ==  0 && j > 1) || j  ==  numberOfDifferentIDs[caseID]) {
-                        // all registers in filter bank used OR no more IDs in that case
+                        /* all registers in filter bank used OR no more IDs in that case */
                         if (caseID  ==  ID_32BIT_FIFO0 || caseID  ==  ID_32BIT_FIFO1) {
                             sFilterConfig.FilterMode = CAN_FILTERMODE_IDLIST;
                             sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
@@ -402,26 +402,26 @@ static uint32_t CAN_InitFilter(CAN_HandleTypeDef* ptrHcan, CAN_MSG_RX_TYPE_s* ca
                                 sFilterConfig.FilterFIFOAssignment = CAN_FIFO1;
                         }
                         sFilterConfig.FilterNumber = filterNumber;
-                        HAL_CAN_ConfigFilter(ptrHcan, &sFilterConfig);    // initialize filter bank
-                        filterNumber++;     // increment filter number
+                        HAL_CAN_ConfigFilter(ptrHcan, &sFilterConfig);    /* initialize filter bank */
+                        filterNumber++;     /* increment filter number */
                     }
-                    posRxMsgs++;    // increment array position to find next valid ID
+                    posRxMsgs++;    /* increment array position to find next valid ID */
                 }
-                posRxMsgs = 0;      // reset variables for next case
+                posRxMsgs = 0;      /* reset variables for next case */
                 numberRegistersUsed = 0;
             }
         }
         j = 0;
         if (numberOfDifferentIDs[MSK_32BIT] > 0) {
-            // Mask mode 32bit
+            /* Mask mode 32bit */
 
-            while (j < numberOfDifferentIDs[MSK_32BIT]) {    // Get array position of next ID
-                // Until all IDs in that filter case are treated
+            while (j < numberOfDifferentIDs[MSK_32BIT]) {    /*  Get array position of next ID */
+                /* Until all IDs in that filter case are treated */
                 posRxMsgs = CAN_GetNextID(can_RxMsgs, numberOfRxMsgs, posRxMsgs, MSK_32BIT);
 
                 sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
                 sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
-                sFilterConfig.FilterIdHigh = ((can_RxMsgs[posRxMsgs].ID << 3) >> 16);  // 1 << 2 is for setting IDE bit to receive extended identifiers
+                sFilterConfig.FilterIdHigh = ((can_RxMsgs[posRxMsgs].ID << 3) >> 16);  /* 1 << 2 is for setting IDE bit to receive extended identifiers */
                 sFilterConfig.FilterIdLow = (uint16_t)((can_RxMsgs[posRxMsgs].ID << 3) | 1 << 2
                         | can_RxMsgs[posRxMsgs].RTR << 1);
                 sFilterConfig.FilterMaskIdHigh = can_RxMsgs[posRxMsgs].mask >> 16;
@@ -435,13 +435,13 @@ static uint32_t CAN_InitFilter(CAN_HandleTypeDef* ptrHcan, CAN_MSG_RX_TYPE_s* ca
             }
         }
     } else {
-        // Too many filterbanks needed! Check the value of CAN_NUMBER_OF_FILTERBANKS
-        // If correct, try to reduce the IDs through masks or optimize used filter bank space.
-        // Number of different filter cases can be evaluated in numberOfDifferentIDs[]. One
-        // filter bank can filter as many messages as followed:
-        // 4 IDs in list mode 16bit
-        // 2 IDs in list mode 32bit and mask mode 16bit
-        // 1 ID in 32bit mask mode
+        /* Too many filterbanks needed! Check the value of CAN_NUMBER_OF_FILTERBANKS */
+        /* If correct, try to reduce the IDs through masks or optimize used filter bank space. */
+        /* Number of different filter cases can be evaluated in numberOfDifferentIDs[]. One */
+        /* filter bank can filter as many messages as followed: */
+        /* 4 IDs in list mode 16bit */
+        /* 2 IDs in list mode 32bit and mask mode 16bit */
+        /* 1 ID in 32bit mask mode */
         retval |= STD_ERR_BIT_6;
     }
     return retval;
@@ -456,7 +456,7 @@ static uint32_t CAN_InitFilter(CAN_HandleTypeDef* ptrHcan, CAN_MSG_RX_TYPE_s* ca
  * @retval number of needed filters
  */
 static uint8_t CAN_NumberOfNeededFilters(CAN_MSG_RX_TYPE_s* can_RxMsgs, uint8_t* numberOfDifferentIDs, uint32_t* error) {
-    static uint8_t retVal = 0;      // static so save the number of filters from CAN0 and add to the ones from CAN1
+    static uint8_t retVal = 0;      /* static so save the number of filters from CAN0 and add to the ones from CAN1 */
     uint16_t can_rx_length = 0;
 
     if (can_RxMsgs  ==  &can0_RxMsgs[0]) {
@@ -475,9 +475,9 @@ static uint8_t CAN_NumberOfNeededFilters(CAN_MSG_RX_TYPE_s* can_RxMsgs, uint8_t*
             /* Set buffer bypass IDs link table */
             for (int k = 0; k < CAN0_BUFFER_BYPASS_NUMBER_OF_IDs; k++) {
                 if (can_RxMsgs[i].ID  ==  can0_bufferBypass_RxMsgs[k]) {
-                    // bypass ID  ==  ID in message receive struct
+                    /* bypass ID  ==  ID in message receive struct */
 
-                    can0_fastLinkIndex[k] = i;   // set for can_bufferBypass_RxMsgs[k] link to array index
+                    can0_fastLinkIndex[k] = i;   /* set for can_bufferBypass_RxMsgs[k] link to array index */
                     break;
                 }
             }
@@ -489,9 +489,9 @@ static uint8_t CAN_NumberOfNeededFilters(CAN_MSG_RX_TYPE_s* can_RxMsgs, uint8_t*
             /* Set buffer bypass IDs link table */
             for (int k = 0; k < CAN1_BUFFER_BYPASS_NUMBER_OF_IDs; k++) {
                 if (can1_RxMsgs[i].ID  ==  can1_bufferBypass_RxMsgs[k]) {
-                    // bypass ID  ==  ID in message receive struct
+                    /* bypass ID  ==  ID in message receive struct */
 
-                    can1_fastLinkIndex[k] = i;   // set for can1_bufferBypass_RxMsgs[k] link to array index
+                    can1_fastLinkIndex[k] = i;   /* set for can1_bufferBypass_RxMsgs[k] link to array index */
                     break;
                 }
             }
@@ -499,7 +499,7 @@ static uint8_t CAN_NumberOfNeededFilters(CAN_MSG_RX_TYPE_s* can_RxMsgs, uint8_t*
 #endif
         if (can_RxMsgs[i].mask  ==  0 && IS_CAN_STDID(can_RxMsgs[i].ID)) {
 
-            // ID List mode 16bit
+            /* ID List mode 16bit */
 
             if (can_RxMsgs[i].fifo  ==  CAN_FIFO0) {
                 numberOfDifferentIDs[ID_16BIT_FIFO0]++;
@@ -510,7 +510,7 @@ static uint8_t CAN_NumberOfNeededFilters(CAN_MSG_RX_TYPE_s* can_RxMsgs, uint8_t*
                 *error |= STD_ERR_BIT_2;
             }
         } else if (can_RxMsgs[i].mask  ==  0 && IS_CAN_EXTID(can_RxMsgs[i].ID)) {
-            // ID List mode 32bit
+            /* ID List mode 32bit */
 
             if (can_RxMsgs[i].fifo  ==  CAN_FIFO0) {
                 numberOfDifferentIDs[ID_32BIT_FIFO0]++;
@@ -521,7 +521,7 @@ static uint8_t CAN_NumberOfNeededFilters(CAN_MSG_RX_TYPE_s* can_RxMsgs, uint8_t*
                 *error |= STD_ERR_BIT_3;
             }
         } else if (can_RxMsgs[i].mask > 0 && IS_CAN_STDID(can_RxMsgs[i].ID)) {
-            // Mask mode 16bit
+            /* Mask mode 16bit */
 
             if (can_RxMsgs[i].fifo  ==  CAN_FIFO0) {
                 numberOfDifferentIDs[MSK_16BIT_FIFO0]++;
@@ -532,7 +532,7 @@ static uint8_t CAN_NumberOfNeededFilters(CAN_MSG_RX_TYPE_s* can_RxMsgs, uint8_t*
                 *error |= STD_ERR_BIT_4;
             }
         } else if (can_RxMsgs[i].mask > 0 && IS_CAN_EXTID(can_RxMsgs[i].ID)) {
-            // Mask mode 32bit
+            /* Mask mode 32bit */
 
             numberOfDifferentIDs[MSK_32BIT]++;
         } else {
@@ -543,16 +543,16 @@ static uint8_t CAN_NumberOfNeededFilters(CAN_MSG_RX_TYPE_s* can_RxMsgs, uint8_t*
     }
     for (int i = 0; i < 2; i++) {
         if (numberOfDifferentIDs[i] > 0) {
-            retVal += (numberOfDifferentIDs[i] + 2) / 4;    // 4 IDs per filter; rounding up
+            retVal += (numberOfDifferentIDs[i] + 2) / 4;    /* 4 IDs per filter; rounding up */
         }
     }
     for (int i = 2; i < 6; i++) {
         if (numberOfDifferentIDs[i] > 0) {
-            retVal += (numberOfDifferentIDs[i] + 1) / 2;   // 2 IDs per filter; rounding up
+            retVal += (numberOfDifferentIDs[i] + 1) / 2;   /* 2 IDs per filter; rounding up */
         }
     }
     if (numberOfDifferentIDs[MSK_32BIT] > 0) {
-        retVal += numberOfDifferentIDs[6];                  // 1 ID per filter
+        retVal += numberOfDifferentIDs[6];                  /* 1 ID per filter */
     }
     return retVal;
 }
@@ -622,13 +622,13 @@ void CAN_RX_IRQHandler(CAN_NodeTypeDef_e canNode, CAN_HandleTypeDef* ptrHcan) {
     /* Check End of reception flag for FIFO0 */
     if ((__HAL_CAN_GET_IT_SOURCE(ptrHcan, CAN_IT_FMP0)) && (__HAL_CAN_MSG_PENDING(ptrHcan, CAN_FIFO0) != 0)) {
         /* Call receive function */
-        CAN_RxMsg(canNode, ptrHcan, CAN_FIFO0);        // change towards HAL_CAN_IRQHandler
+        CAN_RxMsg(canNode, ptrHcan, CAN_FIFO0);        /* change towards HAL_CAN_IRQHandler */
     }
 
     /* Check End of reception flag for FIFO1 */
     if ((__HAL_CAN_GET_IT_SOURCE(ptrHcan, CAN_IT_FMP1)) && (__HAL_CAN_MSG_PENDING(ptrHcan, CAN_FIFO1) != 0)) {
         /* Call receive function */
-        CAN_RxMsg(canNode, ptrHcan, CAN_FIFO1);        // change towards HAL_CAN_IRQHandler
+        CAN_RxMsg(canNode, ptrHcan, CAN_FIFO1);        /* change towards HAL_CAN_IRQHandler */
     }
 }
 
@@ -647,10 +647,10 @@ void CAN_Error_IRQHandler(CAN_NodeTypeDef_e canNode, CAN_HandleTypeDef* ptrHcan)
     /* Check Error Warning Flag */
     if ((__HAL_CAN_GET_FLAG(ptrHcan, CAN_FLAG_EWG)) && (__HAL_CAN_GET_IT_SOURCE(ptrHcan, CAN_IT_EWG))
             && (__HAL_CAN_GET_IT_SOURCE(ptrHcan, CAN_IT_ERR))) {
-        /* Set CAN error code to EWG error */        // This bit is set by hardware when the warning limit has been
-        ptrHcan->ErrorCode |= HAL_CAN_ERROR_EWG;     // reached (Receive Error Counter or Transmit Error Counter>=96)
-        errorStruct->canErrorCounter[0]++;            // until error counter 127 write error frames dominant on can bus
-                                                     // increment error occurrence of error warning state
+        /* Set CAN error code to EWG error */        /* This bit is set by hardware when the warning limit has been    */
+        ptrHcan->ErrorCode |= HAL_CAN_ERROR_EWG;     /* reached (Receive Error Counter or Transmit Error Counter>=96)  */
+        errorStruct->canErrorCounter[0]++;           /* until error counter 127 write error frames dominant on can bus */
+                                                     /* increment error occurrence of error warning state              */
         /* Clear Error Warning Flag */
         __HAL_CAN_CLEAR_FLAG(ptrHcan, CAN_FLAG_EWG);
     }
@@ -658,10 +658,10 @@ void CAN_Error_IRQHandler(CAN_NodeTypeDef_e canNode, CAN_HandleTypeDef* ptrHcan)
     /* Check Error Passive Flag */
     if ((__HAL_CAN_GET_FLAG(ptrHcan, CAN_FLAG_EPV)) && (__HAL_CAN_GET_IT_SOURCE(ptrHcan, CAN_IT_EPV))
             && (__HAL_CAN_GET_IT_SOURCE(ptrHcan, CAN_IT_ERR))) {
-        /* Set CAN error code to EPV error */       // This bit is set by hardware when the Error Passive limit has been
-        ptrHcan->ErrorCode |= HAL_CAN_ERROR_EPV;    // reached (Receive Error Counter or Transmit Error Counter>127)
-        errorStruct->canErrorCounter[1]++;           // write error frames recessive on can bus
-                                                    // increment error occurrence of error passive state
+        /* Set CAN error code to EPV error */       /* This bit is set by hardware when the Error Passive limit has been */
+        ptrHcan->ErrorCode |= HAL_CAN_ERROR_EPV;    /* reached (Receive Error Counter or Transmit Error Counter>127)     */
+        errorStruct->canErrorCounter[1]++;          /* write error frames recessive on can bus                           */
+                                                    /* increment error occurrence of error passive state                 */
         /* Clear Error Passive Flag */
         __HAL_CAN_CLEAR_FLAG(ptrHcan, CAN_FLAG_EPV);
     }
@@ -669,9 +669,9 @@ void CAN_Error_IRQHandler(CAN_NodeTypeDef_e canNode, CAN_HandleTypeDef* ptrHcan)
     /* Check Bus-Off Flag */
     if ((__HAL_CAN_GET_FLAG(ptrHcan, CAN_FLAG_BOF)) && (__HAL_CAN_GET_IT_SOURCE(ptrHcan, CAN_IT_BOF))
             && (__HAL_CAN_GET_IT_SOURCE(ptrHcan, CAN_IT_ERR))) {
-        /* Set CAN error code to BOF error */     // This bit is set by hardware when it enters the bus-off state. The
-        ptrHcan->ErrorCode |= HAL_CAN_ERROR_BOF;  // bus-off state is entered on TEC overflow, greater than 255
-        errorStruct->canErrorCounter[2]++;         // increment error occurrence of bus-off state
+        /* Set CAN error code to BOF error */      /* This bit is set by hardware when it enters the bus-off state. The */
+        ptrHcan->ErrorCode |= HAL_CAN_ERROR_BOF;   /* bus-off state is entered on TEC overflow, greater than 255        */
+        errorStruct->canErrorCounter[2]++;         /* increment error occurrence of bus-off state                       */
 
         /* Clear Bus-Off Flag */
         __HAL_CAN_CLEAR_FLAG(ptrHcan, CAN_FLAG_BOF);
@@ -681,43 +681,43 @@ void CAN_Error_IRQHandler(CAN_NodeTypeDef_e canNode, CAN_HandleTypeDef* ptrHcan)
     if ((!HAL_IS_BIT_CLR(ptrHcan->Instance->ESR, CAN_ESR_LEC)) && (__HAL_CAN_GET_IT_SOURCE(ptrHcan, CAN_IT_LEC))
             && (__HAL_CAN_GET_IT_SOURCE(ptrHcan, CAN_IT_ERR))) {
         switch (ptrHcan->Instance->ESR & CAN_ESR_LEC) {
-            case (CAN_ESR_LEC_0):                         // STUFF ERROR --- When five consecutive bits of the same level have been transmitted by a node, it will add a
-                /* Set CAN error code to STF error */     // sixth bit of the opposite level to the outgoing bit stream. The receivers will remove  this extra bit.This is
-                ptrHcan->ErrorCode |= HAL_CAN_ERROR_STF;  // done to avoid excessive DC components on the bus, but it also gives the receivers an extra opportunity to detect
-                                                          // errors: if more than five consecutive bits of the same level occurs on the bus, a Stuff Error is signaled.
-                errorStruct->canErrorCounter[3]++;        // increment error occurrence of stuff error
+            case (CAN_ESR_LEC_0):                         /* STUFF ERROR --- When five consecutive bits of the same level have been transmitted by a node, it will add a */
+                /* Set CAN error code to STF error */     /* sixth bit of the opposite level to the outgoing bit stream. The receivers will remove  this extra bit.This is */
+                ptrHcan->ErrorCode |= HAL_CAN_ERROR_STF;  /* done to avoid excessive DC components on the bus, but it also gives the receivers an extra opportunity to detect */
+                                                          /* errors: if more than five consecutive bits of the same level occurs on the bus, a Stuff Error is signaled. */
+                errorStruct->canErrorCounter[3]++;        /* increment error occurrence of stuff error */
                 break;
 
-            case (CAN_ESR_LEC_1):                         // FORM ERROR --- Some parts of the CAN message have a fixed format, i.e. the standard defines exactly what levels
-                /* Set CAN error code to FOR error */     // must occur and when. (Those parts are the CRC Delimiter, ACK Delimiter, End of Frame, and also the Intermission,
-                ptrHcan->ErrorCode |= HAL_CAN_ERROR_FOR;  // but there are some extra special error checking rules for that.) If a CAN controller detects an invalid value
-                                                          // in one of these fixed fields, a Form Error is signaled.
-                errorStruct->canErrorCounter[4]++;        // increment error occurrence of form error
+            case (CAN_ESR_LEC_1):                         /* FORM ERROR --- Some parts of the CAN message have a fixed format, i.e. the standard defines exactly what levels */
+                /* Set CAN error code to FOR error */     /* must occur and when. (Those parts are the CRC Delimiter, ACK Delimiter, End of Frame, and also the Intermission,*/
+                ptrHcan->ErrorCode |= HAL_CAN_ERROR_FOR;  /* but there are some extra special error checking rules for that.) If a CAN controller detects an invalid value */
+                                                          /* in one of these fixed fields, a Form Error is signaled. */
+                errorStruct->canErrorCounter[4]++;        /* increment error occurrence of form error */
                 break;
 
-            case (CAN_ESR_LEC_1 | CAN_ESR_LEC_0):         // ACKNOWLEDGMENT ERROR --- All nodes on the bus that correctly receives a message (regardless of their being
-                /* Set CAN error code to ACK error */     // interested of its contents or not) are expected to send a dominant level in the so-called Acknowledgement
-                ptrHcan->ErrorCode |= HAL_CAN_ERROR_ACK;  // Slot in the message. The transmitter will transmit a recessive level here. If the transmitter can detect a
-                                                          // dominant level in the ACK slot, an Acknowledgement Error is signaled.
-                errorStruct->canErrorCounter[5]++;        // increment error occurrence of acknowledgment error
+            case (CAN_ESR_LEC_1 | CAN_ESR_LEC_0):         /* ACKNOWLEDGMENT ERROR --- All nodes on the bus that correctly receives a message (regardless of their being */
+                /* Set CAN error code to ACK error */     /* interested of its contents or not) are expected to send a dominant level in the so-called Acknowledgement*/
+                ptrHcan->ErrorCode |= HAL_CAN_ERROR_ACK;  /* Slot in the message. The transmitter will transmit a recessive level here. If the transmitter can detect a */
+                                                          /* dominant level in the ACK slot, an Acknowledgement Error is signaled. */
+                errorStruct->canErrorCounter[5]++;        /* increment error occurrence of acknowledgment error */
                 break;
 
-            case (CAN_ESR_LEC_2):                        // BIT RECESSIVE ERROR --- Each transmitter on the CAN bus monitors (i.e. reads back) the
-                /* Set CAN error code to BR error */     // transmitted signal level. If the bit level actually read differs from the one transmitted,
-                ptrHcan->ErrorCode |= HAL_CAN_ERROR_BR;  // a Bit Error (No bit error is raised during the arbitration process.)
-                errorStruct->canErrorCounter[6]++;       // increment error occurrence of bit recessive error
+            case (CAN_ESR_LEC_2):                        /* BIT RECESSIVE ERROR --- Each transmitter on the CAN bus monitors (i.e. reads back) the */
+                /* Set CAN error code to BR error */     /* transmitted signal level. If the bit level actually read differs from the one transmitted, */
+                ptrHcan->ErrorCode |= HAL_CAN_ERROR_BR;  /* a Bit Error (No bit error is raised during the arbitration process.) */
+                errorStruct->canErrorCounter[6]++;       /* increment error occurrence of bit recessive error */
                 break;
 
-            case (CAN_ESR_LEC_2 | CAN_ESR_LEC_0):        // BIT DOMINANT ERROR --- Each transmitter on the CAN bus monitors (i.e. reads back) the
-                /* Set CAN error code to BD error */     // transmitted signal level. If the bit level actually read differs from the one transmitted,
-                ptrHcan->ErrorCode |= HAL_CAN_ERROR_BD;  // a Bit Error (No bit error is raised during the arbitration process.)
-                errorStruct->canErrorCounter[7]++;       // increment error occurrence of bit dominant error
+            case (CAN_ESR_LEC_2 | CAN_ESR_LEC_0):        /* BIT DOMINANT ERROR --- Each transmitter on the CAN bus monitors (i.e. reads back) the */
+                /* Set CAN error code to BD error */     /* transmitted signal level. If the bit level actually read differs from the one transmitted, */
+                ptrHcan->ErrorCode |= HAL_CAN_ERROR_BD;  /* a Bit Error (No bit error is raised during the arbitration process.) */
+                errorStruct->canErrorCounter[7]++;       /* increment error occurrence of bit dominant error */
                 break;
 
-            case (CAN_ESR_LEC_2 | CAN_ESR_LEC_1):       // CRC ERROR --- Each message features a 15-bit Cyclic Redundancy Checksum (CRC), and any node that detects
-                /* Set CAN error code to CRC error */   // a different CRC in the message than what it has calculated itself will signal an CRC Error.
+            case (CAN_ESR_LEC_2 | CAN_ESR_LEC_1):       /* CRC ERROR --- Each message features a 15-bit Cyclic Redundancy Checksum (CRC), and any node that detects */
+                /* Set CAN error code to CRC error */   /* a different CRC in the message than what it has calculated itself will signal an CRC Error. */
                 ptrHcan->ErrorCode |= HAL_CAN_ERROR_CRC;
-                errorStruct->canErrorCounter[8]++;    // increment error occurrence of crc error
+                errorStruct->canErrorCounter[8]++;      /* increment error occurrence of crc error */
                 break;
 
             default:
@@ -776,7 +776,7 @@ static void CAN_Disable_Transmit_IT(CAN_HandleTypeDef* ptrHcan) {
     }
 #endif
 #if CAN1_USE_TX_BUFFER
-    // No need for callback, if no buffer is used
+    /* No need for callback, if no buffer is used */
     if (ptrHcan->Instance  ==  CAN1) {
         /* Transmission complete callback */
         CAN_TxCpltCallback(CAN_NODE1);
@@ -807,21 +807,21 @@ static void CAN_TxCpltCallback(CAN_NodeTypeDef_e canNode) {
 #endif
     }
     if (can_txbuffer != NULL) {
-        // No Error during start of transmission
+        /* No Error during start of transmission */
         if ((can_txbuffer->ptrWrite  ==  can_txbuffer->ptrRead)
                 && (can_txbuffer->buffer[can_txbuffer->ptrRead].newMsg  ==  0)) {
-            // nothing to transmit, buffer is empty
+            /* nothing to transmit, buffer is empty */
             retVal = E_NOT_OK;
         } else {
             retVal = CAN_TxMsgBuffer(canNode);
             if (retVal  ==  E_OK) {
 
             } else {
-                retVal = E_NOT_OK;        // Error during transmission, retransmit message later
+                retVal = E_NOT_OK;        /* Error during transmission, retransmit message later */
             }
         }
     } else {
-        // no transmit buffer active
+        /* no transmit buffer active */
         retVal = E_NOT_OK;
     }
 }
@@ -872,7 +872,7 @@ STD_RETURN_TYPE_e CAN_TxMsg(CAN_NodeTypeDef_e canNode, uint32_t msgID, uint8_t* 
         }
         Message.DLC = msgLength;
         for (int i = 0; i < msgLength; i++) {
-            // copy message data in handle transmit structure
+            /* copy message data in handle transmit structure */
             Message.Data[i] = ptrMsgData[i];
         }
         Message.RTR = RTR;
@@ -909,13 +909,13 @@ STD_RETURN_TYPE_e CAN_Send(CAN_NodeTypeDef_e canNode, uint32_t msgID, uint8_t* p
 
         if (tmptxbuffer_wr  ==  can_txbuffer->ptrRead) {
             if (can_txbuffer->buffer[tmptxbuffer_wr].newMsg  ==  0) {
-                // free buffer space for message
+                /* free buffer space for message */
 
                 can_txbuffer->ptrWrite++;
                 can_txbuffer->ptrWrite = can_txbuffer->ptrWrite % can_txbuffer->length;
                 retVal = E_OK;
             } else {
-                // buffer full
+                /* buffer full */
                 retVal = E_NOT_OK;
             }
         } else {
@@ -927,19 +927,19 @@ STD_RETURN_TYPE_e CAN_Send(CAN_NodeTypeDef_e canNode, uint32_t msgID, uint8_t* p
 
 
     if (retVal  ==  E_OK && (IS_CAN_STDID(msgID) || IS_CAN_EXTID(msgID)) && IS_CAN_DLC(msgLength)) {
-        // if buffer free and valid CAN identifier
+        /* if buffer free and valid CAN identifier */
 
         can_txbuffer->buffer[tmptxbuffer_wr].newMsg = 1;
         if (IS_CAN_STDID(msgID)) {
             can_txbuffer->buffer[tmptxbuffer_wr].msg.StdId = msgID;
-            can_txbuffer->buffer[tmptxbuffer_wr].msg.IDE = CAN_ID_STD;   // don't use extended ID
+            can_txbuffer->buffer[tmptxbuffer_wr].msg.IDE = CAN_ID_STD;   /* don't use extended ID */
         } else {
             can_txbuffer->buffer[tmptxbuffer_wr].msg.ExtId = msgID;
-            can_txbuffer->buffer[tmptxbuffer_wr].msg.IDE = CAN_ID_EXT;   // use extended ID
+            can_txbuffer->buffer[tmptxbuffer_wr].msg.IDE = CAN_ID_EXT;   /* use extended ID */
         }
 
         can_txbuffer->buffer[tmptxbuffer_wr].msg.RTR = RTR;
-        can_txbuffer->buffer[tmptxbuffer_wr].msg.DLC = msgLength;   // Data length of the frame that will be transmitted
+        can_txbuffer->buffer[tmptxbuffer_wr].msg.DLC = msgLength;   /* Data length of the frame that will be transmitted */
 
         /* copy message data in handle transmit structure */
         can_txbuffer->buffer[tmptxbuffer_wr].msg.Data[0] = ptrMsgData[0];
@@ -986,23 +986,23 @@ STD_RETURN_TYPE_e CAN_TxMsgBuffer(CAN_NodeTypeDef_e canNode) {
     if (can_txbuffer != NULL) {
         if ((can_txbuffer->ptrWrite  ==  can_txbuffer->ptrRead)
                 && (can_txbuffer->buffer[can_txbuffer->ptrRead].newMsg  ==  0)) {
-            // nothing to transmit, buffer is empty
+            /* nothing to transmit, buffer is empty */
             retVal = E_NOT_OK;
         } else {
             ptrHcan->pTxMsg = &can_txbuffer->buffer[can_txbuffer->ptrRead].msg;
             retVal = HAL_CAN_Transmit_IT(ptrHcan);
             if (retVal  ==  E_OK) {
-                // No Error during start of transmission
-                can_txbuffer->buffer[can_txbuffer->ptrRead].newMsg = 0;    // Msg is sent, set newMsg to 0, to allow writing of new data in buffer space
+                /* No Error during start of transmission */
+                can_txbuffer->buffer[can_txbuffer->ptrRead].newMsg = 0;    /* Msg is sent, set newMsg to 0, to allow writing of new data in buffer space */
                 can_txbuffer->ptrRead++;
                 can_txbuffer->ptrRead = can_txbuffer->ptrRead % can_txbuffer->length;
 
             } else {
-                retVal = E_NOT_OK;        // Error during transmission, retransmit message later
+                retVal = E_NOT_OK;        /* Error during transmission, retransmit message later */
             }
         }
     } else {
-        // no transmit buffer active
+        /* no transmit buffer active */
         retVal = E_NOT_OK;
     }
 
@@ -1068,7 +1068,7 @@ static STD_RETURN_TYPE_e CAN_RxMsg(CAN_NodeTypeDef_e canNode, CAN_HandleTypeDef*
 
 #if CAN1_BUFFER_BYPASS_NUMBER_OF_IDs > 0 || CAN0_BUFFER_BYPASS_NUMBER_OF_IDs > 0
     if (can_bufferbypass_rxmsgs != NULL) {
-        // only needed when messages are bypassed
+        /* only needed when messages are bypassed */
 
         for (bypassLinkIndex = 0; bypassLinkIndex < bufferbypasslength; bypassLinkIndex++) {
             if (msgID  ==  can_bufferbypass_rxmsgs[bypassLinkIndex]) {
@@ -1121,7 +1121,7 @@ static STD_RETURN_TYPE_e CAN_RxMsg(CAN_NodeTypeDef_e canNode, CAN_HandleTypeDef*
         /* ##### Buffer active but bypassed ##### */
 
 #if (CAN1_BUFFER_BYPASS_NUMBER_OF_IDs > 0 || CAN0_BUFFER_BYPASS_NUMBER_OF_IDs > 0) && (CAN_USE_CAN_NODE0 == 1 || CAN_USE_CAN_NODE1 == 1)
-        // copy data in handle and call buffer bypass function
+        /* copy data in handle and call buffer bypass function */
         uint8_t DLC, RTR;
 
         /* Get the DLC */
@@ -1144,7 +1144,7 @@ static STD_RETURN_TYPE_e CAN_RxMsg(CAN_NodeTypeDef_e canNode, CAN_HandleTypeDef*
         if (can_rxmsgs[can_fastLinkIndex[bypassLinkIndex]].func != NULL) {
             can_rxmsgs[can_fastLinkIndex[bypassLinkIndex]].func(msgID, &fastLinkBuffer[0], DLC, RTR);
         } else {
-            // No callback function defined
+            /* No callback function defined */
             CAN_BufferBypass(canNode, msgID, &fastLinkBuffer[0], DLC, RTR);
         }
 #endif
@@ -1232,7 +1232,7 @@ STD_RETURN_TYPE_e CAN_ReceiveBuffer(CAN_NodeTypeDef_e canNode, Can_PduType* msg)
 #endif
 
     if (msg  ==  NULL) {
-        // null pointer to message data struct
+        /* null pointer to message data struct */
         can_rxbuffer = NULL;
     }
 
@@ -1293,13 +1293,14 @@ static STD_RETURN_TYPE_e CAN_BufferBypass(CAN_NodeTypeDef_e canNode, uint32_t ms
         }
 #if CAN_SW_RESET_WITH_DEVICE_ID == 1
 
-//        /* CAN data = MCU Device ID Byte [0] [1] [2] [3] [4] [5] [6] [7] */
-//        if(rxData[0] == (uint8_t)mcu_unique_deviceID.off0 && data[1] == (uint8_t)(mcu_unique_deviceID.off0 >> 8) &&
-//                rxData[2] == (uint8_t)(mcu_unique_deviceID.off0 >> 16) && rxData[3] == (uint8_t)(mcu_unique_deviceID.off0 >> 24) &&
-//                rxData[4] == (uint8_t)mcu_unique_deviceID.off32 && rxData[5] == (uint8_t)(mcu_unique_deviceID.off32 >> 8) &&
-//                rxData[6] == (uint8_t)(mcu_unique_deviceID.off32 >> 16) && rxData[7] == (uint8_t)(mcu_unique_deviceID.off32 >> 24)) {
-//            reset = 1;
-//        }
+/*         /* CAN data = MCU Device ID Byte [0] [1] [2] [3] [4] [5] [6] [7] */
+/*         if(rxData[0] == (uint8_t)mcu_unique_deviceID.off0 && data[1] == (uint8_t)(mcu_unique_deviceID.off0 >> 8) &&
+                rxData[2] == (uint8_t)(mcu_unique_deviceID.off0 >> 16) && rxData[3] == (uint8_t)(mcu_unique_deviceID.off0 >> 24) &&
+                rxData[4] == (uint8_t)mcu_unique_deviceID.off32 && rxData[5] == (uint8_t)(mcu_unique_deviceID.off32 >> 8) &&
+                rxData[6] == (uint8_t)(mcu_unique_deviceID.off32 >> 16) && rxData[7] == (uint8_t)(mcu_unique_deviceID.off32 >> 24)) {
+            reset = 1;
+        }
+*/
 
         if (rxData[0] == 0) {
             if ((CAN_CheckNodeID(&data[5]) == E_OK) || (CAN_CheckUniqueDeviceID(&data[1]) == E_OK) || (CAN_CheckBroadcastID(&data[5]) == E_OK)) {

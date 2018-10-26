@@ -85,7 +85,7 @@ static void CANS_SetCurrentSensorCCPresent(uint8_t command);
 
 /*================== Public functions =====================================*/
 void CANS_Init(void) {
-    // custom initialization could be made here. right now no need for any init
+    /* custom initialization could be made here. right now no need for any init */
 }
 
 void CANS_MainFunction(void) {
@@ -95,7 +95,7 @@ void CANS_MainFunction(void) {
     if (cans_state.periodic_enable == TRUE) {
         (void)CANS_PeriodicTransmit();
     }
-    DIAG_SysMonNotify(DIAG_SYSMON_CANS_ID, 0);  // task is running, state = ok
+    DIAG_SysMonNotify(DIAG_SYSMON_CANS_ID, 0);  /* task is running, state = ok */
 }
 
 
@@ -302,7 +302,7 @@ static void CANS_SetSignalData(CANS_signal_s signal, uint64_t value, uint8_t *da
 static void CANS_ComposeMessage(CAN_NodeTypeDef_e canNode, CANS_messagesTx_e msgIdx, uint8_t dataptr[]) {
     uint32_t i = 0;
     uint32_t nrTxSignals = 0;
-    // find multiplexor if multiplexed signal
+    /* find multiplexor if multiplexed signal */
 
     CANS_signal_s *cans_signals_tx;
 
@@ -317,7 +317,7 @@ static void CANS_ComposeMessage(CAN_NodeTypeDef_e canNode, CANS_messagesTx_e msg
     for (i = 0; i < nrTxSignals; i++) {
         if (cans_signals_tx[i].msgIdx.Tx == msgIdx) {
 
-            // simple, not multiplexed signal
+            /* simple, not multiplexed signal */
             uint64_t value = 0;
             if (cans_signals_tx[i].getter != NULL_PTR) {
                 cans_signals_tx[i].getter(i, &value);
@@ -325,7 +325,7 @@ static void CANS_ComposeMessage(CAN_NodeTypeDef_e canNode, CANS_messagesTx_e msg
             CANS_SetSignalData(cans_signals_tx[i], value, dataptr);
         } else {
             ;
-            // do nothing
+            /* do nothing */
         }
     }
 }
@@ -389,7 +389,7 @@ static uint8_t CANS_CheckCanTiming(void) {
 
     DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
 
-    // Is the BMS still getting CAN messages?
+    /* Is the BMS still getting CAN messages? */
     if ((current_time-canstatereq_tab.timestamp) <= 105) {
         if (((canstatereq_tab.timestamp - canstatereq_tab.previous_timestamp) >= 95) && \
                 ((canstatereq_tab.timestamp - canstatereq_tab.previous_timestamp) <= 105)) {
@@ -404,7 +404,7 @@ static uint8_t CANS_CheckCanTiming(void) {
         DIAG_Handler(DIAG_CH_CAN_TIMING, DIAG_EVENT_NOK, 0, NULL_PTR);
     }
 
-    // check time stamps of current measurements
+    /* check time stamps of current measurements */
     DB_ReadBlock(&current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
     if (current_time-current_tab.timestamp > CANS_SENSOR_RESPONSE_TIMEOUT_MS) {
         DIAG_Handler(DIAG_CH_CURRENT_SENSOR_RESPONDING, DIAG_EVENT_NOK, 0, NULL_PTR);
@@ -415,7 +415,7 @@ static uint8_t CANS_CheckCanTiming(void) {
         }
     }
 
-    // check time stamps of CC measurements
+    /* check time stamps of CC measurements */
     if (error_flags.can_cc_used == 1) {
         if (current_time-current_tab.timestamp_cc > CANS_SENSOR_RESPONSE_TIMEOUT_MS) {
             DIAG_Handler(DIAG_CH_CAN_CC_RESPONDING, DIAG_EVENT_NOK, 0, NULL_PTR);
@@ -426,7 +426,7 @@ static uint8_t CANS_CheckCanTiming(void) {
             }
         }
     }
-    // DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORFLAGS);
+    /* DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORFLAGS); */
 
     return retVal;
 }
@@ -440,13 +440,9 @@ static uint8_t CANS_CheckCanTiming(void) {
  */
 extern void CANS_Enable_Periodic(uint8_t command) {
     if (command == TRUE) {
-        taskENTER_CRITICAL();
         cans_state.periodic_enable = TRUE;
-        taskEXIT_CRITICAL();
     } else {
-        taskENTER_CRITICAL();
         cans_state.periodic_enable = FALSE;
-        taskEXIT_CRITICAL();
     }
 }
 

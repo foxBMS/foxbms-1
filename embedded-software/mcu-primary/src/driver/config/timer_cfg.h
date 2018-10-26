@@ -77,7 +77,7 @@
  * \par Default:
  * 20000
 */
-#define TIM4_PWM_OUT_DEFAULT_FREQUENCY    20000 // [Hz]  100 - 125000
+#define TIM4_PWM_OUT_DEFAULT_FREQUENCY    20000 /* [Hz]  100 - 125000 */
 
 /**
  * @ingroup CONFIG_TIMER
@@ -93,7 +93,7 @@
  * \par Default:
  * 50
 */
-#define TIM4_PWM_OUT_DEFAULT_DUTYCYCLE    50    // [%]   0 - 100
+#define TIM4_PWM_OUT_DEFAULT_DUTYCYCLE    50    /* [%]   0 - 100 */
 
 
 /**
@@ -111,8 +111,8 @@
  * \par Default:
  * 0.4
 */
-#define TIM4_CLOCK_FREQUENCY              0.4            // in [MHz]
-#define TIM4_CLOCK_TICK_DURATION_IN_US    2.5            // according to TIM4_CLOCK_FREQUENCY
+#define TIM4_CLOCK_FREQUENCY              0.4            /* in [MHz] */
+#define TIM4_CLOCK_TICK_DURATION_IN_US    2.5            /* according to TIM4_CLOCK_FREQUENCY */
 #define TIM4_CLOCK_TICK_DURATION_IN_MS    0.0025
 #define TIM4_CLOCK_TICK_DURATION_IN_S     0.0000025
 
@@ -131,8 +131,8 @@
  * \par Default:
  * 0.2
 */
-#define TIM9_CLOCK_FREQUENCY               0.2     // in [MHz]
-#define TIM9_CLOCK_TICK_DURATION_IN_US     5.0     // according to TIM9_CLOCK_FREQUENCY
+#define TIM9_CLOCK_FREQUENCY               0.2     /* in [MHz] */
+#define TIM9_CLOCK_TICK_DURATION_IN_US     5.0     /* according to TIM9_CLOCK_FREQUENCY */
 #define TIM9_CLOCK_TICK_DURATION_IN_MS     0.005
 #define TIM9_CLOCK_TICK_DURATION_IN_S      0.000005
 

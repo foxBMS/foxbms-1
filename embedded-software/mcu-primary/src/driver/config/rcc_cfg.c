@@ -61,19 +61,19 @@ RCC_OscInitTypeDef RCC_OscInitStruct = {
     .HSEState = RCC_HSE_ON,
     .PLL.PLLState = RCC_PLL_ON,
     .PLL.PLLSource = RCC_PLLSOURCE_HSE,
-    .PLL.PLLM = RCC_PLL_M,    // Oscillator Clock: 8MHz -> (8Mhz / 8) * 336 / 2 -> 168Mhz
+    .PLL.PLLM = RCC_PLL_M,    /* Oscillator Clock: 8MHz -> (8Mhz / 4) * 180 / 2 -> 180Mhz */
     .PLL.PLLN = RCC_PLL_N,
     .PLL.PLLP = RCC_PLL_P,
-    .PLL.PLLQ = RCC_PLL_Q   // Oscillator Clock: 8MHz -> (8Mhz / 8) * 336 / 7   -> 48Mhz
+    .PLL.PLLQ = RCC_PLL_Q   /* Oscillator Clock: 8MHz -> (8Mhz / 4) * 180 / 8   -> 45Mhz */
 };
 
 
 RCC_ClkInitTypeDef RCC_ClkInitStruct = {
     .ClockType = RCC_CLOCKTYPE_SYSCLK|RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2,
-    .SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK,    // System Clock Source: PLL-Clock  (Cortex-Core, AHB-Bus, DMA, memory)
-    .AHBCLKDivider = RCC_AHBCLKDivider,         // Div=1 , AHB  CLOCK: 168MHz
-    .APB1CLKDivider = RCC_APB1CLKDivider,       // Div=4 , APB1 CLOCK:  42MHz
-    .APB2CLKDivider = RCC_APB2CLKDivider        // Div=2 , APB2 CLOCK:  84MHz
+    .SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK,    /* System Clock Source: PLL-Clock  (Cortex-Core, AHB-Bus, DMA, memory) */
+    .AHBCLKDivider = RCC_AHBCLKDivider,         /* Div=1 , AHB  CLOCK: 180MHz */
+    .APB1CLKDivider = RCC_APB1CLKDivider,       /* Div=4 , APB1 CLOCK:  45MHz */
+    .APB2CLKDivider = RCC_APB2CLKDivider        /* Div=2 , APB2 CLOCK:  90MHz */
 };
 
 

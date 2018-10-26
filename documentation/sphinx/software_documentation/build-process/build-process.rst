@@ -341,24 +341,26 @@ library ``testlib`` it is shown how to include a library in |foxbms|.
 
 .. literalinclude:: ./../../../../embedded-software/libs/wscript
    :language: python
-   :lines: 43-
+   :linenos:
+   :lines: 44-
 
 **General Setup**
 
 The actual build of the library is in ``embedded-software\libs\testlib``.
 All source and header files have to be in the library directory, for this example
 these are are ``testlib.c`` and ``testlib.h``.
-The library is then build by the ``wscript in ``embedded-software\libs\testlib\wscript``.
+The library is then build by the ``wscript`` in ``embedded-software\libs\testlib``.
 
 - All source files that should be build have to be listed in the ``srcs`` list (see line 4).
-- The name of the library is ``foxbms-user-lib`` (see line 10).
+- The name of the library is ``foxbms-user-lib`` (see line 11).
 - All header files get copied to the output directory (see line 14).
 
 .. literalinclude:: ./../../../../embedded-software/libs/testlib/wscript
+   :caption: wscript
    :language: python
    :linenos:
    :lines: 43-
-   :emphasize-lines: 4-6,10,14
+   :emphasize-lines: 4-6,11,14-
 
 - The library ouput (the ``*.o``\ -files of the library build are stored in ``build\lib``.
   For this example it is ``build\lib\testlib\libfoxbms-user-lib.o``. The *lib*-prefix is
@@ -372,13 +374,16 @@ The library declaration of ``super_function(uint8_t a, uint8_t b)`` is in ``test
 .. literalinclude:: ./../../../../embedded-software/libs/testlib/testlib.h
    :caption: testlib.h
    :language: c
+   :linenos:
    :lines: 53-
+   :emphasize-lines: 13
 
 The library defines a function ``super_function(uint8_t a, uint8_t b)`` in ``testlib.c``:
 
 .. literalinclude:: ./../../../../embedded-software/libs/testlib/testlib.c
    :caption: testlib.c
    :language: c
+   :linenos:
    :lines: 65-67
 
 **Building**
@@ -405,6 +410,8 @@ The library defines a function ``super_function(uint8_t a, uint8_t b)`` in ``tes
     ..  code-block::    c
         :name: includecfunctionfromlibrary
         :caption: Include header and use a function from the library
+        :linenos:
+        :emphasize-lines: 3,11
 
         /*================== Includes =============================================*/
         /* some other includes  */
@@ -420,7 +427,7 @@ The library defines a function ``super_function(uint8_t a, uint8_t b)`` in ``tes
             /* other code */
         }
 
-#.  Build the |foxbms| binary as usally. No further commands are needed.
+#.  Build the |foxbms| binary as usally.
 
     ..  code-block::    console
         :name: builthebinarywithlib

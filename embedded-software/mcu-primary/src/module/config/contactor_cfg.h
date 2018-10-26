@@ -137,7 +137,7 @@
 
 #define CONT_CHARGE_MAIN_MINUS_CONTROL          IO_PIN_MCU_0_CONTACTOR_5_CONTROL
 #define CONT_CHARGE_MAIN_MINUS_FEEDBACK         IO_PIN_MCU_0_CONTACTOR_5_FEEDBACK
-#endif // BS_SEPARATE_POWERLINES == 1
+#endif /* BS_SEPARATE_POWERLINES == 1 */
 /*
  * additional possible contactors from the io definition
 #define CONT_X0_CONTROL                         PIN_MCU_0_CONTACTOR_3_CONTROL
@@ -207,6 +207,7 @@
 #define CONT_STATEMACH_TIMEAFTERPRECHARGEFAIL_MS        ((100) * (CONT_TASK_CYCLE_CONTEXT_MS))
 
 
+/*================== Main precharge configuration ====================*/
 
 /**
  * Precharge timeout in ms
@@ -224,12 +225,10 @@
 
 #define CONT_STATEMACH_WAIT_AFTER_CLOSING_PRECHARGE_MS ((100) * (CONT_TASK_CYCLE_CONTEXT_MS))
 
-
 /**
  * Delay after closing main plus in ms
  */
 #define CONT_STATEMACH_WAIT_AFTER_CLOSING_PLUS_MS ((100) * (CONT_TASK_CYCLE_CONTEXT_MS))
-
 
 /**
  * Delay after opening precharge in ms
@@ -243,11 +242,11 @@
  * \par Default:
  * 1000
  * \par Range:
- * [5,15]
+ * [1000,3000]
  * \par Unit:
  * V
 */
-#define CONT_PRECHARGE_VOLTAGE_THRESHOLD 1000 // mV
+#define CONT_PRECHARGE_VOLTAGE_THRESHOLD_mV     1000  /* mV */
 
 /**
  * @ingroup CONFIG_CONTACTOR
@@ -256,11 +255,61 @@
  * \par Default:
  * 10
  * \par Range:
- * [5,15]
+ * [50,500]
  * \par Unit:
  * mA
 */
-#define CONT_PRECHARGE_CURRENT_THRESHOLD 50 // mA
+#define CONT_PRECHARGE_CURRENT_THRESHOLD_mA     50  /* mA */
+
+
+/*================== Charge precharge configuration ====================*/
+
+/**
+ * Charge precharge timeout in ms
+ */
+#define CONT_CHARGE_PRECHARGE_TIMEOUT_MS ((500) * (CONT_TASK_CYCLE_CONTEXT_MS))
+
+/**
+ * Delay after closing charge minus in ms
+ */
+#define CONT_STATEMACH_CHARGE_WAIT_AFTER_CLOSING_MINUS_MS ((50) * (CONT_TASK_CYCLE_CONTEXT_MS))
+
+/**
+ * Delay after closing charge precharge in ms
+ */
+
+#define CONT_STATEMACH_CHARGE_WAIT_AFTER_CLOSING_PRECHARGE_MS ((100) * (CONT_TASK_CYCLE_CONTEXT_MS))
+
+/**
+ * Delay after closing charge plus in ms
+ */
+#define CONT_STATEMACH_CHARGE_WAIT_AFTER_CLOSING_PLUS_MS ((100) * (CONT_TASK_CYCLE_CONTEXT_MS))
+
+/**
+ * @ingroup CONFIG_CONTACTOR
+ * \par Type:
+ * int
+ * \par Default:
+ * 1000
+ * \par Range:
+ * [1000,3000]
+ * \par Unit:
+ * V
+*/
+#define CONT_CHARGE_PRECHARGE_VOLTAGE_THRESHOLD_mV   1000  /* mV */
+
+/**
+ * @ingroup CONFIG_CONTACTOR
+ * \par Type:
+ * int
+ * \par Default:
+ * 10
+ * \par Range:
+ * [50,500]
+ * \par Unit:
+ * mA
+*/
+#define CONT_CHARGE_PRECHARGE_CURRENT_THRESHOLD_mA  50  /* mA */
 
 
 /*================== Constant and Variable Definitions ====================*/
@@ -308,6 +357,13 @@ typedef struct {
 } CONT_CONFIG_s;
 
 
+typedef enum {
+    CONT_POWERLINE_NORMAL   = 0,
+#if BS_SEPARATE_POWERLINES == 1
+    CONT_POWERLINE_CHARGE   = 1
+#endif /* BS_SEPARATE_POWERLINES == 1 */
+} CONT_WHICH_POWERLINE_e;
+
 extern const CONT_CONFIG_s cont_contactors_config[BS_NR_OF_CONTACTORS];
 extern CONT_ELECTRICAL_STATE_s cont_contactor_states[BS_NR_OF_CONTACTORS];
 
@@ -315,6 +371,13 @@ extern const uint8_t cont_contactors_config_length;
 extern const uint8_t cont_contactors_states_length;
 
 /*================== Function Prototypes ==================================*/
+
+/**
+ * @brief   Checks if the current limitations are violated
+ *
+ * @return  E_OK if the current limitations are NOT violated, else E_NOT_OK (type: STD_RETURN_TYPE_e)
+ */
+extern STD_RETURN_TYPE_e CONT_CheckPrecharge(CONT_WHICH_POWERLINE_e);
 
 /*================== Function Implementations =============================*/
 

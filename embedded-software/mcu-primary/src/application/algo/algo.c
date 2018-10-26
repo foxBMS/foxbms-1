@@ -89,7 +89,7 @@ void ALGO_MainFunction(void) {
             } else if (algo_algorithms[i].state == ALGO_WAIT_FOR_OTHER) {
                 algo_algorithms[i].state = ALGO_RDY_BUT_WAITING;
             } else {
-                // do nothing
+                /* do nothing */
                 ;
             }
         } else if (algo_algorithms[i].state == ALGO_EXECUTE_ASAP) {
@@ -114,10 +114,10 @@ void ALGO_MonitorExecutionTime(void) {
         if ((algo_algorithms[i].startTime != 0) && algo_algorithms[i].state == ALGO_RUNNING &&
                 ((algo_algorithms[i].startTime + algo_algorithms[i].maxCalcDuration_ms) < timestamp)) {
 
-            // Block task from further execution because of runtime violation, but task will finish its execution
+            /* Block task from further execution because of runtime violation, but task will finish its execution */
             algo_algorithms[i].state = ALGO_BLOCKED;
 
-            // TODO: Add diag call to notify error in algorithm module
+            /* TODO: Add diag call to notify error in algorithm module */
         }
     }
 }

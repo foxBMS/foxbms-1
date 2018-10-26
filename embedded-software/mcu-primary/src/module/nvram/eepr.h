@@ -171,7 +171,7 @@ extern void EEPR_ClearErrorEvent(void);
 
 
 
-// FIXME function not called, is it important? throw out?
+/* FIXME function not called, is it important? throw out? */
 /**
  * @brief   control of EEPROM Data management
 */
@@ -196,7 +196,7 @@ extern uint8_t EEPR_ReadMemory(uint32_t EeprAddr, uint16_t byte_len);
 */
 extern EEPR_RETURNTYPE_e EEPR_SetStateRequest(EEPR_STATE_e state_req, EEPR_CHANNEL_ID_TYPE_e channel, uint8_t* ramaddress);
 
-// FIXME brief section is confusing
+/* FIXME brief section is confusing */
 /**
  * @brief   max. time for reading of eeprom data of the current channel
  *
@@ -204,7 +204,7 @@ extern EEPR_RETURNTYPE_e EEPR_SetStateRequest(EEPR_STATE_e state_req, EEPR_CHANN
 */
 extern uint16_t EEPR_GetCurrentChReadTime(void);
 
-// FIXME brief section is confusing
+/* FIXME brief section is confusing */
 /**
  * @brief   max. time for writing of eeprom data of the current channel
  *

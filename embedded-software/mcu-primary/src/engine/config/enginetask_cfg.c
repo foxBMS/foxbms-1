@@ -91,7 +91,7 @@ void ENG_PostOSInit(void) {
 
     retErrorCode = VIC_PostOsInterruptInit();
     if (retErrorCode != 0) {
-        DIAG_Handler(DIAG_CH_VIC_INIT_FAILURE, DIAG_EVENT_NOK, retErrorCode, NULL);   //error event in vic init
+        DIAG_Handler(DIAG_CH_VIC_INIT_FAILURE, DIAG_EVENT_NOK, retErrorCode, NULL);   /* error event in vic init */
     }
     retErrorCode = 0;
 
@@ -101,17 +101,18 @@ void ENG_PostOSInit(void) {
 
     retErrorCode = CAN_Init();
     if (retErrorCode != 0) {
-        DIAG_Handler(DIAG_CH_CAN_INIT_FAILURE, DIAG_EVENT_NOK, retErrorCode, NULL);   //error event in eeprom driver
+        DIAG_Handler(DIAG_CH_CAN_INIT_FAILURE, DIAG_EVENT_NOK, retErrorCode, NULL);   /* error event in eeprom driver */
     }
 
     os_boot = OS_EEPR_INIT;
 
-    //initialize eeprom driver
+    /* initialize eeprom driver */
     err_type = EEPR_Init();
     if(err_type != EEPR_NO_ERROR)
-        DIAG_Handler(DIAG_CH_POSTOSINIT_FAILURE, DIAG_EVENT_NOK, err_type, NULL);   //error event in eeprom driver
+        DIAG_Handler(DIAG_CH_POSTOSINIT_FAILURE, DIAG_EVENT_NOK, err_type, NULL);   /* error event in eeprom driver */
 
     os_boot = OS_BMS_INIT;
+
 }
 
 
@@ -184,7 +185,7 @@ void ENG_Init(void) {
     msl_flags.under_temperature_discharge = 0;
     DB_WriteBlock(&msl_flags, DATA_BLOCK_ID_MSL);
 
-    // Init Sys
+    /*  Init Sys */
     sys_retVal = SYS_SetStateRequest(SYS_STATE_INIT_REQUEST);
 
     NVRAM_dataHandlerInit();
@@ -223,7 +224,7 @@ void ENG_Cyclic_100ms(void) {
     ADC_Ctrl();
     NVRAM_dataHandler();
 #if BUILD_MODULE_ENABLE_ISOGUARD == 1
-    // Read every 200ms because of possible jitter and lowest Bender frequency 10Hz -> 100ms
+    /*  Read every 200ms because of possible jitter and lowest Bender frequency 10Hz -> 100ms */
     static uint8_t counter = 0;
     if (counter % 2 == 0) {
         ISO_MeasureInsulation();

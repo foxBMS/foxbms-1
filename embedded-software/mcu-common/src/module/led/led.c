@@ -74,8 +74,8 @@ void LED_Init(void) {
 void LED_Ctrl(void) {
     static uint16_t led_counter = 0;
     static uint8_t led_0_nbr_of_blink = 1;
-    static uint8_t led_1_nbr_of_blink = 1; // 1 -> ON/OFF; >1 -> blinking
-    static uint16_t led_blink_time = 3000;  // in [ms]
+    static uint8_t led_1_nbr_of_blink = 1;  /* 1 -> ON/OFF; >1 -> blinking */
+    static uint16_t led_blink_time = 3000;  /* in [ms] */
     static uint8_t led_state = 0x10;
 
     static uint8_t led_0_duty_cycle = 0;
@@ -85,12 +85,12 @@ void LED_Ctrl(void) {
 
     if (led_counter == 0) {
 
-        //get number of blink events from sys() state
+        /* get number of blink events from sys() state */
         led_0_nbr_of_blink = 1;
         led_1_nbr_of_blink = 1;
-        led_blink_time = 3000;      // in [ms]
+        led_blink_time = 3000;      /* in [ms] */
 
-        //calculate number of pin toggle events to get desired number of blinking
+        /* calculate number of pin toggle events to get desired number of blinking */
         if ( led_0_nbr_of_blink > 1 ) {
             led_0_duty_cycle = (led_blink_time/LED_BLINK_TASK_DURATION_MS)/(led_0_nbr_of_blink*2);
         }
@@ -98,30 +98,30 @@ void LED_Ctrl(void) {
             led_1_duty_cycle = (led_blink_time/LED_BLINK_TASK_DURATION_MS)/(led_1_nbr_of_blink*2);
         }
 
-        //If one LED has to blink, set blinking time, otherwise set OFF time
+        /* If one LED has to blink, set blinking time, otherwise set OFF time */
         if ( led_state == 0x10 ) {
             cycle_time = led_blink_time/LED_BLINK_TASK_DURATION_MS;
-            //if not blinking requested: simply switch ON/OFF the LEDs
+            /* if not blinking requested: simply switch ON/OFF the LEDs */
 
             IO_WritePin(LED_DEBUG_LED_0, GPIO_PIN_SET);
             IO_WritePin(LED_DEBUG_LED_1, GPIO_PIN_RESET);
         }
         else if ( led_state == 0x01 ) {
             cycle_time = led_blink_time/LED_BLINK_TASK_DURATION_MS;
-            //if not blinking requested: simply switch ON/OFF the LEDs
+            /* if not blinking requested: simply switch ON/OFF the LEDs */
 
             IO_WritePin(LED_DEBUG_LED_0, GPIO_PIN_RESET);
             IO_WritePin(LED_DEBUG_LED_1, GPIO_PIN_SET);
         }
         else {
             cycle_time = LED_OFF_TIME_MS/LED_BLINK_TASK_DURATION_MS;
-            //OFF period: switch OFF the LEDs
+            /* OFF period: switch OFF the LEDs */
             IO_WritePin(LED_DEBUG_LED_0, GPIO_PIN_RESET);
             IO_WritePin(LED_DEBUG_LED_1, GPIO_PIN_RESET);
         }
     }
 
-    //effectively toggle the LED pins
+    /* effectively toggle the LED pins */
     if ( led_state == 0x10 && led_0_nbr_of_blink > 1 && led_0_duty_cycle > 0 ) {
         if ( led_counter%led_0_duty_cycle == 0 )
             IO_TogglePin(LED_DEBUG_LED_0);
@@ -132,7 +132,7 @@ void LED_Ctrl(void) {
     }
 
 
-    //counter update
+    /* counter update */
     if ( led_counter < cycle_time ) {
         led_counter++;
     }
