@@ -115,7 +115,7 @@ static uint8_t BMS_CheckReEntrance(void) {
     if (!bms_state.triggerentry) {
         bms_state.triggerentry++;
     } else {
-        retval = 0xFF;  // multiple calls of function
+        retval = 0xFF;  /* multiple calls of function */
     }
     OS_TaskExit_Critical();
     return (retval);
@@ -193,7 +193,7 @@ static BMS_RETURN_TYPE_e BMS_CheckStateRequest(BMS_STATE_REQUEST_e statereq) {
     }
 
     if (bms_state.statereq == BMS_STATE_NO_REQUEST) {
-        // init only allowed from the uninitialized state
+        /* init only allowed from the uninitialized state */
         if (statereq == BMS_STATE_INIT_REQUEST) {
             if (bms_state.state == BMS_STATEMACH_UNINITIALIZED) {
                 return BMS_OK;
@@ -211,14 +211,14 @@ static BMS_RETURN_TYPE_e BMS_CheckStateRequest(BMS_STATE_REQUEST_e statereq) {
 void BMS_Trigger(void) {
     BMS_STATE_REQUEST_e statereq = BMS_STATE_NO_REQUEST;
 
-    DIAG_SysMonNotify(DIAG_SYSMON_BMS_ID, 0);  // task is running, state = ok
+    DIAG_SysMonNotify(DIAG_SYSMON_BMS_ID, 0);  /* task is running, state = ok */
 
     if (bms_state.state != BMS_STATEMACH_UNINITIALIZED) {
         BMS_CheckVoltages();
         BMS_CheckTemperatures();
         BMS_CheckCurrent();
     }
-    // Check re-entrance of function
+    /* Check re-entrance of function */
     if (BMS_CheckReEntrance()) {
         return;
     }
@@ -226,7 +226,7 @@ void BMS_Trigger(void) {
     if (bms_state.timer) {
         if (--bms_state.timer) {
             bms_state.triggerentry--;
-            return;    // handle state machine only if timer has elapsed
+            return;    /* handle state machine only if timer has elapsed */
         }
     }
 
@@ -234,7 +234,7 @@ void BMS_Trigger(void) {
     switch (bms_state.state) {
         /****************************UNINITIALIZED***********************************/
         case BMS_STATEMACH_UNINITIALIZED:
-            // waiting for Initialization Request
+            /* waiting for Initialization Request */
             statereq = BMS_TransferStateRequest();
             if (statereq == BMS_STATE_INIT_REQUEST) {
                 BMS_SAVELASTSTATES();
@@ -242,9 +242,9 @@ void BMS_Trigger(void) {
                 bms_state.state = BMS_STATEMACH_INITIALIZATION;
                 bms_state.substate = BMS_ENTRY;
             } else if (statereq == BMS_STATE_NO_REQUEST) {
-                // no actual request pending //
+                /* no actual request pending /*  */
             } else {
-                bms_state.ErrRequestCounter++;  // illegal request pending
+                bms_state.ErrRequestCounter++;  /* illegal request pending */
             }
             break;
 
@@ -252,7 +252,7 @@ void BMS_Trigger(void) {
         /****************************INITIALIZATION**********************************/
         case BMS_STATEMACH_INITIALIZATION:
             BMS_SAVELASTSTATES();
-            // CONT_SetStateRequest(CONT_STATE_INIT_REQUEST);
+            /* CONT_SetStateRequest(CONT_STATE_INIT_REQUEST); */
 
             bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
             bms_state.state = BMS_STATEMACH_INITIALIZED;
@@ -320,7 +320,7 @@ void BMS_Trigger(void) {
             }
             else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS){
                 if (BMS_CheckAnyErrorFlagSet() == E_NOT_OK){
-                    // we stay already in requested state, nothing to do
+                    /* we stay already in requested state, nothing to do */
                 }
                 else {
                     if (SECONDARY_OUT_OF_ERROR_STATE == TRUE) {
@@ -337,7 +337,7 @@ void BMS_Trigger(void) {
             break;
         default:
             break;
-    }  // end switch(bms_state.state)
+    }  /* end switch(bms_state.state) */
 
     bms_state.triggerentry--;
     bms_state.counter++;
@@ -488,7 +488,7 @@ static void BMS_CheckSlaveTemperatures(void) {
  * @return  E_OK if no error flag is set, otherwise E_NOT_OK
  */
 static STD_RETURN_TYPE_e BMS_CheckAnyErrorFlagSet(void) {
-    STD_RETURN_TYPE_e retVal = E_OK;  // is set to E_NOT_OK if error detected
+    STD_RETURN_TYPE_e retVal = E_OK;  /* is set to E_NOT_OK if error detected */
     DATA_BLOCK_ERRORSTATE_s error_flags;
     DATA_BLOCK_MSL_FLAG_s msl_flags;
 

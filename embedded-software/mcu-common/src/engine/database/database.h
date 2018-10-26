@@ -61,9 +61,9 @@
 
 
 /*================== Macros and Definitions ===============================*/
-// FIXME doxygen comments
+/* FIXME doxygen comments */
 typedef struct {
-    // FIXME what is the intention of this union? isn't it dangerous if someone expects a pointer to and accesses via .u32ptr, but there is a value stored in value?
+    /* FIXME what is the intention of this union? isn't it dangerous if someone expects a pointer to and accesses via .u32ptr, but there is a value stored in value? */
     union {
         uint32_t                u32value;    /*  reference by uint32_t value   */
         uint32_t                *u32ptr;    /*  reference by uint32_t pointer */
@@ -77,7 +77,7 @@ typedef struct {
 typedef struct {
     void                           *RDptr;
     void                           *WRptr;
-    DATA_BLOCK_BUFFER_TYPE_e  nr_of_buffer;    // todo really needed?
+    DATA_BLOCK_BUFFER_TYPE_e  nr_of_buffer;    /* todo really needed? */
 } DATA_BLOCK_ACCESS_s;
 
 /*================== Constant and Variable Definitions ====================*/

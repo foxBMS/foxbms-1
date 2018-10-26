@@ -51,7 +51,7 @@ from waflib import Utils, Options, Errors
 from waflib import Task, TaskGen
 from waflib.Tools.compiler_c import c_compiler
 
-__version__ = '1.5.1'
+__version__ = '1.5.2'
 __date__ = '2017-11-29'
 __updated__ = '2018-08-15'
 
@@ -469,6 +469,7 @@ def flake8(bld):
 
 
 def cpplint(bld):
+    from waflib import Logs
     import glob
     with open('cpplint.yml', 'r') as stream:
         try:
@@ -494,14 +495,25 @@ def cpplint(bld):
     cmd += ['--output={}'.format(output_format)]
     cmd += ['--linelength={}'.format(linelength)]
     cmd += ['--filter=' + filters]
+    err = False
+    err_msgs = 'Linting errors are listed below this line\n'
+    err_msgs = '------------------------------------------------------------\n'
+    err_msgs += 'Error messages are:\n'
     for f in to_lint_files:
         _cmd = cmd + [f]
-        print(_cmd)
-        proc = Utils.subprocess.Popen(_cmd)
-        proc.communicate()
+        Logs.info(' '.join(_cmd))
+        proc = Utils.subprocess.Popen(_cmd, stdout=Utils.subprocess.PIPE, stderr=Utils.subprocess.PIPE)
+        std_out, std_err = proc.communicate()
+        std_out, std_err = std_out.decode(), std_err.decode()
+        if std_out:
+            print(std_out)
+        if std_err:
+            print(std_err)
         if proc.returncode:
             err = True
+            err_msgs = err_msgs + std_err + '\n'
     if err:
+        Logs.error(err_msgs)
         bld.fatal('There are linting errors.')
 
 

@@ -53,6 +53,7 @@ import logging
 import subprocess
 import struct
 import yaml
+import datetime
 
 __version__ = 0.2
 __date__ = '2017-11-30'
@@ -122,6 +123,8 @@ be written into')
 
     checksum_struct_name = "ver_sw_validation"
     checksum_position_in_struct = 0x10
+    date_position_in_struct = 0xA0
+    time_position_in_struct = 0xAC
 
     for _fr in [conffile, elffile, tool]:
         if not os.path.isfile(_fr):
@@ -182,6 +185,29 @@ be written into')
     bytes = struct.pack('I', int(checksum, 16))
 
     # write checksum bytes to calculated offset in ELF file
+    with open(elffile, "r+b") as fh:
+        fh.seek(offset)
+        fh.write(bytes)
+
+    # calculate offset of date in ELF file
+    offset = int(sectionAttributes["File"], 16) + positionInSection + date_position_in_struct
+
+    # create single bytes from date string
+    d = datetime.datetime.now()
+    bytes = d.strftime("%b %d %Y").encode()
+
+    # write date bytes to calculated offset in ELF file
+    with open(elffile, "r+b") as fh:
+        fh.seek(offset)
+        fh.write(bytes)
+
+    # calculate offset of time in ELF file
+    offset = int(sectionAttributes["File"], 16) + positionInSection + time_position_in_struct
+
+    # create single bytes from time string
+    bytes = d.strftime("%H:%M:%S").encode()
+
+    # write time bytes to calculated offset in ELF file
     with open(elffile, "r+b") as fh:
         fh.seek(offset)
         fh.write(bytes)

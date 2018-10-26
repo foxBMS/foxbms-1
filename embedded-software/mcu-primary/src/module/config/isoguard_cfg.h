@@ -110,9 +110,13 @@
  * Resistance threshold in kOhm to differentiate of ISOIR_RESIST_MEAS_GOOD and
  * ISOIR_RESIST_MEAS_BAD in NORMAL_MODE within duty cycle of 10%..90%
  */
-#define ISO_RESISTANCE_THRESHOLD    400
+#define ISO_RESISTANCE_THRESHOLD_kOhm    400
 
 /*================== Constant and Variable Definitions ====================*/
+typedef enum {
+    ISO_STATE_UNINITIALIZED = 0,
+    ISO_STATE_INITIALIZED   = 1,
+} ISO_INIT_STATE_e;
 
 /*================== Function Prototypes ==================================*/
 

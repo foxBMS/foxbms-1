@@ -74,31 +74,31 @@ uint32_t os_schedulerstarttime;
 
 void OS_TaskInit(void) {
 
-    // Configuration of RTOS Queues
+    /* Configuration of RTOS Queues */
     os_boot = OS_ENG_CREATE_QUEUES;
     ENG_CreateQueues();
 
-    // Configuration of RTOS Mutexes
+    /* Configuration of RTOS Mutexes */
     os_boot = OS_ENG_CREATE_MUTEX;
     ENG_CreateMutex();
 
-    // Configuration of RTOS Events
+    /* Configuration of RTOS Events */
     os_boot = OS_ENG_CREATE_EVENT;
     ENG_CreateEvent();
 
-    // Configuration of RTOS Tasks
+    /* Configuration of RTOS Tasks */
     os_boot = OS_ENG_CREATE_TASKS;
     ENG_CreateTask();
 
-    // Configuration of RTOS Mutexes
+    /* Configuration of RTOS Mutexes */
     os_boot = OS_APPL_CREATE_MUTEX;
     APPL_CreateMutex();
 
-    // Configuration of RTOS Events
+    /* Configuration of RTOS Events */
     os_boot = OS_APPL_CREATE_EVENT;
     APPL_CreateEvent();
 
-    // Configuration of RTOS Tasks
+    /* Configuration of RTOS Tasks */
     os_boot = OS_APPL_CREATE_TASKS;
     APPL_CreateTask();
 }
@@ -112,27 +112,27 @@ void vApplicationIdleHook(void) {
 void OS_TimerTrigger(volatile OS_TIMER_s* timer) {
 
     if(++timer->Timer_1ms > 9 ) {
-        // 10ms
+        /* 10ms */
         timer->Timer_1ms = 0;
 
         if(++timer->Timer_10ms > 9) {
-        // 100ms
+        /* 100ms */
             timer->Timer_10ms = 0;
 
             if(++timer->Timer_100ms > 9) {
-            // 1s
+            /* 1s */
                 timer->Timer_100ms = 0;
 
                 if(++timer->Timer_sec > 59) {
-                // 1min
+                /* 1min */
                     timer->Timer_sec = 0;
 
                     if(++timer->Timer_min > 59) {
-                    // 1h
+                    /* 1h */
                         timer->Timer_min=0;
 
                         if(++timer->Timer_h > 23) {
-                        // 1d
+                        /* 1d */
                             timer->Timer_h=0;
                             ++timer->Timer_d;
                         }
@@ -146,8 +146,8 @@ void OS_TimerTrigger(volatile OS_TIMER_s* timer) {
 uint8_t OS_Check_Context(void)
 {
 
-    // use define from port.c :   portVECTACTIVE_MASK
-    if((portNVIC_INT_CTRL_REG & 0xFFUL) == 0) // and mask off all bits but the VECTACTIVE bits in the ICSR register
+    /* use define from port.c :   portVECTACTIVE_MASK */
+    if((portNVIC_INT_CTRL_REG & 0xFFUL) == 0)  /* and mask off all bits but the VECTACTIVE bits in the ICSR register */
     {
         return 0;   /* Context of caller function is a TASK (Thread)*/
     }
@@ -159,8 +159,8 @@ uint8_t OS_Check_Context(void)
 void OS_TaskEnter_Critical(void)
 {
 
-    // use define from port.c :   portVECTACTIVE_MASK
-    if((portNVIC_INT_CTRL_REG & 0xFFUL) == 0) // and mask off all bits but the VECTACTIVE bits in the ICSR register
+    /* use define from port.c :   portVECTACTIVE_MASK */
+    if((portNVIC_INT_CTRL_REG & 0xFFUL) == 0)  /* and mask off all bits but the VECTACTIVE bits in the ICSR register */
     {
         taskENTER_CRITICAL();               /* Call enter critical function within task context */
     }
@@ -172,8 +172,8 @@ void OS_TaskEnter_Critical(void)
 void OS_TaskExit_Critical(void)
 {
 
-    // use define from port.c :   portVECTACTIVE_MASK
-    if((portNVIC_INT_CTRL_REG & 0xFFUL) == 0) // and mask off all bits but the VECTACTIVE bits in the ICSR register
+    /* use define from port.c :   portVECTACTIVE_MASK */
+    if((portNVIC_INT_CTRL_REG & 0xFFUL) == 0)  /* and mask off all bits but the VECTACTIVE bits in the ICSR register */
     {
         taskEXIT_CRITICAL();                /* Call exit critical function within task context */
     }

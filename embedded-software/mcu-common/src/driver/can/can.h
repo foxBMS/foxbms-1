@@ -93,8 +93,8 @@ typedef enum {
 
 typedef struct CAN_ERROR {
     CAN_ErrorTypeDef_e canError;
-    uint16_t canErrorCounter[10 - 1];  // One slot for every error from HAL_CAN_ErrorTypeDef;
-                                       // No space for NoError
+    uint16_t canErrorCounter[10 - 1];  /* One slot for every error from HAL_CAN_ErrorTypeDef; */
+                                       /* No space for NoError */
 } CAN_ERROR_s;
 
 typedef struct CAN_RX_BUFFERELEMENT {

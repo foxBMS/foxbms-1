@@ -117,7 +117,7 @@
  * @level    user
  * @group    GENERAL
  */
-//#define BS_LTC6804_USED      TRUE
+/* #define BS_LTC6804_USED      TRUE */
 #define BS_LTC6804_USED      FALSE
 
 /*
@@ -128,7 +128,7 @@
  * @level    user
  * @group    GENERAL
  */
-//#define BS_LTC6810_USED      TRUE
+/* #define BS_LTC6810_USED      TRUE */
 #define BS_LTC6810_USED      FALSE
 
 /*
@@ -140,7 +140,7 @@
  * @group    GENERAL
  */
 #define BS_LTC6811_USED      TRUE
-//#define BS_LTC6811_USED      FALSE
+/* #define BS_LTC6811_USED      FALSE */
 
 /*
  * specify the type of LTC connected to the battery module
@@ -150,7 +150,7 @@
  * @level    user
  * @group    GENERAL
  */
-//#define BS_LTC6812_USED      TRUE
+/* #define BS_LTC6812_USED      TRUE */
 #define BS_LTC6812_USED      FALSE
 
 /*
@@ -161,7 +161,7 @@
  * @level    user
  * @group    GENERAL
  */
-//#define BS_LTC6813_USED      TRUE
+/* #define BS_LTC6813_USED      TRUE */
 #define BS_LTC6813_USED      FALSE
 
 /**
@@ -208,7 +208,7 @@
  * \par Default:
  * 1
 */
-//#define BS_SEPARATE_POWERLINES 0
+/* #define BS_SEPARATE_POWERLINES 0 */
 #define BS_SEPARATE_POWERLINES 1
 
 /*================== Constant and Variable Definitions ====================*/

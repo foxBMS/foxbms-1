@@ -118,7 +118,7 @@ static uint8_t SYS_CheckReEntrance(void) {
     if (!sys_state.triggerentry) {
         sys_state.triggerentry++;
     } else {
-        retval = 0xFF;  // multiple calls of function
+        retval = 0xFF;  /* multiple calls of function */
     }
     taskEXIT_CRITICAL();
 
@@ -205,7 +205,7 @@ static SYS_RETURN_TYPE_e SYS_CheckStateRequest(SYS_STATE_REQUEST_e statereq) {
     }
 
     if (sys_state.statereq == SYS_STATE_NO_REQUEST) {
-        // init only allowed from the uninitialized state
+        /* init only allowed from the uninitialized state */
         if (statereq == SYS_STATE_INIT_REQUEST) {
             if (sys_state.state == SYS_STATEMACH_UNINITIALIZED) {
                 return SYS_OK;
@@ -222,7 +222,7 @@ static SYS_RETURN_TYPE_e SYS_CheckStateRequest(SYS_STATE_REQUEST_e statereq) {
 
 
 void SYS_Trigger(void) {
-    //  STD_RETURN_TYPE_e retVal=E_OK;
+    /* STD_RETURN_TYPE_e retVal=E_OK; */
     SYS_STATE_REQUEST_e statereq = SYS_STATE_NO_REQUEST;
     ILCK_STATEMACH_e ilckstate = ILCK_STATEMACH_UNDEFINED;
     CONT_STATEMACH_e contstate = CONT_STATEMACH_UNDEFINED;
@@ -230,8 +230,8 @@ void SYS_Trigger(void) {
     BMS_STATEMACH_e bmsstate = BMS_STATEMACH_UNDEFINED;
 
 
-    DIAG_SysMonNotify(DIAG_SYSMON_SYS_ID, 0);  // task is running, state = ok
-    // Check re-entrance of function
+    DIAG_SysMonNotify(DIAG_SYSMON_SYS_ID, 0);  /*  task is running, state = ok */
+    /* Check re-entrance of function */
     if (SYS_CheckReEntrance()) {
         return;
     }
@@ -239,7 +239,7 @@ void SYS_Trigger(void) {
     if (sys_state.timer) {
         if (--sys_state.timer) {
             sys_state.triggerentry--;
-            return;  // handle state machine only if timer has elapsed
+            return;  /* handle state machine only if timer has elapsed */
         }
     }
 
@@ -249,7 +249,7 @@ void SYS_Trigger(void) {
     switch (sys_state.state) {
         /****************************UNINITIALIZED***********************************/
         case SYS_STATEMACH_UNINITIALIZED:
-            // waiting for Initialization Request
+            /* waiting for Initialization Request */
             statereq = SYS_TransferStateRequest();
             if (statereq == SYS_STATE_INIT_REQUEST) {
                 SYS_SAVELASTSTATES();
@@ -257,16 +257,20 @@ void SYS_Trigger(void) {
                 sys_state.state = SYS_STATEMACH_INITIALIZATION;
                 sys_state.substate = SYS_ENTRY;
             } else if (statereq == SYS_STATE_NO_REQUEST) {
-                // no actual request pending //
+                /* no actual request pending */
             } else {
-                sys_state.ErrRequestCounter++;   // illegal request pending
+                sys_state.ErrRequestCounter++;   /* illegal request pending */
             }
             break;
         /****************************INITIALIZATION**********************************/
         case SYS_STATEMACH_INITIALIZATION:
 
             SYS_SAVELASTSTATES();
-            //Initializations done here
+            /* Initializations done here */
+
+            /* Send CAN boot message directly on CAN */
+            SYS_SendBootMessage(1);
+
             sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
             sys_state.state = SYS_STATEMACH_INITIALIZED;
             sys_state.substate = SYS_ENTRY;
@@ -310,7 +314,7 @@ void SYS_Trigger(void) {
                     sys_state.substate = SYS_ENTRY;
                     break;
                 } else {
-                    if (sys_state.InitCounter > (1000/SYS_TASK_CYCLE_CONTEXT_MS)) {
+                    if (sys_state.InitCounter > (100/SYS_TASK_CYCLE_CONTEXT_MS)) {
                         sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
                         sys_state.state = SYS_STATEMACH_ERROR;
                         sys_state.substate = SYS_ILCK_INIT_ERROR;
@@ -346,7 +350,7 @@ void SYS_Trigger(void) {
                     sys_state.substate = SYS_ENTRY;
                     break;
                 } else {
-                    if (sys_state.InitCounter > (1000/SYS_TASK_CYCLE_CONTEXT_MS)) {
+                    if (sys_state.InitCounter > (100/SYS_TASK_CYCLE_CONTEXT_MS)) {
                         sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
                         sys_state.state = SYS_STATEMACH_ERROR;
                         sys_state.substate = SYS_CONT_INIT_ERROR;
@@ -378,11 +382,11 @@ void SYS_Trigger(void) {
                     }
                     if (balstate == BAL_STATEMACH_INITIALIZED) {
                         sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
-                        sys_state.state = SYS_STATEMACH_FIRST_MEASUREMENT_CYCLE;
+                        sys_state.state = SYS_STATEMACH_INITIALIZE_ISOGUARD;
                         sys_state.substate = SYS_ENTRY;
                         break;
                     } else {
-                        if (sys_state.InitCounter > (1000/SYS_TASK_CYCLE_CONTEXT_MS)) {
+                        if (sys_state.InitCounter > (100/SYS_TASK_CYCLE_CONTEXT_MS)) {
                             sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
                             sys_state.state = SYS_STATEMACH_ERROR;
                             sys_state.substate = SYS_CONT_INIT_ERROR;
@@ -396,7 +400,17 @@ void SYS_Trigger(void) {
 
                 break;
 
-            /****************************ENABLE CAN*************************************/
+            case SYS_STATEMACH_INITIALIZE_ISOGUARD:
+
+#if BUILD_MODULE_ENABLE_ISOGUARD == 1
+                ISO_Init();
+#endif
+                sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
+                sys_state.state = SYS_STATEMACH_FIRST_MEASUREMENT_CYCLE;
+                sys_state.substate = SYS_ENTRY;
+                break;
+
+            /****************************START FIRT MEAS CYCLE**************************/
             case SYS_STATEMACH_FIRST_MEASUREMENT_CYCLE:
                 SYS_SAVELASTSTATES();
                 if (sys_state.substate == SYS_ENTRY) {
@@ -413,7 +427,7 @@ void SYS_Trigger(void) {
                         sys_state.substate = SYS_ENTRY;
                         break;
                     } else {
-                        if (sys_state.InitCounter > (1000/SYS_TASK_CYCLE_CONTEXT_MS)) {
+                        if (sys_state.InitCounter > (100/SYS_TASK_CYCLE_CONTEXT_MS)) {
                             sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
                             sys_state.state = SYS_STATEMACH_ERROR;
                             sys_state.substate = SYS_MEAS_INIT_ERROR;
@@ -448,7 +462,7 @@ void SYS_Trigger(void) {
                         sys_state.substate = SYS_ENTRY;
                         break;
                     } else {
-                        if (sys_state.InitCounter > (1000/SYS_TASK_CYCLE_CONTEXT_MS)) {
+                        if (sys_state.InitCounter > (100/SYS_TASK_CYCLE_CONTEXT_MS)) {
                             sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
                             sys_state.state = SYS_STATEMACH_ERROR;
                             sys_state.substate = SYS_CURRENT_SENSOR_PRESENCE_ERROR;
@@ -470,9 +484,6 @@ void SYS_Trigger(void) {
                     CANS_Enable_Periodic(TRUE);
                     SOC_Init(FALSE);
                 }
-#if BUILD_MODULE_ENABLE_ISOGUARD == 1
-                ISO_Init();
-#endif
 
                 sys_state.timer = SYS_STATEMACH_MEDIUMTIME_MS;
                 sys_state.state = SYS_STATEMACH_INITIALIZE_BMS;
@@ -497,7 +508,7 @@ void SYS_Trigger(void) {
                         sys_state.substate = SYS_ENTRY;
                         break;
                     } else {
-                        if (sys_state.InitCounter > (1000/SYS_TASK_CYCLE_CONTEXT_MS)) {
+                        if (sys_state.InitCounter > (100/SYS_TASK_CYCLE_CONTEXT_MS)) {
                             sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
                             sys_state.state = SYS_STATEMACH_ERROR;
                             sys_state.substate = SYS_BMS_INIT_ERROR;
@@ -519,8 +530,9 @@ void SYS_Trigger(void) {
         /****************************ERROR*************************************/
         case SYS_STATEMACH_ERROR:
             SYS_SAVELASTSTATES();
+            CANS_Enable_Periodic(TRUE);
             sys_state.timer = SYS_STATEMACH_LONGTIME_MS;
             break;
-    }  // end switch(sys_state.state)
+    }  /* end switch(sys_state.state) */
     sys_state.triggerentry--;
 }

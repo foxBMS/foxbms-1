@@ -64,8 +64,8 @@
 typedef struct {
     RTC_Date_s date;    /*!< RCC clock control & status register at startup */
     RTC_Time_s time;    /*!<  state of Eeprom Driver State Machine          */
-    //uint32_t date;    /*!< RCC clock control & status register at startup */
-    //uint32_t time;    /*!<  state of Eeprom Driver State Machine          */
+    /* uint32_t date;    !< RCC clock control & status register at startup */
+    /* uint32_t time;    !<  state of Eeprom Driver State Machine          */
     uint32_t dummy[4];  /*!<                                                */
 } RTC_RESETSOURCE_s;
 

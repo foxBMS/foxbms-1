@@ -116,7 +116,7 @@ static uint8_t BMS_CheckReEntrance(void) {
     if (!bms_state.triggerentry) {
         bms_state.triggerentry++;
     } else {
-        retval = 0xFF;  // multiple calls of function
+        retval = 0xFF;  /* multiple calls of function */
     }
     OS_TaskExit_Critical();
     return (retval);
@@ -194,7 +194,7 @@ static BMS_RETURN_TYPE_e BMS_CheckStateRequest(BMS_STATE_REQUEST_e statereq) {
     }
 
     if (bms_state.statereq == BMS_STATE_NO_REQUEST) {
-        // init only allowed from the uninitialized state
+        /* init only allowed from the uninitialized state */
         if (statereq == BMS_STATE_INIT_REQUEST) {
             if (bms_state.state == BMS_STATEMACH_UNINITIALIZED) {
                 return BMS_OK;
@@ -214,7 +214,7 @@ void BMS_Trigger(void) {
     CONT_STATEMACH_e contstate = CONT_STATEMACH_UNDEFINED;
     DATA_BLOCK_SYSTEMSTATE_s systemstate = {0};
 
-    DIAG_SysMonNotify(DIAG_SYSMON_BMS_ID, 0);  // task is running, state = ok
+    DIAG_SysMonNotify(DIAG_SYSMON_BMS_ID, 0);  /* task is running, state = ok */
 
     if (bms_state.state != BMS_STATEMACH_UNINITIALIZED) {
         BMS_CheckVoltages();
@@ -222,7 +222,7 @@ void BMS_Trigger(void) {
         BMS_CheckCurrent();
         BMS_CheckSlaveTemperatures();
     }
-    // Check re-entrance of function
+    /* Check re-entrance of function */
     if (BMS_CheckReEntrance()) {
         return;
     }
@@ -230,7 +230,7 @@ void BMS_Trigger(void) {
     if (bms_state.timer) {
         if (--bms_state.timer) {
             bms_state.triggerentry--;
-            return;    // handle state machine only if timer has elapsed
+            return;    /* handle state machine only if timer has elapsed */
         }
     }
 
@@ -238,7 +238,7 @@ void BMS_Trigger(void) {
     switch (bms_state.state) {
         /****************************UNINITIALIZED***********************************/
         case BMS_STATEMACH_UNINITIALIZED:
-            // waiting for Initialization Request
+            /* waiting for Initialization Request */
             statereq = BMS_TransferStateRequest();
             if (statereq == BMS_STATE_INIT_REQUEST) {
                 BMS_SAVELASTSTATES();
@@ -246,9 +246,9 @@ void BMS_Trigger(void) {
                 bms_state.state = BMS_STATEMACH_INITIALIZATION;
                 bms_state.substate = BMS_ENTRY;
             } else if (statereq == BMS_STATE_NO_REQUEST) {
-                // no actual request pending //
+                /* no actual request pending /*  */
             } else {
-                bms_state.ErrRequestCounter++;  // illegal request pending
+                bms_state.ErrRequestCounter++;  /* illegal request pending */
             }
             break;
 
@@ -256,7 +256,7 @@ void BMS_Trigger(void) {
         /****************************INITIALIZATION**********************************/
         case BMS_STATEMACH_INITIALIZATION:
             BMS_SAVELASTSTATES();
-            // CONT_SetStateRequest(CONT_STATE_INIT_REQUEST);
+            /* CONT_SetStateRequest(CONT_STATE_INIT_REQUEST); */
 
             bms_state.timer = BMS_STATEMACH_LONGTIME_MS;
             bms_state.state = BMS_STATEMACH_INITIALIZED;
@@ -605,7 +605,7 @@ void BMS_Trigger(void) {
 #endif
             } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS) {
                 if (BMS_CheckAnyErrorFlagSet() == E_NOT_OK) {
-                    // we stay already in requested state, nothing to do
+                    /* we stay already in requested state, nothing to do */
                 } else {
                     bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                     bms_state.substate = BMS_CHECK_STATE_REQUESTS;
@@ -630,7 +630,7 @@ void BMS_Trigger(void) {
 #if BUILD_MODULE_ENABLE_ILCK == 1
             } else if (bms_state.substate == BMS_CHECK_INTERLOCK_CLOSE_AFTER_ERROR) {
                 if (ILCK_GetInterlockFeedback() == ILCK_SWITCH_ON) {
-                    //TODO: check
+                    /* TODO: check */
                     BAL_SetStateRequest(BAL_STATE_ALLOWBALANCING_REQUEST);
                     bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                     bms_state.state = BMS_STATEMACH_STANDBY;
@@ -646,7 +646,7 @@ void BMS_Trigger(void) {
             break;
         default:
             break;
-    }  // end switch(bms_state.state)
+    }  /* end switch(bms_state.state) */
 
     bms_state.triggerentry--;
     bms_state.counter++;
@@ -675,7 +675,7 @@ static uint8_t BMS_CheckCANRequests(void) {
     else if (request.state_request == BMS_REQ_ID_CHARGE){
         retVal = BMS_REQ_ID_CHARGE;
     }
-#endif // BS_SEPARATE_POWERLINES == 1
+#endif /*  BS_SEPARATE_POWERLINES == 1 */
 
     return retVal;
 }
@@ -978,7 +978,7 @@ static void BMS_CheckSlaveTemperatures(void) {
  * @return  E_OK if no error flag is set, otherwise E_NOT_OK
  */
 static STD_RETURN_TYPE_e BMS_CheckAnyErrorFlagSet(void) {
-    STD_RETURN_TYPE_e retVal = E_OK;  // is set to E_NOT_OK if error detected
+    STD_RETURN_TYPE_e retVal = E_OK;  /* is set to E_NOT_OK if error detected */
     DATA_BLOCK_ERRORSTATE_s error_flags;
     DATA_BLOCK_MSL_FLAG_s msl_flags;
 
@@ -1013,6 +1013,9 @@ static STD_RETURN_TYPE_e BMS_CheckAnyErrorFlagSet(void) {
         error_flags.mux_error                 == 1 ||
         error_flags.spi_error                 == 1 ||
         error_flags.currentsensorresponding   == 1 ||
+#if BMS_OPEN_CONTACTORS_ON_INSULATION_ERROR == TRUE
+        error_flags.insulation_error          == 1 ||
+#endif /* BMS_OPEN_CONTACTORS_ON_INSULATION_ERROR */
         error_flags.can_timing_cc             == 1 ||
         error_flags.can_timing                == 1 ) {
 

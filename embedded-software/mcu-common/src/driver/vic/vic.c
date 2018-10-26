@@ -151,9 +151,9 @@ uint32_t VIC_PostOsInterruptInit(void) {
 
     /* Wait here if error occurred */
     if (indexnumber != 0 || invalidpriority != 0) {
-        // indexnumber holds entry in vic_interrupts where multiple initializations occur
-        // or if invalidpriority is also unequal 0, it holds the index where the invalid priority,
-        // invalidpriority, is defined.
+        /* indexnumber holds entry in vic_interrupts where multiple initializations occur */
+        /* or if invalidpriority is also unequal 0, it holds the index where the invalid priority, */
+        /* invalidpriority, is defined. */
 
         retErr |= STD_ERR_BIT_1;
     }
@@ -207,11 +207,12 @@ void VIC_DisableInterrupt(IRQn_Type interrupt) {
 
 static uint32_t VIC_InitEXTI(void) {
     uint32_t retErr = 0;
-//    __HAL_RCC_SYSCFG_CLK_ENABLE();
-//
-//    SYSCFG->EXTICR[3] |= 1;
-//    EXTI->IMR = __NVIC_EXTI_SELECT_LINE(GPIO_PIN_12);
-//    EXTI->RTSR = __NVIC_EXTI_SELECT_RISING_EDGE(GPIO_PIN_12);
-//    EXTI->FTSR = __NVIC_EXTI_SELECT_FALLING_EDGE(GPIO_PIN_12);
+/*     __HAL_RCC_SYSCFG_CLK_ENABLE();
+
+    SYSCFG->EXTICR[3] |= 1;
+    EXTI->IMR = __NVIC_EXTI_SELECT_LINE(GPIO_PIN_12);
+    EXTI->RTSR = __NVIC_EXTI_SELECT_RISING_EDGE(GPIO_PIN_12);
+    EXTI->FTSR = __NVIC_EXTI_SELECT_FALLING_EDGE(GPIO_PIN_12);
+*/
     return retErr;
 }

@@ -2,6 +2,41 @@
 Changelog
 =========
 
+**Release 1.5.2**
+
+Software:
+
+* Toolchain:
+
+  * updated to ``waf-2.0.12`` (from ``waf-2.0.11``)
+
+* Bugfixes:
+
+  * fixed bug that delay after SPI wake-up byte was not long enough
+
+
+* Enhancements:
+
+  * increased CPU clock frequency from 168MHz to 180MHz
+  * increased SPI bitrate from 656.25kHz to 703.125kHz
+  * Added CAN boot message with SW-version and flash checksum (0x101)
+  * CAN messages are now always sent, even if system error was detected
+  * foxBMS SW-version requestable via CAN (request ID: 0x777, response ID: 0x101)
+  * added insulation error flag to ``DATA_BLOCK_ERRORSTATE_s``
+  * configurable behavior if contactors should be open on insulation error or not
+  * separate configurable precharging for charge/discharge path possible
+
+Hardware:
+
+* adapted CAN filter circuit on master and extension board for improved fault tolerance at short of CAN_L to GND or CAN_H to supply
+
+Documentation:
+
+* updated instruction for flashing primary MCU
+* updated FAQ section
+
+------------------------------------------------------------------------------
+
 **Release 1.5.1**
 
 Software:

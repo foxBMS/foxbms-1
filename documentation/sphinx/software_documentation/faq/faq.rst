@@ -224,7 +224,12 @@ To get the function converting the measured voltage to temperature, the followin
 
     - Temperature value (read from the NTC datasheet)
     - Corresponding resistance value (read from the NTC datasheet)
-    - Voltage value provided by the voltage divider calculated with the NTC resistance for each temperature value. On the |slave|, the voltage divider is formed by a 20kOhm resistor in series with the NTC, with a 3V power supply, as shown in :ref:`slave_voltage_divider`
+    - Voltage value provided by the voltage divider calculated with the NTC
+      resistance for each temperature value. On the latest |slave|, the voltage divider
+      is formed by a 10kOhm resistor in series with the NTC, with a 3V power supply,
+      as shown in :ref:`slave_voltage_divider`
+    - Different slave versions may have different voltage dividers. Have a look a
+      the :ref:`hw_slave` documentation to select correct voltage divider for your slave.
 
  #. Plot the temperature versus the corresponding measured voltage value (i.e., first column versus third column in the spreadsheet)
  #. Fit a polynomial function to the plotted curve (e.g., by using Microsoft Excel)

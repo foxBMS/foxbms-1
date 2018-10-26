@@ -73,7 +73,7 @@
  * \par Default:
  * False
 */
-//#define IR155_HISTORYENABLE
+/* #define IR155_HISTORYENABLE */
 
 
 
@@ -235,7 +235,7 @@ typedef struct {
     TIM_DutyCycleType_s sigICU;
     uint32_t resistance;
     uint8_t dutycycle;
-    uint8_t OKHS_state;
+    IO_PIN_STATE_e OKHS_state;
     IR155_SIGMODE_e mode : 4;
     IR155_STATE_e state  : 4;
 } IR155_MEASUREMENT_s;
@@ -263,11 +263,11 @@ typedef struct {
  */
 typedef struct {
     IR155_STATE_e   state : 4;
-    unsigned        resistance : 3;
-    unsigned        OKHS_state : 1;
+    uint16_t        resistance : 3;
+    uint16_t        OKHS_state : 1;
     IR155_STATE_e   state_old : 4;
-    unsigned        resistance_old : 3;
-    unsigned        OKHS_State_old : 1;
+    uint16_t        resistance_old : 3;
+    uint16_t        OKHS_State_old : 1;
 } IR155_INSULATION_s;
 
 
@@ -290,12 +290,13 @@ extern void IR155_DeInit(void);
  * @brief Interface function which delivers the actual signal measurement (duty cyle) and evaluation.
  *        Use of intervals because of measuring and signal inaccuracy. The evaluated results are
  *        finally written in the database.
- * @param state             pointer where to write measurement state into
- * @param resistance        pointer where to write measured resistance into
+ * @param state             pointer to write measurement state into
+ * @param resistance        pointer to write measured resistance into
+ * @param ohks_state        pointer to write OHKS pin state into
  *
  * @return E_OK if no error occurred, otherwise E_NOT_OK
  */
-extern STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resistance);
+extern STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resistance, IO_PIN_STATE_e* ohks_state);
 
 /*================== Function Implementations =============================*/
 

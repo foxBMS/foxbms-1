@@ -91,6 +91,7 @@
  *
  */
 
+static ISO_INIT_STATE_e iso_state = ISO_STATE_UNINITIALIZED;
 /*================== Function Prototypes ==================================*/
 
 
@@ -104,6 +105,8 @@ void ISO_Init(void) {
 
     /* Enable Hardware-Bender-Module */
     IR155_ENABLE_BENDER_HW();
+
+    iso_state = ISO_STATE_INITIALIZED;
 #endif
 }
 
@@ -111,6 +114,9 @@ void ISO_Init(void) {
 void ISO_ReInit(void) {
 
 #ifdef ISO_ISOGUARD_ENABLE
+
+    iso_state = ISO_STATE_UNINITIALIZED;
+
     /* Disable Hardware-Bender-Modul */
     IR155_DISABLE_BENDER_HW();
 
@@ -134,10 +140,16 @@ void ISO_MeasureInsulation(void) {
 
 #ifdef ISO_ISOGUARD_ENABLE
 
+    /* Do not continue if ISOGUARD module is still uninitialized */
+    if (iso_state == ISO_STATE_UNINITIALIZED) {
+        return;
+    }
+
     STD_RETURN_TYPE_e retVal = E_NOT_OK;
+    IO_PIN_STATE_e ohksState = IO_PIN_RESET;    /* high -> no error, low -> error */
     uint32_t resistance = 0;
     IR155_STATE_e state = IR155_STATE_UNDEFINED;
-    static DATA_BLOCK_ISOMETER_s ISO_measData = {    // database structure
+    static DATA_BLOCK_ISOMETER_s ISO_measData = {    /* database structure */
             .valid = 1,
             .state = 1,
             .resistance_kOhm = 0,
@@ -145,7 +157,7 @@ void ISO_MeasureInsulation(void) {
             .previous_timestamp = 0,
     };
 
-    retVal = IR155_MeasureResistance(&state, &resistance);
+    retVal = IR155_MeasureResistance(&state, &resistance, &ohksState);
 
     /* Get resistance */
     ISO_measData.resistance_kOhm = resistance;
@@ -157,11 +169,25 @@ void ISO_MeasureInsulation(void) {
         ISO_measData.valid = 0;
     }
 
-    if(retVal == E_OK && resistance > ISO_RESISTANCE_THRESHOLD &&
+    /* Set state valid/invalid based on resistance threshold */
+    if(retVal == E_OK && resistance > ISO_RESISTANCE_THRESHOLD_kOhm &&
             (state == IR155_RESIST_MEAS_GOOD || state == IR155_RESIST_ESTIM_GOOD)) {
-        ISO_measData.state = 0;     // Good resistance measured
+        ISO_measData.state = 0;     /* Good resistance measured */
     } else {
-        ISO_measData.state = 1;     // Invalid resistance measured or error occured;
+        ISO_measData.state = 1;     /* Invalid resistance measured or error occured; */
+    }
+
+    /* Set measurement result invalid if Pin OHKS detects an error */
+    if (ohksState == IO_PIN_RESET ||
+            (ISO_measData.valid == 0 && ISO_measData.state == 1)) {
+        /* Error if PIN set or invalid insulation detected */
+        DIAG_Handler(DIAG_CH_INSULATION_ERROR, DIAG_EVENT_NOK, 0, 0);
+    } else if (ISO_measData.valid == 0 && ISO_measData.state == 0) {
+        /* Measurement okay */
+        DIAG_Handler(DIAG_CH_INSULATION_ERROR, DIAG_EVENT_OK, 0, 0);
+    } else {
+        /* Do nothing, Pin == okay, but measurement invalid */
+        ;
     }
 
     ISO_measData.previous_timestamp = ISO_measData.timestamp;
@@ -171,6 +197,6 @@ void ISO_MeasureInsulation(void) {
     DB_WriteBlock(&ISO_measData, DATA_BLOCK_ID_ISOGUARD);
 #endif
 
-    DIAG_SysMonNotify(DIAG_SYSMON_ISOGUARD_ID, 0);        // task is running, state = ok
+    DIAG_SysMonNotify(DIAG_SYSMON_ISOGUARD_ID, 0);        /* task is running, state = ok */
 }
 #endif

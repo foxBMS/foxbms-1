@@ -43,7 +43,6 @@ Copyright 2013 Linear Technology Corp. (LTC)
     Pre computed crc15 table used for the LTC6804 PEC calculation
 
     The code used to generate the crc15 table is:
-
 void generate_crc15_table()
 {
   int remainder;
@@ -53,7 +52,7 @@ void generate_crc15_table()
         for (int bit = 8; bit > 0; --bit)
           {
 
-                 if ((remainder & 0x4000) > 0)//equivalent to remainder & 2^14 simply check for MSB
+                 if ((remainder & 0x4000) > 0)    equivalent to remainder & 2^14 simply check for MSB
                   {
                         remainder = ((remainder << 1)) ;
                         remainder = (remainder ^ 0x4599);
@@ -81,7 +80,7 @@ void generate_crc15_table()
 
 /*================== Constant and Variable Definitions ====================*/
 
-static const unsigned int crc15Table[256] = {  // !<precomputed CRC15 Table
+static const unsigned int crc15Table[256] = {  /* precomputed CRC15 Table */
     0x0, 0xc599, 0xceab, 0xb32, 0xd8cf, 0x1d56, 0x1664, 0xd3fd, 0xf407, 0x319e, 0x3aac,
     0xff35, 0x2cc8, 0xe951, 0xe263, 0x27fa, 0xad97, 0x680e, 0x633c, 0xa6a5, 0x7558, 0xb0c1,
     0xbbf3, 0x7e6a, 0x5990, 0x9c09, 0x973b, 0x52a2, 0x815f, 0x44c6, 0x4ff4, 0x8a6d, 0x5b2e,

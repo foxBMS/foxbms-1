@@ -174,8 +174,8 @@ static void algo_movAverage(uint32_t algoIdx) {
     static uint8_t powCounter = 0;
     static DATA_BLOCK_CURRENT_SENSOR_s curPow_tab;
     static DATA_BLOCK_MOVING_AVERAGE_s movMean_tab;
-    static uint8_t curInit = 0;     // bit0: 1s, bit1: 5s, bit2: 10s, bit3: 30s, bit4: 60s, bit5: cfg
-    static uint8_t powInit = 0;     // bit0: 1s, bit1: 5s, bit2: 10s, bit3: 30s, bit4: 60s, bit5: cfg
+    static uint8_t curInit = 0;     /* bit0: 1s, bit1: 5s, bit2: 10s, bit3: 30s, bit4: 60s, bit5: cfg */
+    static uint8_t powInit = 0;     /* bit0: 1s, bit1: 5s, bit2: 10s, bit3: 30s, bit4: 60s, bit5: cfg */
     static uint8_t newValues = 0;
     float divider = 0;
 
@@ -187,16 +187,16 @@ static void algo_movAverage(uint32_t algoIdx) {
 
         curCounter = curPow_tab.newCurrent;
 
-        // Check if valid value
+        /* Check if valid value */
         if (curPow_tab.state_current == 0) {
 
-            // new Values -> Save later in database
+            /* new Values -> Save later in database */
             newValues = 1;
 
-            // Add value to array and calculate new moving mean values
+            /* Add value to array and calculate new moving mean values */
             *ptrMovMeanCur_new = curPow_tab.current;
 
-            // Calculate new moving means - first add new value
+            /* Calculate new moving means - first add new value */
             divider = NMBR_AVERAGES_CUR_1s;
             movMean_tab.movAverage_current_1s += (*ptrMovMeanCur_new)/divider;
             divider = NMBR_AVERAGES_CUR_5s;
@@ -210,7 +210,7 @@ static void algo_movAverage(uint32_t algoIdx) {
             divider = NMBR_AVERAGES_CUR_cfg;
             movMean_tab.movAverage_current_config += (*ptrMovMeanCur_new)/divider;
 
-            // Then, increment pointer and substract oldest value when respective window is filled with data
+            /* Then, increment pointer and substract oldest value when respective window is filled with data */
             ptrMovMeanCur_new++;
             if ((curInit & 0x01) == 0x01) {
                 divider = NMBR_AVERAGES_CUR_1s;
@@ -261,7 +261,7 @@ static void algo_movAverage(uint32_t algoIdx) {
                     curInit |= 0x20;
             }
 
-            // Check pointer for buffer overflow
+            /* Check pointer for buffer overflow */
             if (ptrMovMeanCur_new > &curValues[movMeanCurLength-1])
                 ptrMovMeanCur_new = &curValues[0];
             if (ptrMovMeanCur_1s > &curValues[movMeanCurLength-1])
@@ -283,14 +283,14 @@ static void algo_movAverage(uint32_t algoIdx) {
     if (powCounter != curPow_tab.newPower) {
         powCounter = curPow_tab.newPower;
 
-        // Check if valid value
+        /* Check if valid value */
         if (curPow_tab.state_power == 0) {
             newValues = 1;
 
-            // Add value to array and calculate new moving mean values
+            /* Add value to array and calculate new moving mean values */
             *ptrMovMeanPow_new = curPow_tab.power;
 
-            // Calculate new moving means - first add new value
+            /* Calculate new moving means - first add new value */
             divider = NMBR_AVERAGES_POW_1s;
             movMean_tab.movAverage_power_1s += (*ptrMovMeanPow_new)/divider;
             divider = NMBR_AVERAGES_POW_5s;
@@ -304,7 +304,7 @@ static void algo_movAverage(uint32_t algoIdx) {
             divider = NMBR_AVERAGES_POW_cfg;
             movMean_tab.movAverage_power_config += (*ptrMovMeanPow_new)/divider;
 
-            // Then, increment pointer and substract oldest value when respective window is filled with data
+            /* Then, increment pointer and substract oldest value when respective window is filled with data */
             ptrMovMeanPow_new++;
             if ((powInit & 0x01) == 0x01) {
                 divider = NMBR_AVERAGES_POW_1s;
@@ -355,7 +355,7 @@ static void algo_movAverage(uint32_t algoIdx) {
                     powInit |= 0x20;
             }
 
-            // Check pointer for buffer overflow
+            /* Check pointer for buffer overflow */
             if (ptrMovMeanPow_new > &powValues[movMeanPowLength-1])
                 ptrMovMeanPow_new = &powValues[0];
             if (ptrMovMeanPow_1s > &powValues[movMeanPowLength-1])
@@ -379,7 +379,7 @@ static void algo_movAverage(uint32_t algoIdx) {
         DB_WriteBlock(&movMean_tab, DATA_BLOCK_ID_MOV_AVERAGE);
     }
 
-    // Only set task to ready state if it isn't blocked by the monitoring unit because of a runtime violation
+    /* Only set task to ready state if it isn't blocked by the monitoring unit because of a runtime violation */
     if (algo_algorithms[algoIdx].state != ALGO_BLOCKED) {
         algo_algorithms[algoIdx].state = ALGO_READY;
     }

@@ -59,7 +59,7 @@
 
 
 /*================== Constant and Variable Definitions ====================*/
-// Days since the beginning of the year without the days in the current month and without leap days
+/* Days since the beginning of the year without the days in the current month and without leap days */
 const short days_since_newYearsEve[12] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
 
 /*================== Function Prototypes ==================================*/
@@ -84,18 +84,18 @@ void RTC_Init(void) {
     /* Disable WakeUp-Timer */
     HAL_RTCEx_DeactivateWakeUpTimer(&hrtc);
 
-    // set time and date if not already initialized or V_BAT failed
+    /* set time and date if not already initialized or V_BAT failed */
     if (!(hrtc.Instance->ISR & (uint32_t)RTC_ISR_INITS)) {
 
-        RTC_DATAVALID_VARIABLE = 0;        // invalidate rtc backup data
+        RTC_DATAVALID_VARIABLE = 0;        /* invalidate rtc backup data */
         HAL_RTC_SetTime(&hrtc, &rtc_cfg.defaultTime, rtc_cfg.timeformat);
 
         HAL_RTC_SetDate(&hrtc, &rtc_cfg.defaultDate, rtc_cfg.timeformat);
 
-        RTC_DATAVALID_VARIABLE = 1;            // validate rtc backup data
-        RTC_BKPSRAM_DATAVALID_VARIABLE  = 0;   // invalidate bkpsram data
-        RTC_BKPDIAG_DATAVALID_VARIABLE  = 0;   // invalidate bkpsram diag data
-        RTC_NVMRAM_DATAVALID_VARIABLE   = 0;   // invalidate non-volatile data backups
+        RTC_DATAVALID_VARIABLE = 1;            /* validate rtc backup data */
+        RTC_BKPSRAM_DATAVALID_VARIABLE  = 0;   /* invalidate bkpsram data */
+        RTC_BKPDIAG_DATAVALID_VARIABLE  = 0;   /* invalidate bkpsram diag data */
+        RTC_NVMRAM_DATAVALID_VARIABLE   = 0;   /* invalidate non-volatile data backups */
     }
 }
 

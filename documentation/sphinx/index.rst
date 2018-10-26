@@ -80,6 +80,7 @@ understand the |foxbms| hardware.
     :caption: General Information
 
     ./general_information/releases/releases.rst
+    ./general_information/changelog/changelog.rst
     ./general_information/overview/overview.rst
     ./general_information/motivation/motivation.rst
     ./general_information/safety/safety.rst

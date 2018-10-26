@@ -58,7 +58,7 @@
 
 /*================== Macros and Definitions ===============================*/
 
-//FIXME Why is there no 1 in following enum?
+/* FIXME Why is there no 1 in following enum? */
 /** diagnosis handler return types */
 typedef enum {
     DIAG_HANDLER_RETURN_OK                  = 0,            /*!<  error not occured or occured but threshold not reached */
@@ -110,7 +110,7 @@ typedef struct {
     uint32_t Val3;
 } DIAG_ERROR_ENTRY_s;
 
-// FIXME maybe short explanation why there is separate Error entry for contactor in a few words
+/* FIXME maybe short explanation why there is separate Error entry for contactor in a few words */
 /**
  * structure of failure code entry record for contactor
  */
@@ -121,8 +121,8 @@ typedef struct {
     uint8_t hh;
     uint8_t mm;
     uint8_t ss;
-//    DIAG_EVENT_e event;
-//    DIAG_CH_ID_e event_id;
+/*     DIAG_EVENT_e event; */
+/*     DIAG_CH_ID_e event_id; */
     uint8_t contactor;
     float openingCurrent;
 } DIAG_CONTACTOR_ERROR_ENTRY_s;
@@ -135,11 +135,11 @@ typedef struct {
     uint16_t cont_switch_opened[BS_NR_OF_CONTACTORS];
     uint16_t cont_switch_opened_hard_at_current[BS_NR_OF_CONTACTORS];
     uint16_t errcntreported;          /*!<  number of hard switches occurred since last call of DIAG_PrintContactorInfo */
-    //           sizeof(struct) - (memory of contactors) - errcntreported - chksum
+    /*            sizeof(struct) - (memory of contactors) - errcntreported - chksum */
     uint8_t reserved[0x40 - (3*BS_NR_OF_CONTACTORS*2) - 2 - 4];            /*!< reserved for future use */
 } DIAG_CONTACTOR_s;
 
-// FIXME doxygen comment missing
+/* FIXME doxygen comment missing */
 typedef struct {
     uint32_t Val0;
     uint32_t Val1;
@@ -147,7 +147,7 @@ typedef struct {
     uint32_t Val3;
 } DIAG_FAILURECODE_s;
 
-// FIXME doxygen comment missing, maybe even with explanation of struct member or use ///< comments
+/* FIXME doxygen comment missing, maybe even with explanation of struct member or use /< comments */
 typedef struct {
     DIAG_STATE_e    state;                                  /*!< actual state of diagnosis module */
     uint16_t        errcnttotal;                            /*!< total counts of diagnosis entry records*/
@@ -163,10 +163,10 @@ typedef struct {
 } DIAG_s;
 
 /*================== Constant and Variable Definitions ====================*/
-// FIXME doxygen comment missing
+/* FIXME doxygen comment missing */
 extern DIAG_FAILURECODE_s diag_fc;
-// FIXME doxygen comment missing
-//extern DIAG_s diag;
+/* FIXME doxygen comment missing */
+/* extern DIAG_s diag; */
 
 /*================== Function Prototypes ==================================*/
 

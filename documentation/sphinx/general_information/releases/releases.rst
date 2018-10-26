@@ -8,7 +8,15 @@
 Releases
 ========
 
-The current version of |foxbms| is |version|.
+The current **software version** of |foxbms| is |version|.
+
+The latest **hardware release** versions are:
+
+  - |BMS-Master|: |hw-version-master|
+  - |BMS-Extension|: |hw-version-extension|
+  - |BMS-Interface|: |hw-version-interface|
+  - |BMS-12-Slave|: |hw-version-12-slave|
+  - |BMS-18-Slave|: |hw-version-18-slave|
 
 .. note::
 
@@ -31,13 +39,17 @@ The current version of |foxbms| is |version|.
 The following tables describe the different versions of |foxbms| that were
 released. The first line is the most recent one, the last one the oldest one.
 
-**Version 1.5.0 and newer:**
+**Versions 1.5.0 and higher:**
 
-+--------+----------+
-| foxbms | foxconda |
-+========+==========+
-| v1.5.0 | 3.0.3    |
-+--------+----------+
++--------+----------+-------------+
+| foxbms | foxconda | Releasedate |
++========+==========+=============+
+| v1.5.2 | 3.0.3    | 2018-10-26  |
++--------+----------+-------------+
+| v1.5.1 | 3.0.3    | 2018-10-09  |
++--------+----------+-------------+
+| v1.5.0 | 3.0.3    | 2018-09-25  |
++--------+----------+-------------+
 
 **Versions before 1.5.0:**
 
@@ -78,10 +90,3 @@ released. The first line is the most recent one, the last one the oldest one.
 +---------------+----------+-----------+-----------+---------+----------+--------------+-----------------+-------------+-----------------+------------+
 | 0.4.0         | 0.4.0    | 0.4.0     |           |         |          | 1.0.0        | 1.0.0           | 1.0.0       | 1.0.0           | 0.4.0      |
 +---------------+----------+-----------+-----------+---------+----------+--------------+-----------------+-------------+-----------------+------------+
-
-The following section summarizes the release notes for the different versions
-of the documentation.
-
-------------------------------------------------------------------------------
-
-.. include:: ../../../../CHANGELOG.rst

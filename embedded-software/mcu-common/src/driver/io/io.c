@@ -82,7 +82,7 @@ static STD_RETURN_TYPE_e GPIO_Check(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO
 STD_RETURN_TYPE_e IO_Init(const IO_PIN_CFG_s *io_cfg) {
 
     if (NULL_PTR == io_cfg) {
-        return E_NOT_OK; // configuration error
+        return E_NOT_OK; /* configuration error */
     }
 
     STD_RETURN_TYPE_e retVal = E_NOT_OK;
@@ -201,17 +201,17 @@ static STD_RETURN_TYPE_e IO_ClkInit(void) {
     __GPIOC_CLK_ENABLE();
     __GPIOD_CLK_ENABLE();
     __GPIOE_CLK_ENABLE();
-#endif // IO_PACKAGE_LQFP100
+#endif /* IO_PACKAGE_LQFP100 */
 
 #if defined(IO_PACKAGE_LQFP144) || defined(IO_PACKAGE_LQFP176)
     __GPIOF_CLK_ENABLE();
     __GPIOG_CLK_ENABLE();
     __GPIOH_CLK_ENABLE();
-#endif // IO_PACKAGE_LQFP144
+#endif /* IO_PACKAGE_LQFP144 */
 
 #if defined(IO_PACKAGE_LQFP176)
     __GPIOI_CLK_ENABLE();
-#endif // IO_PACKAGE_LQFP176
+#endif /* IO_PACKAGE_LQFP176 */
     retVal = E_OK;
     return retVal;
 }

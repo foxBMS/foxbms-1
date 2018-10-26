@@ -65,7 +65,7 @@
 
 /* Macros for converting voltage -> temperature */
 #define ADC_VBAT_VOLTAGE_DIVIDER    4.0
-#define ADC_FULL_RANGE              4095.0        // 12bit adc converter --> range [0, ..., 4095]
+#define ADC_FULL_RANGE              4095.0        /* 12bit adc converter --> range [0, ..., 4095] */
 #define ADC_VREF_EXT                2.5
 #define ADC_V25                     0.76
 #define ADC_AVG_SLOPE               2.5
@@ -152,7 +152,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
 
     if (adc_cfg.Channel == ADC_CHANNEL_VBAT) {
         scaled_voltage = ((float)(raw_voltage)*(ADC_VREF_EXT)*ADC_VBAT_VOLTAGE_DIVIDER)/(ADC_FULL_RANGE);
-        adc_vbat_mV = scaled_voltage * 1000;  // convert V to mV
+        adc_vbat_mV = scaled_voltage * 1000;  /* convert V to mV */
     }
 
     if (adc_cfg.Channel == ADC_CHANNEL_TEMPSENSOR) {

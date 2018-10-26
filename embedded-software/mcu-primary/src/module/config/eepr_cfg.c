@@ -113,19 +113,19 @@ EEPR_CH_CFG_s eepr_ch_cfg[] = {
 /* Hardware Protected Channels (last quarter of address area)  */
         /*  EEPROM CHANNELS: HW/SW-SYSTEM */
         {0x3000, sizeof(EEPR_HEADER_s),           EEPR_CH_HEADER,          0x3000 + sizeof(EEPR_HEADER_s) - 4,           EEPR_SW_WRITE_UNPROTECTED, (uint8_t*)&eepr_header},
-//      {0x3020, ...},
+/*       {0x3020, ...}, */
         {0x3F00, sizeof(EEPR_BOARD_INFO_s),       EEPR_CH_BOARD_INFO,      0x3F80 + sizeof(EEPR_BOARD_INFO_s) - 4,       EEPR_SW_WRITE_UNPROTECTED, (uint8_t*)&eepr_board_info},
         {0x3F80, 0x80,                            EEPR_CH_HARDWARE_INFO,      0x3F80 + 0x80 - 4,                         EEPR_SW_WRITE_PROTECTED,   (NULL_PTR)},
 /* Channels placed in Hardware Protection disabled address area  */
         /*  EEPROM CHANNELS: APPLICATION */
-//      {0x0000, 00x54,    reserved to maintain previous formatted data,   0x0080 + sizeof(BKPSRAM_CH_NVSOC_s) - 4,      EEPR_SW_WRITE_UNPROTECTED, (uint8_t*)&bkpsram_nvsoc },
+/*       {0x0000, 00x54,    reserved to maintain previous formatted data,   0x0080 + sizeof(BKPSRAM_CH_NVSOC_s) - 4,      EEPR_SW_WRITE_UNPROTECTED, (uint8_t*)&bkpsram_nvsoc }, */
         {0x0080, sizeof(NVRAM_CH_OP_HOURS_s),   EEPR_CH_OPERATING_HOURS, 0x0080 + sizeof(NVRAM_CH_OP_HOURS_s) - 4,   EEPR_SW_WRITE_UNPROTECTED, (uint8_t*)&bkpsram_operating_hours},
         {0x0098, sizeof(NVRAM_CH_NVSOC_s),      EEPR_CH_NVSOC,           0x0098 + sizeof(NVRAM_CH_NVSOC_s) - 4,      EEPR_SW_WRITE_UNPROTECTED, (uint8_t*)&bkpsram_nvsoc },
         {0x00C0, sizeof(NVRRAM_CH_CONT_COUNT_s), EEPR_CH_CONTACTOR,       0x00C0 + sizeof(NVRRAM_CH_CONT_COUNT_s) - 4, EEPR_SW_WRITE_UNPROTECTED, (uint8_t*)&bkpsram_contactors_count},
-//        {0x0110, sizeof(EEPR_CALIB_STATISTICS_s), EEPR_CH_STATISTICS,      0x0100 + sizeof(EEPR_CALIB_STATISTICS_s) - 4, EEPR_SW_WRITE_UNPROTECTED, (NULL_PTR)},
-        // FREE EEPRROMS CHANNELS (for future use)
-//        {0x0130, 0x70,                            EEPR_CH_USER_DATA,       0x0120 + 0x70 - 4,                            EEPR_SW_WRITE_UNPROTECTED, (NULL_PTR)},
-//      {0x0180, ...},
+/*         {0x0110, sizeof(EEPR_CALIB_STATISTICS_s), EEPR_CH_STATISTICS,      0x0100 + sizeof(EEPR_CALIB_STATISTICS_s) - 4, EEPR_SW_WRITE_UNPROTECTED, (NULL_PTR)}, */
+        /*  FREE EEPRROMS CHANNELS (for future use) */
+/*         {0x0130, 0x70,                            EEPR_CH_USER_DATA,       0x0120 + 0x70 - 4,                            EEPR_SW_WRITE_UNPROTECTED, (NULL_PTR)}, */
+/*       {0x0180, ...}, */
 };
 
 /* In case of compile errors in the following dummy-declarations,
@@ -138,23 +138,23 @@ EEPR_CH_CFG_s eepr_ch_cfg[] = {
  * is not handled (e.g. manually or automatically in EEPR_FormatCheck() )
  *
  * */
-extern uint8_t compiler_throw_an_error_1[(sizeof(EEPR_HEADER_s) == 0x20)?1:-1]; // EEPROM FORMAT ERROR! Change of data size. Please note comment above!!!
-extern uint8_t compiler_throw_an_error_2[(sizeof(EEPR_BOARD_INFO_s) == 0x20)?1:-1]; // EEPROM FORMAT ERROR! Change of data size. Please note comment above!!!
-extern uint8_t compiler_throw_an_error_3[(0x80 == 0x80)?1:-1]; // EEPROM FORMAT ERROR! Change of data size. Please note comment above!!!
-extern uint8_t compiler_throw_an_error_4[(sizeof(NVRAM_CH_OP_HOURS_s) == 0x18)?1:-1]; // EEPROM FORMAT ERROR! Change of data size. Please note comment above!!!
-extern uint8_t compiler_throw_an_error_5[(sizeof(NVRAM_CH_NVSOC_s) == 0x28)?1:-1]; // EEPROM FORMAT ERROR! Change of data size. Please note comment above!!!
-extern uint8_t compiler_throw_an_error_6[(sizeof(NVRRAM_CH_CONT_COUNT_s) == 0x48)?1:-1]; // EEPROM FORMAT ERROR! Change of data size. Please note comment above!!!
-extern uint8_t compiler_throw_an_error_7[(sizeof(EEPR_CALIB_STATISTICS_s) == 0x20)?1:-1]; // EEPROM FORMAT ERROR! Change of data size. Please note comment above!!!
-extern uint8_t compiler_throw_an_error_8[(0x70 == 0x70)?1:-1]; // EEPROM FORMAT ERROR! Change of data size. Please note comment above!!!
+extern uint8_t compiler_throw_an_error_1[(sizeof(EEPR_HEADER_s) == 0x20)?1:-1];  /* EEPROM FORMAT ERROR! Change of data size. Please note comment above!!! */
+extern uint8_t compiler_throw_an_error_2[(sizeof(EEPR_BOARD_INFO_s) == 0x20)?1:-1];  /* EEPROM FORMAT ERROR! Change of data size. Please note comment above!!! */
+extern uint8_t compiler_throw_an_error_3[(0x80 == 0x80)?1:-1];  /* EEPROM FORMAT ERROR! Change of data size. Please note comment above!!! */
+extern uint8_t compiler_throw_an_error_4[(sizeof(NVRAM_CH_OP_HOURS_s) == 0x18)?1:-1];  /* EEPROM FORMAT ERROR! Change of data size. Please note comment above!!! */
+extern uint8_t compiler_throw_an_error_5[(sizeof(NVRAM_CH_NVSOC_s) == 0x28)?1:-1];  /* EEPROM FORMAT ERROR! Change of data size. Please note comment above!!! */
+extern uint8_t compiler_throw_an_error_6[(sizeof(NVRRAM_CH_CONT_COUNT_s) == 0x48)?1:-1];  /* EEPROM FORMAT ERROR! Change of data size. Please note comment above!!! */
+extern uint8_t compiler_throw_an_error_7[(sizeof(EEPR_CALIB_STATISTICS_s) == 0x20)?1:-1];  /* EEPROM FORMAT ERROR! Change of data size. Please note comment above!!! */
+extern uint8_t compiler_throw_an_error_8[(0x70 == 0x70)?1:-1];  /* EEPROM FORMAT ERROR! Change of data size. Please note comment above!!! */
 
 
 const uint8_t eepr_nr_of_channels = sizeof(eepr_ch_cfg)/sizeof(eepr_ch_cfg[0]);
 
-// write buffer for calibration data in eeprom
+/* write buffer for calibration data in eeprom */
 uint8_t eepr_WR_RD_buffer[EEPR_CH_MAXLENGTH];
 
 
-// write buffer checksum
+/* write buffer checksum */
 uint16_t eepr_WR_RD_Chksum=0xFFFF;
 
 uint8_t eepr_spi_rxbuf[EEPR_TXBUF_LENGTH];
@@ -214,7 +214,7 @@ EEPR_RETURNTYPE_e SPI_SendData(uint8_t* data, uint16_t length, uint16_t receiveo
     EEPR_RETURNTYPE_e retVal = EEPR_ERROR;
     HAL_StatusTypeDef eepr_spi_halstate = HAL_ERROR;
 
-    IO_WritePin(IO_PIN_MCU_0_DATA_STORAGE_EEPROM_SPI_NSS, IO_PIN_RESET); // FIXME use chip select/unselect functions fromSPI module!
+    IO_WritePin(IO_PIN_MCU_0_DATA_STORAGE_EEPROM_SPI_NSS, IO_PIN_RESET);  /* FIXME use chip select/unselect functions fromSPI module! */
 
     eepr_spi_halstate = HAL_SPI_TransmitReceive_IT(&spi_devices[1], data, eepr_spi_rxbuf, length);
     eepr_spi_rxoffset = receiveoffset;
@@ -252,7 +252,7 @@ STD_RETURN_TYPE_e EEPR_BkpSramCheckChksum(EEPR_CHANNEL_ID_TYPE_e eepr_channel, u
             retVal = E_NOT_OK;
         }
     } else if (EEPR_CalcChecksum(dataptr, byte_len - 4) == *((uint32_t*)(dataptr + byte_len - 4))) {
-        retVal = E_OK;  // checksum ok
+        retVal = E_OK;  /* checksum ok */
     }
     return (retVal);
 }
@@ -303,15 +303,15 @@ void EEPR_SetDefaultValue(EEPR_CHANNEL_ID_TYPE_e eepr_channel) {
 
 uint8_t EEPR_FormatCheck(void) {
     uint8_t retval=1;
-    //EEPR_ERRORTYPES_e errtype;
+    /* EEPR_ERRORTYPES_e errtype; */
 
-    // check if application software supports the same data format of data which is stored in eeprom
+    /* check if application software supports the same data format of data which is stored in eeprom */
     if(eepr_header.eepr_headerpattern == eepr_header_default.eepr_headerpattern) {
 
         if(eepr_header.versionnumbermajor == eepr_header_default.versionnumbermajor) {
             retval = 0;
         } else {
-            retval = 1; // FIXME: handle data transfer (update) in case of new version with different data format
+            retval = 1;  /* FIXME: handle data transfer (update) in case of new version with different data format */
         }
     } else {
         retval = 1;
@@ -323,7 +323,7 @@ uint8_t EEPR_FormatCheck(void) {
 STD_RETURN_TYPE_e EEPR_CheckNodeID(uint8_t *dataptr) {
     STD_RETURN_TYPE_e ret_val;
 
-    // TODO: check chksum of eepr_board_info struct
+    /* TODO: check chksum of eepr_board_info struct */
 
     if (*(uint16_t*)(dataptr) == eepr_board_info.network_nodeID)
         ret_val = E_OK;

@@ -113,7 +113,7 @@ static uint8_t SYS_CheckReEntrance(void) {
     if (!sys_state.triggerentry) {
         sys_state.triggerentry++;
     } else {
-        retval = 0xFF;  // multiple calls of function
+        retval = 0xFF;  /* multiple calls of function */
     }
     taskEXIT_CRITICAL();
 
@@ -200,7 +200,7 @@ static SYS_RETURN_TYPE_e SYS_CheckStateRequest(SYS_STATE_REQUEST_e statereq) {
     }
 
     if (sys_state.statereq == SYS_STATE_NO_REQUEST) {
-        // init only allowed from the uninitialized state
+        /* init only allowed from the uninitialized state */
         if (statereq == SYS_STATE_INIT_REQUEST) {
             if (sys_state.state == SYS_STATEMACH_UNINITIALIZED) {
                 return SYS_OK;
@@ -217,14 +217,14 @@ static SYS_RETURN_TYPE_e SYS_CheckStateRequest(SYS_STATE_REQUEST_e statereq) {
 
 
 void SYS_Trigger(void) {
-    //  STD_RETURN_TYPE_e retVal=E_OK;
+    /* STD_RETURN_TYPE_e retVal=E_OK; */
     SYS_STATE_REQUEST_e statereq = SYS_STATE_NO_REQUEST;
     ILCK_STATEMACH_e ilckstate = ILCK_STATEMACH_UNDEFINED;
     BMS_STATEMACH_e bmsstate = BMS_STATEMACH_UNDEFINED;
 
 
-    DIAG_SysMonNotify(DIAG_SYSMON_SYS_ID, 0);  // task is running, state = ok
-    // Check re-entrance of function
+    DIAG_SysMonNotify(DIAG_SYSMON_SYS_ID, 0);  /* task is running, state = ok */
+    /* Check re-entrance of function */
     if (SYS_CheckReEntrance()) {
         return;
     }
@@ -232,7 +232,7 @@ void SYS_Trigger(void) {
     if (sys_state.timer) {
         if (--sys_state.timer) {
             sys_state.triggerentry--;
-            return;  // handle state machine only if timer has elapsed
+            return;  /* handle state machine only if timer has elapsed */
         }
     }
 
@@ -242,7 +242,7 @@ void SYS_Trigger(void) {
     switch (sys_state.state) {
         /****************************UNINITIALIZED***********************************/
         case SYS_STATEMACH_UNINITIALIZED:
-            // waiting for Initialization Request
+            /* waiting for Initialization Request */
             statereq = SYS_TransferStateRequest();
             if (statereq == SYS_STATE_INIT_REQUEST) {
                 SYS_SAVELASTSTATES();
@@ -250,16 +250,16 @@ void SYS_Trigger(void) {
                 sys_state.state = SYS_STATEMACH_INITIALIZATION;
                 sys_state.substate = SYS_ENTRY;
             } else if (statereq == SYS_STATE_NO_REQUEST) {
-                // no actual request pending //
+                /* no actual request pending /*  */
             } else {
-                sys_state.ErrRequestCounter++;   // illegal request pending
+                sys_state.ErrRequestCounter++;   /* illegal request pending */
             }
             break;
         /****************************INITIALIZATION**********************************/
         case SYS_STATEMACH_INITIALIZATION:
 
             SYS_SAVELASTSTATES();
-            //Initializations done here
+            /* Initializations done here */
             sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
             sys_state.state = SYS_STATEMACH_INITIALIZED;
             sys_state.substate = SYS_ENTRY;
@@ -361,6 +361,6 @@ void SYS_Trigger(void) {
             SYS_SAVELASTSTATES();
             sys_state.timer = SYS_STATEMACH_LONGTIME_MS;
             break;
-    }  // end switch(sys_state.state)
+    }  /* end switch(sys_state.state) */
     sys_state.triggerentry--;
 }

@@ -170,7 +170,7 @@
  * \par Unit:
  * 10*ms
 */
-#define BMS_SELFPOWERONCHECK_TIMEOUT    10 // 100ms
+#define BMS_SELFPOWERONCHECK_TIMEOUT    10  /* 100ms */
 
 /**
  * @ingroup CONFIG_BMS
@@ -183,7 +183,7 @@
  * \par Unit:
  * 10*ms
 */
-#define BMS_SELFAWAKECHECK_TIMEOUT      10 // 100ms
+#define BMS_SELFAWAKECHECK_TIMEOUT      10  /* 100ms */
 
 
 /**
@@ -197,89 +197,11 @@
  * \par Unit:
  * 10*ms
 */
-#define BMS_IDLE_TIMEOUT                500 // 5s timeout to go to sleep or power off in idle state
+#define BMS_IDLE_TIMEOUT                500  /* 5s timeout to go to sleep or power off in idle state */
 
-/**
- * @ingroup CONFIG_BMS
- * \par Type:
- * int
- * \par Default:
- * 10
- * \par Range:
- * [5,15]
- * \par Unit:
- * V
-*/
-#define BMS_PRECHARGE_VOLTAGE_THRESHOLD 10 // V
-
-/**
- * @ingroup CONFIG_BMS
- * \par Type:
- * int
- * \par Default:
- * 10
- * \par Range:
- * [5,15]
- * \par Unit:
- * mA
-*/
-#define BMS_PRECHARGE_CURRENT_THRESHOLD 10 // mA
-
-/**
- * @ingroup CONFIG_BMS
- * \par Type:
- * int
- * \par Default:
- * 600
- * \par Range:
- * [500,700]
- * \par Unit:
- * 10*ms
-*/
-#define BMS_PRECHARGE_TIMEOUT 600 // 6s
-
-/**
- * @ingroup CONFIG_BMS
- * \par Type:
- * int
- * \par Default:
- * 100
- * \par Range:
- * [50,150]
- * \par Unit:
- * 10*ms
-*/
-#define BMS_TIMER_MAINMINUS 100 // 1s
-
-/**
- * @ingroup CONFIG_BMS
- * \par Type:
- * int
- * \par Default:
- * 200
- * \par Unit:
- * 10*ms
- * \par Range:
- * [150,250]
-*/
-#define BMS_TIMER_MAINPRECHARGE 200 // 2s
-
-/**
- * @ingroup CONFIG_BMS
- * \par Type:
- * int
- * \par Default:
- * 50
- * \par Range:
- * [40,60]
- * \par Unit:
- * 10*ms
-*/
-#define BMS_TIMER_MAINPLUS 50 // 500ms
-
-#define BMS_GETSELFCHECK_STATE()            BMS_CHECK_OK            // function could return: BMS_CHECK_NOT_OK or OK BMS_CHECK_BUSY
-#define BMS_GETPOWERONSELFCHECK_STATE()     BMS_CHECK_OK            // function could return: BMS_CHECK_NOT_OK or OK BMS_CHECK_BUSY
-#define BMS_CHECKPRECHARGE()                BMS_CheckPrecharge()    // DIAG_CheckPrecharge()
+#define BMS_GETSELFCHECK_STATE()            BMS_CHECK_OK            /* function could return: BMS_CHECK_NOT_OK or OK BMS_CHECK_BUSY */
+#define BMS_GETPOWERONSELFCHECK_STATE()     BMS_CHECK_OK            /* function could return: BMS_CHECK_NOT_OK or OK BMS_CHECK_BUSY */
+#define BMS_CHECKPRECHARGE()                BMS_CheckPrecharge()    /* DIAG_CheckPrecharge() */
 
 /*
  * Mapping the marcos from the contactor-module to
@@ -305,7 +227,7 @@
 
 #define BMS_CONT_CHARGE_MAINPLUS_ON()          CONT_SetContactorState(CONT_CHARGE_MAIN_PLUS, CONT_SWITCH_ON)
 #define BMS_CONT_CHARGE_MAINPLUS_OFF()         CONT_SetContactorState(CONT_CHARGE_MAIN_PLUS, CONT_SWITCH_OFF)
-#endif  // BS_SEPARATE_POWERLINES == 1
+#endif  /* BS_SEPARATE_POWERLINES == 1 */
 
 /*================== Function Prototypes ==================================*/
 

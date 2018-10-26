@@ -69,10 +69,10 @@ volatile uint32_t extsd_test2;
 
 void SDRAM_c_init(void)
 {
-    uint32_t *extRAMptr = (uint32_t*)(&_s_extdata[0]);       // start address of external SDRAM  .data-section
-    uint32_t *flashptr  = (uint32_t*)(&_sidata_ext[0]);      // start address of Flash related to .data-section
+    uint32_t *extRAMptr = (uint32_t*)(&_s_extdata[0]);       /* start address of external SDRAM  .data-section */
+    uint32_t *flashptr  = (uint32_t*)(&_sidata_ext[0]);      /* start address of Flash related to .data-section */
 
-    while( extRAMptr < (uint32_t*)(&_e_extdata[0]) )         // compare to end address of external SDRAM  .data-section
+    while( extRAMptr < (uint32_t*)(&_e_extdata[0]) )         /* compare to end address of external SDRAM  .data-section */
     {
        *extRAMptr++ =  *flashptr++;
     }

@@ -15,14 +15,15 @@ project.
 
 ## foxBMS Repository
 
-- In `foxbms/documentation` the configuration of the doxygen documentation for
+- In `foxbms\documentation` the configuration of the doxygen documentation for
   the primary and secondary mcu can be found.
-- The software for the mcus is found in `foxbms/embedded-software`. This
+- The software for the mcus is found in `foxbms\embedded-software`. This
   includes the Hardward Abstraction Layer (HAL), the real-time OS FreeRTOS
   and the BMS application itself.
 - The layout and schematic files for the foxBMS hardware are found in the
-  `foxBMS/hardware`.
-- The build toolchain and other tools related to foxBMS are found in `tools`.
+  `foxbms\hardware`.
+- The build toolchain and other tools related to foxBMS are found in
+  `foxbms\tools`.
 
 A generated version of the Sphinx documentation can be found at
 http://docs.foxbms.org. It explains the structure of the foxBMS hardware, how
@@ -30,8 +31,8 @@ to install the foxConda environment and how to use foxConda to compile and
 flash the sources.
 
 ## Building the Sources
-For building the software, open a shell and type "python build.py -h". All
+For building the software, open a shell and type `python tools\waf --help`. All
 available build options will be displayed. The top build directory is
-`foxbms/build`.
+`foxbms\build`.
 
 https://foxbms.org/

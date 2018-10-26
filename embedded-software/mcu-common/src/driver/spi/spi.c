@@ -86,37 +86,37 @@ void SPI_Init(SPI_HandleType_s *hspi) {
 
             if(hspi[i].Instance == SPI1) {
 
-                  // SPI1 peripheral clock enable
+                  /* SPI1 peripheral clock enable */
                   __HAL_RCC_SPI1_CLK_ENABLE();
             }
 
             if(hspi[i].Instance == SPI2) {
 
-                  // SPI2 peripheral clock enable
+                  /* SPI2 peripheral clock enable */
                   __HAL_RCC_SPI2_CLK_ENABLE();
             }
 
             if(hspi[i].Instance == SPI3) {
 
-                  // SPI3 peripheral clock enable
+                  /* SPI3 peripheral clock enable */
                   __HAL_RCC_SPI3_CLK_ENABLE();
             }
 
             if(hspi[i].Instance == SPI4) {
 
-                  // SPI4 peripheral clock enable
+                  /* SPI4 peripheral clock enable */
                   __HAL_RCC_SPI4_CLK_ENABLE();
             }
 
             if(hspi[i].Instance == SPI5) {
 
-                  // SPI5 peripheral clock enable
+                  /* SPI5 peripheral clock enable */
                   __HAL_RCC_SPI5_CLK_ENABLE();
             }
 
             if(hspi[i].Instance == SPI6) {
 
-                  // SPI6 peripheral clock enable
+                  /* SPI6 peripheral clock enable */
                   __HAL_RCC_SPI6_CLK_ENABLE();
             }
         }
@@ -126,12 +126,12 @@ void SPI_Init(SPI_HandleType_s *hspi) {
 
 
 void HAL_SPI_TxRxCpltCallback(SPI_HandleType_s *hspi) {
-    if (hspi  ==  &spi_devices[0])        // Iso-SPI Main
+    if (hspi  ==  &spi_devices[0])        /* Iso-SPI Main */
     {
         SPI_UnsetCS(1);
         spi_state.transmit_ongoing = FALSE;
     }
-    if (hspi  ==  &spi_devices[1])        // Eeprom
+    if (hspi  ==  &spi_devices[1])        /* Eeprom */
     {
 #ifdef SPI_HASEEPROM
         IO_WritePin(IO_PIN_DATA_STORAGE_EEPROM_SPI_NSS, IO_PIN_SET);
@@ -143,13 +143,13 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleType_s *hspi) {
 
 void HAL_SPI_TxCpltCallback(SPI_HandleType_s *hspi)
 {
-    if (hspi  ==  &spi_devices[0])        // Iso-SPI Main
+    if (hspi  ==  &spi_devices[0])        /* Iso-SPI Main */
     {
         SPI_UnsetCS(1);
         spi_state.transmit_ongoing = FALSE;
     }
 
-    if (hspi  ==  &spi_devices[1])        // Eeprom
+    if (hspi  ==  &spi_devices[1])        /* Eeprom */
     {
 #ifdef SPI_HASEEPROM
         IO_WritePin(IO_PIN_DATA_STORAGE_EEPROM_SPI_NSS, IO_PIN_SET);

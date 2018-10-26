@@ -100,12 +100,12 @@ uint8_t* unsignedIntegerToString(uint8_t *destptr, uint32_t *dataptr, uint8_t mi
     }
 
     int i = 0;
-    // Process individual digits
+    /* Process individual digits */
     while (num != 0)
     {
         int rem = num % base;
         if(rem > 9) {
-            str[i++] = (rem-10) + 'a'; // we are in hex
+            str[i++] = (rem-10) + 'a';  /* we are in hex */
         } else {
             str[i++] =  rem + '0';
         }
@@ -145,12 +145,12 @@ uint8_t* integerToString(uint8_t *destptr, int32_t *dataptr, uint8_t minDigits, 
     }
 
     int i = 0;
-    // Process individual digits
+    /* Process individual digits */
     while (num != 0)
     {
         int rem = num % base;
         if(rem > 9) {
-            str[i++] = (rem-10) + 'a'; // we are in hex
+            str[i++] = (rem-10) + 'a';  /* we are in hex */
         } else {
             str[i++] =  rem + '0';
         }
@@ -225,7 +225,7 @@ uint8_t *hex2ascii(uint8_t *destptr, uint8_t *srcptr, uint8_t len)
 
 uint8_t *U32ToHexascii(uint8_t *destptr, uint32_t *dataptr)
 {
-   // return(hex2ascii(destptr,(uint8_t*)(dataptr), 4));
+   /*  return(hex2ascii(destptr,(uint8_t*)(dataptr), 4)); */
     uint32_t tmp = *dataptr;
     return unsignedIntegerToString(destptr, &tmp, 8, 16);
 }
@@ -241,7 +241,7 @@ uint8_t *U32ToHexascii(uint8_t *destptr, uint32_t *dataptr)
 uint8_t *U16ToHexascii(uint8_t *destptr, uint16_t *dataptr)
 {
     uint32_t tmp = *dataptr;
-    //return(hex2ascii(destptr,(uint8_t*)(dataptr), 2));
+    /* return(hex2ascii(destptr,(uint8_t*)(dataptr), 2)); */
     return unsignedIntegerToString(destptr, &tmp, 4, 16);
 }
 
@@ -257,7 +257,7 @@ uint8_t *U16ToHexascii(uint8_t *destptr, uint16_t *dataptr)
 uint8_t *U8ToHexascii(uint8_t *destptr, uint8_t *dataptr)
 {
     uint32_t tmp = *dataptr;
-   // return(hex2ascii(destptr,(uint8_t*)(dataptr), 1));
+   /*  return(hex2ascii(destptr,(uint8_t*)(dataptr), 1)); */
     return unsignedIntegerToString(destptr, &tmp, 2, 16);
 }
 
@@ -275,4 +275,10 @@ uint8_t *I32ToDecascii(uint8_t *destptr, int32_t *dataptr) {
 
     int32_t tmp = *dataptr;
     return integerToString(destptr, &tmp, 1, 10);
+}
+
+
+uint8_t AsciiNumberToU8(uint8_t asciiChar) {
+
+    return (asciiChar - '0');
 }

@@ -72,12 +72,12 @@ typedef enum {
 
 
 typedef enum {
-  SYS_MODE_STARTUP_EVENT    = 0,    /*!< system startup                     */
-// SYS_MODE_EVENT_INIT      = 1,    /*!< todo                               */
-  SYS_MODE_CYCLIC_EVENT     = 2,    /*!< for cyclic events                  */
-  SYS_MODE_TRIGGERED_EVENT  = 3,    /*!< for triggered events               */
-  SYS_MODE_ABNORMAL_EVENT   = 4,    /*!< for abnormal (error etc.) events   */
-  SYS_MODE_EVENT_RESERVED   = 0xFF, /*!< do not use                         */
+    SYS_MODE_STARTUP_EVENT    = 0,     /*!< system startup                     */
+/*    SYS_MODE_EVENT_INIT      = 1,    /*!< todo                               */
+    SYS_MODE_CYCLIC_EVENT     = 2,     /*!< for cyclic events                  */
+    SYS_MODE_TRIGGERED_EVENT  = 3,     /*!< for triggered events               */
+    SYS_MODE_ABNORMAL_EVENT   = 4,     /*!< for abnormal (error etc.) events   */
+    SYS_MODE_EVENT_RESERVED   = 0xFF,  /*!< do not use                         */
 } SYS_TRIG_EVENT_e;
 
 /*================== Function Implementations =============================*/
@@ -92,7 +92,7 @@ typedef enum {
  * States of the SYS state machine
  */
 typedef enum {
-    // Init-Sequence
+    /* Init-Sequence */
     SYS_STATEMACH_UNINITIALIZED                             = 0,    /*!<    */
     SYS_STATEMACH_INITIALIZATION                            = 1,    /*!<    */
     SYS_STATEMACH_INITIALIZED                               = 2,    /*!<    */

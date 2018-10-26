@@ -66,7 +66,7 @@
 /**
  * Wait time in [us] after sending dummy byte on SPI. Max wait time: 1000us
  */
-#define SPI_DUMMY_BYTE_WAIT_TIME        10
+#define SPI_DUMMY_BYTE_WAIT_TIME        20
 
 /**
  * Wait time in [us] during initialization.

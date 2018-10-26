@@ -94,7 +94,7 @@
  * Enables pin locking globally. If this macro is not defined, pin locking
  * can not be activated.
  */
-//#define IO_PIN_LOCKING
+/* #define IO_PIN_LOCKING */
 
 /*================== Constant and Variable Definitions ====================*/
 /**

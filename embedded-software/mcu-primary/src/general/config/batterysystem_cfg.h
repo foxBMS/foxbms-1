@@ -126,7 +126,7 @@ typedef enum {
  * @level    user
  * @group    GENERAL
  */
-//#define BS_LTC6804_USED      TRUE
+/* #define BS_LTC6804_USED      TRUE */
 #define BS_LTC6804_USED      FALSE
 
 /*
@@ -137,7 +137,7 @@ typedef enum {
  * @level    user
  * @group    GENERAL
  */
-//#define BS_LTC6810_USED      TRUE
+/* #define BS_LTC6810_USED      TRUE */
 #define BS_LTC6810_USED      FALSE
 
 /*
@@ -149,7 +149,7 @@ typedef enum {
  * @group    GENERAL
  */
 #define BS_LTC6811_USED      TRUE
-//#define BS_LTC6811_USED      FALSE
+/* #define BS_LTC6811_USED      FALSE */
 
 /*
  * specify the type of LTC connected to the battery module
@@ -159,7 +159,7 @@ typedef enum {
  * @level    user
  * @group    GENERAL
  */
-//#define BS_LTC6812_USED      TRUE
+/* #define BS_LTC6812_USED      TRUE */
 #define BS_LTC6812_USED      FALSE
 
 /*
@@ -170,7 +170,7 @@ typedef enum {
  * @level    user
  * @group    GENERAL
  */
-//#define BS_LTC6813_USED      TRUE
+/* #define BS_LTC6813_USED      TRUE */
 #define BS_LTC6813_USED      FALSE
 
 /**
@@ -235,6 +235,15 @@ typedef enum {
 
 /**
  * @ingroup CONFIG_BATTERYSYSTEM
+ * Defines behaviour if an insulation error is detected
+ *
+ * If set to TRUE: contactors will be opened
+ * If set to FALSE: contactors will NOT be opened
+ */
+#define BMS_OPEN_CONTACTORS_ON_INSULATION_ERROR     FALSE
+
+/**
+ * @ingroup CONFIG_BATTERYSYSTEM
  * number of pack voltage inputs measured by current sensors (like IVT-MOD)
  * \par Type:
  * int
@@ -253,7 +262,7 @@ typedef enum {
  * \par Default:
  * 3
 */
-#define BS_NR_OF_CONTACTORS                        3
+#define BS_NR_OF_CONTACTORS                        6
 
 /**
  * @ingroup CONFIG_BATTERYSYSTEM
@@ -263,12 +272,12 @@ typedef enum {
  * \par Default:
  * 1
 */
-#define BS_SEPARATE_POWERLINES 0
-//#define BS_SEPARATE_POWERLINES 1
+/* #define BS_SEPARATE_POWERLINES 0 */
+#define BS_SEPARATE_POWERLINES 1
 
 #if BS_NR_OF_CONTACTORS > 3 && BS_SEPARATE_POWERLINES == 0
 #error "Configuration mismatch: Can't use BS_SEPARATE_POWERLINES with only 3 contactors"
-#endif  //
+#endif  /*  */
 
 /**
  * current threshold for determing rest state of battery. If absolute current is below

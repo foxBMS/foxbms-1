@@ -123,7 +123,7 @@ extern void ILCK_SetFeedbackIgnoreCounter(uint32_t ignores);
  * States of the ILCK state machine
  */
 typedef enum {
-    // Init-Sequence
+    /* Init-Sequence */
     ILCK_STATEMACH_UNINITIALIZED             = 0,    /*!<    */
     ILCK_STATEMACH_INITIALIZATION            = 1,    /*!<    */
     ILCK_STATEMACH_INITIALIZED               = 2,    /*!<    */

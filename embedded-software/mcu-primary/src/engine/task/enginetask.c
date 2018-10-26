@@ -100,63 +100,63 @@ static TaskHandle_t eng_handle_tsk_eventhandler;
 
 void ENG_CreateTask(void) {
 
-    // Database Task
+    /* Database Task */
     if (xTaskCreate((TaskFunction_t)ENG_TSK_Engine,(const portCHAR *)"TSK_Engine",
             eng_tskdef_engine.Stacksize, NULL, eng_tskdef_engine.Priority,
                 &eng_handle_engine) != pdPASS)  {
 
       while (1) {
-          ;     // TODO: do something
+          ;     /* TODO: do something */
       }
     }
 
-    // Cyclic Task 1ms
+    /* Cyclic Task 1ms */
     if (xTaskCreate((TaskFunction_t)ENG_TSK_Cyclic_1ms,(const portCHAR *)"TSK_Cyclic_1ms",
             eng_tskdef_cyclic_1ms.Stacksize, NULL, eng_tskdef_cyclic_1ms.Priority,
                 &eng_handle_tsk_1ms) != pdPASS)  {
 
       while (1) {
-          ;     // TODO: do something
+          ;     /* TODO: do something */
       }
     }
 
-    // Cyclic Task 10ms
+    /* Cyclic Task 10ms */
     if (xTaskCreate((TaskFunction_t)ENG_TSK_Cyclic_10ms,(const portCHAR *)"TSK_Cyclic_10ms",
             eng_tskdef_cyclic_10ms.Stacksize, NULL, eng_tskdef_cyclic_10ms.Priority,
                 &eng_handle_tsk_10ms) != pdPASS)  {
 
       while (1) {
-          ;     // TODO: do something
+          ;     /* TODO: do something */
       }
     }
 
-    // Cyclic Task 100ms
+    /* Cyclic Task 100ms */
     if (xTaskCreate((TaskFunction_t)ENG_TSK_Cyclic_100ms,(const portCHAR *)"TSK_Cyclic_100ms",
             eng_tskdef_cyclic_100ms.Stacksize, NULL, eng_tskdef_cyclic_100ms.Priority,
                 &eng_handle_tsk_100ms) != pdPASS)  {
 
       while (1) {
-          ;     // TODO: do something
+          ;     /* TODO: do something */
       }
     }
 
-    // EventHandler Task
+    /* EventHandler Task */
     if (xTaskCreate((TaskFunction_t)ENG_TSK_EventHandler,(const portCHAR *)"TSK_EventHandler",
             eng_tskdef_eventhandler.Stacksize, NULL, eng_tskdef_eventhandler.Priority,
                 &eng_handle_tsk_eventhandler) != pdPASS)  {
 
       while (1) {
-          ;     // TODO: do something
+          ;     /*  TODO: do something */
       }
     }
 
-    // Diagnosis Task
+    /* Diagnosis Task */
     if (xTaskCreate((TaskFunction_t)ENG_TSK_Diagnosis,(const portCHAR *)"TSK_Diagnosis",
             eng_tskdef_diagnosis.Stacksize, NULL, eng_tskdef_diagnosis.Priority,
                 &eng_handle_tsk_diagnosis) != pdPASS)  {
 
       while (1) {
-          ;     // TODO: do something
+          ;     /* TODO: do something */
       }
     }
 }
@@ -199,7 +199,7 @@ void ENG_TSK_Cyclic_1ms(void) {
 
     while (1) {
         uint32_t currentTime = OS_getOSSysTick();
-        OS_TimerTrigger(&os_timer);    // Increment system timer os_timer
+        OS_TimerTrigger(&os_timer);    /* Increment system timer os_timer */
         NVM_setOperatingHours(&bkpsram_op_hours);
         ENG_Cyclic_1ms();
         OS_taskDelayUntil(&currentTime, eng_tskdef_cyclic_1ms.CycleTime);

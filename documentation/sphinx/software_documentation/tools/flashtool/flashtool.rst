@@ -12,8 +12,12 @@ The flashtool is located in ``/path/to/foxbms/tools/flashtool``.
 
 With the command line tool, the flash memory of the foxBMS (or generally STM32F4) microcontroller can be programmed with a binary file. Also a dump read or a full erase of the flash memory can be done.
 
-For |foxbms| a GUI-based tool is also available to automatically flash the correct flash areas. This tool is called Inari.
+.. note::
 
+    Make sure that CAN0 connector is either disconnected or that there is no
+    traffic on CAN0 bus while flashing ``primary`` MCU. If this is not the case,
+    the internal bootloader of the controller will select a wrong boot source
+    and the flashing fails.
 
 Module Files
 ~~~~~~~~~~~~

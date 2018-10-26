@@ -84,10 +84,10 @@
 /**
  * defines the BAUD rate of the CAN0
  */
-//#define CAN0_BAUDRATE 1000000
+/* #define CAN0_BAUDRATE 1000000 */
 #define CAN0_BAUDRATE 500000
-//#define CAN0_BAUDRATE 250000
-//#define CAN0_BAUDRATE 125000
+/* #define CAN0_BAUDRATE 250000 */
+/* #define CAN0_BAUDRATE 125000 */
 
 /**
  * @ingroup CONFIG_CAN
@@ -103,10 +103,10 @@
 /**
  * defines the BAUD rate of the CAN1
  */
-//#define CAN1_BAUDRATE 1000000
+/* #define CAN1_BAUDRATE 1000000 */
 #define CAN1_BAUDRATE 500000
-//#define CAN1_BAUDRATE 250000
-//#define CAN1_BAUDRATE 125000
+/* #define CAN1_BAUDRATE 250000 */
+/* #define CAN1_BAUDRATE 125000 */
 
 
 
@@ -276,7 +276,7 @@
  * defines if the Isabellenhuette current sensor is used in cyclic or triggered mode
 */
 #define CAN_ISABELLENHUETTE_CYCLIC
-// #define CAN_ISABELLENHUETTE_TRIGGERED
+/* #define CAN_ISABELLENHUETTE_TRIGGERED */
 
 /**
  * @ingroup CONFIG_CAN
@@ -298,7 +298,7 @@
  * \par Default:
  * 0
 */
-//  #define CAN_SW_RESET_WITH_DEVICE_ID        1
+/* #define CAN_SW_RESET_WITH_DEVICE_ID        1 */
 #define CAN_SW_RESET_WITH_DEVICE_ID        0
 
 
@@ -311,7 +311,7 @@
  * \par Default:
  * 28
 */
-#define CAN_NUMBER_OF_FILTERBANKS       28  // dependable on the MCU (STM32F4 -> 28)
+#define CAN_NUMBER_OF_FILTERBANKS       28  /* dependable on the MCU (STM32F4 -> 28) */
 
 typedef struct CAN_MSG_RX_TYPE {
     uint32_t ID;    /*!< message ID*/
@@ -334,11 +334,11 @@ typedef uint32_t (*can_callback_funcPtr)(uint32_t idx, void * value);
  *  a callback function if transfer of TX message to CAN module is successful
  */
 typedef struct  {
-    uint32_t ID;                    //!< CAN message id
-    uint8_t DLC;                    //!< CAN message data length code
-    uint32_t repetition_time;       //!< CAN message cycle time
-    uint32_t repetition_phase;      //!< CAN message startup (first send) offset
-    can_callback_funcPtr cbk_func;  //!< CAN message callback after message is sent or received
+    uint32_t ID;                    /*!< CAN message id */
+    uint8_t DLC;                    /*!< CAN message data length code */
+    uint32_t repetition_time;       /*!< CAN message cycle time */
+    uint32_t repetition_phase;      /*!< CAN message startup (first send) offset */
+    can_callback_funcPtr cbk_func;  /*!< CAN message callback after message is sent or received */
 } CAN_MSG_TX_TYPE_s;
 
 typedef struct CanPdu {

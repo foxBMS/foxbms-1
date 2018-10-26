@@ -175,8 +175,8 @@ void SystemInit(void)
   /* Application specific configuration of System Control Block (SCB) of microcontroller */
 
 
-    // division by zero: if not set, a divide by zero will return a result of 0
-    SCB->CCR |= SCB_CCR_DIV_0_TRP_Msk;      // division by zero will generate an exception (Hard Fault_Handler)
+    /* division by zero: if not set, a divide by zero will return a result of 0 */
+    SCB->CCR |= SCB_CCR_DIV_0_TRP_Msk;      /* division by zero will generate an exception (Hard Fault_Handler) */
 
 
 
@@ -545,8 +545,8 @@ void SystemInit_ExtMemCtl(void)
   GPIOE->PUPDR   = 0x00000000;
 
   /* Connect PFx pins to FMC Alternate function */
-//  GPIOF->AFR[0]  = 0xCCCCCCCC;
-//  GPIOF->AFR[1]  = 0xCCCCCCCC;
+/*  GPIOF->AFR[0]  = 0xCCCCCCCC; */
+/*  GPIOF->AFR[1]  = 0xCCCCCCCC; */
   GPIOF->AFR[0]  = 0x00CCCCCC;
   GPIOF->AFR[1]  = 0xCCCCC000;
   /* Configure PFx pins in Alternate function mode */   
@@ -559,8 +559,8 @@ void SystemInit_ExtMemCtl(void)
   GPIOF->PUPDR   = 0x00000000;
 
   /* Connect PGx pins to FMC Alternate function */
-//  GPIOG->AFR[0]  = 0xCCCCCCCC;
-//  GPIOG->AFR[1]  = 0xCCCCCCCC;
+/*  GPIOG->AFR[0]  = 0xCCCCCCCC; */
+/*  GPIOG->AFR[1]  = 0xCCCCCCCC; */
   GPIOG->AFR[0]  = 0xC0CC00CC;
   GPIOG->AFR[1]  = 0xC00000CC;
   /* Configure PGx pins in Alternate function mode */ 
@@ -575,8 +575,8 @@ void SystemInit_ExtMemCtl(void)
 #if defined(STM32F427xx) || defined(STM32F437xx) || defined(STM32F429xx) || defined(STM32F439xx)\
  || defined(STM32F469xx) || defined(STM32F479xx)  
   /* Connect PHx pins to FMC Alternate function */
-//  GPIOH->AFR[0]  = 0x00C0CC00;
-//  GPIOH->AFR[1]  = 0xCCCCCCCC;
+/*  GPIOH->AFR[0]  = 0x00C0CC00; */
+/*  GPIOH->AFR[1]  = 0xCCCCCCCC; */
   GPIOH->AFR[0]  = 0xCC000000;
   GPIOH->AFR[1]  = 0xCCCCCCCC;
   /* Configure PHx pins in Alternate function mode */ 
@@ -589,8 +589,8 @@ void SystemInit_ExtMemCtl(void)
   GPIOH->PUPDR   = 0x00000000;
   
   /* Connect PIx pins to FMC Alternate function */
-//  GPIOI->AFR[0]  = 0xCCCCCCCC;
-//  GPIOI->AFR[1]  = 0x00000CC0;
+/*  GPIOI->AFR[0]  = 0xCCCCCCCC; */
+/*  GPIOI->AFR[1]  = 0x00000CC0; */
   GPIOI->AFR[0]  = 0x00000000;
   GPIOI->AFR[1]  = 0x00000000;
   /* Configure PIx pins in Alternate function mode */ 

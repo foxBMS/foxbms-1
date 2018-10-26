@@ -82,7 +82,7 @@ void ENG_PostOSInit(void) {
 
     retErrorCode = VIC_PostOsInterruptInit();
     if (retErrorCode != 0) {
-        DIAG_Handler(DIAG_CH_VIC_INIT_FAILURE, DIAG_EVENT_NOK, retErrorCode, NULL);   //error event in vic init
+        DIAG_Handler(DIAG_CH_VIC_INIT_FAILURE, DIAG_EVENT_NOK, retErrorCode, NULL);  /* error event in vic init */
     }
     retErrorCode = 0;
 
@@ -121,7 +121,7 @@ void ENG_Init(void) {
 
     DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
 
-    // Init Sys
+    /* Init Sys */
     sys_retVal = SYS_SetStateRequest(SYS_STATE_INIT_REQUEST);
 
 }

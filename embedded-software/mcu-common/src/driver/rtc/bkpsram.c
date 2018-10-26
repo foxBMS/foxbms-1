@@ -66,13 +66,13 @@
 
 void BKP_SRAM_Init(void) {
 #ifdef BKP_SRAM_ENABLE
-    // Enable PWR clock
+    /* Enable PWR clock */
     RCC->APB1ENR |= RCC_APB1ENR_PWREN;
 
-    // Allow access to backup domain
+    /* Allow access to backup domain */
     HAL_PWR_EnableBkUpAccess();
 
-    // Enable backup SRAM CLK
+    /* Enable backup SRAM CLK */
     RCC->AHB1ENR |= RCC_AHB1ENR_BKPSRAMEN;
 
     /* Enable low power Regulator */
@@ -80,7 +80,7 @@ void BKP_SRAM_Init(void) {
 
     if(RTC_BKPSRAM_DATAVALID_VARIABLE == 0)
     {
-        //@todo: clear BKP_SRAM Values?
+        /* @todo: clear BKP_SRAM Values? */
         RTC_BKPSRAM_DATAVALID_VARIABLE = 1;
 
     }

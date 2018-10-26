@@ -63,7 +63,7 @@
  * @ingroup CONFIG_EEPR
  * selects the used Eeprom Hardware (IC), which are supported by this driver
 */
-//#define EEPROM_VERSION_AT25128
+/* #define EEPROM_VERSION_AT25128 */
 #define EEPROM_VERSION_M95M02
 
 
@@ -77,11 +77,11 @@
  * select the write/read Protection
 */
 #define EEPR_HW_PROTECTION       EEPR_HW_PROTECTION_NONE
-//#define EEPR_HW_PROTECTION       EEPR_HW_PROTECTION_1_4
-//#define EEPR_HW_PROTECTION       EEPR_HW_PROTECTION_2_4
-//#define EEPR_HW_PROTECTION       EEPR_HW_PROTECTION_ALL
+/* #define EEPR_HW_PROTECTION       EEPR_HW_PROTECTION_1_4 */
+/* #define EEPR_HW_PROTECTION       EEPR_HW_PROTECTION_2_4 */
+/* #define EEPR_HW_PROTECTION       EEPR_HW_PROTECTION_ALL */
 
-//controls if one eeprom version was selected
+/* controls if one eeprom version was selected */
 #ifndef EEPROM_VERSION_AT25128
     #ifndef EEPROM_VERSION_M95M02
         #error no Eeprom Hardware (IC) defined
@@ -92,26 +92,26 @@
 /*
  * maximum numbers of channels
  */
-#define EEPR_CHANNEL_MAX_NR                    10            // maximum configured channels
+#define EEPR_CHANNEL_MAX_NR                    10            /* maximum configured channels */
 /*
  * maximum length of channels
  */
-#define EEPR_CH_MAXLENGTH                      256           // maximum  channel data volume in bytes
+#define EEPR_CH_MAXLENGTH                      256           /* maximum  channel data volume in bytes */
 
 
 #ifdef EEPROM_VERSION_AT25128
     #define EEPR_PageLength                    64
-    #define EEPR_CMDBUF_OFFSET                 3             // bytes needed to send address and commandbyte
+    #define EEPR_CMDBUF_OFFSET                 3             /* bytes needed to send address and commandbyte */
 #else
     #ifdef EEPROM_VERSION_M95M02
         #define EEPR_PageLength                256
-        #define EEPR_CMDBUF_OFFSET             4             // bytes needed to send address and commandbyte
+        #define EEPR_CMDBUF_OFFSET             4             /* bytes needed to send address and commandbyte */
      #else
         #error no Eeprom Hardware (IC) defined
     #endif
 #endif
 
-#define EEPR_TXBUF_LENGTH           (EEPR_CH_MAXLENGTH + EEPR_CMDBUF_OFFSET)  // maximum data + command byte length
+#define EEPR_TXBUF_LENGTH           (EEPR_CH_MAXLENGTH + EEPR_CMDBUF_OFFSET)  /* maximum data + command byte length */
 
 /*
  * maximum time in ms which is needed to write or read one page
@@ -136,7 +136,7 @@ typedef enum {
     EEPR_CHANNEL_MAX      = EEPR_CHANNEL_MAX_NR-1,
 } EEPR_CHANNEL_ID_TYPE_e;
 
-//Channeldefinition
+/* Channeldefinition */
 #define EEPR_CH_HEADER            EEPR_CHANNEL_1
 #define EEPR_CH_BOARD_INFO        EEPR_CHANNEL_2
 #define EEPR_CH_HARDWARE_INFO     EEPR_CHANNEL_3
@@ -227,7 +227,7 @@ typedef struct {
 } EEPR_CH_CFG_s;
 
 
-//@FIXME comments missing
+/* @FIXME comments missing */
 typedef struct {
     uint16_t     u_cell_max;
     uint16_t     u_cell_min;
@@ -235,11 +235,11 @@ typedef struct {
     uint16_t     u_temperature_min;
     float        current_max;
     float        current_min;
-    uint32_t     dummy[3];        // for future use
-    uint32_t checksum;            // checksum of data block (must be last position)
+    uint32_t     dummy[3];        /* for future use */
+    uint32_t checksum;            /* checksum of data block (must be last position) */
 }EEPR_CALIB_STATISTICS_s;
 
-//@FIXME comments missing
+/* @FIXME comments missing */
 typedef struct {
     uint16_t  versionnumbermajor;     /*!<Versionnumber of major changes in EEPROM software    */
     uint16_t  versionnumberminor;     /*!<Versionnumber of minor changes in EEPROM software    */
@@ -251,7 +251,7 @@ typedef struct {
     uint32_t chksum;                  /*!<checksum of eeprom data                              */
 }EEPR_HEADER_s;
 
-//@FIXME comments missing
+/* @FIXME comments missing */
 typedef struct {
     uint16_t network_nodeID;          /*!<Network Device ID              */
     uint16_t reserved_u16;            /*!<reserved for futore use                              */
@@ -384,7 +384,7 @@ extern EEPR_RETURNTYPE_e SPI_SendData(uint8_t* data, uint16_t length, uint16_t r
 extern EEPR_STATE_e EEPR_GetState(void);
 
 
-// FIXME bad confusing use of EEPR in EEPR module and BKPSRAM module. maybe move this checksum to utils or similar and use define here?
+/* FIXME bad confusing use of EEPR in EEPR module and BKPSRAM module. maybe move this checksum to utils or similar and use define here? */
 
 /**
  * @fn      U16 EEPR_CalcChecksum(U8 *dataptr, U16 byte_len)

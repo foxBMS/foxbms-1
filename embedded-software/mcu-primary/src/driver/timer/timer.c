@@ -79,31 +79,31 @@ void TIM_PWM_OUT_Init(void) {
     float period = 0.0;
 
     /* set default values */
-    dutycycle = TIM4_PWM_OUT_DEFAULT_DUTYCYCLE;  // dutycycle
-    frequency = TIM4_PWM_OUT_DEFAULT_FREQUENCY;  // frequency
+    dutycycle = TIM4_PWM_OUT_DEFAULT_DUTYCYCLE;  /* dutycycle */
+    frequency = TIM4_PWM_OUT_DEFAULT_FREQUENCY;  /* frequency */
 
     /* calculate timer peripheral clock */
-    uint32_t timPeriphClock = 2 * HAL_RCC_GetPCLK1Freq();  // timer peripheral clock frequency is 2 * APB1 clock frequency
-    timPeriphClock = timPeriphClock / 1000000;    // converting Hz to MHz
+    uint32_t timPeriphClock = 2 * HAL_RCC_GetPCLK1Freq();  /* timer peripheral clock frequency is 2 * APB1 clock frequency */
+    timPeriphClock = timPeriphClock / 1000000;    /* converting Hz to MHz */
 
     /* calculate prescaler */
-    // calculating value, so that the timer clock equals TIM4_CL0CK_FREQUENCY
-    // prescaler = APB1 timer clock / TIM4_CLOCK_FREQUENCY
-    // -> one counter value = TIM4_CLOCK_TICK_DURATION_IN_S
+    /* calculating value, so that the timer clock equals TIM4_CL0CK_FREQUENCY */
+    /* prescaler = APB1 timer clock / TIM4_CLOCK_FREQUENCY */
+    /* -> one counter value = TIM4_CLOCK_TICK_DURATION_IN_S */
     prescaler =  (uint16_t)((timPeriphClock / TIM4_CLOCK_FREQUENCY) + 0.5);
 
     /* set prescaler */
     htim4.Init.Prescaler = prescaler - 1;
 
     /* calculate period */
-    period = 1.0 / frequency;   // frequency equal to pwm output frequency
+    period = 1.0 / frequency;   /* frequency equal to pwm output frequency */
     period = period / TIM4_CLOCK_TICK_DURATION_IN_S;
 
     /* set period */
     htim4.Init.Period = (uint32_t)period - 1;
 
     /* calculate dutycycle */
-    dutycycle = dutycycle / 100.0;  // convert from percent to numerical value
+    dutycycle = dutycycle / 100.0;  /* convert from percent to numerical value */
     dutycycle = dutycycle * period;
 
     /* enable timer clock */
@@ -113,11 +113,11 @@ void TIM_PWM_OUT_Init(void) {
     HAL_TIM_PWM_Init(&htim4);
 
     sConfigOC.OCMode = TIM_OCMODE_PWM2;
-    sConfigOC.Pulse = dutycycle;        // Set duty-cycle
+    sConfigOC.Pulse = dutycycle;        /* Set duty-cycle */
     sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-    sConfigOC.OCNPolarity = 0;    // only valid for TIM1 and TIM8; defined to prevent assert error
-    sConfigOC.OCIdleState = 0;    // only valid for TIM1 and TIM8; defined to prevent assert error
-    sConfigOC.OCNIdleState = 0;   // only valid for TIM1 and TIM8; defined to prevent assert error
+    sConfigOC.OCNPolarity = 0;    /* only valid for TIM1 and TIM8; defined to prevent assert error */
+    sConfigOC.OCIdleState = 0;    /* only valid for TIM1 and TIM8; defined to prevent assert error */
+    sConfigOC.OCNIdleState = 0;   /* only valid for TIM1 and TIM8; defined to prevent assert error */
     sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
 
     /* init timer channel*/
@@ -134,13 +134,13 @@ void TIM_PWM_IC_Init(void) {
     uint16_t prescaler = 0;
 
     /* calculate timer peripheral clock */
-    uint32_t timPeriphClock = 2 * HAL_RCC_GetPCLK2Freq();  // timer peripheral clock frequency is 2 * APB2 clock frequency
-    timPeriphClock = timPeriphClock / 1000000;    // converting Hz to MHz
+    uint32_t timPeriphClock = 2 * HAL_RCC_GetPCLK2Freq();  /* timer peripheral clock frequency is 2 * APB2 clock frequency */
+    timPeriphClock = timPeriphClock / 1000000;    /* converting Hz to MHz */
 
     /* calculate prescaler */
-    // calculating value, so that the timer clock frequency equals 0.2 MHz
-    // prescaler = APB2 timer clock / 0.2MHz
-    // -> one counter value = 5us
+    /* calculating value, so that the timer clock frequency equals 0.2 MHz */
+    /* prescaler = APB2 timer clock / 0.2MHz */
+    /* -> one counter value = 5us */
     prescaler =  (uint16_t)((timPeriphClock / 0.2) + 0.5);
 
     /* set prescaler */
@@ -191,7 +191,7 @@ void TIM_PWM_SetFrequency(TIM_HandleTypeDef *htim, uint32_t frequency) {
     }
 
     if (htim != NULL) {
-        // timer clock is TIM4_CLOCK_FREQUENCY -> one tick equals TIM4_CLOCK_TICK_DURATION_IN_S
+        /* timer clock is TIM4_CLOCK_FREQUENCY -> one tick equals TIM4_CLOCK_TICK_DURATION_IN_S */
 
         period = 1.0 / frequency;
         period = period / TIM4_CLOCK_TICK_DURATION_IN_S;
@@ -241,8 +241,8 @@ void TIM_Start_PWM_IC_Measurement(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM9) {
 
         /* Start input capture */
-        HAL_TIM_IC_Start(htim, TIM_CHANNEL_1);    // Timer-Enable Channel 1
-        HAL_TIM_IC_Start(htim, TIM_CHANNEL_2);    // Timer-Enable Channel 2
+        HAL_TIM_IC_Start(htim, TIM_CHANNEL_1);    /* Timer-Enable Channel 1 */
+        HAL_TIM_IC_Start(htim, TIM_CHANNEL_2);    /* Timer-Enable Channel 2 */
     }
 }
 
@@ -262,7 +262,7 @@ void TIM_Start_PWM_Out(TIM_HandleTypeDef *htim) {
 TIM_RETURNTYPE_e TIM_GetDutycycle(TIM_HandleTypeDef *htim, TIM_DutyCycleType_s* DutyCycleData) {
     TIM_RETURNTYPE_e retVal = DIAG_TIM_NO_NEW_VAL;
       if (__HAL_TIM_GET_FLAG(htim, TIM_FLAG_UPDATE) != RESET) {
-        // overflow occurred
+        /* overflow occurred */
 
         retVal = DIAG_TIM_OVERFLOW;
         __HAL_TIM_CLEAR_FLAG(htim, TIM_FLAG_UPDATE);
@@ -270,13 +270,13 @@ TIM_RETURNTYPE_e TIM_GetDutycycle(TIM_HandleTypeDef *htim, TIM_DutyCycleType_s* 
 
     /* flag is reset, when register values are read */
     if (__HAL_TIM_GET_FLAG(htim, TIM_FLAG_CC2) != RESET && retVal == DIAG_TIM_NO_NEW_VAL) {
-        //  only read if new values are captured and no overflow is detected
+        /* only read if new values are captured and no overflow is detected */
 
-        DutyCycleData->ActiveTime = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1); // Active time
-        DutyCycleData->PeriodTime = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2); // Period time
+        DutyCycleData->ActiveTime = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1); /*  Active time */
+        DutyCycleData->PeriodTime = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2); /*  Period time */
         retVal = DIAG_TIM_OK;
     } else {
-        // no new values captured or overflow detected
+        /* no new values captured or overflow detected */
 
         DutyCycleData->ActiveTime = 0;
         DutyCycleData->PeriodTime = 0;

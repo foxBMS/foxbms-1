@@ -85,80 +85,80 @@ void NMI_Handler(void)
   */
 void HardFault_Handler(void)
 {
-    uint32_t faultaddress;        // note: MSP Stack will be changed
+    uint32_t faultaddress;        /* note: MSP Stack will be changed */
     uint32_t lr_register;
     uint32_t sp_register;
     uint32_t caller_addr_at_stack;
   /* Go to infinite loop when Hard Fault exception occurs */
-//  while (1)
-//  {
-//  }
+/*   while (1) */
+/*   { */
+/*   } */
 
 #ifdef STM32F4
 
     __ASM volatile ("mov %0, r14" : "=r" (lr_register) );
 
-//    VOID_FUNC_VOID fuptr;
-//    fuptr = (VOID_FUNC_VOID)(0xB0000020);
-//    fuptr();
+/*     VOID_FUNC_VOID fuptr; */
+/*     fuptr = (VOID_FUNC_VOID)(0xB0000020); */
+/*     fuptr(); */
 
-    // Check EXC_RETURN at exception entry to identify the used stack (MSP or PSP)
-    if(lr_register== 0xFFFFFFFD)   // Return to Thread mode, exception return uses non-floating-point state from
-    {                              // the PSP and execution uses PSP after return
+    /* Check EXC_RETURN at exception entry to identify the used stack (MSP or PSP) */
+    if(lr_register== 0xFFFFFFFD)   /* Return to Thread mode, exception return uses non-floating-point state from */
+    {                              /* the PSP and execution uses PSP after return */
         sp_register = __get_PSP();
     }
-    else if(lr_register== 0xFFFFFFF1)  // Return to Handler mode, exception return uses non-floating-point state from
-    {                                   // MSP and execution uses MSP after return
-        sp_register = __get_MSP() + 0x20;    // becaose of function local variables stack will be changed in MSP
+    else if(lr_register== 0xFFFFFFF1)  /* Return to Handler mode, exception return uses non-floating-point state from */
+    {                                  /* MSP and execution uses MSP after return */
+        sp_register = __get_MSP() + 0x20;    /* because of function local variables stack will be changed in MSP */
     }
 
     diag_fc.Val0 = SCB->CFSR;
-    // Check if division by zero exception occured
-    if(SCB->CFSR &= 0x02000000) //FLAG: DIVBYZERO
+    /* Check if division by zero exception occured */
+    if(SCB->CFSR &= 0x02000000)  /* FLAG: DIVBYZERO */
     {
         caller_addr_at_stack = sp_register + 0x18;
 
-        diag_fc.Val1 = *(uint32_t*)caller_addr_at_stack;  // report instruction address where division has occured
+        diag_fc.Val1 = *(uint32_t*)caller_addr_at_stack;  /* report instruction address where division has occured */
         DIAG_Handler(DIAG_CH_DIV_BY_ZERO_FAILURE,DIAG_EVENT_NOK,0, NULL);
 
     }
 
-    else if(SCB->CFSR &= 0x00010000) //FLAG: UNDEFINSTR
-    {   // tested by undefined instruction in memory: "0xF7F0A000"
+    else if(SCB->CFSR &= 0x00010000)  /* FLAG: UNDEFINSTR */
+    {   /* tested by undefined instruction in memory: "0xF7F0A000" */
         caller_addr_at_stack = sp_register+0x18;
 
-        diag_fc.Val1 = *(uint32_t*)caller_addr_at_stack;  // report instruction address with undefined instruction
+        diag_fc.Val1 = *(uint32_t*)caller_addr_at_stack;  /* report instruction address with undefined instruction */
         DIAG_Handler(DIAG_CH_UNDEF_INSTRUCTION_FAILURE,DIAG_EVENT_NOK,0, NULL);
     }
 
 
-    // Check if data bus error occured or data access violation
-    else if(SCB->CFSR &= 0x00000202) //FLAG: PRECIS ERR or DACC VIOL
-    {   // tested by data pointer to address area 0x04000000, 0xb0000000...
+    /* Check if data bus error occured or data access violation */
+    else if(SCB->CFSR &= 0x00000202) /* FLAG: PRECIS ERR or DACC VIOL */
+    {   /* tested by data pointer to address area 0x04000000, 0xb0000000... */
         caller_addr_at_stack = sp_register+0x18;
 
-        diag_fc.Val1 = *(uint32_t*)(caller_addr_at_stack);    // report instruction address where data bus error has occured
+        diag_fc.Val1 = *(uint32_t*)(caller_addr_at_stack);    /* report instruction address where data bus error has occured */
 
         faultaddress = SCB->BFAR;
-        if(SCB->CFSR &= 0x00008000) // check if BFAR (reported Bus Fault Address) is valid
+        if(SCB->CFSR &= 0x00008000) /* check if BFAR (reported Bus Fault Address) is valid */
         {
-            diag_fc.Val2 = faultaddress;                    // report bus address being accessed
+            diag_fc.Val2 = faultaddress;                    /* report bus address being accessed */
         }
         DIAG_Handler(DIAG_CH_DATA_BUS_FAILURE,DIAG_EVENT_NOK,0, NULL);
 
     }
 
-    // Check if instruction bus error occured or instruction access violation
-    else if(SCB->CFSR &= 0x00000101) //FLAG: IBUS ERR or IACC VIOL
-    {   // tested by using function pointer to address area 0x04000000, 0xb0000000...
+    /* Check if instruction bus error occured or instruction access violation */
+    else if(SCB->CFSR &= 0x00000101) /* FLAG: IBUS ERR or IACC VIOL */
+    {   /* tested by using function pointer to address area 0x04000000, 0xb0000000... */
         caller_addr_at_stack = (sp_register+0x18);
 
-        diag_fc.Val1 = *(uint32_t*)(caller_addr_at_stack);    // report instruction address where instruction bus error has occured
+        diag_fc.Val1 = *(uint32_t*)(caller_addr_at_stack);    /* report instruction address where instruction bus error has occured */
 
         faultaddress = SCB->BFAR;
-        if(SCB->CFSR &= 0x00008000) // check if BFAR (reported Bus Fault Address) is valid
+        if(SCB->CFSR &= 0x00008000) /* check if BFAR (reported Bus Fault Address) is valid */
         {
-            diag_fc.Val2 = faultaddress;                        // report bus address being accessed
+            diag_fc.Val2 = faultaddress;                        /* report bus address being accessed */
         }
         DIAG_Handler(DIAG_CH_INSTRUCTION_BUS_FAILURE,DIAG_EVENT_NOK, 0, NULL);
 
@@ -274,7 +274,7 @@ void SysTick_Handler(void) {
 {
 }*/
 
-#if 1   // FIXME nötig?
+#if 1   /* FIXME nötig? */
 /**
 * @brief This function handles SPI6 global interrupt.
 */
@@ -289,7 +289,7 @@ void SPI6_IRQHandler(void)
 }
 #endif
 
-#if 0   // FIXME kann gelöscht werden?
+#if 0   /* FIXME kann gelöscht werden? */
 /**
 * @brief This function handles SPI4 global interrupt.
 */
@@ -372,8 +372,8 @@ void USART3_IRQHandler(void)
 void USART2_IRQHandler(void)
 {
 #if BUILD_MODULE_ENABLE_RS485
-    // @todo akdere
-    // HAL_UART_CustomIRQHandler(&huart2);
+    /* @todo akdere */
+    /* HAL_UART_CustomIRQHandler(&huart2); */
 #endif
 }
 
@@ -388,7 +388,7 @@ void ADC_IRQHandler(void)
 
 void TIM3_IRQHandler(void) {
 
-    // todo: do something here
+    /* todo: do something here */
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

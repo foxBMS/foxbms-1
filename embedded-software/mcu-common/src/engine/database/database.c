@@ -64,7 +64,7 @@
 #define DATA_QUEUE_TIMEOUT_MS   10
 
 /*================== Constant and Variable Definitions ====================*/
-// FIXME Some uninitialized variables
+/* FIXME Some uninitialized variables */
 static DATA_BLOCK_ACCESS_s data_block_access[DATA_MAX_BLOCK_NR];
 static SemaphoreHandle_t data_base_mutex[DATA_MAX_BLOCK_NR];
 QueueHandle_t data_queue;
@@ -76,22 +76,23 @@ QueueHandle_t data_queue;
 /*================== Public functions =====================================*/
 void DATA_Init(void) {
     if(sizeof(data_base_dev) == 0) {
-        // todo fatal error!
+        /* todo fatal error! */
 
         while (1) {
             ;
         }
     }
 
-    // FIXME What is mymessage structures?
+    /* FIXME What is mymessage structures? */
     /* Create a queue capable of containing 10 pointers to mymessage structures.
-//    These should be passed by pointer as they contain a lot of data. */
-//    data_queueID = xQueueCreate( devptr->nr_of_blockheader, sizeof( DATA_QUEUE_MESSAGE_s) );    // FIXME number of queues=1 should be enough
-//
-//    if(data_queueID  ==  NULL_PTR) {
-//        // Failed to create the queue
-//        ;            // @ TODO Error Handling
-//    }
+       These should be passed by pointer as they contain a lot of data.
+       data_queueID = xQueueCreate( devptr->nr_of_blockheader, sizeof( DATA_QUEUE_MESSAGE_s) ); */    /* FIXME number of queues=1 should be enough */
+
+/*     if(data_queueID  ==  NULL_PTR) {
+             Failed to create the queue
+           ;   @ TODO Error Handling
+       }
+*/
 
     /* Iterate over database and set respective read/write pointer for each database entry */
     for(uint16_t i = 0; i < data_base_dev.nr_of_blockheader; i++) {
@@ -122,8 +123,8 @@ void DATA_Init(void) {
     data_queue = xQueueCreate( 1, sizeof( DATA_QUEUE_MESSAGE_s) );
 
     if (data_queue == NULL_PTR) {
-        // Failed to create the queue
-        // @ TODO Error Handling
+        /* Failed to create the queue */
+        /* @ TODO Error Handling */
         while (1) {
             ;
         }
@@ -133,10 +134,10 @@ void DATA_Init(void) {
 
 void DB_WriteBlock(void *dataptrfromSender, DATA_BLOCK_ID_TYPE_e  blockID) {
 
-    // dataptrfromSender is a pointer to data of caller function
-    // dataptr_toptr_fromSender is a pointer to this pointer
-    // this is used for passing message variable by reference
-    // note: xQueueSend() always takes message variable by value
+    /* dataptrfromSender is a pointer to data of caller function
+       dataptr_toptr_fromSender is a pointer to this pointer
+       this is used for passing message variable by reference
+       note: xQueueSend() always takes message variable by value */
     DATA_QUEUE_MESSAGE_s data_send_msg;
     TickType_t queuetimeout;
 
@@ -149,12 +150,12 @@ void DB_WriteBlock(void *dataptrfromSender, DATA_BLOCK_ID_TYPE_e  blockID) {
         queuetimeout = 1;
     }
 
-    // prepare send message with attributes of data block
+    /* prepare send message with attributes of data block */
     data_send_msg.blockID = blockID;
     data_send_msg.value.voidptr = dataptrfromSender;
     data_send_msg.accesstype = WRITE_ACCESS;
-    // Send a pointer to a message object and
-    // maximum block time: queuetimeout
+    /* Send a pointer to a message object and
+       maximum block time: queuetimeout */
     xQueueSend( data_queue, (void *) &data_send_msg, queuetimeout);
  }
 
@@ -170,16 +171,16 @@ void DATA_Task(void) {
 
     if(data_queue != NULL_PTR) {
 
-        if( xQueueReceive(data_queue,(&receive_msg),(TickType_t ) 1) ) {  // scan queue and wait for a message up to a maximum amount of 1ms (block time)
+        if( xQueueReceive(data_queue,(&receive_msg),(TickType_t ) 1) ) {  /* scan queue and wait for a message up to a maximum amount of 1ms (block time) */
 
-            // ptrrcvmessage now points to message of sender which contains data pointer and data block ID
+            /* ptrrcvmessage now points to message of sender which contains data pointer and data block ID */
             blockID = receive_msg.blockID;
             srcdataptr = receive_msg.value.voidptr;
             accesstype = receive_msg.accesstype;
-            if((blockID < DATA_MAX_BLOCK_NR) && (srcdataptr != NULL_PTR)) {   // plausibility check
-                // get entries of blockheader and write pointer
+            if((blockID < DATA_MAX_BLOCK_NR) && (srcdataptr != NULL_PTR)) {   /* plausibility check */
+                /* get entries of blockheader and write pointer */
                 if(accesstype == WRITE_ACCESS) {
-                    // write access to data blocks
+                    /* write access to data blocks */
                     datalength = (data_base_dev.blockheaderptr + blockID)->datalength;
                     buffertype = (data_base_dev.blockheaderptr + blockID)->buffertype;
                     dstdataptr=data_block_access[blockID].WRptr;
@@ -213,7 +214,7 @@ void DATA_Task(void) {
                         dstdataptr=data_block_access[blockID].WRptr;
                     }
                 } else if(accesstype == READ_ACCESS) {
-                    // Read access to data blocks
+                    /* Read access to data blocks */
                     datalength = (data_base_dev.blockheaderptr + blockID)->datalength;
                     buffertype = (data_base_dev.blockheaderptr + blockID)->buffertype;
                     dstdataptr = srcdataptr;
@@ -240,7 +241,7 @@ void DATA_Task(void) {
                 }
             }
         }
-        DIAG_SysMonNotify(DIAG_SYSMON_DATABASE_ID, 0);        // task is running, state = ok
+        DIAG_SysMonNotify(DIAG_SYSMON_DATABASE_ID, 0);        /* task is running, state = ok */
     }
 }
 
@@ -259,21 +260,21 @@ STD_RETURN_TYPE_e DB_ReadBlock(void *dataptrtoReceiver, DATA_BLOCK_ID_TYPE_e  bl
         queuetimeout = 1;
     }
 
-    // prepare send message with attributes of data block
+    /* prepare send message with attributes of data block */
     data_send_msg.blockID = blockID;
     data_send_msg.value.voidptr = dataptrtoReceiver;
     data_send_msg.accesstype = READ_ACCESS;
 
-    // Send a pointer to a message object and
-    // maximum block time: queuetimeout
+    /* Send a pointer to a message object and */
+    /* maximum block time: queuetimeout */
     xQueueSend( data_queue, (void *) &data_send_msg, queuetimeout);
 
     return E_OK;
 }
 
-// FIXME not used  currently - delete?
+/* FIXME not used  currently - delete? */
 void * DATA_GetTablePtrBeginCritical(DATA_BLOCK_ID_TYPE_e  blockID) {
-    //FIXME block with semaphore
+    /* FIXME block with semaphore */
     return data_block_access[blockID].RDptr;
 }
 

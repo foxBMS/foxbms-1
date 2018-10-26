@@ -315,7 +315,7 @@ DATA_BASE_HEADER_s  data_base_header[] = {
  * all attributes of device configuration are listed here (pointer to channel list, number of channels)
  */
 const DATA_BASE_HEADER_DEV_s data_base_dev = {
-    .nr_of_blockheader  = sizeof(data_base_header)/sizeof(DATA_BASE_HEADER_s),    // number of blocks (and block headers)
+    .nr_of_blockheader  = sizeof(data_base_header)/sizeof(DATA_BASE_HEADER_s),    /* number of blocks (and block headers) */
     .blockheaderptr     = &data_base_header[0],
 };
 

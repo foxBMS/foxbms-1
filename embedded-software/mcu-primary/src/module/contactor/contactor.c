@@ -93,7 +93,7 @@ static DATA_BLOCK_CURRENT_SENSOR_s cont_current_tab = {0};
 
 #define CONT_OPENCHARGEPRECHARGE()       CONT_SetContactorState(CONT_CHARGE_PRECHARGE_PLUS, CONT_SWITCH_OFF);
 #define CONT_CLOSECHARGEPRECHARGE()       CONT_SetContactorState(CONT_CHARGE_PRECHARGE_PLUS, CONT_SWITCH_ON);
-#endif // BS_SEPARATE_POWERLINES == 1
+#endif /* BS_SEPARATE_POWERLINES == 1 */
 
 /*================== Constant and Variable Definitions ====================*/
 
@@ -124,7 +124,6 @@ static CONT_STATE_REQUEST_e CONT_GetStateRequest(void);
 static CONT_STATE_REQUEST_e CONT_TransferStateRequest(void);
 static uint8_t CONT_CheckReEntrance(void);
 static void CONT_CheckFeedback(void);
-static STD_RETURN_TYPE_e CONT_CheckVoltages(void);
 
 /*================== Function Implementations =============================*/
 
@@ -143,7 +142,7 @@ CONT_ELECTRICAL_STATE_TYPE_s CONT_GetContactorFeedback(CONT_NAMES_e contactor) {
     if (CONT_HAS_NO_FEEDBACK == cont_contactors_config[contactor].feedback_pin_type) {
             measuredContactorState = cont_contactor_states[contactor].set;
     } else {
-        // the contactor has a feedback pin, but it has to be differenced if the feedback pin is normally open or normally closed
+        /* the contactor has a feedback pin, but it has to be differenced if the feedback pin is normally open or normally closed */
         if (CONT_FEEDBACK_NORMALLY_OPEN == cont_contactors_config[contactor].feedback_pin_type) {
             IO_PIN_STATE_e pinstate = IO_PIN_RESET;
             taskENTER_CRITICAL();
@@ -368,7 +367,7 @@ static CONT_RETURN_TYPE_e CONT_CheckStateRequest(CONT_STATE_REQUEST_e statereq) 
     }
 
     if (cont_state.statereq == CONT_STATE_NO_REQUEST) {
-        // init only allowed from the uninitialized state
+        /* init only allowed from the uninitialized state */
         if (statereq == CONT_STATE_INIT_REQUEST) {
             if (cont_state.state == CONT_STATEMACH_UNINITIALIZED) {
                 return CONT_OK;
@@ -417,7 +416,7 @@ void CONT_Trigger(void) {
         return;
     }
 
-    DIAG_SysMonNotify(DIAG_SYSMON_CONT_ID, 0);  // task is running, state = ok
+    DIAG_SysMonNotify(DIAG_SYSMON_CONT_ID, 0);  /* task is running, state = ok */
 
     if (cont_state.state != CONT_STATEMACH_UNINITIALIZED) {
         CONT_CheckFeedback();
@@ -443,7 +442,7 @@ void CONT_Trigger(void) {
         }
         if(cont_state.timer) {
             cont_state.triggerentry--;
-            return;    // handle state machine only if timer has elapsed
+            return;    /* handle state machine only if timer has elapsed */
         }
     }
 
@@ -451,7 +450,7 @@ void CONT_Trigger(void) {
     switch (cont_state.state) {
         /****************************UNINITIALIZED***********************************/
         case CONT_STATEMACH_UNINITIALIZED:
-            // waiting for Initialization Request
+            /* waiting for Initialization Request */
             statereq = CONT_TransferStateRequest();
             if (statereq == CONT_STATE_INIT_REQUEST) {
                 CONT_SAVELASTSTATES();
@@ -459,9 +458,9 @@ void CONT_Trigger(void) {
                 cont_state.state = CONT_STATEMACH_INITIALIZATION;
                 cont_state.substate = CONT_ENTRY;
             } else if (statereq == CONT_STATE_NO_REQUEST) {
-                // no actual request pending //
+                /* no actual request pending */
             } else {
-                cont_state.ErrRequestCounter++;   // illegal request pending
+                cont_state.ErrRequestCounter++;   /* illegal request pending */
             }
             break;
 
@@ -498,7 +497,7 @@ void CONT_Trigger(void) {
         case CONT_STATEMACH_STANDBY:
             CONT_SAVELASTSTATES();
 
-            //first precharge process
+            /* first precharge process */
             if (cont_state.substate == CONT_ENTRY){
                 cont_state.OscillationCounter = CONT_OSCILLATION_LIMIT;
                 CONT_OPENPRECHARGE();
@@ -542,10 +541,10 @@ void CONT_Trigger(void) {
                 cont_state.substate = CONT_STANDBY;
                 break;
             } else if (cont_state.substate == CONT_STANDBY) {
-                // when process done, look for requests
+                /* when process done, look for requests */
                 statereq = CONT_TransferStateRequest();
                 if (statereq == CONT_STATE_STANDBY_REQUEST) {
-                    // we stay already in requested state, nothing to do
+                    /* we stay already in requested state, nothing to do */
                 } else if (statereq == CONT_STATE_NORMAL_REQUEST) {
                     CONT_SAVELASTSTATES();
                     cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
@@ -559,96 +558,96 @@ void CONT_Trigger(void) {
                     cont_state.state = CONT_STATEMACH_CHARGE_PRECHARGE;
                     cont_state.substate = CONT_ENTRY;
                 }
-#endif // BS_SEPARATE_POWERLINES == 1
+#endif /* BS_SEPARATE_POWERLINES == 1 */
                 else if(statereq == CONT_STATE_ERROR_REQUEST) {
                     CONT_SAVELASTSTATES();
                     cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
                     cont_state.state = CONT_STATEMACH_ERROR;
                     cont_state.substate = CONT_ENTRY;
                 } else if (statereq == CONT_STATE_NO_REQUEST) {
-                    // no actual request pending
+                    /* no actual request pending */
                 } else {
-                    cont_state.ErrRequestCounter++;  // illegal request pending
+                    cont_state.ErrRequestCounter++;  /* illegal request pending */
                 }
                 break;
             }
             break;
 
-            /****************************PRECHARGE*************************************/
-            case CONT_STATEMACH_PRECHARGE:
+        /****************************PRECHARGE*************************************/
+        case CONT_STATEMACH_PRECHARGE:
+            CONT_SAVELASTSTATES();
+            /*  check state requests */
+            statereq = CONT_TransferStateRequest();
+            if (statereq == CONT_STATE_ERROR_REQUEST) {
                 CONT_SAVELASTSTATES();
-                //  check state requests
-                statereq = CONT_TransferStateRequest();
-                if (statereq == CONT_STATE_ERROR_REQUEST) {
-                    CONT_SAVELASTSTATES();
-                    cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
-                    cont_state.state = CONT_STATEMACH_ERROR;
-                    cont_state.substate = CONT_ENTRY;
-                    break;
-                }
-                if (statereq == CONT_STATE_STANDBY_REQUEST) {
-                    CONT_SAVELASTSTATES();
-                    cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
-                    cont_state.state = CONT_STATEMACH_STANDBY;
-                    cont_state.substate = CONT_ENTRY;
-                    break;
-                }
+                cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
+                cont_state.state = CONT_STATEMACH_ERROR;
+                cont_state.substate = CONT_ENTRY;
+                break;
+            }
+            if (statereq == CONT_STATE_STANDBY_REQUEST) {
+                CONT_SAVELASTSTATES();
+                cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
+                cont_state.state = CONT_STATEMACH_STANDBY;
+                cont_state.substate = CONT_ENTRY;
+                break;
+            }
 
-                //precharge process, can be interrupted anytimeby the requests above
-                if (cont_state.substate == CONT_ENTRY){
-                    if (cont_state.OscillationCounter > 0){
-                        cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
-                        break;
-                    } else {
-                        cont_state.PrechargeTryCounter = 0;
-                        cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
+            /* precharge process, can be interrupted anytimeby the requests above */
+            if (cont_state.substate == CONT_ENTRY){
+                if (cont_state.OscillationCounter > 0){
+                    cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
+                    break;
+                } else {
+                    cont_state.PrechargeTryCounter = 0;
+                    cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
+                    cont_state.substate = CONT_PRECHARGE_CLOSE_MINUS;
+                    break;
+                }
+            } else if (cont_state.substate == CONT_PRECHARGE_CLOSE_MINUS) {
+                cont_state.PrechargeTryCounter++;
+                cont_state.PrechargeTimeOut = CONT_PRECHARGE_TIMEOUT_MS;
+                CONT_CLOSEMINUS();
+                cont_state.timer = CONT_STATEMACH_WAIT_AFTER_CLOSING_MINUS_MS;
+                cont_state.substate = CONT_PRECHARGE_CLOSE_PRECHARGE;
+                break;
+            } else if (cont_state.substate == CONT_PRECHARGE_CLOSE_PRECHARGE) {
+                CONT_CLOSEPRECHARGE();
+                cont_state.timer = CONT_STATEMACH_WAIT_AFTER_CLOSING_PRECHARGE_MS;
+                cont_state.substate = CONT_PRECHARGE_CHECK_VOLTAGES;
+                break;
+            } else if (cont_state.substate == CONT_PRECHARGE_CHECK_VOLTAGES) {
+                retVal = CONT_CheckPrecharge(CONT_POWERLINE_NORMAL);
+                if (retVal == E_OK) {
+                    CONT_CLOSEPLUS();
+                    cont_state.timer = CONT_STATEMACH_WAIT_AFTER_CLOSING_PLUS_MS;
+                    cont_state.substate = CONT_PRECHARGE_OPEN_PRECHARGE;
+                    break;
+                } else if (cont_state.PrechargeTimeOut > 0) {
+                    break;
+                } else {
+                    if (cont_state.PrechargeTryCounter < CONT_PRECHARGE_TRIES) {
+                        CONT_OPENALLCONTACTORS();
+                        cont_state.timer = CONT_STATEMACH_TIMEAFTERPRECHARGEFAIL_MS;
                         cont_state.substate = CONT_PRECHARGE_CLOSE_MINUS;
                         break;
-                    }
-                } else if (cont_state.substate == CONT_PRECHARGE_CLOSE_MINUS) {
-                    cont_state.PrechargeTryCounter++;
-                    cont_state.PrechargeTimeOut = CONT_PRECHARGE_TIMEOUT_MS;
-                    CONT_CLOSEMINUS();
-                    cont_state.timer = CONT_STATEMACH_WAIT_AFTER_CLOSING_MINUS_MS;
-                    cont_state.substate = CONT_PRECHARGE_CLOSE_PRECHARGE;
-                    break;
-                } else if (cont_state.substate == CONT_PRECHARGE_CLOSE_PRECHARGE) {
-                    CONT_CLOSEPRECHARGE();
-                    cont_state.timer = CONT_STATEMACH_WAIT_AFTER_CLOSING_PRECHARGE_MS;
-                    cont_state.substate = CONT_PRECHARGE_CHECK_VOLTAGES;
-                    break;
-                } else if (cont_state.substate == CONT_PRECHARGE_CHECK_VOLTAGES) {
-                    retVal = CONT_CheckVoltages();
-                    if (retVal == E_OK) {
-                        CONT_CLOSEPLUS();
-                        cont_state.timer = CONT_STATEMACH_WAIT_AFTER_CLOSING_PLUS_MS;
-                        cont_state.substate = CONT_PRECHARGE_OPEN_PRECHARGE;
-                        break;
-                    } else if (cont_state.PrechargeTimeOut > 0) {
-                        break;
                     } else {
-                        if (cont_state.PrechargeTryCounter < CONT_PRECHARGE_TRIES) {
-                            CONT_OPENALLCONTACTORS();
-                            cont_state.timer = CONT_STATEMACH_TIMEAFTERPRECHARGEFAIL_MS;
-                            cont_state.substate = CONT_PRECHARGE_CLOSE_MINUS;
-                            break;
-                        } else {
-                            CONT_OPENALLCONTACTORS();
-                            cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
-                            cont_state.state = CONT_STATEMACH_ERROR;
-                            cont_state.substate = CONT_ENTRY;
-                            break;
-                        }
+                        CONT_OPENALLCONTACTORS();
+                        cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
+                        cont_state.state = CONT_STATEMACH_ERROR;
+                        cont_state.substate = CONT_ENTRY;
+                        break;
                     }
-                } else if (cont_state.substate == CONT_PRECHARGE_OPEN_PRECHARGE) {
-                    CONT_OPENPRECHARGE();
-                    cont_state.timer = CONT_STATEMACH_WAIT_AFTER_OPENING_PRECHARGE_MS;
-                    cont_state.state = CONT_STATEMACH_NORMAL;
-                    cont_state.substate = CONT_ENTRY;
-                    break;
                 }
-
+            } else if (cont_state.substate == CONT_PRECHARGE_OPEN_PRECHARGE) {
+                CONT_OPENPRECHARGE();
+                cont_state.timer = CONT_STATEMACH_WAIT_AFTER_OPENING_PRECHARGE_MS;
+                cont_state.state = CONT_STATEMACH_NORMAL;
+                cont_state.substate = CONT_ENTRY;
                 break;
+            }
+
+            break;
 
         /****************************NORMAL*************************************/
         case CONT_STATEMACH_NORMAL:
@@ -672,84 +671,84 @@ void CONT_Trigger(void) {
             break;
 
 #if BS_SEPARATE_POWERLINES == 1
-            /****************************CHARGE_PRECHARGE*************************************/
-            case CONT_STATEMACH_CHARGE_PRECHARGE:
+        /****************************CHARGE_PRECHARGE*************************************/
+        case CONT_STATEMACH_CHARGE_PRECHARGE:
+            CONT_SAVELASTSTATES();
+
+            /* check state requests */
+            statereq=CONT_TransferStateRequest();
+            if (statereq == CONT_STATE_ERROR_REQUEST){
                 CONT_SAVELASTSTATES();
+                cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
+                cont_state.state = CONT_STATEMACH_ERROR;
+                cont_state.substate = CONT_ENTRY;
+                break;
+            }
+            if(statereq == CONT_STATE_STANDBY_REQUEST){
+                CONT_SAVELASTSTATES();
+                cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
+                cont_state.state = CONT_STATEMACH_STANDBY;
+                cont_state.substate = CONT_ENTRY;
+                break;
+            }
 
-                //check state requests
-                statereq=CONT_TransferStateRequest();
-                if (statereq == CONT_STATE_ERROR_REQUEST){
-                    CONT_SAVELASTSTATES();
+            /* precharge process, can be interrupted anytime by the requests above */
+            if (cont_state.substate == CONT_ENTRY){
+                if (cont_state.OscillationCounter > 0){
                     cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
-                    cont_state.state = CONT_STATEMACH_ERROR;
-                    cont_state.substate = CONT_ENTRY;
+                    break;
+                } else{
+                    cont_state.PrechargeTryCounter = 0;
+                    cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
+                    cont_state.substate = CONT_PRECHARGE_CLOSE_MINUS;
                     break;
                 }
-                if(statereq == CONT_STATE_STANDBY_REQUEST){
-                    CONT_SAVELASTSTATES();
-                    cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
-                    cont_state.state = CONT_STATEMACH_STANDBY;
-                    cont_state.substate = CONT_ENTRY;
+            } else if (cont_state.substate == CONT_PRECHARGE_CLOSE_MINUS){
+                cont_state.PrechargeTryCounter++;
+                cont_state.PrechargeTimeOut = CONT_CHARGE_PRECHARGE_TIMEOUT_MS;
+                CONT_CLOSECHARGEMINUS();
+                cont_state.timer = CONT_STATEMACH_CHARGE_WAIT_AFTER_CLOSING_MINUS_MS;
+                cont_state.substate = CONT_PRECHARGE_CLOSE_PRECHARGE;
+                break;
+            }
+            else if (cont_state.substate == CONT_PRECHARGE_CLOSE_PRECHARGE){
+                CONT_CLOSECHARGEPRECHARGE();
+                cont_state.timer = CONT_STATEMACH_CHARGE_WAIT_AFTER_CLOSING_PRECHARGE_MS;
+                cont_state.substate = CONT_PRECHARGE_CHECK_VOLTAGES;
+                break;
+            } else if (cont_state.substate == CONT_PRECHARGE_CHECK_VOLTAGES){
+                retVal = CONT_CheckPrecharge(CONT_POWERLINE_CHARGE);
+                if (retVal == E_OK){
+                    CONT_CLOSECHARGEPLUS();
+                    cont_state.timer = CONT_STATEMACH_CHARGE_WAIT_AFTER_CLOSING_PLUS_MS;
+                    cont_state.substate = CONT_PRECHARGE_OPEN_PRECHARGE;
                     break;
-                }
-
-                //precharge process, can be interrupted anytimeby the requests above
-                if (cont_state.substate == CONT_ENTRY){
-                    if (cont_state.OscillationCounter > 0){
-                        cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
-                        break;
-                    } else{
-                        cont_state.PrechargeTryCounter = 0;
-                        cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
+                } else if (cont_state.PrechargeTimeOut>0){
+                    break;
+                } else{
+                    if (cont_state.PrechargeTryCounter < CONT_PRECHARGE_TRIES){
+                        CONT_OPENALLCONTACTORS();
+                        cont_state.timer = CONT_STATEMACH_TIMEAFTERPRECHARGEFAIL_MS;
                         cont_state.substate = CONT_PRECHARGE_CLOSE_MINUS;
                         break;
-                    }
-                } else if (cont_state.substate == CONT_PRECHARGE_CLOSE_MINUS){
-                    cont_state.PrechargeTryCounter++;
-                    cont_state.PrechargeTimeOut = CONT_PRECHARGE_TIMEOUT_MS;
-                    CONT_CLOSECHARGEMINUS();
-                    cont_state.timer = CONT_STATEMACH_WAIT_AFTER_CLOSING_MINUS_MS;
-                    cont_state.substate = CONT_PRECHARGE_CLOSE_PRECHARGE;
-                    break;
-                }
-                else if (cont_state.substate == CONT_PRECHARGE_CLOSE_PRECHARGE){
-                    CONT_CLOSECHARGEPRECHARGE();
-                    cont_state.timer = CONT_STATEMACH_WAIT_AFTER_CLOSING_PRECHARGE_MS;
-                    cont_state.substate = CONT_PRECHARGE_CHECK_VOLTAGES;
-                    break;
-                } else if (cont_state.substate == CONT_PRECHARGE_CHECK_VOLTAGES){
-                    retVal = CONT_CheckVoltages();
-                    if (retVal == E_OK){
-                        CONT_CLOSECHARGEPLUS();
-                        cont_state.timer = CONT_STATEMACH_WAIT_AFTER_CLOSING_PLUS_MS;
-                        cont_state.substate = CONT_PRECHARGE_OPEN_PRECHARGE;
-                        break;
-                    } else if (cont_state.PrechargeTimeOut>0){
-                        break;
                     } else{
-                        if (cont_state.PrechargeTryCounter < CONT_PRECHARGE_TRIES){
-                            CONT_OPENALLCONTACTORS();
-                            cont_state.timer = CONT_STATEMACH_TIMEAFTERPRECHARGEFAIL_MS;
-                            cont_state.substate = CONT_PRECHARGE_CLOSE_MINUS;
-                            break;
-                        } else{
-                            CONT_OPENALLCONTACTORS();
-                            cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
-                            cont_state.state = CONT_STATEMACH_ERROR;
-                            cont_state.substate = CONT_ENTRY;
-                            break;
-                        }
+                        CONT_OPENALLCONTACTORS();
+                        cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
+                        cont_state.state = CONT_STATEMACH_ERROR;
+                        cont_state.substate = CONT_ENTRY;
+                        break;
                     }
                 }
-                else if (cont_state.substate == CONT_PRECHARGE_OPEN_PRECHARGE){
-                    CONT_OPENCHARGEPRECHARGE();
-                    cont_state.timer = CONT_STATEMACH_WAIT_AFTER_OPENING_PRECHARGE_MS;
-                    cont_state.state = CONT_STATEMACH_CHARGE;
-                    cont_state.substate = CONT_ENTRY;
-                    break;
-                }
-
+            }
+            else if (cont_state.substate == CONT_PRECHARGE_OPEN_PRECHARGE){
+                CONT_OPENCHARGEPRECHARGE();
+                cont_state.timer = CONT_STATEMACH_WAIT_AFTER_OPENING_PRECHARGE_MS;
+                cont_state.state = CONT_STATEMACH_CHARGE;
+                cont_state.substate = CONT_ENTRY;
                 break;
+            }
+
+            break;
 
         /****************************CHARGE*************************************/
         case CONT_STATEMACH_CHARGE:
@@ -772,13 +771,13 @@ void CONT_Trigger(void) {
             }
 
             break;
-#endif // BS_SEPARATE_POWERLINES == 1
+#endif /* BS_SEPARATE_POWERLINES == 1 */
 
         /****************************ERROR*************************************/
         case CONT_STATEMACH_ERROR:
             CONT_SAVELASTSTATES();
 
-            //first error process
+            /* first error process */
             if (cont_state.substate == CONT_ENTRY){
                 cont_state.OscillationCounter = CONT_OSCILLATION_LIMIT;
                 CONT_OPENPRECHARGE();
@@ -826,19 +825,19 @@ void CONT_Trigger(void) {
                 break;
 
             } else if (cont_state.substate == CONT_ERROR) {
-                // when process done, look for requests
+                /* when process done, look for requests */
                 statereq = CONT_TransferStateRequest();
                 if (statereq == CONT_STATE_ERROR_REQUEST) {
-                    // we stay already in requested state, nothing to do
+                    /* we stay already in requested state, nothing to do */
                 } else if (statereq == CONT_STATE_STANDBY_REQUEST) {
                     CONT_SAVELASTSTATES();
                     cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
                     cont_state.state = CONT_STATEMACH_STANDBY;
                     cont_state.substate = CONT_ENTRY;
                 } else if (statereq == CONT_STATE_NO_REQUEST) {
-                    // no actual request pending
+                    /* no actual request pending */
                 } else {
-                    cont_state.ErrRequestCounter++;   // illegal request pending
+                    cont_state.ErrRequestCounter++;   /* illegal request pending */
                 }
                 break;
             }
@@ -846,7 +845,7 @@ void CONT_Trigger(void) {
 
         default:
             break;
-    }  // end switch(cont_state.state)
+    }  /* end switch(cont_state.state) */
 
     cont_state.triggerentry--;
     cont_state.counter++;
@@ -887,7 +886,7 @@ void CONT_CheckFeedback(void) {
             case CONT_CHARGE_PRECHARGE_PLUS:
                 contactor_feedback_state |= feedback << CONT_CHARGE_PRECHARGE_PLUS;
                 break;
-#endif // BS_SEPARATE_POWERLINES == 1
+#endif /* BS_SEPARATE_POWERLINES == 1 */
             default:
                 break;
         }
@@ -917,7 +916,7 @@ void CONT_CheckFeedback(void) {
                 case CONT_CHARGE_PRECHARGE_PLUS:
                     DIAG_Handler(DIAG_CH_CONTACTOR_CHARGE_PRECHARGE_FEEDBACK,DIAG_EVENT_NOK,0, NULL_PTR);
                     break;
-#endif // BS_SEPARATE_POWERLINES == 1
+#endif /* BS_SEPARATE_POWERLINES == 1 */
                 default:
                     break;
             }
@@ -943,7 +942,7 @@ void CONT_CheckFeedback(void) {
                 case CONT_CHARGE_PRECHARGE_PLUS:
                     DIAG_Handler(DIAG_CH_CONTACTOR_CHARGE_PRECHARGE_FEEDBACK,DIAG_EVENT_OK,0, NULL_PTR);
                     break;
-#endif // BS_SEPARATE_POWERLINES == 1
+#endif /* BS_SEPARATE_POWERLINES == 1 */
                 default:
                     break;
             }
@@ -953,37 +952,4 @@ void CONT_CheckFeedback(void) {
     DB_WriteBlock(&contfeedback_tab, DATA_BLOCK_ID_CONTFEEDBACK);
 }
 
-
-/**
- * @brief   Checks if the current limitations are violated
- *
- * @return  E_OK if the current limitations are NOT violated, else E_NOT_OK (type: STD_RETURN_TYPE_e)
- */
-static STD_RETURN_TYPE_e CONT_CheckVoltages(void) {
-    DATA_BLOCK_CURRENT_SENSOR_s current_tab = {0};
-    STD_RETURN_TYPE_e retVal = E_NOT_OK;
-
-    DB_ReadBlock(&current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
-    float cont_precharge_threshold = 0.0;
-    float current = 0.0;
-
-    if (current_tab.current > 0) {
-        current = current_tab.current;
-    } else {
-        current = -current_tab.current;
-    }
-
-    if (current_tab.voltage[1] > current_tab.voltage[2]) {
-        cont_precharge_threshold = current_tab.voltage[1] - current_tab.voltage[2];
-    } else {
-        cont_precharge_threshold = current_tab.voltage[2] - current_tab.voltage[1];
-    }
-
-    if ((cont_precharge_threshold < CONT_PRECHARGE_VOLTAGE_THRESHOLD) && (current < CONT_PRECHARGE_CURRENT_THRESHOLD)) {
-        retVal = E_OK;
-    } else {
-        retVal = E_NOT_OK;
-    }
-    return retVal;
-}
-#endif // BUILD_MODULE_ENABLE_CONTACTOR
+#endif /* BUILD_MODULE_ENABLE_CONTACTOR */

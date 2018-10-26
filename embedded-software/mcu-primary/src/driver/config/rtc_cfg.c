@@ -59,15 +59,15 @@
 
 /* Configuration with RTC clock source: LSE cyrstal */
 RTC_CFG_s rtc_cfg = {
-    .oscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSE, // MCU1: LSE (external 32 kHz oscillator),
+    .oscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSE, /* MCU1: LSE (external 32 kHz oscillator), */
     .oscInitStruct.LSEState = RCC_LSE_ON,
 
     .clkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC,
-    .clkInitStruct.RTCClockSelection   = RCC_RTCCLKSOURCE_LSE,   // RTC Clocksourse is LSE
+    .clkInitStruct.RTCClockSelection   = RCC_RTCCLKSOURCE_LSE,   /* RTC Clocksourse is LSE */
 
     .initconfig.HourFormat     = RTC_HOURFORMAT_24,
-    .initconfig.AsynchPrediv   = (128-1),                 // LSI = 32.768kHz:    32.768kHz/(128*256) = 1Hz
-    .initconfig.SynchPrediv    = (256-1),                 // Subsecond runs with 32.768kHzkHz/128
+    .initconfig.AsynchPrediv   = (128-1),                 /* LSI = 32.768kHz:    32.768kHz/(128*256) = 1Hz */
+    .initconfig.SynchPrediv    = (256-1),                 /* Subsecond runs with 32.768kHzkHz/128 */
     .initconfig.OutPut         = RTC_OUTPUT_ALARMA,
     .initconfig.OutPutPolarity = RTC_OUTPUT_POLARITY_LOW,
     .initconfig.OutPutType     = RTC_OUTPUT_TYPE_OPENDRAIN,

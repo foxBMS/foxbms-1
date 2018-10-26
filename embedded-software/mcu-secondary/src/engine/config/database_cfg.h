@@ -117,10 +117,10 @@ typedef enum {
  * recommendation: use single buffer for small data (e.g.,one variable) and less concurrent read and write accesses
  */
 typedef enum {
-    // Init-Sequence
+    /* Init-Sequence */
     SINGLE_BUFFERING    = 1,    /*!< single buffering   */
     DOUBLE_BUFFERING    = 2,    /*!< double buffering   */
-    // TRIPLEBUFFERING     = 3,    /* actually not supported*/
+    /* TRIPLEBUFFERING     = 3,     actually not supported */
 } DATA_BLOCK_BUFFER_TYPE_e;
 
 /**
@@ -142,7 +142,7 @@ typedef struct {
 
 
 /*================== Macros and Definitions [USER CONFIGURATION] =============*/
-// FIXME comments doxygen, is comment necessary?
+/* FIXME comments doxygen, is comment necessary? */
 /*Macros and Definitions for User Configuration*/
 #define     DATA_BLOCK_ID_CELLVOLTAGE                   DATA_BLOCK_00
 #define     DATA_BLOCK_ID_CELLTEMPERATURE               DATA_BLOCK_01
@@ -329,7 +329,7 @@ typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
     uint32_t timestamp;                         /*!< timestamp of database entry                */
     uint32_t previous_timestamp;                /*!< timestamp of last database entry           */
-    float vbat;  // unit: to be defined
+    float vbat;  /* unit: to be defined */
     uint32_t vbat_previous_timestamp;           /*!< timestamp of last database entry of vbat           */
     uint32_t vbat_timestamp;                    /*!< timestamp of database entry of vbat                */
     float temperature;                          /*!<                                                    */

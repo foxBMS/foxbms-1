@@ -123,7 +123,7 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan)
         CAN_CLK1_enabled++;
         if(CAN_CLK1_enabled  ==  1)
         {
-            // Enable CAN1 clock
+            /* Enable CAN1 clock */
             __HAL_RCC_CAN1_CLK_ENABLE();
         }
     }
@@ -132,10 +132,10 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan)
         CAN_CLK1_enabled++;
         if(CAN_CLK1_enabled  ==  1)
         {
-            // Enable CAN1 clock. CAN1 clock needs to run if CAN2 clock is enabled
+            /* Enable CAN1 clock. CAN1 clock needs to run if CAN2 clock is enabled */
             __HAL_RCC_CAN1_CLK_ENABLE();
         }
-        // Enable CAN2 clock
+        /* Enable CAN2 clock */
         __HAL_RCC_CAN2_CLK_ENABLE();
     }
 
@@ -156,14 +156,14 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan)
 
         if(CAN_CLK1_enabled  ==  0)
         {
-            // Enable CAN1 clock
+            /* Enable CAN1 clock */
             __HAL_RCC_CAN1_CLK_DISABLE();
         }
     }
 
     if(hcan->Instance  ==   CAN2)
     {
-        // Disable CAN2 clock
+        /* Disable CAN2 clock */
         __HAL_RCC_CAN2_CLK_DISABLE();
 
         if(CAN_CLK1_enabled > 0)
@@ -172,7 +172,7 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan)
         }
         if(CAN_CLK1_enabled  ==  0)
         {
-            // Enable CAN1 clock. CAN1 clock needs to run if CAN2 clock is enabled
+            /* Enable CAN1 clock. CAN1 clock needs to run if CAN2 clock is enabled */
             __HAL_RCC_CAN1_CLK_DISABLE();
         }
     }
@@ -194,7 +194,7 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan)
 void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 {
 
-  // GPIO_InitTypeDef GPIO_InitStruct;
+  /* GPIO_InitTypeDef GPIO_InitStruct; */
 
   /* USER CODE BEGIN SPI1_MspInit 0 */
 
@@ -203,10 +203,10 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 
 
 
-  // GPIO_InitTypeDef GPIO_InitStruct;
+  /* GPIO_InitTypeDef GPIO_InitStruct; */
   if(hspi->Instance == SPI6)
   {
-  // SPI4 peripheral clock enable
+  /* SPI4 peripheral clock enable */
   __HAL_RCC_SPI6_CLK_ENABLE();
 
   }
@@ -229,7 +229,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
 
   /* USER CODE END SPI4_MspDeInit 0 */
     /* Peripheral clock disable */
-    // __SPI1_CLK_DISABLE();
+    /* __SPI1_CLK_DISABLE(); */
     __SPI4_CLK_DISABLE();
 
     HAL_GPIO_DeInit(GPIOE, GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_5|GPIO_PIN_6);
@@ -263,12 +263,12 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 //    PA2     ------> USART2_TX
 //    PA3     ------> USART2_RX
 //    */
-//    GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3;
-//    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-//    GPIO_InitStruct.Pull = GPIO_PULLUP;
-//    GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
-//    GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
-//    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+/*     GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3; */
+/*     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP; */
+/*     GPIO_InitStruct.Pull = GPIO_PULLUP; */
+/*     GPIO_InitStruct.Speed = GPIO_SPEED_LOW; */
+/*     GPIO_InitStruct.Alternate = GPIO_AF7_USART2; */
+/*     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct); */
 
   /* USER CODE BEGIN USART2_MspInit 1 */
 

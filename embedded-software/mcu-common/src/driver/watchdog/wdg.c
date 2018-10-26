@@ -76,12 +76,12 @@ void WDG_Init(void)
     hiwdg.Init.Prescaler = IWDG_PRESCALER_64;        /* IWDG prescaler set to 64 -> 32kHz/64 (2ms) */
     hiwdg.Init.Reload = IWDG_REFRESH_VALUE;
     __HAL_DBGMCU_FREEZE_IWDG();
-    HAL_IWDG_Init(&hiwdg);                          // initialize and start independent watchdog
+    HAL_IWDG_Init(&hiwdg);                          /* initialize and start independent watchdog */
 }
 
 
 
 void WDG_IWDG_Refresh(void)
 {
-    HAL_IWDG_Refresh(&hiwdg);                           // refresh independent watchdog
+    HAL_IWDG_Refresh(&hiwdg);                           /* refresh independent watchdog */
 }

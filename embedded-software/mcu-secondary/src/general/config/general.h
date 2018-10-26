@@ -72,7 +72,7 @@
  * 0
 */
 #define BUILD_MODULE_ENABLE_FLASHCHECKSUM           1
-//  #define BUILD_MODULE_ENABLE_FLASHCHECKSUM           0
+/* #define BUILD_MODULE_ENABLE_FLASHCHECKSUM           0 */
 
 /**
  * @ingroup CONFIG_GENERAL
@@ -82,7 +82,7 @@
  * \par Default:
  * 0
 */
-//  #define BUILD_MODULE_ENABLE_UART          1
+/* #define BUILD_MODULE_ENABLE_UART          1 */
 #define BUILD_MODULE_ENABLE_UART          0
 
 /**
@@ -94,7 +94,7 @@
  * 0
 */
 #define BUILD_MODULE_ENABLE_RS485           1
-//  #define BUILD_MODULE_ENABLE_RS485          0
+/* #define BUILD_MODULE_ENABLE_RS485          0 */
 
 /**
  * @ingroup CONFIG_GENERAL
@@ -104,7 +104,7 @@
  * \par Default:
  * 0
 */
-//  #define BUILD_MODULE_ENABLE_NVRAM           1
+/* #define BUILD_MODULE_ENABLE_NVRAM           1 */
 #define BUILD_MODULE_ENABLE_NVRAM          0
 
 /**
@@ -115,7 +115,7 @@
  * \par Default:
  * 0
 */
-//  #define BUILD_MODULE_ENABLE_COM           1
+/* #define BUILD_MODULE_ENABLE_COM           1 */
 #define BUILD_MODULE_ENABLE_COM           0
 
 /**
@@ -126,7 +126,7 @@
  * \par Default:
  * 0
 */
-//  #define BUILD_MODULE_DEBUGPRINTF          1
+/* #define BUILD_MODULE_DEBUGPRINTF          1 */
 #define BUILD_MODULE_DEBUGPRINTF          0
 
 /**
@@ -138,7 +138,7 @@
  * 0
 */
 #define BUILD_MODULE_ENABLE_RTC           1
-//  #define BUILD_MODULE_ENABLE_RTC           0
+/* #define BUILD_MODULE_ENABLE_RTC           0 */
 
 /**
  * @ingroup CONFIG_GENERAL
@@ -180,10 +180,10 @@
  * 1
 */
 #define BUILD_MODULE_ENABLE_WATCHDOG        1
-//  #define BUILD_MODULE_ENABLE_WATCHDOG      0
+/* #define BUILD_MODULE_ENABLE_WATCHDOG      0 */
 
 
-//#define BUILD_MODULE_IMPORT_CELL_DATASHEET  1
+/* #define BUILD_MODULE_IMPORT_CELL_DATASHEET  1 */
 #define BUILD_MODULE_IMPORT_CELL_DATASHEET  0
 
 /**

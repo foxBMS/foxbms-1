@@ -64,9 +64,9 @@
 #include "diag_id_cfg.h"
 
 /*================== Macros and Definitions ===============================*/
-#define DIAG_ERROR_SENSITIVITY_HIGH         (0)    // logging at first event
-#define DIAG_ERROR_SENSITIVITY_MID          (5)    // logging at fifth event
-#define DIAG_ERROR_SENSITIVITY_LOW          (10)    // logging at tenth event
+#define DIAG_ERROR_SENSITIVITY_HIGH         (0)    /* logging at first event */
+#define DIAG_ERROR_SENSITIVITY_MID          (5)    /* logging at fifth event */
+#define DIAG_ERROR_SENSITIVITY_LOW          (10)   /* logging at tenth event */
 
 #define DIAG_ERROR_VOLTAGE_SENSITIVITY_MSL      (500)   /*!< MSL level for event occurrence if over/under voltage event   */
 #define DIAG_ERROR_TEMPERATURE_SENSITIVITY_MSL  (500)   /*!< MSL level for event occurrence if over/under temperature event    */
@@ -104,27 +104,27 @@
 #define DIAG_FAIL_ENTRY_CONTACTOR_LENGTH    (50)
 
 
-// FIXME simple doxygen comment for each define?
+/* FIXME simple doxygen comment for each define? */
 /* Initialization and startup events: 0-15 */
-#define DIAG_CH_FLASHCHECKSUM                              DIAG_ID_5            //
-#define DIAG_CH_BKPDIAG_FAILURE                            DIAG_ID_6            //
-#define DIAG_CH_WATCHDOGRESET_FAILURE                      DIAG_ID_7            //
-#define DIAG_CH_POSTOSINIT_FAILURE                         DIAG_ID_8            //
-#define DIAG_CH_CALIB_EEPR_FAILURE                         DIAG_ID_9            //
-#define DIAG_CH_CAN_INIT_FAILURE                           DIAG_ID_10           //
+#define DIAG_CH_FLASHCHECKSUM                              DIAG_ID_5            /*  */
+#define DIAG_CH_BKPDIAG_FAILURE                            DIAG_ID_6            /*  */
+#define DIAG_CH_WATCHDOGRESET_FAILURE                      DIAG_ID_7            /*  */
+#define DIAG_CH_POSTOSINIT_FAILURE                         DIAG_ID_8            /*  */
+#define DIAG_CH_CALIB_EEPR_FAILURE                         DIAG_ID_9            /*  */
+#define DIAG_CH_CAN_INIT_FAILURE                           DIAG_ID_10           /*  */
 #define DIAG_CH_VIC_INIT_FAILURE                           DIAG_ID_11
 
 /* HW-/SW-Runtime events: 16-31 */
-#define DIAG_CH_DIV_BY_ZERO_FAILURE                        DIAG_ID_16            //
-#define DIAG_CH_UNDEF_INSTRUCTION_FAILURE                  DIAG_ID_17            //
-#define DIAG_CH_DATA_BUS_FAILURE                           DIAG_ID_18            //
-#define DIAG_CH_INSTRUCTION_BUS_FAILURE                    DIAG_ID_19            //
-#define DIAG_CH_HARDFAULT_NOTHANDLED                       DIAG_ID_20            //
-#define DIAG_CH_RUNTIME_ERROR_RESERVED_1                   DIAG_ID_21            // reserved for future needs
-#define DIAG_CH_RUNTIME_ERROR_RESERVED_2                   DIAG_ID_22            // reserved for future needs
-#define DIAG_CH_RUNTIME_ERROR_RESERVED_3                   DIAG_ID_23            // reserved for future needs
-#define DIAG_CH_CONFIGASSERT                               DIAG_ID_24            //
-#define DIAG_CH_SYSTEMMONITORING_TIMEOUT                   DIAG_ID_25            //
+#define DIAG_CH_DIV_BY_ZERO_FAILURE                        DIAG_ID_16            /*  */
+#define DIAG_CH_UNDEF_INSTRUCTION_FAILURE                  DIAG_ID_17            /*  */
+#define DIAG_CH_DATA_BUS_FAILURE                           DIAG_ID_18            /*  */
+#define DIAG_CH_INSTRUCTION_BUS_FAILURE                    DIAG_ID_19            /*  */
+#define DIAG_CH_HARDFAULT_NOTHANDLED                       DIAG_ID_20            /*  */
+#define DIAG_CH_RUNTIME_ERROR_RESERVED_1                   DIAG_ID_21            /*  reserved for future needs */
+#define DIAG_CH_RUNTIME_ERROR_RESERVED_2                   DIAG_ID_22            /*  reserved for future needs */
+#define DIAG_CH_RUNTIME_ERROR_RESERVED_3                   DIAG_ID_23            /*  reserved for future needs */
+#define DIAG_CH_CONFIGASSERT                               DIAG_ID_24            /*  */
+#define DIAG_CH_SYSTEMMONITORING_TIMEOUT                   DIAG_ID_25            /*  */
 
 
 /* Measurement events: 32-47 */
@@ -261,7 +261,7 @@ typedef enum {
     #define DIAG_CAN_SENSOR_PRESENT DIAG_DISABLED
 #endif
 
-// FIXME is it better to name it DIAG_GROUP_xxx instead of DIAG_xxx_TYPE and
+/* FIXME is it better to name it DIAG_GROUP_xxx instead of DIAG_xxx_TYPE and */
 /**
  * diagnosis groups
  * failure codes FC
@@ -271,7 +271,7 @@ typedef enum {
     DIAG_CELLMON_TYPE   = 0x01,     /*!< FC 0x20 - 0x3F */
     DIAG_COM_TYPE       = 0x02,     /*!< FC 0x40 - 0x5F */
     DIAG_ADC_TYPE       = 0x04,     /*!< FC 0x60 - 0x7F */
-    // FIXME which failure codes for following group?
+    /* FIXME which failure codes for following group? */
     DIAG_CONT_TYPE      = 0x08      /*!< FC             */
 } DIAG_TYPE_e;
 
@@ -283,8 +283,8 @@ typedef enum {
     DIAG_RECORDING_DISABLED  = 0x01,    /*!< disable diagnosis event recording  */
 } DIAG_TYPE_RECORDING_e;
 
-// FIXME duplicate comment with enum DIAG_TYPE_e
-// FIXME some enums are typedefed with DIAG...TYPE_e, some with DIAG_TYPE..._e! Reconsider this
+/* FIXME duplicate comment with enum DIAG_TYPE_e */
+/* FIXME some enums are typedefed with DIAG...TYPE_e, some with DIAG_TYPE..._e! Reconsider this */
 /**
  * diagnosis types for system monitoring
  */
@@ -331,8 +331,8 @@ typedef enum {
     DIAG_SYSMON_MODULE_ID_MAX       = 9     /*!< end marker do not delete               */
 } DIAG_SYSMON_MODULE_ID_e;
 
-// FIXME doxygen comment
-// FIXME is DIAG_CODE_s an appropriate name for this?
+/* FIXME doxygen comment */
+/* FIXME is DIAG_CODE_s an appropriate name for this? */
 typedef struct {
     uint32_t GENERALmsk;
     uint32_t CELLMONmsk;
@@ -399,7 +399,7 @@ extern DIAG_DEV_s diag_dev;
 extern DIAG_SYSMON_CH_CFG_s diag_sysmon_ch_cfg[];
 extern DIAG_CH_CFG_s  diag_ch_cfg[];
 
-// FIXME why is it in header at all? and why is it in code at all? not used
+/*  FIXME why is it in header at all? and why is it in code at all? not used */
 extern DIAG_CODE_s diag_mask;
 /*================== Function Prototypes ==================================*/
 

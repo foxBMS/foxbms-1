@@ -87,6 +87,7 @@
 
 
 /*================== Function Prototypes ==================================*/
+extern void SYS_SendBootMessage(uint8_t directTransmission);
 
 /*================== Function Implementations =============================*/
 
