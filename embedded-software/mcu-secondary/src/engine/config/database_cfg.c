@@ -97,7 +97,7 @@ DATA_BLOCK_CURRENT_SENSOR_s data_block_curr_sensor[DOUBLE_BUFFERING];
 /**
  * data block: ADC
  */
-DATA_BLOCK_HW_INFO_s data_block_adc[SINGLE_BUFFERING];
+DATA_BLOCK_HW_INFO_s data_block_hwinfo[SINGLE_BUFFERING];
 
 /**
  * data block: can state request
@@ -218,7 +218,7 @@ DATA_BASE_HEADER_s  data_base_header[] = {
             DOUBLE_BUFFERING,
     },
     {
-            (void*)(&data_block_adc[0]),
+            (void*)(&data_block_hwinfo[0]),
             sizeof(DATA_BLOCK_HW_INFO_s),
             SINGLE_BUFFERING,
     },

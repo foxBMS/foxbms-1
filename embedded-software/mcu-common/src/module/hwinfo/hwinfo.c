@@ -55,18 +55,23 @@
 
 #include "adc.h"
 #include "database.h"
+#include "diag.h"
 
 /*================== Macros and Definitions =================================*/
 
 /*================== Static Constant and Variable Definitions ===============*/
 static DATA_BLOCK_HW_INFO_s hw_tab = {
-    .vbat = 0,
+    .vbat_mV = 0,
     .temperature = 0.0,
     .state_vbat = 0,
     .state_temperature = 0,
 };
 
 /*================== Extern Constant and Variable Definitions ===============*/
+#define HW_MCU_MINIMUM_DIE_TEMP_DEG_CELSIUS             (-40)
+#define HW_MCU_MAXIMUM_DIE_TEMP_DEG_CELSIUS             (125)
+#define HW_WARN_LOW_COIN_CELL_THRESHOLD_mV             (2500)
+#define HW_ERROR_LOW_COIN_CELL_THRESHOLD_mV            (2200)
 
 /*================== Static Function Prototypes =============================*/
 
@@ -78,9 +83,32 @@ void HW_update(void) {
     hw_tab.temperature = ADC_GetMCUTemp_C();
     hw_tab.state_temperature++;
 
+    /* Check if MCU die temperature is inside operating range */
+    if (hw_tab.temperature > HW_MCU_MAXIMUM_DIE_TEMP_DEG_CELSIUS ||
+            hw_tab.temperature < HW_MCU_MINIMUM_DIE_TEMP_DEG_CELSIUS) {
+        DIAG_Handler(DIAG_CH_ERROR_MCU_DIE_TEMPERATURE, DIAG_EVENT_NOK, 0, NULL_PTR);
+    } else {
+        DIAG_Handler(DIAG_CH_ERROR_MCU_DIE_TEMPERATURE, DIAG_EVENT_OK, 0, NULL_PTR);
+    }
+
     /* Get coin cell voltage */
-    hw_tab.vbat = ADC_GetVBAT_mV();
+    hw_tab.vbat_mV = ADC_GetVBAT_mV();
     hw_tab.state_vbat++;
+
+    /* Check if MCU coin cell voltage is low and coin cell should be replaced */
+    if (hw_tab.vbat_mV < HW_ERROR_LOW_COIN_CELL_THRESHOLD_mV) {
+        /* Coin cell voltage critically low */
+        DIAG_Handler(DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE, DIAG_EVENT_NOK, 0, NULL_PTR);
+        DIAG_Handler(DIAG_CH_LOW_COIN_CELL_VOLTAGE, DIAG_EVENT_NOK, 0, NULL_PTR);
+    } else if (hw_tab.vbat_mV < HW_WARN_LOW_COIN_CELL_THRESHOLD_mV) {
+        /* Coin cell voltage low */
+        DIAG_Handler(DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE, DIAG_EVENT_OK, 0, NULL_PTR);
+        DIAG_Handler(DIAG_CH_LOW_COIN_CELL_VOLTAGE, DIAG_EVENT_NOK, 0, NULL_PTR);
+    } else {
+        /* Coin cell voltage okay */
+        DIAG_Handler(DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE, DIAG_EVENT_OK, 0, NULL_PTR);
+        DIAG_Handler(DIAG_CH_LOW_COIN_CELL_VOLTAGE, DIAG_EVENT_OK, 0, NULL_PTR);
+    }
 
     /* Write data to database */
     DB_WriteBlock(&hw_tab, DATA_BLOCK_ID_HW_INFO);

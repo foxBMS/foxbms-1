@@ -84,14 +84,14 @@ uint32_t CHK_modulo32addition(uint8_t* data, uint32_t len);
  * @return (type: uint8_t)
  */
 STD_RETURN_TYPE_e CHK_Flashchecksum(const VER_ValidStruct_s *valid_struct) {
-    STD_RETURN_TYPE_e retVal=E_NOT_OK;
+    STD_RETURN_TYPE_e retVal = E_NOT_OK;
     uint32_t length = valid_struct->endaddress - valid_struct->startaddress + 1;
     uint32_t start = valid_struct->startaddress;
     uint32_t cs = CHK_crc32((uint8_t*)start, length);
-    if(cs == valid_struct->Checksum_u32)
-        retVal=E_OK;
+    if (cs == valid_struct->Checksum_u32)
+        retVal = E_OK;
     else
-        retVal=E_NOT_OK;
+        retVal = E_NOT_OK;
 
     return retVal;
 }
@@ -121,15 +121,13 @@ uint32_t CHK_modulo32addition(uint8_t* data, uint32_t len) {
 
 
 uint32_t CHK_crc32(uint8_t* data, uint32_t len) {
-
     uint32_t* pBuffer = (uint32_t*) data;
     uint32_t BufferLength = len/4;
     uint32_t index = 0;
     __HAL_RCC_CRC_CLK_ENABLE();
     CRC->CR = CRC_CR_RESET;
 
-    for(index = 0; index < BufferLength; index++)
-    {
+    for (index = 0; index < BufferLength; index++) {
         CRC->DR = __RBIT(pBuffer[index]);
     }
 

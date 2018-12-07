@@ -243,8 +243,6 @@ const IO_PIN_CFG_s io_cfg[] = {
     {IO_PIN_MCU_0_ISONOC_3_CONTROL,                IO_MODE_OUTPUT_PP,      0,                     0,               IO_ALTERNATE_NO_ALTERNATE,  IO_PIN_LOCK_ENABLE},
     {IO_PIN_MCU_0_ISONOC_4_CONTROL,                IO_MODE_OUTPUT_PP,      0,                     0,               IO_ALTERNATE_NO_ALTERNATE,  IO_PIN_LOCK_ENABLE},
     {IO_PIN_MCU_0_ISONOC_5_CONTROL,                IO_MODE_OUTPUT_PP,      0,                     0,               IO_ALTERNATE_NO_ALTERNATE,  IO_PIN_LOCK_ENABLE},
-
-
     };
 
 const uint8_t io_cfg_length = sizeof(io_cfg)/sizeof(io_cfg[0]);

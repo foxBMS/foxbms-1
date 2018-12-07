@@ -8,7 +8,6 @@ from waflib import Node, Task, TaskGen, Errors, Logs, Build, Utils
 
 class sphinx_build(Task.Task):
     color = 'BLUE'
-    run_str = '${SPHINX_BUILD} -c ${CONFDIR} -D ${VERSION} -D ${RELEASE} -D graphviz_dot=${dot} -q -b ${BUILDERNAME} -d ${DOCTREEDIR} ${SRCDIR} ${OUTDIR}'
 
     def __str__(self):
         env = self.env
@@ -18,6 +17,29 @@ class sphinx_build(Task.Task):
         else: sep = ''
         return'%s [%s]: %s%s%s\n'%(self.__class__.__name__.replace('_task',''),
                                    self.env['BUILDERNAME'], src_str, sep, tgt_str)
+
+    def run(self):
+        cmd = '${SPHINX_BUILD} -c ${CONFDIR} -D ${VERSION} ' \
+              '-D ${RELEASE} -D graphviz_dot=${dot} -q -b ' \
+              '${BUILDERNAME} -d ${DOCTREEDIR} ${SRCDIR} ${OUTDIR}'
+        cmd = Utils.subst_vars(cmd, self.env)
+        env = self.env.env or None #: warning:
+        proc = Utils.subprocess.Popen(cmd,
+                                      stdin=Utils.subprocess.PIPE,
+                                      stderr=Utils.subprocess.PIPE,
+                                      env=env,
+                                      cwd=self.generator.bld.path.abspath())
+
+        s, std_err = proc.communicate()
+        std_err = std_err.decode()
+        if s:
+            print(s.decode())
+        if std_err:
+            Logs.error('\nErrors/Warnings:\n' + std_err)
+            self.generator.bld.fatal('There are sphinx errors.')
+        else:
+            return proc.returncode
+
 
 @TaskGen.extension('.py', '.rst')
 def sig_hook(self, node):
@@ -73,7 +95,7 @@ def apply_sphinx(self):
 def configure(conf):
     print('Sphinx documentation tools:')
     conf.find_program('sphinx-build', var='SPHINX_BUILD', mandatory=False)
-    conf.find_program('dot', var='dot', mandatory=True) 
+    conf.find_program('dot', var='dot', mandatory=True)
 
 # sphinx docs
 from waflib.Build import BuildContext, CleanContext

@@ -78,11 +78,9 @@ void BKP_SRAM_Init(void) {
     /* Enable low power Regulator */
     HAL_PWREx_EnableBkUpReg();
 
-    if(RTC_BKPSRAM_DATAVALID_VARIABLE == 0)
-    {
+    if (RTC_BKPSRAM_DATAVALID_VARIABLE == 0) {
         /* @todo: clear BKP_SRAM Values? */
         RTC_BKPSRAM_DATAVALID_VARIABLE = 1;
-
     }
 
 #endif

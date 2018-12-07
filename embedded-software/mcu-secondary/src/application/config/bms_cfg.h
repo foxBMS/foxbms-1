@@ -56,11 +56,6 @@
 #include "general.h"
 
 /*================== Macros and Definitions ===============================*/
-#define BMS_ECU_GOTOSLEEP()          /* CPU_GoToSleep(60)/* EcuMode_GoToSleep();         TODO Review: dummy macro with no effect */
-#define BMS_STARTAWAKESELFCHECK()    /* Start SelfCheck in case of awaking from sleep    TODO Review: dummy macro with no effect */
-#define BMS_STARTPOWERONSELFCHECK()  /* Start SelfCheck in case of starting by power on  TODO Review: dummy macro with no effect */
-
-/* #define BMS_RESETSLEEPFLAG() RTC_IF_ResetSleepFlag () TODO Review: function RTC_IF_ResetSleepFlag not existing */
 
 /**
  * @ingroup CONFIG_BMS

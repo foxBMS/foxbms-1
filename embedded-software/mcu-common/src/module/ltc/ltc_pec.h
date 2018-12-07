@@ -46,7 +46,7 @@ Copyright 2013 Linear Technology Corp. (LTC)
 void generate_crc15_table()
 {
   int remainder;
-    for(int i = 0; i<256;i++)
+    for (int i = 0; i<256;i++)
     {
         remainder =  i<< 7;
         for (int bit = 8; bit > 0; --bit)

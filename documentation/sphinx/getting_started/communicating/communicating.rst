@@ -480,7 +480,7 @@ CAN TX Signals
 
 ``CAN0_SIG_VersionNumberMajor``, ``CAN0_SIG_VersionNumberMinor`` and signal
 ``CAN0_SIG_VersionNumberMinor`` add up to the current flashed SW-version. The
-latest Releaseversion is |version|.``CAN0_SIG_Checksum`` holds the calculated
+latest Releaseversion is |version|. ``CAN0_SIG_Checksum`` holds the calculated
 CRC32 checksum of the flashed software. This message is transmitted once after
 startup or can be requested via CAN.
 
@@ -518,7 +518,7 @@ startup or can be requested via CAN.
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
 | CAN0_SIG_GS1_error_undervoltage          | 8                            | 8              | 0.0         | 255        | 1.0        | 0.0        | none     | Intel         |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
-| CAN0_SIG_GS1_error_overtemp_IC           | 16                           | 8              | for future use (not implemented yet)                                          |
+| CAN0_SIG_GS1_error_temperature_MCU0      | 16                           | 8              | 0.0         | 255        | 1.0        | 0.0        | none     | Intel         |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
 | CAN0_SIG_GS1_error_contactor             | 24                           | 8              | 0.0         | 255        | 1.0        | 0.0        | none     | Intel         |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
@@ -540,7 +540,15 @@ startup or can be requested via CAN.
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+-------------+----------+---------------+
 | CAN0_SIG_GS2_error_insulation            | 16                           | 8              | 0.0         | 255        | 1.0        | 0.0         | none     | Intel         |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+-------------+----------+---------------+
-| RESERVERD_FOR_FUTURE_USE                 | 24                           | 40             | 0.0         | 255        | 1.0        | 0.0         | none     | Intel         |
+| CAN0_SIG_GS2_fuse_state                  | 24                           | 8              | 0.0         | 255        | 1.0        | 0.0         | none     | Intel         |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+-------------+----------+---------------+
+| CAN0_SIG_GS2_lowCoinCellVolt             | 32                           | 8              | 0.0         | 255        | 1.0        | 0.0         | none     | Intel         |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+-------------+----------+---------------+
+| CAN0_SIG_GS2_error_openWire              | 40                           | 8              | 0.0         | 255        | 1.0        | 0.0         | none     | Intel         |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+-------------+----------+---------------+
+| CAN0_SIG_GS2_daisyChain                  | 48                           | 8              | 0.0         | 255        | 1.0        | 0.0         | none     | Intel         |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+-------------+----------+---------------+
+| RESERVED_FOR_FUTURE_USE                  | 56                           | 8              | 0.0         | 255        | 1.0        | 0.0         | none     | Intel         |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+-------------+----------+---------------+
 
 The signals of the messages ``CAN0_MSG_SystemState_0`` , ``CAN0_MSG_SystemState_1``
@@ -572,17 +580,19 @@ limit violations and internal errors. In general, the following bitfield is used
 * Bit[1]: recommended safety limit violated
 * Bit[2]: maximum operating limit violated
 
-``CAN0_SIG_GS1_error_cantiming`` is set to 1 if the can timing is violated
-(see #define CHECK_CAN_TIMING for more information).
-``CAN0_SIG_GS1_current_sensor`` is 1 if no current sensor is detected and
-otherwise 0. ``CAN0_SIG_GS1_error_contactor`` is set to 1 if contactor error
-is detected. This means the feedback signal of the contactor doesn't match
-the controlled state. ``CAN0_SIG_GS1_error_cantiming`` occurs if no state
-request message is received within 100ms. This feature can be enabled/disabled
-(see :ref:`software_documentation_defines`). The signal
+``CAN0_SIG_GS1_error_temperature_MCU0`` indicates if the operating range of
+the MCU0 junction temperature is violated. ``CAN0_SIG_GS1_error_cantiming``
+is set to 1 if the can timing is violated (see #define CHECK_CAN_TIMING for
+more information). ``CAN0_SIG_GS1_current_sensor`` is 1 if no current sensor is
+detected and otherwise 0. ``CAN0_SIG_GS1_error_contactor`` is set to 1 if
+contactor error is detected. This means the feedback signal of the contactor
+doesn't match the controlled state. ``CAN0_SIG_GS1_error_cantiming`` occurs if
+no state request message is received within 100ms. This feature can be
+enabled/disabled (see :ref:`software_documentation_defines`). The signal
 ``CAN0_SIG_GS1_balancing_active`` is a simple flag to show if balancing is ON
 (1) or OFF (0). ``CAN0_SIG_GS2_error_insulation`` indicates an insulation
-error.
+error. ``CAN0_SIG_GS2_dieTempMCU`` indicates a violation of the primary MCU die
+temperature.
 
 The status of contactors and the interlock is represented as a bitfield in
 ``BMS1_status_contactors`` (0: open, 1: closed):
@@ -596,6 +606,28 @@ The status of contactors and the interlock is represented as a bitfield in
 * Bit[6-8]: reserved for future use
 * Bit[9]: Interlock status
 * Bit[10-15]: reserved for future use
+
+Bitfield ``CAN0_SIG_GS2_lowCoinCellVolt`` displays the coin cell
+status.
+
+* Bit[0]: Coin cell voltage low: swap battery in the near future
+* Bit[1]: Coin cell voltage critically low: swap battery as soon as possible
+
+``CAN0_SIG_GS2_error_openWire`` is set to 1 if an open voltage sense wire is
+detected. Bitfield ``CAN0_SIG_GS2_fuse_state`` indicates the fuse state (0: fuse
+intact, 1: fuse tripped):
+
+* Bit[0]: Fuse state normal path
+* Bit[1]: Fuse/Contactor state normal path
+* Bit[2]: Fuse state charge path
+* Bit[3]: Fuse/Contactor state charge path
+
+A problem with the daisy-chain communication is indicated with bitfield
+``CAN0_SIG_GS2_daisyChain`` (0: no error, 1: error)
+
+* Bit[0]: spi error
+* Bit[1]: ltc PEC error
+* Bit[2]: multiplexer error
 
 ----------------
 

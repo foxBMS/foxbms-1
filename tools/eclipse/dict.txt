@@ -21,3 +21,8 @@ contactor
 enum
 enums
 int
+ok
+&reg
+reg
+reg;
+&reg;

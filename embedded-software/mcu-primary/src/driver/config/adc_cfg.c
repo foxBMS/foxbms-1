@@ -75,8 +75,11 @@ ADC_HandleTypeDef adc_devices[] = {
             .Init.EOCSelection = ADC_EOC_SINGLE_CONV,
             .Init.ClockPrescaler = ADC_CLOCKPRESCALER_PCLK_DIV2,
     }
-
 };
+
+/* TODO: change to enum */
+uint32_t adc_ChannelList[BS_NR_OF_VOLTAGES_FROM_MCU_ADC] = {ADC_CHANNEL_VBAT, ADC_CHANNEL_TEMPSENSOR};
+uint16_t adc_values[BS_NR_OF_VOLTAGES_FROM_MCU_ADC];
 
 
 const uint8_t adc_number_of_used_devices = sizeof(adc_devices)/sizeof(ADC_HandleTypeDef);

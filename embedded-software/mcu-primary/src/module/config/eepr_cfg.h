@@ -84,7 +84,7 @@
 /* controls if one eeprom version was selected */
 #ifndef EEPROM_VERSION_AT25128
     #ifndef EEPROM_VERSION_M95M02
-        #error no Eeprom Hardware (IC) defined
+        #error no Eeprom Hardware IC defined
     #endif
 #endif
 
@@ -107,7 +107,7 @@
         #define EEPR_PageLength                256
         #define EEPR_CMDBUF_OFFSET             4             /* bytes needed to send address and commandbyte */
      #else
-        #error no Eeprom Hardware (IC) defined
+        #error no Eeprom Hardware IC defined
     #endif
 #endif
 
@@ -259,7 +259,7 @@ typedef struct {
     uint32_t chksum;                  /*!<checksum of eeprom data                              */
 }EEPR_BOARD_INFO_s;
 
-typedef enum{
+typedef enum {
     EEPR_STARTDIRTYCHECK = 0,
     EEPR_DATABACKUP = 1,
     EEPR_CHECKBACKUP = 2,
@@ -281,9 +281,9 @@ typedef enum {
 #define EEPR_DEFAULT_NETWORK_ID                 0xFFFF  /* Default NodeID of Primary Controller*/
 
 /** Communication Interfaces: Data Receive */
-#define EEPR_ReceiveData(bufferptr,length)   SPI_ReceiveData(bufferptr,length)
+#define EEPR_ReceiveData(bufferptr, length)   SPI_ReceiveData(bufferptr, length)
 /** Communication Interfaces: Data Transmission */
-#define EEPR_SendData(bufferptr,length,receiveoffset)   SPI_SendData(bufferptr,length,receiveoffset)
+#define EEPR_SendData(bufferptr, length, receiveoffset)   SPI_SendData(bufferptr, length, receiveoffset)
 
 /*================== Constant and Variable Definitions ====================*/
 

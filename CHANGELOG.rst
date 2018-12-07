@@ -2,6 +2,58 @@
 Changelog
 =========
 
+**Release 1.5.3**
+
+Software:
+
+* Toolchain:
+
+  * raised compiler warning ``[-Werror=comment]`` to error level
+  * write compiler macros to header file for improved eclipse support
+
+* Bugfixes:
+
+  * fixed a bug, that caused the mcu temperature for primary and secondary mcu
+    to be never updated.
+  * fixed a bug, that caused the coin cell voltage of the primary mcu to be
+    never updated.
+  * rewrite of struct ``DIAG_RETURNTYPE_e``. The enumeration had
+    non-consecutive numbering and potentially dangerous typo in duplicate enum
+    (``DIAG_HANDLER_RETURN_ERR_OCCURED = 2`` and
+    ``DIAG_HANDLER_RETURN_ERR_OCCURRED = 4``).
+  * fixed a bug, that diagnosis entry for a voltage violation of the maximimum
+    safety limit wrote to wrong database entry.
+  * NVRAM module was compiled twice for primary mcu. Once it was compiled by
+    mcu-common module and once again in mcu-primary module). Now compiled only
+    once by mcu-common module as on mcu-secondary.
+
+* Enhancements:
+
+  * debug printing is replaced by ``printf`` for easier and more versatile
+    usage
+  * added additional basic math macros (e.g., LN10, PI etc.) in ``foxmath.h``
+  * Fuse state is now monitored. Fuse can be placed in NORMAL and/or CHARGE
+    path. Added flag to ``CAN0_MSG_SystemState_2`` message
+  * added support to build and link multiple libraries
+  * added warning flag if MCU die temperature is outside of operating range to
+    ``CAN0_MSG_SystemState_2`` message
+  * added warning flag to replace coin cell if measured coin cell voltage is
+    low to ``CAN0_MSG_SystemState_2`` message
+  * added daisy-chain communication error flags to ``CAN0_MSG_SystemState_2``
+    message
+  * added error flag if an open voltage sense wire is detected
+
+Hardware:
+
+* none
+
+Documentation:
+
+* updated library build documentation
+* updated .dbc file
+
+------------------------------------------------------------------------------
+
 **Release 1.5.2**
 
 Software:
@@ -14,12 +66,11 @@ Software:
 
   * fixed bug that delay after SPI wake-up byte was not long enough
 
-
 * Enhancements:
 
   * increased CPU clock frequency from 168MHz to 180MHz
   * increased SPI bitrate from 656.25kHz to 703.125kHz
-  * Added CAN boot message with SW-version and flash checksum (0x101)
+  * added CAN boot message with SW-version and flash checksum (0x101)
   * CAN messages are now always sent, even if system error was detected
   * foxBMS SW-version requestable via CAN (request ID: 0x777, response ID: 0x101)
   * added insulation error flag to ``DATA_BLOCK_ERRORSTATE_s``
@@ -50,7 +101,6 @@ Software:
 * Bugfixes:
 
   * fixed bug updating BKPSRAM values to EEPROM: BKPSRAM checksum was calculated wrong
-
 
 * Enhancements:
 
@@ -196,7 +246,7 @@ tools(v1.0.2):
 
 documentation(v1.0.2):
 
-* updated documenation for the build process
+* updated documentation for the build process
 * updated FAQ section
 * updated copyright
 * updated README.md

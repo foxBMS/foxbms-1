@@ -60,30 +60,27 @@
 
 /*================== Constant and Variable Definitions ====================*/
 #if 0
-uint32_t extsd_testbuffer[100]={0x10,0xf,0xe,0xd,0xc,0xb,0xa,0x9,0x8,7,6,5,4,3,2,1,0xaa};
+uint32_t extsd_testbuffer[100]={0x10, 0xf, 0xe, 0xd, 0xc, 0xb, 0xa, 0x9, 0x8, 7, 6, 5, 4, 3, 2, 1, 0xaa};
 volatile uint32_t extsd_test2;
 #endif
 /*================== Function Prototypes ==================================*/
 
 /*================== Function Implementations =============================*/
 
-void SDRAM_c_init(void)
-{
+void SDRAM_c_init(void) {
     uint32_t *extRAMptr = (uint32_t*)(&_s_extdata[0]);       /* start address of external SDRAM  .data-section */
     uint32_t *flashptr  = (uint32_t*)(&_sidata_ext[0]);      /* start address of Flash related to .data-section */
 
-    while( extRAMptr < (uint32_t*)(&_e_extdata[0]) )         /* compare to end address of external SDRAM  .data-section */
-    {
+    while (extRAMptr < (uint32_t*)(&_e_extdata[0])) {
+       /* compare to end address of external SDRAM  .data-section */
        *extRAMptr++ =  *flashptr++;
     }
 }
 #if 0
-void SDRAM_testram(void)
-{
-    uint32_t i=0;
-    for(i=0;i<(sizeof(extsd_testbuffer)/sizeof(uint32_t));i++)
-    {
-        extsd_testbuffer[i]=i;
+void SDRAM_testram(void) {
+    uint32_t i = 0;
+    for (i = 0; i < (sizeof(extsd_testbuffer)/sizeof(uint32_t)); i++) {
+        extsd_testbuffer[i] = i;
     }
     extsd_test2++;
 }

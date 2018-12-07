@@ -78,32 +78,29 @@ static TaskHandle_t appl_handle_tsk_100ms;
 
 void APPL_CreateTask(void) {
     /* Cyclic Task 1ms */
-    if (xTaskCreate((TaskFunction_t)APPL_TSK_Cyclic_1ms,(const portCHAR *)"APPL_TSK_Cyclic_1ms",
+    if (xTaskCreate((TaskFunction_t)APPL_TSK_Cyclic_1ms, (const portCHAR *)"APPL_TSK_Cyclic_1ms",
             appl_tskdef_cyclic_1ms.Stacksize, NULL, appl_tskdef_cyclic_1ms.Priority,
                 &appl_handle_tsk_1ms) != pdPASS)  {
-
       while (1) {
-          ;     /* TODO: do something */
+          /* TODO: explain why infinite loop */
       }
     }
 
     /* Cyclic Task 10ms */
-    if (xTaskCreate((TaskFunction_t)APPL_TSK_Cyclic_10ms,(const portCHAR *)"APPL_TSK_Cyclic_10ms",
+    if (xTaskCreate((TaskFunction_t)APPL_TSK_Cyclic_10ms, (const portCHAR *)"APPL_TSK_Cyclic_10ms",
             appl_tskdef_cyclic_10ms.Stacksize, NULL, appl_tskdef_cyclic_10ms.Priority,
                 &appl_handle_tsk_10ms) != pdPASS)  {
-
       while (1) {
-          ;     /* TODO: do something */
+          /* TODO: explain why infinite loop */
       }
     }
 
     /* Cyclic Task 100ms */
-    if (xTaskCreate((TaskFunction_t)APPL_TSK_Cyclic_100ms,(const portCHAR *)"APPL_TSK_Cyclic_100ms",
+    if (xTaskCreate((TaskFunction_t)APPL_TSK_Cyclic_100ms, (const portCHAR *)"APPL_TSK_Cyclic_100ms",
             appl_tskdef_cyclic_100ms.Stacksize, NULL, appl_tskdef_cyclic_100ms.Priority,
                 &appl_handle_tsk_100ms) != pdPASS)  {
-
       while (1) {
-          ;     /* TODO: do something */
+          /* TODO: explain why infinite loop */
       }
     }
 }
@@ -119,7 +116,6 @@ void APPL_CreateQueues(void) {
 
 void APPL_TSK_Cyclic_1ms(void) {
     while (os_boot != OS_SYSTEM_RUNNING) {
-        ;
     }
 
     OS_taskDelayUntil(&os_schedulerstarttime, appl_tskdef_cyclic_1ms.Phase);
@@ -133,7 +129,6 @@ void APPL_TSK_Cyclic_1ms(void) {
 
 void APPL_TSK_Cyclic_10ms(void) {
     while (os_boot != OS_SYSTEM_RUNNING) {
-        ;
     }
 
     OS_taskDelayUntil(&os_schedulerstarttime, appl_tskdef_cyclic_10ms.Phase);
@@ -147,7 +142,6 @@ void APPL_TSK_Cyclic_10ms(void) {
 
 void APPL_TSK_Cyclic_100ms(void) {
     while (os_boot != OS_SYSTEM_RUNNING) {
-        ;
     }
 
     OS_taskDelayUntil(&os_schedulerstarttime, appl_tskdef_cyclic_100ms.Phase);

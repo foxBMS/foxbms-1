@@ -73,7 +73,7 @@ typedef enum {
 
 typedef enum {
     SYS_MODE_STARTUP_EVENT    = 0,     /*!< system startup                     */
-/*    SYS_MODE_EVENT_INIT      = 1,    /*!< todo                               */
+/*    SYS_MODE_EVENT_INIT      = 1,  */  /*!< todo                               */
     SYS_MODE_CYCLIC_EVENT     = 2,     /*!< for cyclic events                  */
     SYS_MODE_TRIGGERED_EVENT  = 3,     /*!< for triggered events               */
     SYS_MODE_ABNORMAL_EVENT   = 4,     /*!< for abnormal (error etc.) events   */
@@ -186,7 +186,7 @@ typedef struct {
  * @param   statereq state requested to set
  *
  * @return  If the request was successfully set, it returns the SYS_OK, else the current state of
- *          requests ( type SYS_STATE_REQUEST_e)
+ *          requests (type SYS_STATE_REQUEST_e)
  */
 extern SYS_RETURN_TYPE_e SYS_SetStateRequest(SYS_STATE_REQUEST_e statereq);
 

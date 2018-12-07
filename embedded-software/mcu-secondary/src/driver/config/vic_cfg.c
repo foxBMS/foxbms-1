@@ -81,7 +81,6 @@
  always have the state defined in nvic_interrupts[]
  */
 VIC_InitStruct_s vic_interrupts[] = {
-
         { USART2_IRQn, 7, VIC_IRQ_LOCK_ENABLE, VIC_IRQ_ENABLE },
         { USART3_IRQn, 7, VIC_IRQ_LOCK_ENABLE, VIC_IRQ_ENABLE },
 
@@ -91,7 +90,6 @@ VIC_InitStruct_s vic_interrupts[] = {
         { ADC_IRQn, 8, VIC_IRQ_LOCK_DISABLE, VIC_IRQ_ENABLE },
 
         { SPI6_IRQn, 3, VIC_IRQ_LOCK_ENABLE, VIC_IRQ_ENABLE },
-
 };
 
 const uint8_t vic_cfg_length = sizeof(vic_interrupts) / sizeof(vic_interrupts[0]);

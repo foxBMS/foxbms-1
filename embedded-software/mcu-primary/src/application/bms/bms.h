@@ -71,7 +71,7 @@ typedef enum {
 
 typedef enum {
   BMS_MODE_STARTUP_EVENT    = 0,    /*!< syscontrol startup                 */
-/*  BMS_MODE_EVENT_INIT      = 1,   /*!< todo                               */
+/*  BMS_MODE_EVENT_INIT      = 1,*/ /*!< todo                               */
   BMS_MODE_CYCLIC_EVENT     = 2,    /*!< for cyclic events                  */
   BMS_MODE_TRIGGERED_EVENT  = 3,    /*!< for triggered events               */
   BMS_MODE_ABNORMAL_EVENT   = 4,    /*!< for abnormal (error etc.) events   */

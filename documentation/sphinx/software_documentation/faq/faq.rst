@@ -87,7 +87,7 @@ Second, add the task configuration in the ``appltask_cfg.c`` file:
      */
     BMS_Task_Definition_s appl_tskdef_10ms = { 0,   10, osPriorityBelowNormal, 512/4 };
 
-Third, declare a task handle and a task function in the ´´appltask.c/h´´ file:
+Third, declare a task handle and a task function in the ``appltask.c/h`` file:
 
 .. code-block:: C
 
@@ -101,7 +101,11 @@ Third, declare a task handle and a task function in the ´´appltask.c/h´´ fil
      */
     extern void APPL_TSK_Cyclic_100ms(void);
 
-The task initialization and creation is done in the function ``APPL_CreateTask()`` in the ``appltask.c`` file. Before assigning the task handle to the newly created task, a new thread needs to be defined for the operating system. This is done by a call of the function ``osThreadDef(name, thread, priority, instances, stacksz)``. The function parameters are:
+The task initialization and creation is done in the function
+``APPL_CreateTask()`` in the ``appltask.c`` file. Before assigning the task
+handle to the newly created task, a new thread needs to be defined for the
+operating system. This is done by a call of the function
+``osThreadDef(name, thread, priority, instances, stacksz)``. The function parameters are:
 
   - name: name of the function that represents the task
   - thread: os_pthread-pointer to the function that represents the task
@@ -182,7 +186,7 @@ In case the new software module has to be used in another existing module, the s
 How to change the multiplexer measurement sequence for the LTC driver?
 ----------------------------------------------------------------------
 
-The sequence is defined in ``module/config/ltc_cfg.c``, via the array ``LTC_MUX_CH_CFG_t ltc_mux_seq_main_ch1[]``, which contains a concatenation of elements like:
+The sequence is defined in ``module\config\ltc_cfg.c``, via the array ``LTC_MUX_CH_CFG_t ltc_mux_seq_main_ch1[]``, which contains a concatenation of elements like:
 
 .. code-block:: C
 
@@ -205,8 +209,8 @@ Typically, multiplexer 0 and 1 are used for temperature measurement, and multipl
 
 For temperature measurements, the variable ``uint8_t ltc_muxsensortemperatur_cfg[6]`` contains the look-up table between temperature sensors and cells: the first entry defines the temperature sensor number assigned to the first cell, the second entry defines the temperature sensor number assigned to the second cell, and so on. If no look-up table is needed, this array should simply be filled with integers increasing from 0 to number of temperature sensors minus 1. In this example, ``muxsensortemperaturmain_cfg[6]`` has a size of 6 because it is the default number of temperature sensors supported by the |slaves|. This must be adapted at two places:
 
- - In ``module/config/ltc_cfg.c``, where the variable is defined
- - In ``module/config/ltc_cfg.h``, in the declaration ``extern uint8_t ltc_muxsensortemperatur_cfg[6]``
+ - In ``module\config\ltc_cfg.c``, where the variable is defined
+ - In ``module\config\ltc_cfg.h``, in the declaration ``extern uint8_t ltc_muxsensortemperatur_cfg[6]``
 
 
 .. _sw_faq_temperature_sensors:
@@ -426,7 +430,8 @@ The blocks are defined via the following enumeration:
    } DATA_BLOCK_ID_TYPE_e;
 
 
-If more than ``DATA_BLOCK_MAX`` blocks are needed, it must be changed in the defines:
+If more than ``DATA_BLOCK_MAX`` blocks are needed, it must be changed in the
+defines:
 
 .. code-block:: C
 
@@ -452,9 +457,14 @@ beginning of the struct. These timestamp are automatically updated each time new
 values are stored in the database. The reamaing struct consists of all the data
 needed for the entry. In ``mcu-primary\engine\config\database_cfg.c``, a variable with the
 structure type must be declared
-``DATA_BLOCK_CELLVOLTAGE_s data_block_cellvoltage[DOUBLE_BUFFERING]``. The user
-can choose ``SINGLE_BUFFERING`` or ``DOUBLE_BUFFERING``. The last step is to
-add an entry in the structure ``DATA_BASE_HEADER_s  data_base_header[]``:
+
+.. code-block:: C
+
+    DATA_BLOCK_CELLVOLTAGE_s data_block_cellvoltage[DOUBLE_BUFFERING];
+
+The user can choose ``SINGLE_BUFFERING`` or ``DOUBLE_BUFFERING``. The last
+step is to add an entry in the structure
+``DATA_BASE_HEADER_s data_base_header[]``:
 
 .. code-block:: C
 

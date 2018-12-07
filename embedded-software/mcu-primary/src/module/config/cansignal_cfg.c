@@ -109,7 +109,7 @@ const CANS_signal_s cans_CAN0_signals_tx[] = {
 
         { {CAN0_MSG_SystemState_1}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getcanerr },  /*!< CAN0_SIG_GS1_error_overvoltage, */
         { {CAN0_MSG_SystemState_1}, 8, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getcanerr },  /*!< CAN0_SIG_GS1_error_undervoltage, */
-        { {CAN0_MSG_SystemState_1}, 16, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getcanerr },  /*!< CAN0_SIG_GS1_error_overtemp_IC */
+        { {CAN0_MSG_SystemState_1}, 16, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getcanerr },  /*!< CAN0_SIG_GS1_error_temperature_MCU0 */
         { {CAN0_MSG_SystemState_1}, 24, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getcanerr },  /*!< CAN0_SIG_GS1_error_contactor */
         { {CAN0_MSG_SystemState_1}, 32, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getcanerr },  /*!< CAN0_SIG_GS1_error_selftest, */
         { {CAN0_MSG_SystemState_1}, 40, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getcanerr },  /*!< CAN_SIG_GS1_error_cantiming, */
@@ -117,7 +117,11 @@ const CANS_signal_s cans_CAN0_signals_tx[] = {
         { {CAN0_MSG_SystemState_1}, 56, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getcanerr },  /*!< CAN0_SIG_GS1_balancing_active, */
 
         { {CAN0_MSG_SystemState_2}, 0, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getcanerr },  /*!< CAN0_SIG_GS2_states_relays */
-        { {CAN0_MSG_SystemState_2}, 16, 8, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getcanerr },  //!< CAN0_SIG_GS2_states_relays
+        { {CAN0_MSG_SystemState_2}, 16, 8, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getcanerr },  /*!< CAN0_SIG_GS2_error_insulation */
+        { {CAN0_MSG_SystemState_2}, 24, 8, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getcanerr },  /*!< CAN0_SIG_GS2_fuse_state */
+        { {CAN0_MSG_SystemState_2}, 32, 8, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getcanerr },  /*!< CAN0_SIG_GS2_lowCoinCellVolt */
+        { {CAN0_MSG_SystemState_2}, 40, 8, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getcanerr },  /*!< CAN0_SIG_GS2_error_openWire */
+        { {CAN0_MSG_SystemState_2}, 48, 8, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getcanerr },  /*!< CAN0_SIG_GS2_daisyChain */
 
         { {CAN0_MSG_SlaveState_0}, 0, 64, 0, UINT64_MAX, 1, 0, NULL_PTR, NULL_PTR },  /*!< CAN0_SIG_SS0_states */
         { {CAN0_MSG_SlaveState_1}, 0, 64, 0, UINT64_MAX, 1, 0, NULL_PTR, NULL_PTR },  /*!< CAN0_SIG_SS0_states */
@@ -470,13 +474,12 @@ const CANS_signal_s cans_CAN0_signals_tx[] = {
         { {CAN0_MSG_Mod7_Celltemp_3}, 40, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod4_temp_11 */
 
 #ifdef CAN_ISABELLENHUETTE_TRIGGERED
-        { {CAN0_MSG_BMS_CurrentTrigger}, 0, 32, 0, 0, 1, 0, NULL_PTR, &cans_gettriggercurrent }  /*!< CAN0_SIG_ISA_Trigger */
+        {{CAN0_MSG_BMS_CurrentTrigger}, 0, 32, 0, 0, 1, 0, NULL_PTR, &cans_gettriggercurrent }  /*!< CAN0_SIG_ISA_Trigger */
 #endif
 };
 
 
 const CANS_signal_s cans_CAN1_signals_tx[] = {
-
 };
 
 
@@ -511,7 +514,6 @@ const CANS_signal_s cans_CAN0_signals_rx[] = {
 };
 
 const CANS_signal_s cans_CAN1_signals_rx[] = {
-
 };
 
 
@@ -997,6 +999,7 @@ uint32_t cans_getcanerr(uint32_t sigIdx, void *value) {
     static DATA_BLOCK_ILCKFEEDBACK_s canilckfeedback_tab;
     static DATA_BLOCK_BALANCING_CONTROL_s balancing_tab;
     static DATA_BLOCK_SYSTEMSTATE_s systemstate_tab;
+    static DATA_BLOCK_HW_INFO_s hwinfo_tab;
 
     static uint8_t tmp = 0;
 
@@ -1079,8 +1082,8 @@ uint32_t cans_getcanerr(uint32_t sigIdx, void *value) {
                 tmp |= canMSL_tab.under_voltage;
                 *(uint32_t *)value = tmp;
                 break;
-            case CAN0_SIG_GS1_error_overtemp_IC:
-                *(uint32_t *)value = 0;
+            case CAN0_SIG_GS1_error_temperature_MCU0:
+                *(uint32_t *)value = canerr_tab.mcuDieTemperature;
                 break;
             case CAN0_SIG_GS1_error_contactor:
                 *(uint32_t *)value = canerr_tab.main_plus | canerr_tab.main_minus | canerr_tab.precharge | canerr_tab.charge_main_plus | canerr_tab.charge_main_minus | canerr_tab.charge_precharge;
@@ -1111,6 +1114,41 @@ uint32_t cans_getcanerr(uint32_t sigIdx, void *value) {
 
             case CAN0_SIG_GS2_error_insulation:
                 *(uint32_t *)value = canerr_tab.insulation_error;
+                break;
+
+            case CAN0_SIG_GS2_fuse_state:
+                tmp = 0;
+                if (canerr_tab.fuse_state_normal != 0) {
+#if BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH == TRUE
+                    tmp |= 0x01;
+#else /* BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH == FALSE */
+                    tmp |= 0x02;
+#endif
+                }
+                if (canerr_tab.fuse_state_charge != 0) {
+#if BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH == TRUE
+                    tmp |= 0x04;
+#else /* BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH == FALSE */
+                    tmp |= 0x08;
+#endif
+                }
+                *(uint32_t *)value = tmp;
+                break;
+
+            case CAN0_SIG_GS2_lowCoinCellVolt:
+                *(uint32_t *)value = canerr_tab.coinCellVoltage;
+                break;
+
+            case CAN0_SIG_GS2_error_openWire:
+                *(uint32_t *)value = canerr_tab.open_wire;
+                break;
+
+            case CAN0_SIG_GS2_daisyChain:
+                tmp = 0;
+                tmp |= canerr_tab.spi_error;
+                tmp |= canerr_tab.crc_error << 1;
+                tmp |= canerr_tab.mux_error << 2;
+                *(uint32_t *)value = tmp;
                 break;
 
             default:
@@ -1195,10 +1233,8 @@ static uint32_t cans_getRecommendedOperatingCurrent(uint32_t sigIdx, void *value
 
 
 static uint32_t cans_getMaxAllowedPower(uint32_t sigIdx, void *value) {
-
     if (value != NULL_PTR) {
         switch (sigIdx) {
-
             default:
                 *(uint32_t *)value = 0;
                 break;
@@ -1214,7 +1250,6 @@ static uint32_t cans_getminmaxvolt(uint32_t sigIdx, void *value) {
 
     if (value != NULL_PTR) {
         switch (sigIdx) {
-
             case CAN0_SIG_Cellvolt_mean:
                 /* First signal that is called */
                 DB_ReadBlock(&minmax_volt_tab, DATA_BLOCK_ID_MINMAX);
@@ -1262,13 +1297,11 @@ static uint32_t cans_getminmaxvolt(uint32_t sigIdx, void *value) {
 }
 
 uint32_t cans_getminmaxtemp(uint32_t sigIdx, void *value) {
-
     static DATA_BLOCK_MINMAX_s minmax_temp_tab;
     float canData = 0;
 
     if (value != NULL_PTR) {
         switch (sigIdx) {
-
         case CAN0_SIG_Celltemp_mean:
             /* First signal that is called */
             DB_ReadBlock(&minmax_temp_tab, DATA_BLOCK_ID_MINMAX);
@@ -1492,7 +1525,6 @@ static uint32_t cans_setcurr(uint32_t sigIdx, void *value) {
 
     if (value != NULL_PTR) {
         switch (sigIdx) {
-
             case CAN0_SIG_IVT_Current_Status:
             case CAN0_SIG_IVT_Voltage_1_Status:
             case CAN0_SIG_IVT_Voltage_2_Status:
@@ -1638,7 +1670,6 @@ uint32_t cans_getisoguard(uint32_t sigIdx, void *value) {
 
     if (value != NULL_PTR) {
         switch (sigIdx) {
-
             case CAN0_SIG_InsulationStatus:
             /* First signal call */
             DB_ReadBlock(&isoguard_tab, DATA_BLOCK_ID_ISOGUARD);
@@ -1682,7 +1713,7 @@ uint32_t cans_setdebug(uint32_t sigIdx, void *value) {
     if (value != NULL_PTR) {
         switch (data[0]) {
             case 11:  /* Set Soc directly with value. Unit in CAN message: 0.01 percent --> range 0...10000 means 0%Soc...100%Soc */
-                SOC_SetValue( ((float)((data[1])<<8 | (data[2])))/100.0, ((float)((data[1])<<8 | (data[2])))/100.0, ((float)((data[1])<<8 | (data[2])))/100.0 ); /* divide by 100 to get SOC between 0 and 100 */
+                SOC_SetValue(((float)((data[1]) << 8 | (data[2])))/100.0, ((float)((data[1]) << 8 | (data[2])))/100.0, ((float)((data[1]) << 8 | (data[2])))/100.0); /* divide by 100 to get SOC between 0 and 100 */
                 break;
             case 14:  /* debug Message for Balancing on pack level */
                 DB_ReadBlock(&staterequest_tab, DATA_BLOCK_ID_STATEREQUEST);
@@ -1702,7 +1733,6 @@ uint32_t cans_setdebug(uint32_t sigIdx, void *value) {
 
 
 uint32_t cans_setSWversion(uint32_t sigIdx, void *value) {
-
     SYS_SendBootMessage(0);
     return 0;
 }

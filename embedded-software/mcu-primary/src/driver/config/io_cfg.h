@@ -135,7 +135,6 @@ typedef enum {
     IO_PIN_NOPULL   = GPIO_NOPULL,      /*!< Whether pull-up nor pull-down is activated */
     IO_PIN_PULLUP   = GPIO_PULLUP,      /*!< Pull-up is activated                       */
     IO_PIN_PULLDOWN = GPIO_PULLDOWN     /*!< Pull-down is activated                     */
-
 } IO_PIN_PULL_e;
 
 /**

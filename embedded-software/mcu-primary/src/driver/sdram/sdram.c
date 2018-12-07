@@ -66,7 +66,6 @@
 /*================== Function Implementations =============================*/
 
 void SDRAM_Init(void) {
-
     SDRAM_HandleTypeDef      sdram_handle;
     FMC_SDRAM_TimingTypeDef  sdram_timing;
 
@@ -113,7 +112,7 @@ void SDRAM_Init(void) {
     /* Send Command: Clock Configuration */
     sdram_cmd.CommandMode     = FMC_SDRAM_CMD_CLK_ENABLE;  /*!< Defines the command issued to the SDRAM device.
                                                   This parameter can be a value of @ref FMC_SDRAM_Command_Mode.          */
-    sdram_cmd.CommandTarget   = FMC_SDCMR_CTB2;  /*!< Defines which device (1 or 2) the command will be issued to.
+    sdram_cmd.CommandTarget   = FMC_SDCMR_CTB2;  /*!< Defines which device(1 or 2) the command will be issued to.
                                                   This parameter can be a value of @ref FMC_SDRAM_Command_Target.        */
     sdram_cmd.AutoRefreshNumber = 1;  /*!< Defines the number of consecutive auto refresh command issued
                                                   in auto refresh mode.
@@ -121,7 +120,7 @@ void SDRAM_Init(void) {
     sdram_cmd.ModeRegisterDefinition = 0;  /*!< Defines the SDRAM Mode register content                                */
     /* wait if SDRAM is busy */
     /* HAL_IS_BIT_SET(Device->SDSR, FMC_SDSR_BUSY) */
-    while(__FMC_SDRAM_GET_FLAG(sdram_handle.Instance, FMC_SDSR_BUSY))
+    while (__FMC_SDRAM_GET_FLAG(sdram_handle.Instance, FMC_SDSR_BUSY))
     {}
     HAL_SDRAM_SendCommand(&sdram_handle, &sdram_cmd, 1);
 
@@ -132,7 +131,7 @@ void SDRAM_Init(void) {
     sdram_cmd.CommandTarget   = FMC_SDCMR_CTB2;
     sdram_cmd.AutoRefreshNumber = 1;
     sdram_cmd.ModeRegisterDefinition = 0;
-    while(__FMC_SDRAM_GET_FLAG(sdram_handle.Instance, FMC_SDSR_BUSY))
+    while (__FMC_SDRAM_GET_FLAG(sdram_handle.Instance, FMC_SDSR_BUSY))
     {}
     HAL_SDRAM_SendCommand(&sdram_handle, &sdram_cmd, 1);      /* @todo 10 or 100ms? */
 
@@ -141,7 +140,7 @@ void SDRAM_Init(void) {
     sdram_cmd.CommandTarget   = FMC_SDCMR_CTB2;
     sdram_cmd.AutoRefreshNumber = 4;
     sdram_cmd.ModeRegisterDefinition = 0;
-    while(__FMC_SDRAM_GET_FLAG(sdram_handle.Instance, FMC_SDSR_BUSY))
+    while (__FMC_SDRAM_GET_FLAG(sdram_handle.Instance, FMC_SDSR_BUSY))
     {}
     HAL_SDRAM_SendCommand(&sdram_handle, &sdram_cmd, 1);      /* @todo 10 or 100ms? */
 
@@ -150,12 +149,12 @@ void SDRAM_Init(void) {
     sdram_cmd.CommandTarget   = FMC_SDCMR_CTB2;
     sdram_cmd.AutoRefreshNumber = 4;
     sdram_cmd.ModeRegisterDefinition = 0;
-    while(__FMC_SDRAM_GET_FLAG(sdram_handle.Instance, FMC_SDSR_BUSY))
+    while (__FMC_SDRAM_GET_FLAG(sdram_handle.Instance, FMC_SDSR_BUSY))
     {}
     HAL_SDRAM_SendCommand(&sdram_handle, &sdram_cmd, 1);      /* @todo 10 or 100ms? */
 
     /* Send Command: second Command */
-    while(__FMC_SDRAM_GET_FLAG(sdram_handle.Instance, FMC_SDSR_BUSY))
+    while (__FMC_SDRAM_GET_FLAG(sdram_handle.Instance, FMC_SDSR_BUSY))
     {}
     HAL_SDRAM_SendCommand(&sdram_handle, &sdram_cmd, 1);      /* @todo 10 or 100ms? */
 
@@ -164,18 +163,17 @@ void SDRAM_Init(void) {
     sdram_cmd.CommandTarget   = FMC_SDCMR_CTB2;
     sdram_cmd.AutoRefreshNumber = 1;
     sdram_cmd.ModeRegisterDefinition = 0x231;  /* CAS LATENCY 3, BURST LENGTH 2, single WRITEBURST mode */
-    while(__FMC_SDRAM_GET_FLAG(sdram_handle.Instance, FMC_SDSR_BUSY))
+    while (__FMC_SDRAM_GET_FLAG(sdram_handle.Instance, FMC_SDSR_BUSY))
     {}
     HAL_SDRAM_SendCommand(&sdram_handle, &sdram_cmd, 1);      /* @todo 10 or 100ms? */
 
 
-    HAL_SDRAM_ProgramRefreshRate(&sdram_handle,1292);          /* refreshrate 15,62us x 84Mhz -20 */
-    while(__FMC_SDRAM_GET_FLAG(sdram_handle.Instance, FMC_SDSR_BUSY))
+    HAL_SDRAM_ProgramRefreshRate(&sdram_handle, 1292);          /* refreshrate 15,62us x 84Mhz -20 */
+    while (__FMC_SDRAM_GET_FLAG(sdram_handle.Instance, FMC_SDSR_BUSY))
     {}
 
 
     SDRAM_c_init();
-
 }
 
 #endif

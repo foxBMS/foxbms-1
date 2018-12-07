@@ -53,8 +53,8 @@
 #include "sys_cfg.h"
 
 #include "can.h"
-#include "misc.h"
 #include "version.h"
+#include "stdlib.h"
 
 /*================== Macros and Definitions ===============================*/
 
@@ -62,12 +62,11 @@
 
 /*================== Function Implementations =============================*/
 void SYS_SendBootMessage(uint8_t directTransmission) {
-
     /* Send CAN boot successful message */
     uint8_t data[8];
-    data[0] = AsciiNumberToU8(ver_sw_validation.Version[0]);          /* SW-Version number: major */
-    data[1] = AsciiNumberToU8(ver_sw_validation.Version[2]);          /* SW-Version number: minor */
-    data[2] = AsciiNumberToU8(ver_sw_validation.Version[4]);          /* SW-Version number: bugfix */
+    data[0] = (uint8_t)atoi((char*)&ver_sw_validation.Version[0]);          /* SW-Version number: major */
+    data[1] = (uint8_t)atoi((char*)&ver_sw_validation.Version[2]);          /* SW-Version number: minor */
+    data[2] = (uint8_t)atoi((char*)&ver_sw_validation.Version[4]);          /* SW-Version number: bugfix */
     data[3] = 0;
     data[4] = 0xFF & ver_sw_validation.Checksum_u32;
     data[5] = 0xFF & (ver_sw_validation.Checksum_u32 >> 8);

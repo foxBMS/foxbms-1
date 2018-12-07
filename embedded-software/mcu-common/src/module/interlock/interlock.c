@@ -327,7 +327,7 @@ void ILCK_Trigger(void) {
         return;
     }
 
-    DIAG_SysMonNotify(DIAG_SYSMON_ILCK_ID,0);        /* task is running, state = ok */
+    DIAG_SysMonNotify(DIAG_SYSMON_ILCK_ID, 0);        /* task is running, state = ok */
 
     /****Happens every time the state machine is triggered**************/
     if (ilck_state.state != ILCK_STATEMACH_UNINITIALIZED) {
@@ -431,7 +431,7 @@ void ILCK_Trigger(void) {
 
         default:
             break;
-    }  /* end switch(ilck_state.state) */
+    }  /* end switch (ilck_state.state) */
 
     ilck_state.triggerentry--;
 }
@@ -452,7 +452,5 @@ void ILCK_CheckFeedback(void) {
     } else {
         DIAG_Handler(DIAG_CH_INTERLOCK_FEEDBACK, DIAG_EVENT_OK, 0, NULL_PTR);
     }
-
-
 }
 #endif

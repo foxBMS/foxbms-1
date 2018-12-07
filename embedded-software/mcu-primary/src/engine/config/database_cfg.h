@@ -67,7 +67,7 @@
  *
  * this value is extendible but limitation is done due to RAM consumption and performance
  */
-#define DATA_MAX_BLOCK_NR                24        /* max 24 Blocks currently supported*/
+#define DATA_MAX_BLOCK_NR                25        /* max 25 Blocks currently supported*/
 
 /**
  * @brief data block identification number
@@ -97,6 +97,7 @@ typedef enum {
     DATA_BLOCK_21       = 21,
     DATA_BLOCK_22       = 22,
     DATA_BLOCK_23       = 23,
+    DATA_BLOCK_24       = 24,
     DATA_BLOCK_MAX      = DATA_MAX_BLOCK_NR,
 } DATA_BLOCK_ID_TYPE_e;
 
@@ -155,7 +156,7 @@ typedef struct {
 #define     DATA_BLOCK_ID_MINMAX                        DATA_BLOCK_08
 #define     DATA_BLOCK_ID_ISOGUARD                      DATA_BLOCK_09
 #define     DATA_BLOCK_ID_SLAVE_CONTROL                 DATA_BLOCK_10
-#define     DATA_BLOCK_ID_OPEN_WIRE_CHECK               DATA_BLOCK_11
+#define     DATA_BLOCK_ID_OPEN_WIRE                     DATA_BLOCK_11
 #define     DATA_BLOCK_ID_LTC_DEVICE_PARAMETER          DATA_BLOCK_12
 #define     DATA_BLOCK_ID_LTC_ACCURACY                  DATA_BLOCK_13
 #define     DATA_BLOCK_ID_ERRORSTATE                    DATA_BLOCK_14
@@ -168,6 +169,7 @@ typedef struct {
 #define     DATA_BLOCK_ID_SYSTEMSTATE                   DATA_BLOCK_21
 #define     DATA_BLOCK_ID_SOF                           DATA_BLOCK_22
 #define     DATA_BLOCK_ID_ALLGPIOVOLTAGE                DATA_BLOCK_23
+#define     DATA_BLOCK_ID_CONT_SOH                       DATA_BLOCK_24
 
 /**
  * data block struct of cell voltage
@@ -190,7 +192,7 @@ typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
     uint32_t timestamp;                     /*!< timestamp of database entry                */
     uint32_t previous_timestamp;            /*!< timestamp of last database entry           */
-    uint8_t openwire[BS_NR_OF_BAT_CELLS];   /*!< 1 -> open wire, 0 -> everything ok */
+    uint8_t openwire[BS_NR_OF_MODULES * (BS_NR_OF_BAT_CELLS_PER_MODULE+1)];   /*!< 1 -> open wire, 0 -> everything ok */
     uint8_t state;                          /*!< for future use                       */
 } DATA_BLOCK_OPENWIRE_s;
 
@@ -326,13 +328,13 @@ typedef struct {
  * data block struct of hardware info
  */
 typedef struct {
-    /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
-    uint32_t timestamp;                         /*!< timestamp of database entry           */
-    uint32_t previous_timestamp;                /*!< timestamp of last database entry      */
-    float vbat;                                 /*!< unit: mV                              */
-    float temperature;                          /*!< unit: degree Celsius                  */
-    uint8_t state_vbat;                         /*!<                                       */
-    uint8_t state_temperature;                  /*!<                                       */
+    /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock        */
+    uint32_t timestamp;                         /*!< timestamp of database entry                  */
+    uint32_t previous_timestamp;                /*!< timestamp of last database entry             */
+    float vbat_mV;                              /*!< unit: mV                                     */
+    float temperature;                          /*!< unit: degree Celsius                         */
+    uint8_t state_vbat;                         /*!<                                              */
+    uint8_t state_temperature;                  /*!<                                              */
 } DATA_BLOCK_HW_INFO_s;
 
 
@@ -442,9 +444,14 @@ typedef struct {
     uint8_t mux_error;                               /*!< 0 -> no error, 1 -> error        */
     uint8_t spi_error;                               /*!< 0 -> no error, 1 -> error        */
     uint8_t insulation_error;                        /*!< 0 -> no error, 1 -> error        */
+    uint8_t fuse_state_normal;                       /*!< 0 -> fuse ok,  1 -> fuse tripped */
+    uint8_t fuse_state_charge;                       /*!< 0 -> fuse ok,  1 -> fuse tripped */
+    uint8_t open_wire;                               /*!< 0 -> no error, 1 -> error        */
     uint8_t can_timing;                              /*!< 0 -> no error, 1 -> error        */
     uint8_t can_timing_cc;                           /*!< 0 -> no error, 1 -> error        */
     uint8_t can_cc_used;                             /*!< 0 -> not present, 1 -> present   */
+    uint8_t mcuDieTemperature;                       /*!< 0 -> no error, 1 -> error        */
+    uint8_t coinCellVoltage;                         /*!< 0 -> no error, 1 -> error        */
 } DATA_BLOCK_ERRORSTATE_s;
 
 
@@ -560,6 +567,16 @@ typedef struct {
     uint16_t gpiovoltage[BS_NR_OF_MODULES * BS_NR_OF_GPIOS_PER_MODULE];       /*!< unit: mV                                   */
     uint8_t state;                                                            /*!< for future use                             */
 } DATA_BLOCK_ALLGPIOVOLTAGE_s;
+
+/**
+ * data block struct of contactor SOH
+ */
+typedef struct {
+    /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
+    uint32_t timestamp;  /*!< timestamp of database entry */
+    uint32_t previous_timestamp;  /*!< timestamp of last database entry */
+    float contactor_soh[BS_NR_OF_CONTACTORS];  /*!< SOH of contactors */
+} DATA_BLOCK_CONT_SOH_s;
 
 /*================== Constant and Variable Definitions ====================*/
 

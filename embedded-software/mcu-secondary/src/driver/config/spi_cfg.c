@@ -60,7 +60,6 @@
 
 /*================== Constant and Variable Definitions ====================*/
 SPI_HandleType_s spi_devices[] = {
-
     {
         .Instance = SPI1,
         .Init.Mode = SPI_MODE_MASTER,

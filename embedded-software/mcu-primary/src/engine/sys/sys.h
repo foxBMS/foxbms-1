@@ -181,7 +181,7 @@ typedef struct {
  * @param   statereq state requested to set
  *
  * @return  If the request was successfully set, it returns the SYS_OK, else the current state of
- *          requests ( type SYS_STATE_REQUEST_e)
+ *          requests (type SYS_STATE_REQUEST_e)
  */
 extern SYS_RETURN_TYPE_e SYS_SetStateRequest(SYS_STATE_REQUEST_e statereq);
 

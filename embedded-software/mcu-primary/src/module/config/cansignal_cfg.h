@@ -184,7 +184,6 @@ typedef enum {
 
 
     /* Insert here symbolic names for CAN1 messages */
-
 } CANS_messagesTx_e;
 
 /**
@@ -206,7 +205,6 @@ typedef enum {
     CAN0_MSG_GetReleaseVersion,              /*!< Get SW release version */
 
     /* Insert here symbolic names for CAN1 messages */
-
 } CANS_messagesRx_e;
 
 /**
@@ -224,7 +222,7 @@ typedef enum {
 
     CAN0_SIG_GS1_error_overvoltage,  /* 0:good, 1:error */
     CAN0_SIG_GS1_error_undervoltage,  /* 0:good, 1:error */
-    CAN0_SIG_GS1_error_overtemp_IC,  /* 0:good, 1:error */
+    CAN0_SIG_GS1_error_temperature_MCU0,  /* 0:good, 1:error */
     CAN0_SIG_GS1_error_contactor,  /* 0:good, 1:error */
     CAN0_SIG_GS1_error_selftest,  /* 0:good, 1:error */
     CAN0_SIG_GS1_error_cantiming,  /* 0:good, 1:error */
@@ -233,6 +231,10 @@ typedef enum {
 
     CAN0_SIG_GS2_state_cont_interlock,  /* bitfield 0:off, 1:on */
     CAN0_SIG_GS2_error_insulation,  /* 0: good, 1: error */
+    CAN0_SIG_GS2_fuse_state,  /* 0: fuse intact, 1: fuse tripped */
+    CAN0_SIG_GS2_lowCoinCellVolt,  /* 0: okay, else: low voltage */
+    CAN0_SIG_GS2_error_openWire,  /* 0: okay, 1: open wire detected */
+    CAN0_SIG_GS2_daisyChain,  /* 0: okay, else: error */
 
     CAN0_SIG_SS0_states,  /* 0: good, 1: error */
     CAN0_SIG_SS1_states,  /* 0: good, 1: error */

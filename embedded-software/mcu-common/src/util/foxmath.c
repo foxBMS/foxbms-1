@@ -64,133 +64,20 @@
 /*================== Static Function Implementations ========================*/
 
 /*================== Extern Function Implementations ========================*/
-float MATH_Abs(float value) {
-    if (value >= 0)
-        return value;
-    else
-        return -value;
-}
 
+float MATH_linearInterpolation(float x1, float y1, float x2, float y2, float x_interpolate) {
+    float y_interpolate = 0.0;
+    float slope = 0.0;
 
-float MATH_Pow(float base,int exponent) {
-    float value = 1.0;
-    if (exponent > 0) {
-        while (exponent != 0) {
-                value *= base;
-                --exponent;
-        }
-        return value;
-    } else if (exponent < 0) {
-        while (exponent != 0) {
-                value *= base;
-                ++exponent;
-        }
-        return 1.0/value;
-    } else if (exponent == 0) {
-        return value;
+    if (x1 != x2) {
+        /* Calculate slope */
+        slope = (y2-y1)/(x2-x1);
     } else {
-        return 1.0;
+        /* x values are identical -> no interpolation possible: return y1 value */
+        slope = 0;
     }
-}
+    /* Interpolate starting from x1/y1 */
+    y_interpolate = y1 + slope*(x_interpolate - x1);
 
-
-float MATH_exp(float value) {
-    float temp = 1.0;
-    float fact = 1.0;
-    float result = 1.0;
-    for(int i=1; i<=100; i++) {
-        fact = fact*i;
-        temp = temp * value;
-        result = result + ((float)temp/(float)fact);
-    }
-    return result;
-}
-
-
-float MATH_sin(float value) {
-    float degree = 0.0;
-    float sinx = 0.0;
-    float powerseven = 0.0;
-    float powerfive = 0.0;
-    float powerthree = 0.0;
-    degree = (value * MATH_PI)/180.0;
-    powerthree = (degree * degree * degree);
-    powerfive = (powerthree * degree * degree);
-    powerseven = (powerfive * degree * degree);
-
-    sinx = (degree - (powerthree/6.0) + (powerfive/120.0) - (powerseven/5040.0));
-    return sinx;
-}
-
-
-float MATH_cos(float value) {
-    float degree = 0;
-    float cosx = 0;
-    float powertwo = 0;
-    float powerfour = 0;
-    float powersix = 0;
-
-    degree = (value * MATH_PI)/180.0;
-    powertwo = (degree * degree);
-    powerfour = (powertwo * degree * degree);
-    powersix = (powerfour * degree * degree);
-
-    cosx = (1.0 - (powertwo/2.0) + (powerfour/24.0) - (powersix/720.0));
-    return cosx;
-}
-
-
-float MATH_sqroot(float value) {
-
-    float root = 0;
-    float last = 0;
-    float diff = 1;
-    root = value/3;
-
-    if (value <= 0)
-        return 0;
-
-    while (diff > MINDIFF || diff < -MINDIFF) {
-        last = root;
-        root = (root + (value/root))/2.0;
-        diff = root - last;
-    }
-    return root;
-}
-
-
-float MATH_tan(float x) {
-    float result;
-    float tmpSin = MATH_sin(x);
-    float tmpPow = MATH_Pow(tmpSin,2);
-    float tmp = MATH_sqroot(1 - tmpPow);
-    result = MATH_sin(x)/tmp;
-    return result;
-}
-
-
-float MATH_ln(float value) {
-    float old_sum = 0.0;
-    float xmlxpl = (value - 1) / (value + 1);
-    float xmlxpl_2 = xmlxpl * xmlxpl;
-    float denom = 1.0;
-    float frac = xmlxpl;
-    float term = frac;
-    float sum = term;
-    if (value > 0) {
-        while (sum != old_sum) {
-            old_sum = sum;
-            denom += 2.0;
-            frac *= xmlxpl_2;
-            sum += frac / denom;
-        }
-        return 2.0 * sum;
-    } else {
-        return 0;
-    }
-}
-
-
-float MATH_log10( float value ) {
-    return MATH_ln(value) / LN10;
+    return y_interpolate;
 }

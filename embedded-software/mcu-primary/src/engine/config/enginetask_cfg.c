@@ -69,15 +69,16 @@
 #include "sys.h"
 #include "vic.h"
 #include "wdg.h"
+#include "hwinfo.h"
 
 /*================== Macros and Definitions ===============================*/
 
 /*================== Constant and Variable Definitions ====================*/
-OS_Task_Definition_s eng_tskdef_cyclic_1ms     = { 0,      1,  OS_PRIORITY_ABOVE_HIGH,        1024/4};
-OS_Task_Definition_s eng_tskdef_cyclic_10ms    = { 2,     10,  OS_PRIORITY_HIGH,              1024/4};
-OS_Task_Definition_s eng_tskdef_cyclic_100ms   = {56,    100,  OS_PRIORITY_ABOVE_NORMAL,      1024/4};
-OS_Task_Definition_s eng_tskdef_eventhandler   = { 0,      1,  OS_PRIORITY_VERY_HIGH,         1024/4};
-OS_Task_Definition_s eng_tskdef_diagnosis      = { 0,      1,  OS_PRIORITY_BELOW_REALTIME,    1024/4};
+OS_Task_Definition_s eng_tskdef_cyclic_1ms   = { 0,      1,  OS_PRIORITY_ABOVE_HIGH,        1024/4 };
+OS_Task_Definition_s eng_tskdef_cyclic_10ms  = { 2,     10,  OS_PRIORITY_HIGH,              1024/4 };
+OS_Task_Definition_s eng_tskdef_cyclic_100ms = { 56,    100,  OS_PRIORITY_ABOVE_NORMAL,     1024/4 };
+OS_Task_Definition_s eng_tskdef_eventhandler = { 0,      1,  OS_PRIORITY_VERY_HIGH,         1024/4 };
+OS_Task_Definition_s eng_tskdef_diagnosis    = { 0,      1,  OS_PRIORITY_BELOW_REALTIME,    1024/4 };
 
 /*================== Function Prototypes ==================================*/
 
@@ -108,11 +109,10 @@ void ENG_PostOSInit(void) {
 
     /* initialize eeprom driver */
     err_type = EEPR_Init();
-    if(err_type != EEPR_NO_ERROR)
+    if (err_type != EEPR_NO_ERROR)
         DIAG_Handler(DIAG_CH_POSTOSINIT_FAILURE, DIAG_EVENT_NOK, err_type, NULL);   /* error event in eeprom driver */
 
     os_boot = OS_BMS_INIT;
-
 }
 
 
@@ -189,7 +189,6 @@ void ENG_Init(void) {
     sys_retVal = SYS_SetStateRequest(SYS_STATE_INIT_REQUEST);
 
     NVRAM_dataHandlerInit();
-
 }
 
 void ENG_Cyclic_1ms(void) {
@@ -216,25 +215,25 @@ void ENG_Cyclic_10ms(void) {
 #if BUILD_MODULE_ENABLE_WATCHDOG
     WDG_IWDG_Refresh();
 #endif
-
 }
 
 void ENG_Cyclic_100ms(void) {
     EEPR_DataHandler();
     ADC_Ctrl();
     NVRAM_dataHandler();
+    HW_update();
 #if BUILD_MODULE_ENABLE_ISOGUARD == 1
     /*  Read every 200ms because of possible jitter and lowest Bender frequency 10Hz -> 100ms */
     static uint8_t counter = 0;
     if (counter % 2 == 0) {
         ISO_MeasureInsulation();
     }
+
     counter++;
 #endif
 }
 
 void ENG_IdleTask(void) {
-    ;
 }
 
 void ENG_EventHandler(void) {

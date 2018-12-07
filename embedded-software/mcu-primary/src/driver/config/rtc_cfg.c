@@ -85,7 +85,6 @@ RTC_CFG_s rtc_cfg = {
     .defaultDate.Month          = RTC_MONTH_JULY,
     .defaultDate.Date           = 12,
     .defaultDate.Year           = 16,
-
 };
 
 RTC_HandleTypeDef hrtc;
@@ -107,7 +106,7 @@ uint32_t RTC_getRegisterValueBKPSRAM(RTC_BKPREGISTER_e registerNumber) {
     } else if (registerNumber == BKPREGISTER_WDG_RESETCOUNTER) {
         retval = RTC_WDG_RESETCOUNTER;
     } else {
-        ;
+        /* TODO: explain why empty else */
     }
     return retval;
 }

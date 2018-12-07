@@ -237,9 +237,7 @@ void TIM_PWM_SetDutycycle(TIM_HandleTypeDef *htim, uint8_t dutycycle) {
 
 
 void TIM_Start_PWM_IC_Measurement(TIM_HandleTypeDef *htim) {
-
     if (htim->Instance == TIM9) {
-
         /* Start input capture */
         HAL_TIM_IC_Start(htim, TIM_CHANNEL_1);    /* Timer-Enable Channel 1 */
         HAL_TIM_IC_Start(htim, TIM_CHANNEL_2);    /* Timer-Enable Channel 2 */
@@ -248,10 +246,7 @@ void TIM_Start_PWM_IC_Measurement(TIM_HandleTypeDef *htim) {
 
 
 void TIM_Start_PWM_Out(TIM_HandleTypeDef *htim) {
-
-
     if (htim->Instance == TIM4) {
-
         /* Start PWM output */
         HAL_TIM_PWM_Start(htim, TIM_CHANNEL_1);
         HAL_TIM_PWM_Start(htim, TIM_CHANNEL_2);

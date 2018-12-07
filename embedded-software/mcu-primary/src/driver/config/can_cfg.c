@@ -82,7 +82,7 @@ CAN_HandleTypeDef hcan0 = {
                                     /* sum: 1tq for sync + BS1 + BS2 */
         .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/3/15 = 1.0MHz */
         .Init.BS2 = CAN_BS2_8TQ,
-#elif (RCC_APB1_CLOCK  ==  42000000)
+#elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 3,        /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
                                     /* sum: 1tq for sync + BS1 + BS2 */
@@ -97,14 +97,14 @@ CAN_HandleTypeDef hcan0 = {
 #else
 #error "Please configure CAN Baudrate according to your clock configuration "
 #endif
-#elif (CAN0_BAUDRATE == 500000)
+#elif(CAN0_BAUDRATE == 500000)
 #if (RCC_APB1_CLOCK  ==  45000000)
         .Init.Prescaler = 6,        /* CAN_CLOCK = APB1 = 45MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
                                     /* sum: 1tq for sync + BS1 + BS2 */
         .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/6/15 = 0.5MHz */
         .Init.BS2 = CAN_BS2_8TQ,
-#elif (RCC_APB1_CLOCK  ==  42000000)
+#elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 6,        /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
                                     /* sum: 1tq for sync + BS1 + BS2 */
@@ -119,14 +119,14 @@ CAN_HandleTypeDef hcan0 = {
 #else
 #error "Please configure CAN Baudrate according to your clock configuration "
 #endif
-#elif (CAN0_BAUDRATE == 250000)
+#elif(CAN0_BAUDRATE == 250000)
 #if (RCC_APB1_CLOCK  ==  45000000)
         .Init.Prescaler = 12,       /* CAN_CLOCK = APB1 = 45MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
                                     /* sum: 1tq for sync + BS1 + BS2 */
         .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/12/15 = 0.25MHz */
         .Init.BS2 = CAN_BS2_8TQ,
-#elif (RCC_APB1_CLOCK  ==  42000000)
+#elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 12,       /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
                                     /* sum: 1tq for sync + BS1 + BS2 */
@@ -141,14 +141,14 @@ CAN_HandleTypeDef hcan0 = {
 #else
 #error "Please configure CAN Baudrate according to your clock configuration "
 #endif
-#elif (CAN0_BAUDRATE == 125000)
+#elif(CAN0_BAUDRATE == 125000)
 #if (RCC_APB1_CLOCK  ==  45000000)
         .Init.Prescaler = 24,       /* CAN_CLOCK = APB1 = 45MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
                                     /* sum: 1tq for sync + BS1 + BS2 */
         .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/12/14 = 0.125MHz */
         .Init.BS2 = CAN_BS2_8TQ,
-#elif (RCC_APB1_CLOCK  ==  42000000)
+#elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 24,       /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
                                     /* sum: 1tq for sync + BS1 + BS2 */
@@ -200,7 +200,7 @@ CAN_HandleTypeDef hcan1 = {
                                     /* sum: 1tq for sync + BS1 + BS2 */
         .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/3/15 = 1.0MHz */
         .Init.BS2 = CAN_BS2_8TQ,
-#elif (RCC_APB1_CLOCK  ==  42000000)
+#elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 3,        /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
                                     /* sum: 1tq for sync + BS1 + BS2 */
@@ -215,14 +215,14 @@ CAN_HandleTypeDef hcan1 = {
 #else
 #error "Please configure CAN Baudrate according to your clock configuration "
 #endif
-#elif (CAN1_BAUDRATE == 500000)
+#elif(CAN1_BAUDRATE == 500000)
 #if (RCC_APB1_CLOCK  ==  45000000)
         .Init.Prescaler = 6,        /* CAN_CLOCK = APB1 = 45MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
                                     /* sum: 1tq for sync + BS1 + BS2 */
         .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/6/15 = 0.5MHz */
         .Init.BS2 = CAN_BS2_8TQ,
-#elif (RCC_APB1_CLOCK  ==  42000000)
+#elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 6,        /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
                                     /* sum: 1tq for sync + BS1 + BS2 */
@@ -237,14 +237,14 @@ CAN_HandleTypeDef hcan1 = {
 #else
 #error "Please configure CAN Baudrate according to your clock configuration "
 #endif
-#elif (CAN1_BAUDRATE == 250000)
+#elif(CAN1_BAUDRATE == 250000)
 #if (RCC_APB1_CLOCK  ==  45000000)
         .Init.Prescaler = 12,       /* CAN_CLOCK = APB1 = 45MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
                                     /* sum: 1tq for sync + BS1 + BS2 */
         .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/12/15 = 0.25MHz */
         .Init.BS2 = CAN_BS2_8TQ,
-#elif (RCC_APB1_CLOCK  ==  42000000)
+#elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 12,       /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
                                     /* sum: 1tq for sync + BS1 + BS2 */
@@ -259,14 +259,14 @@ CAN_HandleTypeDef hcan1 = {
 #else
 #error "Please configure CAN Baudrate according to your clock configuration "
 #endif
-#elif (CAN1_BAUDRATE == 125000)
+#elif(CAN1_BAUDRATE == 125000)
 #if (RCC_APB1_CLOCK  ==  45000000)
         .Init.Prescaler = 24,       /* CAN_CLOCK = APB1 = 45MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
                                     /* sum: 1tq for sync + BS1 + BS2 */
         .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/12/14 = 0.125MHz */
         .Init.BS2 = CAN_BS2_8TQ,
-#elif (RCC_APB1_CLOCK  ==  42000000)
+#elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 24,       /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
                                     /* sum: 1tq for sync + BS1 + BS2 */
@@ -418,7 +418,6 @@ const CAN_MSG_TX_TYPE_s can_CAN0_messages_tx[] = {
         { 0x2F2, 8, 200, 170, NULL_PTR },  /*!< Cell temperatures module 7 cells 6 7 8 */
         { 0x2F3, 8, 200, 170, NULL_PTR },  /*!< Cell temperatures module 7 cells 9 10 11 */
 
-
 #ifdef CAN_ISABELLENHUETTE_TRIGGERED
         , { 0x35B, 8, 100, 20, NULL_PTR }  /*!< Current Sensor Trigger */
 #endif
@@ -426,7 +425,6 @@ const CAN_MSG_TX_TYPE_s can_CAN0_messages_tx[] = {
 
 
 const CAN_MSG_TX_TYPE_s can_CAN1_messages_tx[] = {
-
 };
 
 const uint8_t can_CAN0_tx_length = sizeof(can_CAN0_messages_tx)/sizeof(can_CAN0_messages_tx[0]);
@@ -467,7 +465,6 @@ CAN_MSG_RX_TYPE_s can0_RxMsgs[] = {
 
 
 CAN_MSG_RX_TYPE_s can1_RxMsgs[] = {
-
 };
 
 
@@ -481,4 +478,4 @@ const uint8_t can_CAN1_rx_length = sizeof(can1_RxMsgs)/sizeof(can1_RxMsgs[0]);
 /* These IDs have to be included in the configuration for the filters in can_RxMsgs[]! */
 uint32_t can0_bufferBypass_RxMsgs[CAN0_BUFFER_BYPASS_NUMBER_OF_IDs] = { CAN_ID_SOFTWARE_RESET_MSG };
 
-uint32_t can1_bufferBypass_RxMsgs[CAN1_BUFFER_BYPASS_NUMBER_OF_IDs] = { };
+uint32_t can1_bufferBypass_RxMsgs[CAN1_BUFFER_BYPASS_NUMBER_OF_IDs] = {};

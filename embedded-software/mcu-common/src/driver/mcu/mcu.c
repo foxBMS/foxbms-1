@@ -87,8 +87,7 @@ void MCU_Wait_us(uint32_t time) {
                 break;
             }
         }
-    }
-    else {
+    } else {
         t_end = 71999 + (dt);
 
         while (1) {
@@ -109,7 +108,7 @@ unsigned int MCU_DisableINT(void) {
 }
 
 void MCU_RestoreINT(unsigned int primask_reg) {
-    if((primask_reg & 0x01) == 0) {
+    if ((primask_reg & 0x01) == 0) {
         /* enable global interrupts*/
         __DMB();               /* do not execute any instructions with memory access when prior memory accesses not finished */
         __enable_irq();        /* CPSIE instruction is not self synchronizing, */
@@ -127,7 +126,7 @@ uint32_t MCU_SystemResetStatus(uint32_t* regValue) {
     uint32_t csr;
     csr = RCC->CSR;
 
-    if(csr & RCC_CSR_LPWRRSTF) {
+    if (csr & RCC_CSR_LPWRRSTF) {
         /* Low-power management(!) reset flag, note: this is not low-power reset! */
 /*         DIAG_Handler(DIAG_CH_WATCHDOGRESET_FAILURE,DIAG_EVENT_NOK,0);   actually not supported by software */
     }
@@ -135,25 +134,25 @@ uint32_t MCU_SystemResetStatus(uint32_t* regValue) {
         /* Window watchdog reset */
         errCode |= STD_ERR_BIT_0;  /*  unexcepted watchdog reset occured */
     }
-    if(csr & RCC_CSR_WDGRSTF) {
+    if (csr & RCC_CSR_WDGRSTF) {
        /* Independent watchdog reset flag */
         errCode |= STD_ERR_BIT_1;  /* unexcepted watchdog reset occured */
     }
-    if(csr & RCC_CSR_SFTRSTF) {     /* actually not evaluated by software */
+    if (csr & RCC_CSR_SFTRSTF) {  /* actually not evaluated by software */
        /* Software reset flag */
         /* check if sw reset requested */
         /* DIAG_Handler(DIAG_CH_....,DIAG_EVENT_NOK,0);   unexcepted software reset occured */
     }
-    if(csr & RCC_CSR_PORRSTF) {     /* actually not evaluated by software */
+    if (csr & RCC_CSR_PORRSTF) {  /* actually not evaluated by software */
        /* POR/PDR reset flag */
         /* check if POR reset requested */
         /* DIAG_Handler(DIAG_CH_....,DIAG_EVENT_NOK,0);   unexcepted ... */
     }
-    if(csr & RCC_CSR_PADRSTF) {     /* actually not evaluated by software */
+    if (csr & RCC_CSR_PADRSTF) {  /* actually not evaluated by software */
        /* PIN reset flag (NRST) */
        /* DIAG_Handler(DIAG_CH_....,DIAG_EVENT_NOK,0);   unexcepted ... */
     }
-    if(csr & RCC_CSR_BORRSTF) {     /* actually not evaluated by software */
+    if (csr & RCC_CSR_BORRSTF) {  /* actually not evaluated by software */
        /* BOR reset flag (POR/PDR or BOR) */
         /* DIAG_Handler(DIAG_CH_....,DIAG_EVENT_NOK,0);   unexcepted ... */
     }
@@ -165,7 +164,6 @@ uint32_t MCU_SystemResetStatus(uint32_t* regValue) {
 
 
 void MCU_GetDeviceID(MCU_DeviceID_s * deviceID) {
-
     /* Base address of device ID register  0x1FFF 7A10 */
     deviceID->off0 = (*(volatile uint32_t *)(0x1FFF7A10 + 0x0));
     deviceID->off32 = (*(volatile uint32_t *)(0x1FFF7A10 + 0x4));
@@ -184,7 +182,6 @@ STD_RETURN_TYPE_e MCU_ChecCRCkUniqueDeviceID(uint8_t *dataptr) {
         ret_val = E_NOT_OK;
 
     return ret_val;
-
 }
 
 /*================== Static functions =====================================*/

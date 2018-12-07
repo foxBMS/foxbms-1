@@ -223,7 +223,7 @@ extern void OS_taskDelay(uint32_t delay_ms);
 * @brief  Delay a task until a specified time
 * @param   PreviousWakeTime   Pointer to a variable that holds the time at which the
 *          task was last unblocked. PreviousWakeTime must be initialized with the current time
-*          prior to its first use (PreviousWakeTime = OS_osSysTick() )
+*          prior to its first use (PreviousWakeTime = OS_osSysTick())
 * @param   millisec    time delay value
 */
 extern void OS_taskDelayUntil(uint32_t *PreviousWakeTime, uint32_t delay);

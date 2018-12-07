@@ -61,15 +61,16 @@
 #include "sys.h"
 #include "vic.h"
 #include "wdg.h"
+#include "hwinfo.h"
 
 /*================== Macros and Definitions ===============================*/
 
 /*================== Constant and Variable Definitions ====================*/
-OS_Task_Definition_s eng_tskdef_cyclic_1ms     = { 0,      1,  OS_PRIORITY_ABOVE_HIGH,        1024/4};
-OS_Task_Definition_s eng_tskdef_cyclic_10ms    = { 2,     10,  OS_PRIORITY_HIGH,              1024/4};
-OS_Task_Definition_s eng_tskdef_cyclic_100ms   = {56,    100,  OS_PRIORITY_ABOVE_NORMAL,      1024/4};
-OS_Task_Definition_s eng_tskdef_eventhandler   = { 0,      1,  OS_PRIORITY_VERY_HIGH,         1024/4};
-OS_Task_Definition_s eng_tskdef_diagnosis      = { 0,      1,  OS_PRIORITY_BELOW_REALTIME,    1024/4};
+OS_Task_Definition_s eng_tskdef_cyclic_1ms   = { 0,      1,  OS_PRIORITY_ABOVE_HIGH,        1024/4};
+OS_Task_Definition_s eng_tskdef_cyclic_10ms  = { 2,     10,  OS_PRIORITY_HIGH,              1024/4};
+OS_Task_Definition_s eng_tskdef_cyclic_100ms = { 56,    100,  OS_PRIORITY_ABOVE_NORMAL,     1024/4};
+OS_Task_Definition_s eng_tskdef_eventhandler = { 0,      1,  OS_PRIORITY_VERY_HIGH,         1024/4};
+OS_Task_Definition_s eng_tskdef_diagnosis    = { 0,      1,  OS_PRIORITY_BELOW_REALTIME,    1024/4};
 
 /*================== Function Prototypes ==================================*/
 
@@ -123,20 +124,17 @@ void ENG_Init(void) {
 
     /* Init Sys */
     sys_retVal = SYS_SetStateRequest(SYS_STATE_INIT_REQUEST);
-
 }
 
 void ENG_Cyclic_1ms(void) {
-
     SYS_Trigger();
     ILCK_Trigger();
     LTC_Trigger();
 }
 
 void ENG_Cyclic_10ms(void) {
-
 #if BUILD_MODULE_ENABLE_WATCHDOG
-   WDG_IWDG_Refresh();
+    WDG_IWDG_Refresh();
 #endif
 }
 
@@ -144,18 +142,16 @@ void ENG_Cyclic_100ms(void) {
     static uint8_t counter = 0;
 
     ADC_Ctrl();
+    HW_update();
 
     counter++;
 }
 
 void ENG_IdleTask(void) {
-    ;
 }
 
 void ENG_EventHandler(void) {
-    ;
 }
 
 void ENG_Diagnosis(void) {
-    ;
 }

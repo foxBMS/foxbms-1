@@ -191,7 +191,7 @@ typedef enum {
     IR155_SHORT_KL31        = 5,        /* */
     IR155_SHORT_KL15        = 6,        /* */
     IR155_UNDEFINED_FRQMAX  = 7,        /* illegal frequency detected*/
-    IR155_DCM_CORRUPT       = 8,        /* corrupt signal measurement (e.g. T_on > T_periode, )*/
+    IR155_DCM_CORRUPT       = 8,        /* corrupt signal measurement (e.g. T_on > T_periode,)*/
     IR155_DCM_NOSIGNAL      = 9,        /* no signal (e.g. if 100% -> wire break, if 0% -> shortcut to GND */
     IR155_UNKNOWN           = 15,       /* */
 }IR155_SIGMODE_e;

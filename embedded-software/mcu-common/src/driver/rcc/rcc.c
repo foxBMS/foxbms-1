@@ -64,11 +64,9 @@
 /*================== Function Implementations =============================*/
 
 void RCC_ClockConfig(void) {
-
     HAL_RCC_OscConfig(&RCC_OscInitStruct);
 
     HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5);
 
     __SYSCFG_CLK_ENABLE();
-
 }

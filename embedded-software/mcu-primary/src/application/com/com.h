@@ -78,14 +78,14 @@
 #include "general.h"
 
 /*================== Macros and Definitions ===============================*/
-#if(BUILD_MODULE_DEBUGPRINTF)
+#if (BUILD_MODULE_DEBUGPRINTF)
 #if (!BUILD_MODULE_ENABLE_UART)
 #error ERROR: wrong combination of module enable keys in general.h !
-#error BUILD_MODULE_DEBUGPRINTF could only be used when UART module (BUILD_MODULE_ENABLE_UART) is activated
+#error BUILD_MODULE_DEBUGPRINTF could only be used when UART module BUILD_MODULE_ENABLE_UART is activated
 #endif
-    #define DEBUG_PRINTF(x)             COM_uartWrite(x)
+    #define DEBUG_PRINTF(x)             printf x
 #else
-    #define DEBUG_PRINTF(x)             /* keep macro empty */
+    #define DEBUG_PRINTF(x)             (void)0
 #endif
 
 

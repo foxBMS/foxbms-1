@@ -73,7 +73,6 @@ uint32_t os_schedulerstarttime;
 /*================== Function Implementations =============================*/
 
 void OS_TaskInit(void) {
-
     /* Configuration of RTOS Queues */
     os_boot = OS_ENG_CREATE_QUEUES;
     ENG_CreateQueues();
@@ -104,36 +103,34 @@ void OS_TaskInit(void) {
 }
 
 void vApplicationIdleHook(void) {
-
     ENG_IdleTask();
 }
 
 
 void OS_TimerTrigger(volatile OS_TIMER_s* timer) {
-
-    if(++timer->Timer_1ms > 9 ) {
+    if (++timer->Timer_1ms > 9) {
         /* 10ms */
         timer->Timer_1ms = 0;
 
-        if(++timer->Timer_10ms > 9) {
+        if (++timer->Timer_10ms > 9) {
         /* 100ms */
             timer->Timer_10ms = 0;
 
-            if(++timer->Timer_100ms > 9) {
+            if (++timer->Timer_100ms > 9) {
             /* 1s */
                 timer->Timer_100ms = 0;
 
-                if(++timer->Timer_sec > 59) {
+                if (++timer->Timer_sec > 59) {
                 /* 1min */
                     timer->Timer_sec = 0;
 
-                    if(++timer->Timer_min > 59) {
+                    if (++timer->Timer_min > 59) {
                     /* 1h */
-                        timer->Timer_min=0;
+                        timer->Timer_min = 0;
 
-                        if(++timer->Timer_h > 23) {
+                        if (++timer->Timer_h > 23) {
                         /* 1d */
-                            timer->Timer_h=0;
+                            timer->Timer_h = 0;
                             ++timer->Timer_d;
                         }
                     }
@@ -143,43 +140,34 @@ void OS_TimerTrigger(volatile OS_TIMER_s* timer) {
     }
 }
 
-uint8_t OS_Check_Context(void)
-{
-
+uint8_t OS_Check_Context(void) {
     /* use define from port.c :   portVECTACTIVE_MASK */
-    if((portNVIC_INT_CTRL_REG & 0xFFUL) == 0)  /* and mask off all bits but the VECTACTIVE bits in the ICSR register */
-    {
+    if ((portNVIC_INT_CTRL_REG & 0xFFUL) == 0) {
+        /* and mask off all bits but the VECTACTIVE bits in the ICSR register */
         return 0;   /* Context of caller function is a TASK (Thread)*/
-    }
-    else
+    } else {
         return 1;   /* Context of caller function is an ISR (FreeRTOS-Interrupt or Realtime Interrupt)*/
-
+    }
 }
 
-void OS_TaskEnter_Critical(void)
-{
-
+void OS_TaskEnter_Critical(void) {
     /* use define from port.c :   portVECTACTIVE_MASK */
-    if((portNVIC_INT_CTRL_REG & 0xFFUL) == 0)  /* and mask off all bits but the VECTACTIVE bits in the ICSR register */
-    {
+    if ((portNVIC_INT_CTRL_REG & 0xFFUL) == 0) {
+        /* and mask off all bits but the VECTACTIVE bits in the ICSR register */
         taskENTER_CRITICAL();               /* Call enter critical function within task context */
-    }
-    else
+    } else {
         taskENTER_CRITICAL_FROM_ISR();      /*  Call enter critical function within ISR context (FreeRTOS-Interrupt) */
-
+    }
 }
 
-void OS_TaskExit_Critical(void)
-{
-
+void OS_TaskExit_Critical(void) {
     /* use define from port.c :   portVECTACTIVE_MASK */
-    if((portNVIC_INT_CTRL_REG & 0xFFUL) == 0)  /* and mask off all bits but the VECTACTIVE bits in the ICSR register */
-    {
+    if ((portNVIC_INT_CTRL_REG & 0xFFUL) == 0) {
+        /* and mask off all bits but the VECTACTIVE bits in the ICSR register */
         taskEXIT_CRITICAL();                /* Call exit critical function within task context */
-    }
-    else
+    } else {
         taskEXIT_CRITICAL_FROM_ISR(0);      /*  Call exit critical function within ISR context (FreeRTOS-Interrupt) */
-
+    }
 }
 
 
@@ -187,20 +175,18 @@ uint32_t OS_getOSSysTick(void) {
     uint32_t regIPSR = 0xFFFFFFFF;
 
     /* read out IPSR register */
-    __asm volatile( "mrs %0, ipsr" : "=r"( regIPSR ) );
+    __asm volatile("mrs %0, ipsr" : "=r"(regIPSR));
 
     /* regIPSR == 0 if controller is in thread mode */
     if (regIPSR != 0) {
       return xTaskGetTickCountFromISR();
-    }
-    else {
+    } else {
       return xTaskGetTickCount();
     }
 }
 
 
-void OS_taskDelay(uint32_t delay_ms)
-{
+void OS_taskDelay(uint32_t delay_ms) {
 #if INCLUDE_vTaskDelay
     TickType_t ticks = delay_ms / portTICK_PERIOD_MS;
 
@@ -211,8 +197,7 @@ void OS_taskDelay(uint32_t delay_ms)
 }
 
 
-void OS_taskDelayUntil (uint32_t *PreviousWakeTime, uint32_t millisec)
-{
+void OS_taskDelayUntil(uint32_t *PreviousWakeTime, uint32_t millisec) {
 #if INCLUDE_vTaskDelayUntil
   TickType_t ticks = (millisec / portTICK_PERIOD_MS);
   vTaskDelayUntil((TickType_t *) PreviousWakeTime, ticks ? ticks : 1);
@@ -223,8 +208,7 @@ void OS_taskDelayUntil (uint32_t *PreviousWakeTime, uint32_t millisec)
 }
 
 void OS_SysTickHandler(void) {
-
-#if (INCLUDE_xTaskGetSchedulerState  == 1 )
+#if (INCLUDE_xTaskGetSchedulerState  == 1)
     /* Only increment operating systick timer if scheduler started */
     if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
         xPortSysTickHandler();

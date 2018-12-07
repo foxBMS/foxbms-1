@@ -77,45 +77,36 @@ STD_RETURN_TYPE_e SPI_SendDummyByte(uint8_t busID, SPI_HandleType_s *hspi);
 /*================== Function Implementations =============================*/
 
 void SPI_Init(SPI_HandleType_s *hspi) {
-
     uint8_t i = 0;
 
     for (i=0; i < spi_number_of_used_SPI_channels; i++) {
-
-        if(hspi != NULL && hspi[i].State  ==  HAL_SPI_STATE_RESET) {
-
-            if(hspi[i].Instance == SPI1) {
-
+        if (hspi != NULL && hspi[i].State  ==  HAL_SPI_STATE_RESET) {
+            if (hspi[i].Instance == SPI1) {
                   /* SPI1 peripheral clock enable */
                   __HAL_RCC_SPI1_CLK_ENABLE();
             }
 
-            if(hspi[i].Instance == SPI2) {
-
+            if (hspi[i].Instance == SPI2) {
                   /* SPI2 peripheral clock enable */
                   __HAL_RCC_SPI2_CLK_ENABLE();
             }
 
-            if(hspi[i].Instance == SPI3) {
-
+            if (hspi[i].Instance == SPI3) {
                   /* SPI3 peripheral clock enable */
                   __HAL_RCC_SPI3_CLK_ENABLE();
             }
 
-            if(hspi[i].Instance == SPI4) {
-
+            if (hspi[i].Instance == SPI4) {
                   /* SPI4 peripheral clock enable */
                   __HAL_RCC_SPI4_CLK_ENABLE();
             }
 
-            if(hspi[i].Instance == SPI5) {
-
+            if (hspi[i].Instance == SPI5) {
                   /* SPI5 peripheral clock enable */
                   __HAL_RCC_SPI5_CLK_ENABLE();
             }
 
-            if(hspi[i].Instance == SPI6) {
-
+            if (hspi[i].Instance == SPI6) {
                   /* SPI6 peripheral clock enable */
                   __HAL_RCC_SPI6_CLK_ENABLE();
             }
@@ -126,31 +117,29 @@ void SPI_Init(SPI_HandleType_s *hspi) {
 
 
 void HAL_SPI_TxRxCpltCallback(SPI_HandleType_s *hspi) {
-    if (hspi  ==  &spi_devices[0])        /* Iso-SPI Main */
-    {
+    if (hspi  ==  &spi_devices[0]) {
+        /* Iso-SPI Main */
         SPI_UnsetCS(1);
         spi_state.transmit_ongoing = FALSE;
     }
-    if (hspi  ==  &spi_devices[1])        /* Eeprom */
-    {
-#ifdef SPI_HASEEPROM
+    if (hspi  ==  &spi_devices[1]) {
+        /* Eeprom */
+    #ifdef SPI_HASEEPROM
         IO_WritePin(IO_PIN_DATA_STORAGE_EEPROM_SPI_NSS, IO_PIN_SET);
 #endif
     }
-
 }
 
 
-void HAL_SPI_TxCpltCallback(SPI_HandleType_s *hspi)
-{
-    if (hspi  ==  &spi_devices[0])        /* Iso-SPI Main */
-    {
+void HAL_SPI_TxCpltCallback(SPI_HandleType_s *hspi) {
+    if (hspi  ==  &spi_devices[0]) {
+        /* Iso-SPI Main */
         SPI_UnsetCS(1);
         spi_state.transmit_ongoing = FALSE;
     }
 
-    if (hspi  ==  &spi_devices[1])        /* Eeprom */
-    {
+    if (hspi  ==  &spi_devices[1]) {
+        /* Eeprom */
 #ifdef SPI_HASEEPROM
         IO_WritePin(IO_PIN_DATA_STORAGE_EEPROM_SPI_NSS, IO_PIN_SET);
 #endif
@@ -159,8 +148,7 @@ void HAL_SPI_TxCpltCallback(SPI_HandleType_s *hspi)
 
 
 void SPI_SetCS(uint8_t busID) {
-
-    switch(busID) {
+    switch (busID) {
         case 1:
 #ifdef SPI_NSS_PORT1
             IO_WritePin(SPI_NSS_PORT1, IO_PIN_RESET);
@@ -192,13 +180,11 @@ void SPI_SetCS(uint8_t busID) {
 #endif
             break;
     }
-
 }
 
 
 void SPI_UnsetCS(uint8_t busID) {
-
-    switch(busID) {
+    switch (busID) {
         case 1:
 #ifdef SPI_NSS_PORT1
             IO_WritePin(SPI_NSS_PORT1, IO_PIN_SET);
@@ -234,7 +220,6 @@ void SPI_UnsetCS(uint8_t busID) {
 
 
 STD_RETURN_TYPE_e SPI_Transmit(SPI_HandleType_s *hspi, uint8_t *pData, uint16_t Size) {
-
     HAL_StatusTypeDef statusSPI = HAL_ERROR;
     STD_RETURN_TYPE_e retVal = E_OK;
 
@@ -249,7 +234,7 @@ STD_RETURN_TYPE_e SPI_Transmit(SPI_HandleType_s *hspi, uint8_t *pData, uint16_t 
 
     SPI_SetCS(1);
     statusSPI = HAL_SPI_Transmit_DMA(hspi, pData, Size);
-    if(statusSPI != HAL_OK) {
+    if (statusSPI != HAL_OK) {
         retVal = E_NOT_OK;
     }
     return retVal;
@@ -257,7 +242,6 @@ STD_RETURN_TYPE_e SPI_Transmit(SPI_HandleType_s *hspi, uint8_t *pData, uint16_t 
 
 
 STD_RETURN_TYPE_e SPI_TransmitReceive(SPI_HandleType_s *hspi, uint8_t *pTxData, uint8_t *pRxData, uint16_t Size) {
-
     HAL_StatusTypeDef statusSPI = HAL_ERROR;
     STD_RETURN_TYPE_e retVal = E_OK;
 
@@ -272,7 +256,7 @@ STD_RETURN_TYPE_e SPI_TransmitReceive(SPI_HandleType_s *hspi, uint8_t *pTxData, 
 
     SPI_SetCS(1);
     statusSPI = HAL_SPI_TransmitReceive_DMA(hspi, pTxData, pRxData, Size);
-    if(statusSPI != HAL_OK) {
+    if (statusSPI != HAL_OK) {
         retVal = E_NOT_OK;
     }
 
@@ -287,13 +271,12 @@ STD_RETURN_TYPE_e SPI_TransmitReceive(SPI_HandleType_s *hspi, uint8_t *pTxData, 
  *
  * @return             E_OK if SPI transmission is OK, E_NOT_OK otherwise
  */
-STD_RETURN_TYPE_e SPI_SendDummyByte(uint8_t busID, SPI_HandleType_s *hspi)
-{
+STD_RETURN_TYPE_e SPI_SendDummyByte(uint8_t busID, SPI_HandleType_s *hspi) {
     HAL_StatusTypeDef statusSPI;
-    STD_RETURN_TYPE_e retVal=E_OK;
+    STD_RETURN_TYPE_e retVal = E_OK;
 
     statusSPI = HAL_SPI_Transmit_DMA(hspi, (uint8_t *)spi_cmdDummy, 1);
-    if(statusSPI != HAL_OK)
+    if (statusSPI != HAL_OK)
         retVal = E_NOT_OK;
 
     return retVal;
@@ -304,8 +287,7 @@ STD_RETURN_TYPE_e SPI_SendDummyByte(uint8_t busID, SPI_HandleType_s *hspi)
  * waits a defined time.
  *
  */
-void SPI_Wait(void)
-{
+void SPI_Wait(void) {
     MCU_Wait_us(SPI_DUMMY_BYTE_WAIT_TIME);
 }
 
@@ -318,7 +300,5 @@ extern STD_RETURN_TYPE_e SPI_IsTransmitOngoing(void) {
 }
 
 extern void SPI_SetTransmitOngoing(void) {
-
     spi_state.transmit_ongoing = TRUE;
-
 }

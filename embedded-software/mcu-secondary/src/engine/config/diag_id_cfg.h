@@ -188,7 +188,6 @@ typedef enum {
     DIAG_ID_111     = 111,
 
     DIAG_ID_MAX     = 112,
-
 } DIAG_CH_ID_e;
 
 /*================== Constant and Variable Definitions ====================*/

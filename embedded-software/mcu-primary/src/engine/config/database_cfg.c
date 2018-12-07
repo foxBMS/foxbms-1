@@ -97,7 +97,7 @@ DATA_BLOCK_CURRENT_SENSOR_s data_block_curr_sensor[DOUBLE_BUFFERING];
 /**
  * data block: ADC
  */
-DATA_BLOCK_HW_INFO_s data_block_adc[SINGLE_BUFFERING];
+DATA_BLOCK_HW_INFO_s data_block_hwinfo[SINGLE_BUFFERING];
 
 /**
  * data block: can state request
@@ -162,7 +162,7 @@ DATA_BLOCK_SYSTEMSTATE_s data_block_systemstate[SINGLE_BUFFERING];
 /**
  * data block: open wire check
  */
-DATA_BLOCK_OPENWIRE_s data_block_open_wire[DOUBLE_BUFFERING];
+DATA_BLOCK_OPENWIRE_s data_block_open_wire[SINGLE_BUFFERING];
 
 /**
  * data block: LTC diagnosis values
@@ -179,6 +179,11 @@ DATA_BLOCK_LTC_ADC_ACCURACY_s data_block_ltc_adc_accuracy[SINGLE_BUFFERING];
  * data block: LTC ADC accuracy verification
  */
 DATA_BLOCK_ALLGPIOVOLTAGE_s data_block_ltc_allgpiovoltages[DOUBLE_BUFFERING];
+
+/**
+ * data block: SOH of contactors
+ */
+DATA_BLOCK_CONT_SOH_s data_block_contactor_soh[DOUBLE_BUFFERING];
 
 /**
  * @brief channel configuration of database (data blocks)
@@ -218,7 +223,7 @@ DATA_BASE_HEADER_s  data_base_header[] = {
             DOUBLE_BUFFERING,
     },
     {
-            (void*)(&data_block_adc[0]),
+            (void*)(&data_block_hwinfo[0]),
             sizeof(DATA_BLOCK_HW_INFO_s),
             SINGLE_BUFFERING,
     },
@@ -245,7 +250,7 @@ DATA_BASE_HEADER_s  data_base_header[] = {
     {
             (void*)(&data_block_open_wire[0]),
             sizeof(DATA_BLOCK_OPENWIRE_s),
-            DOUBLE_BUFFERING,
+            SINGLE_BUFFERING,
     },
     {
             (void*)(&data_block_ltc_diagnosis[0]),
@@ -305,6 +310,11 @@ DATA_BASE_HEADER_s  data_base_header[] = {
     {
             (void*)(&data_block_ltc_allgpiovoltages[0]),
             sizeof(DATA_BLOCK_ALLGPIOVOLTAGE_s),
+            DOUBLE_BUFFERING,
+    },
+    {
+            (void*)(&data_block_contactor_soh[0]),
+            sizeof(DATA_BLOCK_CONT_SOH_s),
             DOUBLE_BUFFERING,
     },
 };

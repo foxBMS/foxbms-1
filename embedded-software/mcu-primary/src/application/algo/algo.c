@@ -65,7 +65,6 @@
 
 /*================== Function Implementations =============================*/
 void ALGO_Init(void) {
-
     /* Currently nothing to initialize */
 
     return;
@@ -73,15 +72,12 @@ void ALGO_Init(void) {
 
 
 void ALGO_MainFunction(void) {
-
     static uint32_t counter_ticks = 0;
 
     for (uint16_t i = 0; i < algo_length; i++) {
-
         if (counter_ticks % algo_algorithms[i].cycleTime_ms == 0) {
             /* Cycle time elapsed -> call function */
             if (algo_algorithms[i].state == ALGO_READY) {
-
                 /* Set state to running -> reset to READY before leaving algo function */
                 algo_algorithms[i].state = ALGO_RUNNING;
                 algo_algorithms[i].startTime = OS_getOSSysTick();
@@ -89,8 +85,7 @@ void ALGO_MainFunction(void) {
             } else if (algo_algorithms[i].state == ALGO_WAIT_FOR_OTHER) {
                 algo_algorithms[i].state = ALGO_RDY_BUT_WAITING;
             } else {
-                /* do nothing */
-                ;
+                /* TODO: explain why empty else */
             }
         } else if (algo_algorithms[i].state == ALGO_EXECUTE_ASAP) {
             /* Waited for other algo to finish -> can now be executed */
@@ -106,14 +101,11 @@ void ALGO_MainFunction(void) {
 
 
 void ALGO_MonitorExecutionTime(void) {
-
     uint32_t timestamp = OS_getOSSysTick();
 
     for (uint16_t i = 0; i < algo_length; i++) {
-
         if ((algo_algorithms[i].startTime != 0) && algo_algorithms[i].state == ALGO_RUNNING &&
                 ((algo_algorithms[i].startTime + algo_algorithms[i].maxCalcDuration_ms) < timestamp)) {
-
             /* Block task from further execution because of runtime violation, but task will finish its execution */
             algo_algorithms[i].state = ALGO_BLOCKED;
 

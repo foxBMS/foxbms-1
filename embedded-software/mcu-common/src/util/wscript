@@ -47,8 +47,7 @@ import os
 
 def build(bld):
     srcs = ' '.join([
-           os.path.join('foxmath.c'),
-           os.path.join('misc.c')])
+           os.path.join('foxmath.c')])
 
     includes = os.path.join(bld.bldnode.abspath()) + ' '
     includes += ' '.join([

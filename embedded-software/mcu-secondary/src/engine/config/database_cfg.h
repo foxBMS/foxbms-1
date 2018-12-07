@@ -155,7 +155,7 @@ typedef struct {
 #define     DATA_BLOCK_ID_MINMAX                        DATA_BLOCK_08
 #define     DATA_BLOCK_ID_ISOGUARD                      DATA_BLOCK_09
 #define     DATA_BLOCK_ID_SLAVE_CONTROL                 DATA_BLOCK_10
-#define     DATA_BLOCK_ID_OPEN_WIRE_CHECK               DATA_BLOCK_11
+#define     DATA_BLOCK_ID_OPEN_WIRE                     DATA_BLOCK_11
 #define     DATA_BLOCK_ID_LTC_DEVICE_PARAMETER          DATA_BLOCK_12
 #define     DATA_BLOCK_ID_LTC_ACCURACY                  DATA_BLOCK_13
 #define     DATA_BLOCK_ID_ERRORSTATE                    DATA_BLOCK_14
@@ -323,20 +323,16 @@ typedef struct {
 
 
 /**
- * data block struct of ADC
+ * data block struct of hardware info
  */
 typedef struct {
-    /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
-    uint32_t timestamp;                         /*!< timestamp of database entry                */
-    uint32_t previous_timestamp;                /*!< timestamp of last database entry           */
-    float vbat;  /* unit: to be defined */
-    uint32_t vbat_previous_timestamp;           /*!< timestamp of last database entry of vbat           */
-    uint32_t vbat_timestamp;                    /*!< timestamp of database entry of vbat                */
-    float temperature;                          /*!<                                                    */
-    uint32_t temperature_previous_timestamp;    /*!< timestamp of last database entry of temperature    */
-    uint32_t temperature_timestamp;             /*!< timestamp of database entry of temperature         */
-    uint8_t state_vbat;                         /*!<                                                    */
-    uint8_t state_temperature;                  /*!<                                                    */
+    /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock        */
+    uint32_t timestamp;                         /*!< timestamp of database entry                  */
+    uint32_t previous_timestamp;                /*!< timestamp of last database entry             */
+    float vbat_mV;                              /*!< unit: mV                                     */
+    float temperature;                          /*!< unit: degree Celsius                         */
+    uint8_t state_vbat;                         /*!<                                              */
+    uint8_t state_temperature;                  /*!<                                              */
 } DATA_BLOCK_HW_INFO_s;
 
 
@@ -448,6 +444,8 @@ typedef struct {
     uint8_t can_timing;                              /*!< 0 -> no error, 1 -> error         */
     uint8_t can_timing_cc;                           /*!< 0 -> no error, 1 -> error         */
     uint8_t can_cc_used;                             /*!< 0 -> not present, 1 -> present    */
+    uint8_t mcuDieTemperature;                       /*!< 0 -> no error, 1 -> error        */
+    uint8_t coinCellVoltage;                         /*!< 0 -> no error, 1 -> error        */
 } DATA_BLOCK_ERRORSTATE_s;
 
 

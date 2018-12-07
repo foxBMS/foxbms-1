@@ -130,7 +130,6 @@ const IO_PIN_CFG_s io_cfg[] = {
 
     {IO_PIN_MCU_1_FTDI_TX,                         IO_MODE_AF_PP,          IO_PIN_NOPULL,      IO_SPEED_HIGH,      IO_ALTERNATE_AF7_USART3,    IO_PIN_LOCK_ENABLE},
     {IO_PIN_MCU_1_FTDI_RX,                         IO_MODE_AF_PP,          IO_PIN_NOPULL,      IO_SPEED_HIGH,      IO_ALTERNATE_AF7_USART3,    IO_PIN_LOCK_ENABLE},
-
     };
 
 const uint8_t io_cfg_length = sizeof(io_cfg)/sizeof(io_cfg[0]);
