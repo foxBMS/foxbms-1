@@ -86,7 +86,7 @@
  * specify the type of microcontroller used
  *
  * \par Type:
- * switch(3)
+ * switch (3)
  * \par Default:
  * 2
 */
@@ -96,8 +96,6 @@
  * - IO_PACKAGE_LQFP100
  * - IO_PACKAGE_LQFP144
  * - IO_PACKAGE_LQFP176
- *
- * by using foxygen.
  *
  */
 

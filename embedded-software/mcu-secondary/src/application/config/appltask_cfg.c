@@ -60,15 +60,14 @@
 /*================== Macros and Definitions ===============================*/
 
 /*================== Constant and Variable Definitions ====================*/
-OS_Task_Definition_s appl_tskdef_cyclic_1ms    = {     0,      1,  OS_PRIORITY_NORMAL,        1024/4};
-OS_Task_Definition_s appl_tskdef_cyclic_10ms   = {     4,     10,  OS_PRIORITY_BELOW_NORMAL,  2560/4};
-OS_Task_Definition_s appl_tskdef_cyclic_100ms  = {    58,    100,  OS_PRIORITY_LOW,            512/4};
+OS_Task_Definition_s appl_tskdef_cyclic_1ms   = { 0,      1,  OS_PRIORITY_NORMAL,        1024/4};
+OS_Task_Definition_s appl_tskdef_cyclic_10ms  = { 4,     10,  OS_PRIORITY_BELOW_NORMAL,  2560/4};
+OS_Task_Definition_s appl_tskdef_cyclic_100ms = { 58,    100,  OS_PRIORITY_LOW,           512/4};
 
 /*================== Function Prototypes ==================================*/
 
 /*================== Function Implementations =============================*/
 void APPL_Cyclic_1ms(void) {
-
     DIAG_SysMonNotify(DIAG_SYSMON_APPL_CYCLIC_1ms, 0);        /* task is running, state = ok */
 
     /* User specific implementations:   */
@@ -78,7 +77,6 @@ void APPL_Cyclic_1ms(void) {
 }
 
 void APPL_Cyclic_10ms(void) {
-
     DIAG_SysMonNotify(DIAG_SYSMON_APPL_CYCLIC_10ms, 0);        /* task is running, state = ok */
 
     /* User specific implementations:   */
@@ -93,5 +91,4 @@ void APPL_Cyclic_100ms(void) {
     /* User specific implementations:   */
     /*   ...                            */
     /*   ...                            */
-
 }

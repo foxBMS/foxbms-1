@@ -61,14 +61,13 @@
 /*================== Constant and Variable Definitions ====================*/
 
 const NVRRAM_CH_CONT_COUNT_s default_contactors_count = {
-    .data.cont_switch_closed = {0,0,0},
-    .data.cont_switch_opened = {0,0,0},
-    .data.cont_switch_opened = {0,0,0}
-
+    .data.cont_switch_closed = {0, 0, 0},
+    .data.cont_switch_opened = {0, 0, 0},
+    .data.cont_switch_opened = {0, 0, 0}
 };
 
 const NVRAM_CH_OP_HOURS_s default_operating_hours = {
-    .data = { 0,0,0,0,0,0,0 }
+    .data = { 0, 0, 0, 0, 0, 0, 0 }
 };
 
 /*================== Function Prototypes ==================================*/

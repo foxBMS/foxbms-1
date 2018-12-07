@@ -118,19 +118,19 @@ void HAL_PPP_MspDeInit(void)
  */
 void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan)
 {
-    if(hcan->Instance  ==  CAN1)
+    if (hcan->Instance  ==  CAN1)
     {
         CAN_CLK1_enabled++;
-        if(CAN_CLK1_enabled  ==  1)
+        if (CAN_CLK1_enabled  ==  1)
         {
             /* Enable CAN1 clock */
             __HAL_RCC_CAN1_CLK_ENABLE();
         }
     }
-    if(hcan->Instance  ==   CAN2)
+    if (hcan->Instance  ==   CAN2)
     {
         CAN_CLK1_enabled++;
-        if(CAN_CLK1_enabled  ==  1)
+        if (CAN_CLK1_enabled  ==  1)
         {
             /* Enable CAN1 clock. CAN1 clock needs to run if CAN2 clock is enabled */
             __HAL_RCC_CAN1_CLK_ENABLE();
@@ -147,30 +147,30 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan)
  */
 void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan)
 {
-    if(hcan->Instance  ==  CAN1)
+    if (hcan->Instance  ==  CAN1)
     {
-        if(CAN_CLK1_enabled > 0)
+        if (CAN_CLK1_enabled > 0)
         {
             CAN_CLK1_enabled--;
         }
 
-        if(CAN_CLK1_enabled  ==  0)
+        if (CAN_CLK1_enabled  ==  0)
         {
             /* Enable CAN1 clock */
             __HAL_RCC_CAN1_CLK_DISABLE();
         }
     }
 
-    if(hcan->Instance  ==   CAN2)
+    if (hcan->Instance  ==   CAN2)
     {
         /* Disable CAN2 clock */
         __HAL_RCC_CAN2_CLK_DISABLE();
 
-        if(CAN_CLK1_enabled > 0)
+        if (CAN_CLK1_enabled > 0)
         {
             CAN_CLK1_enabled--;
         }
-        if(CAN_CLK1_enabled  ==  0)
+        if (CAN_CLK1_enabled  ==  0)
         {
             /* Enable CAN1 clock. CAN1 clock needs to run if CAN2 clock is enabled */
             __HAL_RCC_CAN1_CLK_DISABLE();
@@ -204,7 +204,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 
 
   /* GPIO_InitTypeDef GPIO_InitStruct; */
-  if(hspi->Instance == SPI6)
+  if (hspi->Instance == SPI6)
   {
   /* SPI4 peripheral clock enable */
   __HAL_RCC_SPI6_CLK_ENABLE();
@@ -223,7 +223,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
 {
 
-  if(hspi->Instance == SPI4)
+  if (hspi->Instance == SPI4)
   {
   /* USER CODE BEGIN SPI4_MspDeInit 0 */
 
@@ -239,7 +239,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
   /* USER CODE END SPI1_MspDeInit 1 */
   }
 
-  if(hspi->Instance == SPI6)
+  if (hspi->Instance == SPI6)
   {
 
     __SPI6_CLK_DISABLE();
@@ -251,7 +251,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
 
 void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 {
-  if(huart->Instance==USART3)
+  if (huart->Instance==USART3)
   {
   /* USER CODE BEGIN USART2_MspInit 0 */
 
@@ -274,7 +274,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 
   /* USER CODE END USART2_MspInit 1 */
   }
-  if(huart->Instance==USART2)
+  if (huart->Instance==USART2)
   {
       /* Peripheral clock enable */
       __USART2_CLK_ENABLE();  }
@@ -294,7 +294,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 void assert_failed(uint8_t* srcfile, uint32_t srcline)
 {
     while (1)
-    {   ;     }
+    {;     }
 }
 #endif
 

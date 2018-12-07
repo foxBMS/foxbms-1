@@ -62,8 +62,8 @@
  * Must be adapted to the application
  */
 LTC_MUX_CH_CFG_s ltc_mux_seq_main_ch1[] = {
-    /* multiplexer 0 measurement */
-/*         { */
+    /*  multiplexer 0 measurement */
+/*         {*/
 /*             .muxID    = 0, */
 /*             .muxCh    = 0xFF, */
 /*         }, */
@@ -99,11 +99,11 @@ LTC_MUX_CH_CFG_s ltc_mux_seq_main_ch1[] = {
         .muxID    = 0,
         .muxCh    = 7,
     },
-    /*,
+/*     ,
       multiplexer 2 and 3 measurement
     {
         .muxID    = 0,
-        .muxCh    = 0xFF,     disable enabled mux
+        .muxCh    = 0xFF,    disable enabled mux
     },
     {
         .muxID    = 1,
@@ -139,7 +139,7 @@ LTC_MUX_CH_CFG_s ltc_mux_seq_main_ch1[] = {
     },
     {
         .muxID    = 1,
-        .muxCh    = 0xFF,          disable enabled mux
+        .muxCh    = 0xFF,         disable enabled mux
     },
 
     {
@@ -192,14 +192,14 @@ const uint8_t ltc_muxsensortemperatur_cfg[BS_NR_OF_TEMP_SENSORS_PER_MODULE] = {
     6-1 ,       /*!< index 5 = mux 0, ch 5 */
     7-1 ,       /*!< index 6 = mux 0, ch 6 */
     8-1 ,       /*!< index 7 = mux 0, ch 7 */
-    /* 9-1 ,     /*!< index 8 = mux 1, ch 0 */
-    /* 10-1 ,    /*!< index 9 = mux 1, ch 1 */
-    /* 11-1 ,    /*!< index 10 = mux 1, ch 2 */
-    /* 12-1 ,    /*!< index 11 = mux 1, ch 3 */
-    /* 13-1 ,    /*!< index 12 = mux 1, ch 4 */
-    /* 14-1 ,    /*!< index 13 = mux 1, ch 5 */
-    /* 15-1 ,    /*!< index 14 = mux 1, ch 6 */
-    /* 16-1      /*!< index 15 = mux 1, ch 7 */
+    /* 9-1 ,      !< index 8 = mux 1, ch 0 */
+    /* 10-1 ,     !< index 9 = mux 1, ch 1 */
+    /* 11-1 ,     !< index 10 = mux 1, ch 2 */
+    /* 12-1 ,     !< index 11 = mux 1, ch 3 */
+    /* 13-1 ,     !< index 12 = mux 1, ch 4 */
+    /* 14-1 ,     !< index 13 = mux 1, ch 5 */
+    /* 15-1 ,     !< index 14 = mux 1, ch 6 */
+    /* 16-1       !< index 15 = mux 1, ch 7 */
 };
 
 
@@ -236,7 +236,6 @@ const uint8_t ltc_voltage_input_used[BS_MAX_SUPPORTED_CELLS] = {
 /*================== Function Implementations =============================*/
 
 float LTC_Convert_MuxVoltages_to_Temperatures(float v_adc) {
-
     float temperature = 0.0;
     /* float v_adc2 = v_adc*v_adc; */
     /* float v_adc3 = v_adc2*v_adc; */

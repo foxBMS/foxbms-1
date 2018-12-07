@@ -79,7 +79,6 @@
 #define LTC_DISCARD_MUX_CHECK FALSE
 
 
-
 /**
  * Number of used LTC-ICs
  */
@@ -123,6 +122,13 @@
 #define LTC_GPIO_MEASUREMENT_MODE   LTC_ADCMODE_NORMAL_DCP0
 /* #define LTC_GPIO_MEASUREMENT_MODE LTC_ADCMODE_FILTERED_DCP0 */
 /* #define LTC_GPIO_MEASUREMENT_MODE LTC_ADCMODE_FAST_DCP0 */
+
+/**
+ * Measurement modus for Open-wire check
+ */
+#define LTC_OW_MEASUREMENT_MODE     LTC_ADCMODE_NORMAL_DCP0
+/* #define LTC_OW_MEASUREMENT_MODE     LTC_ADCMODE_FILTERED_DCP0 */
+
 
 /**
  * SPI1 is used for communication with LTC
@@ -188,7 +194,6 @@
  */
 #define LTC_STATEMACH_MEAS_ALL_FILTERED_TCYCLE      202
 
-
 /*
  * Timings of Voltage Cell and GPIO measurement for a pair of cells or a single GPIO
  */
@@ -242,6 +247,61 @@
  */
 #define LTC_READCOM     0
 
+
+/**
+ * ------------------- OPEN WIRE CHECK ------------------------
+ * If open-wire check is performed cell voltages and temperatures are not
+ * updated and thus old values can be transmitted on the CAN bus. Check time
+ * is dependent on module configuration and external capacitance. Activate
+ * open-wire check with care! See table below for various measured open-wire
+ * check durations!
+ */
+
+/* #define LTC_STANDBY_PERIODIC_OPEN_WIRE_CHECK TRUE */
+#define LTC_STANDBY_PERIODIC_OPEN_WIRE_CHECK FALSE
+
+/**
+ * Periodic open-wire check time in STANDBY state in ms
+ */
+#define LTC_STANDBY_OPEN_WIRE_PERIOD_ms      600000
+
+/* #define LTC_NORMAL_PERIODIC_OPEN_WIRE_CHECK TRUE */
+#define LTC_NORMAL_PERIODIC_OPEN_WIRE_CHECK FALSE
+
+/**
+ * Periodic open-wire check time in NORMAL state in ms
+ */
+#define LTC_NORMAL_OPEN_WIRE_PERIOD_ms      600000
+
+/* #define LTC_CHARGE_PERIODIC_OPEN_WIRE_CHECK TRUE */
+#define LTC_CHARGE_PERIODIC_OPEN_WIRE_CHECK FALSE
+
+/**
+ * Periodic open-wire check time in CHARGE state in ms
+ */
+#define LTC_CHARGE_OPEN_WIRE_PERIOD_ms      600000
+
+/**
+ * Periodic open-wire check time in ERROR state in ms
+ */
+#define LTC_ERROR_OPEN_WIRE_PERIOD_ms      30000
+
+/**
+ * Number of required ADOW commands because of external C-Pin capacitance and
+ * the respective duration to perform an open wire check for 14 modules with
+ * 12 cells each. During this time no cell voltages and temperatures are measured!
+ * +----------------+--------------+---------------+----------+----------+
+ * | External C pin | Normal  mode | Filtered mode | Duration | Duration |
+ * | capacitance    |              |               |  normal  | filtered |
+ * | ---------------+--------------+---------------+----------+----------+
+ * |   <= 10nF      |      2       |        2      |    32ms  |   828ms  |
+ * |     100nF      |     10       |        2      |   112ms  |   828ms  |
+ * |       1uF      |    100       |        2      |  1012ms  |   828ms  |
+ * |       C        | 1.5+(C/10nF) |        2      |          |          |
+ * +----------------+--------------+---------------+----------+----------+
+ */
+#define LTC_NMBR_REQ_ADOW_COMMANDS      2
+
 /**
  * Number of Bytes to be transmitted in daisy-chain
  * For first 4 Bytes:
@@ -266,7 +326,7 @@
 #define LTC_SendI2CCmd(txbuf)           SPI_Transmit(LTC_SPI_HANDLE, txbuf, 4+9)
 #define LTC_SendData(txbuf)             SPI_Transmit(LTC_SPI_HANDLE, txbuf, LTC_N_BYTES_FOR_DATA_TRANSMISSION)
 #define LTC_SendCmd(command)            SPI_Transmit(LTC_SPI_HANDLE, (uint8_t *) command, 4)
-#define LTC_ReceiveData(txbuf,rxbuf)    SPI_TransmitReceive(LTC_SPI_HANDLE, txbuf, rxbuf, LTC_N_BYTES_FOR_DATA_TRANSMISSION)
+#define LTC_ReceiveData(txbuf, rxbuf)    SPI_TransmitReceive(LTC_SPI_HANDLE, txbuf, rxbuf, LTC_N_BYTES_FOR_DATA_TRANSMISSION)
 
 
 /*================== Constant and Variable Definitions ====================*/

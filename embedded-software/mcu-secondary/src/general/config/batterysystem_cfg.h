@@ -89,11 +89,11 @@
 */
 #define BS_NR_OF_BAT_CELLS_PER_MODULE               12
 
-#if BS_NR_OF_BAT_CELLS_PER_MODULE<=12
+#if BS_NR_OF_BAT_CELLS_PER_MODULE <= 12
     #define BS_MAX_SUPPORTED_CELLS         12
-#elif BS_NR_OF_BAT_CELLS_PER_MODULE<=15
+#elif BS_NR_OF_BAT_CELLS_PER_MODULE <= 15
     #define BS_MAX_SUPPORTED_CELLS         15
-#elif BS_NR_OF_BAT_CELLS_PER_MODULE<=18
+#elif BS_NR_OF_BAT_CELLS_PER_MODULE <= 18
     #define BS_MAX_SUPPORTED_CELLS         18
 #else
     #error "Unsupported number of cells per module, higher than 18"
@@ -103,7 +103,7 @@
  * 5 for 12 cell version
  * 9 for 18 cell version
  */
-#if BS_MAX_SUPPORTED_CELLS==12
+#if BS_MAX_SUPPORTED_CELLS == 12
     #define BS_NR_OF_GPIOS_PER_MODULE               5
 #else
     #define BS_NR_OF_GPIOS_PER_MODULE               9
@@ -187,6 +187,16 @@
  * 3
 */
 #define BS_NR_OF_VOLTAGES_FROM_CURRENT_SENSOR      3
+
+/**
+ * @ingroup CONFIG_BATTERYSYSTEM
+ * number of voltages measured by MCU internal ADC
+ * \par Type:
+ * int
+ * \par Default:
+ * 3
+*/
+#define BS_NR_OF_VOLTAGES_FROM_MCU_ADC      2
 
 /**
  * @ingroup CONFIG_BATTERYSYSTEM

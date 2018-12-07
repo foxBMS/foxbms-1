@@ -89,10 +89,10 @@
  * FIXME delete if not needed
 */
 DIAG_CODE_s diag_mask = {
-        .GENERALmsk=0xFFFFFFFF,
-        .CELLMONmsk=0xFFFFFFFF,
-        .COMmsk=0xFFFFFFFF,
-        .ADCmsk=0xFFFFFFFF,
+        .GENERALmsk = 0xFFFFFFFF,
+        .CELLMONmsk = 0xFFFFFFFF,
+        .COMmsk = 0xFFFFFFFF,
+        .ADCmsk = 0xFFFFFFFF,
 };
 
 /**
@@ -137,10 +137,13 @@ static void DIAG_error_contactorchargemainminus(DIAG_CH_ID_e ch_id, DIAG_EVENT_e
 static void DIAG_error_contactorchargeprecharge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
 static void DIAG_error_interlock(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
 
+static void DIAG_error_MCUdieTemperature(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
+static void DIAG_error_coinCellVoltage(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
+
 static void dummyfu2(DIAG_SYSMON_MODULE_ID_e ch_id);
 
 void dummyfu(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    ;
+    /* Dummy function -> empty */
 }
 
 void DIAG_MSL_overvoltage(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
@@ -383,23 +386,55 @@ void DIAG_error_interlock(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
     if (event  ==  DIAG_EVENT_RESET) {
         error_flags.interlock = 0;
     }
-    if (event==DIAG_EVENT_NOK) {
+    if (event == DIAG_EVENT_NOK) {
         error_flags.interlock = 1;
     }
     DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
 }
 
+void DIAG_error_MCUdieTemperature(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
+    DATA_BLOCK_ERRORSTATE_s error_flags;
+    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
+    if (event  ==  DIAG_EVENT_RESET) {
+        error_flags.mcuDieTemperature = 0;
+    }
+    if (event == DIAG_EVENT_NOK) {
+        error_flags.mcuDieTemperature = 1;
+    }
+    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
+}
+
+
+void DIAG_error_coinCellVoltage(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
+    DATA_BLOCK_ERRORSTATE_s error_flags;
+    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
+    if (ch_id == DIAG_CH_LOW_COIN_CELL_VOLTAGE) {
+        if (event  ==  DIAG_EVENT_RESET) {
+            error_flags.coinCellVoltage &= 0xFE;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            error_flags.coinCellVoltage |= 0x01;
+        }
+    } else if (ch_id == DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE) {
+        if (event  ==  DIAG_EVENT_RESET) {
+            error_flags.coinCellVoltage &= 0xFD;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            error_flags.coinCellVoltage |= 0x02;
+        }
+    }
+    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
+}
 /**
  * Callback function of system monitoring error events
  *
 */
 void dummyfu2(DIAG_SYSMON_MODULE_ID_e ch_id) {
-    ;
+    /* Dummy function -> empty */
 }
 
 
 DIAG_CH_CFG_s  diag_ch_cfg[] = {
-
     /* OS-Framework and startup events */
     {DIAG_CH_FLASHCHECKSUM,                             "FLASHCHECKSUM",                        DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
     {DIAG_CH_BKPDIAG_FAILURE,                           "BKPDIAG",                              DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
@@ -501,11 +536,13 @@ DIAG_CH_CFG_s  diag_ch_cfg[] = {
     {DIAG_CH_SLAVE_PCB_UNDERTEMPERATURE_MSL,          "SLAVE_PCB_UNDERTEMPERATURE_MSL",     DIAG_GENERAL_TYPE,    DIAG_ERROR_SLAVE_TEMP_SENSITIVITY_MSL,   DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
 
     {DIAG_CH_SLAVE_PCB_OVERTEMPERATURE_MSL,           "SLAVE_PCB_OVERTEMPERATURE_MSL",      DIAG_GENERAL_TYPE,    DIAG_ERROR_SLAVE_TEMP_SENSITIVITY_MSL,   DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_ERROR_MCU_DIE_TEMPERATURE,     "MCU_DIE_TEMPERATURE",     DIAG_GENERAL_TYPE,  DIAG_ERROR_SENSITIVITY_LOW, DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_MCUdieTemperature},
+    {DIAG_CH_LOW_COIN_CELL_VOLTAGE,         "COIN_CELL_VOLT_LOW",      DIAG_GENERAL_TYPE,  DIAG_ERROR_SENSITIVITY_LOW, DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE,    "COIN_CELL_VOLT_CRITICAL", DIAG_GENERAL_TYPE,  DIAG_ERROR_SENSITIVITY_LOW, DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
 };
 
 
-DIAG_SYSMON_CH_CFG_s diag_sysmon_ch_cfg[]=
-{
+DIAG_SYSMON_CH_CFG_s diag_sysmon_ch_cfg[] = {
     {DIAG_SYSMON_DATABASE_ID,       DIAG_SYSMON_CYCLICTASK,  10, DIAG_RECORDING_ENABLED, DIAG_SYSMON_HANDLING_SWITCHOFFCONTACTOR, DIAG_ENABLED, dummyfu2},
     {DIAG_SYSMON_SYS_ID,        DIAG_SYSMON_CYCLICTASK,  20, DIAG_RECORDING_ENABLED, DIAG_SYSMON_HANDLING_SWITCHOFFCONTACTOR, DIAG_ENABLED, dummyfu2},
     {DIAG_SYSMON_BMS_ID,        DIAG_SYSMON_CYCLICTASK,  20, DIAG_RECORDING_ENABLED, DIAG_SYSMON_HANDLING_SWITCHOFFCONTACTOR, DIAG_ENABLED, dummyfu2},

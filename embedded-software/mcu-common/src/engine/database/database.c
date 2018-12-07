@@ -75,34 +75,32 @@ QueueHandle_t data_queue;
 
 /*================== Public functions =====================================*/
 void DATA_Init(void) {
-    if(sizeof(data_base_dev) == 0) {
+    if (sizeof(data_base_dev) == 0) {
         /* todo fatal error! */
 
         while (1) {
-            ;
+            /* TODO: explain why infinite loop */
         }
     }
 
     /* FIXME What is mymessage structures? */
     /* Create a queue capable of containing 10 pointers to mymessage structures.
        These should be passed by pointer as they contain a lot of data.
-       data_queueID = xQueueCreate( devptr->nr_of_blockheader, sizeof( DATA_QUEUE_MESSAGE_s) ); */    /* FIXME number of queues=1 should be enough */
+       data_queueID = xQueueCreate(devptr->nr_of_blockheader, sizeof(DATA_QUEUE_MESSAGE_s)); */    /* FIXME number of queues=1 should be enough */
 
-/*     if(data_queueID  ==  NULL_PTR) {
+/*     if (data_queueID  ==  NULL_PTR) {
              Failed to create the queue
            ;   @ TODO Error Handling
        }
 */
 
     /* Iterate over database and set respective read/write pointer for each database entry */
-    for(uint16_t i = 0; i < data_base_dev.nr_of_blockheader; i++) {
-
+    for (uint16_t i = 0; i < data_base_dev.nr_of_blockheader; i++) {
         /* Set write pointer to database entry */
         data_block_access[i].WRptr = (void*)*(uint32_t*)(data_base_dev.blockheaderptr + i);
 
         /* Set read pointer */
-        if((data_base_dev.blockheaderptr + i)->buffertype  ==  DOUBLE_BUFFERING) {
-
+        if ((data_base_dev.blockheaderptr + i)->buffertype  ==  DOUBLE_BUFFERING) {
             /* If database entry is double buffered -> set read pointer to
              * second section. After writing first database entry, pointer are
              * swapped and read pointer then points to written entry. */
@@ -120,20 +118,19 @@ void DATA_Init(void) {
 
     /* Create a queue capable of containing a pointer of type DATA_QUEUE_MESSAGE_s
     Data of Messages are passed by pointer as they contain a lot of data. */
-    data_queue = xQueueCreate( 1, sizeof( DATA_QUEUE_MESSAGE_s) );
+    data_queue = xQueueCreate(1, sizeof(DATA_QUEUE_MESSAGE_s));
 
     if (data_queue == NULL_PTR) {
         /* Failed to create the queue */
         /* @ TODO Error Handling */
         while (1) {
-            ;
+            /* TODO: explain why infinite loop */
         }
     }
 }
 
 
 void DB_WriteBlock(void *dataptrfromSender, DATA_BLOCK_ID_TYPE_e  blockID) {
-
     /* dataptrfromSender is a pointer to data of caller function
        dataptr_toptr_fromSender is a pointer to this pointer
        this is used for passing message variable by reference
@@ -141,7 +138,7 @@ void DB_WriteBlock(void *dataptrfromSender, DATA_BLOCK_ID_TYPE_e  blockID) {
     DATA_QUEUE_MESSAGE_s data_send_msg;
     TickType_t queuetimeout;
 
-    if( vPortCheckCriticalSection() ) {
+    if (vPortCheckCriticalSection()) {
         configASSERT(0);
     }
 
@@ -156,8 +153,8 @@ void DB_WriteBlock(void *dataptrfromSender, DATA_BLOCK_ID_TYPE_e  blockID) {
     data_send_msg.accesstype = WRITE_ACCESS;
     /* Send a pointer to a message object and
        maximum block time: queuetimeout */
-    xQueueSend( data_queue, (void *) &data_send_msg, queuetimeout);
- }
+    xQueueSend(data_queue, (void *) &data_send_msg, queuetimeout);
+}
 
 
 void DATA_Task(void) {
@@ -169,24 +166,22 @@ void DATA_Task(void) {
     uint16_t datalength;
     DATA_BLOCK_BUFFER_TYPE_e buffertype;
 
-    if(data_queue != NULL_PTR) {
-
-        if( xQueueReceive(data_queue,(&receive_msg),(TickType_t ) 1) ) {  /* scan queue and wait for a message up to a maximum amount of 1ms (block time) */
-
+    if (data_queue != NULL_PTR) {
+        if (xQueueReceive(data_queue, (&receive_msg), (TickType_t) 1)) {  /* scan queue and wait for a message up to a maximum amount of 1ms (block time) */
             /* ptrrcvmessage now points to message of sender which contains data pointer and data block ID */
             blockID = receive_msg.blockID;
             srcdataptr = receive_msg.value.voidptr;
             accesstype = receive_msg.accesstype;
-            if((blockID < DATA_MAX_BLOCK_NR) && (srcdataptr != NULL_PTR)) {   /* plausibility check */
+            if ((blockID < DATA_MAX_BLOCK_NR) && (srcdataptr != NULL_PTR)) {  /* plausibility check */
                 /* get entries of blockheader and write pointer */
-                if(accesstype == WRITE_ACCESS) {
+                if (accesstype == WRITE_ACCESS) {
                     /* write access to data blocks */
                     datalength = (data_base_dev.blockheaderptr + blockID)->datalength;
                     buffertype = (data_base_dev.blockheaderptr + blockID)->buffertype;
-                    dstdataptr=data_block_access[blockID].WRptr;
+                    dstdataptr = data_block_access[blockID].WRptr;
 
                     /* Check if there any read accesses taking place (in tasks with lower priorities)*/
-                    if(xSemaphoreTake(data_base_mutex[blockID], 0)  ==  TRUE) {
+                    if (xSemaphoreTake(data_base_mutex[blockID], 0)  ==  TRUE) {
                         uint32_t *previousTimestampptr = NULL_PTR;
                         uint32_t *timestampptr = NULL_PTR;
 
@@ -203,41 +198,38 @@ void DATA_Task(void) {
 
                         memcpy(dstdataptr, srcdataptr, datalength);
                         xSemaphoreGive(data_base_mutex[blockID]);
-                        if(buffertype  ==  DOUBLE_BUFFERING) {
+                        if (buffertype  ==  DOUBLE_BUFFERING) {
                             /* swap the WR and RD pointers:
                                WRptr always points to buffer to be written next time and changed afterwards
                                RDptr always points to buffer to be read next time */
-                            data_block_access[blockID].WRptr=data_block_access[blockID].RDptr;
-                            data_block_access[blockID].RDptr=dstdataptr;
+                            data_block_access[blockID].WRptr = data_block_access[blockID].RDptr;
+                            data_block_access[blockID].RDptr = dstdataptr;
                         }
                     } else {
-                        dstdataptr=data_block_access[blockID].WRptr;
+                        dstdataptr = data_block_access[blockID].WRptr;
                     }
-                } else if(accesstype == READ_ACCESS) {
+                } else if (accesstype == READ_ACCESS) {
                     /* Read access to data blocks */
                     datalength = (data_base_dev.blockheaderptr + blockID)->datalength;
                     buffertype = (data_base_dev.blockheaderptr + blockID)->buffertype;
                     dstdataptr = srcdataptr;
 
-                    if(buffertype  ==  DOUBLE_BUFFERING) {
-
-                        if(xSemaphoreTake(data_base_mutex[blockID], 0)  ==  TRUE) {
-
+                    if (buffertype  ==  DOUBLE_BUFFERING) {
+                        if (xSemaphoreTake(data_base_mutex[blockID], 0)  ==  TRUE) {
                             srcdataptr = data_block_access[blockID].RDptr;
-                            if(srcdataptr != NULL_PTR) {
-
+                            if (srcdataptr != NULL_PTR) {
                                 memcpy(dstdataptr, srcdataptr, datalength);
                                 xSemaphoreGive(data_base_mutex[blockID]);
                             }
                         }
-                    } else if(buffertype  ==  SINGLE_BUFFERING) {
+                    } else if (buffertype  ==  SINGLE_BUFFERING) {
                             srcdataptr = data_block_access[blockID].RDptr;
-                            if(srcdataptr != NULL_PTR) {
+                            if (srcdataptr != NULL_PTR) {
                                 memcpy(dstdataptr, srcdataptr, datalength);
                             }
                     }
                 } else {
-                    ;
+            /* TODO: explain why empty else */
                 }
             }
         }
@@ -247,11 +239,10 @@ void DATA_Task(void) {
 
 
 STD_RETURN_TYPE_e DB_ReadBlock(void *dataptrtoReceiver, DATA_BLOCK_ID_TYPE_e  blockID) {
-
     DATA_QUEUE_MESSAGE_s data_send_msg;
     TickType_t queuetimeout;
 
-    if(vPortCheckCriticalSection()) {
+    if (vPortCheckCriticalSection()) {
         configASSERT(0);
     }
 
@@ -267,7 +258,7 @@ STD_RETURN_TYPE_e DB_ReadBlock(void *dataptrtoReceiver, DATA_BLOCK_ID_TYPE_e  bl
 
     /* Send a pointer to a message object and */
     /* maximum block time: queuetimeout */
-    xQueueSend( data_queue, (void *) &data_send_msg, queuetimeout);
+    xQueueSend(data_queue, (void *) &data_send_msg, queuetimeout);
 
     return E_OK;
 }

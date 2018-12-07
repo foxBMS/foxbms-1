@@ -90,21 +90,21 @@
 #define configUSE_PREEMPTION                1
 #define configUSE_IDLE_HOOK                 1
 #define configUSE_TICK_HOOK                 0
-#define configCPU_CLOCK_HZ                  ( SystemCoreClock )
-#define configTICK_RATE_HZ                  ( ( TickType_t ) 1000 )
+#define configCPU_CLOCK_HZ                  (SystemCoreClock)
+#define configTICK_RATE_HZ                  ((TickType_t) 1000)
 
 /*CMSIS uses 7 priorities [-3,-2,-1,0,1,2,3]
  * note: lowest CMSIS priority  osPriorityIdle=-3 is higher than freeRTOS idle task
  * vApplicationIdleHook() enabled by configUSE_IDLE_HOOK
  * Default configuration to meet the CMSIS specification is:
- * #define configMAX_PRIORITIES                (  7 )
+ * #define configMAX_PRIORITIES                (7)
  * To seperate the BMS Engine and Applications tasks this configuration is increased
 */
 #define configMAX_PRIORITIES                15
 
-#define configMINIMAL_STACK_SIZE            ( ( uint16_t ) 128 )
-#define configTOTAL_HEAP_SIZE               ( ( size_t ) ( 20 * 1024 ) )
-#define configMAX_TASK_NAME_LEN             ( 20 )
+#define configMINIMAL_STACK_SIZE            ((uint16_t) 128)
+#define configTOTAL_HEAP_SIZE               ((size_t) (20 * 1024))
+#define configMAX_TASK_NAME_LEN             (20)
 #define configUSE_TRACE_FACILITY            1
 #define configUSE_16_BIT_TICKS              0
 #define configIDLE_SHOULD_YIELD             1
@@ -119,13 +119,13 @@
 
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES               0
-#define configMAX_CO_ROUTINE_PRIORITIES     ( 2 )
+#define configMAX_CO_ROUTINE_PRIORITIES     (2)
 
 /* Software timer definitions. */
 #define configUSE_TIMERS                    1
-#define configTIMER_TASK_PRIORITY           ( 2 )
+#define configTIMER_TASK_PRIORITY           (2)
 #define configTIMER_QUEUE_LENGTH            10
-#define configTIMER_TASK_STACK_DEPTH        ( configMINIMAL_STACK_SIZE * 2 )
+#define configTIMER_TASK_STACK_DEPTH        (configMINIMAL_STACK_SIZE * 2)
 
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
@@ -158,16 +158,16 @@ PRIORITY THAN THIS! (higher priorities are lower numeric values. */
 
 /* Interrupt priorities used by the kernel port layer itself.  These are generic
 to all Cortex-M ports, and do not rely on any particular library functions. */
-#define configKERNEL_INTERRUPT_PRIORITY         ( configLIBRARY_LOWEST_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )
+#define configKERNEL_INTERRUPT_PRIORITY         (configLIBRARY_LOWEST_INTERRUPT_PRIORITY << (8 - configPRIO_BITS))
 /* !!!! configMAX_SYSCALL_INTERRUPT_PRIORITY must not be set to zero !!!!
 See http:// www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
-#define configMAX_SYSCALL_INTERRUPT_PRIORITY     ( configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )
-    
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY     (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS))
+
 /* Normal assert() semantics without relying on the provision of an assert.h
 header file. */
-/* #define configASSERT( x ) if( ( x )  ==  0 ) { taskDISABLE_INTERRUPTS(); for( ;; ); } */
-#define configASSERT( x ) if( ( x )  ==  0 ) { DIAG_configASSERT(); for( ;; ); }
-    
+/* #define configASSERT(x) if ((x)  ==  0) {taskDISABLE_INTERRUPTS(); for (;;); } */
+#define configASSERT(x) if ((x)  ==  0) {DIAG_configASSERT(); for (;;); }
+
 /* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS
 standard names. */
 #define vPortSVCHandler SVC_Handler

@@ -92,9 +92,9 @@
 #define DIAG_ERROR_CAN_TIMING_CC_SENSITIVITY    (100)
 #define DIAG_ERROR_CAN_SENSOR_SENSITIVITY       (100)
 
-#define DIAG_ERROR_MAIN_PLUS_SENSITIVITY        (500)
-#define DIAG_ERROR_MAIN_MINUS_SENSITIVITY       (500)
-#define DIAG_ERROR_PRECHARGE_SENSITIVITY        (500)
+#define DIAG_ERROR_MAIN_PLUS_SENSITIVITY        (50)
+#define DIAG_ERROR_MAIN_MINUS_SENSITIVITY       (50)
+#define DIAG_ERROR_PRECHARGE_SENSITIVITY        (50)
 
 #define DIAG_ERROR_INTERLOCK_SENSITIVITY        (10)
 
@@ -106,7 +106,7 @@
 #define DIAG_FAIL_ENTRY_LENGTH              (50)
 
 /**
- * Maximum number of the same error that are logged
+ * Maximum number of the same errors that are logged
  */
 #define DIAG_MAX_ENTRIES_OF_ERROR           (5)
 
@@ -261,7 +261,6 @@
 #define DIAG_CH_INTERLOCK_FEEDBACK                          DIAG_ID_78
 
 
-
 #define DIAG_CH_SLAVE_PCB_UNDERTEMPERATURE_MSL              DIAG_ID_79
 #define DIAG_CH_SLAVE_PCB_UNDERTEMPERATURE_RSL              DIAG_ID_80
 #define DIAG_CH_SLAVE_PCB_UNDERTEMPERATURE_MOL              DIAG_ID_81
@@ -274,6 +273,28 @@
  * @brief   Insulation error: measured insulation < threshold
  */
 #define DIAG_CH_INSULATION_ERROR                            DIAG_ID_86
+
+/**
+ * @brief   Fuse tripped
+ */
+#define DIAG_CH_FUSE_STATE_NORMAL                           DIAG_ID_87
+#define DIAG_CH_FUSE_STATE_CHARGE                           DIAG_ID_88
+
+/**
+ * @brief   MCU die temperature
+ */
+#define DIAG_CH_ERROR_MCU_DIE_TEMPERATURE                   DIAG_ID_89
+
+/**
+ * @brief   coin cell voltage
+ */
+#define DIAG_CH_LOW_COIN_CELL_VOLTAGE                       DIAG_ID_90
+#define DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE                  DIAG_ID_91
+
+/**
+ * @brief   open-wire check
+ */
+#define DIAG_CH_OPEN_WIRE                                   DIAG_ID_92
 
 /**
  * enable state of diagnosis entry
@@ -385,7 +406,7 @@ typedef struct {
     uint8_t description[40];
     DIAG_TYPE_e type;                       /*!< diagnosis group of diag event */
     uint16_t thresholds;                     /*!< threshold for number of events which will be tolerated before generating a notification in both direction (OK or NOT OK)
-                                             *   threshold=0: reports the value at first occurence, threshold=1:reports the value at second occurence*/
+                                             *   threshold = 0: reports the value at first occurence, threshold = 1:reports the value at second occurence*/
     DIAG_TYPE_RECORDING_e enablerecording;  /*!< if enabled recording in diag_memory will be activated */
     DIAG_ENABLE_STATE_e state;              /*!< if enabled diagnosis event will be evaluated */
     void (*callbackfunc)(DIAG_CH_ID_e, DIAG_EVENT_e);     /*!< will be called if number of events exceeds threshold (in both direction) with parameter DIAG_EVENT_e */

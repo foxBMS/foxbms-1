@@ -89,7 +89,6 @@ void CANS_Init(void) {
 }
 
 void CANS_MainFunction(void) {
-
     (void)CANS_PeriodicReceive();
     CANS_CheckCanTiming();
     if (cans_state.periodic_enable == TRUE) {
@@ -101,7 +100,6 @@ void CANS_MainFunction(void) {
 
 STD_RETURN_TYPE_e CANS_AddMessage(CAN_NodeTypeDef_e canNode, uint32_t msgID, uint8_t* ptrMsgData,
         uint32_t msgLength, uint32_t RTR) {
-
     STD_RETURN_TYPE_e retVal = E_NOT_OK;
     OS_TaskEnter_Critical();
     /* Function should not be interrupted by the OS during the execution */
@@ -111,7 +109,6 @@ STD_RETURN_TYPE_e CANS_AddMessage(CAN_NodeTypeDef_e canNode, uint32_t msgID, uin
 }
 
 STD_RETURN_TYPE_e CANS_TransmitBuffer(CAN_NodeTypeDef_e canNode) {
-
     STD_RETURN_TYPE_e retVal = E_NOT_OK;
     OS_TaskEnter_Critical();
     /* Function should not be interrupted by the OS during the execution */
@@ -122,7 +119,6 @@ STD_RETURN_TYPE_e CANS_TransmitBuffer(CAN_NodeTypeDef_e canNode) {
 
 STD_RETURN_TYPE_e CANS_TransmitMessage(CAN_NodeTypeDef_e canNode, uint32_t msgID, uint8_t* ptrMsgData,
         uint32_t msgLength, uint32_t RTR) {
-
     STD_RETURN_TYPE_e retVal = E_NOT_OK;
     retVal = CAN_TxMsg(canNode, msgID, ptrMsgData, msgLength, RTR);
     return retVal;
@@ -151,7 +147,7 @@ static STD_RETURN_TYPE_e CANS_PeriodicTransmit(void) {
 #if CAN_USE_CAN_NODE0 == TRUE
     for (i = 0; i < can_CAN0_tx_length; i++) {
         if (((counter_ticks * CANS_TICK_MS) % (can_CAN0_messages_tx[i].repetition_time)) == can_CAN0_messages_tx[i].repetition_phase) {
-            Can_PduType PduToSend = { { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, 0x0, 8 };
+            Can_PduType PduToSend = { {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, 0x0, 8 };
             CANS_ComposeMessage(CAN_NODE0, (CANS_messagesTx_e)(i), PduToSend.sdu);
             PduToSend.id = can_CAN0_messages_tx[i].ID;
 
@@ -172,7 +168,7 @@ static STD_RETURN_TYPE_e CANS_PeriodicTransmit(void) {
 #if CAN_USE_CAN_NODE1 == TRUE
     for (i = 0; i < can_CAN1_tx_length; i++) {
         if (((counter_ticks * CANS_TICK_MS) % (can_CAN1_messages_tx[i].repetition_time)) == can_CAN1_messages_tx[i].repetition_phase) {
-            Can_PduType PduToSend = { { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, 0x0, 8 };
+            Can_PduType PduToSend = { {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, 0x0, 8 };
             CANS_ComposeMessage(CAN_NODE1, (CANS_messagesTx_e)i + can_CAN0_tx_length, PduToSend.sdu);
             PduToSend.id = can_CAN1_messages_tx[i].ID;
 
@@ -316,7 +312,6 @@ static void CANS_ComposeMessage(CAN_NodeTypeDef_e canNode, CANS_messagesTx_e msg
 
     for (i = 0; i < nrTxSignals; i++) {
         if (cans_signals_tx[i].msgIdx.Tx == msgIdx) {
-
             /* simple, not multiplexed signal */
             uint64_t value = 0;
             if (cans_signals_tx[i].getter != NULL_PTR) {
@@ -324,8 +319,7 @@ static void CANS_ComposeMessage(CAN_NodeTypeDef_e canNode, CANS_messagesTx_e msg
             }
             CANS_SetSignalData(cans_signals_tx[i], value, dataptr);
         } else {
-            ;
-            /* do nothing */
+            /* TODO: explain why empty else */
         }
     }
 }

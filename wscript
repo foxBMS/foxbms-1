@@ -38,16 +38,14 @@
 # &Prime;This product is derived from foxBMS&reg;&Prime;
 
 import os
-import errno
 import sys
 import datetime
 import logging
 import posixpath
 import re
 import yaml
-import glob
 
-from waflib import Utils, Options, Errors
+from waflib import Utils, Options, Errors, Logs
 from waflib import Task, TaskGen
 from waflib.Tools.compiler_c import c_compiler
 
@@ -178,7 +176,9 @@ def configure(conf):
         except yaml.YAMLError as exc:
             conf.fatal(exc)
     conf.env.CFLAGS = compiler_flags['CFLAGS']
-    conf.env.linkflags = compiler_flags['LINKFLAGS']
+    conf.env.ASMFLAGS = compiler_flags['ASMFLAGS']
+    conf.env.LINKFLAGS = compiler_flags['LINKFLAGS']
+    conf.env.XLINKER = compiler_flags['XLINKER']
 
     # get HAL version and floating point version based on compiler define and
     # check if cpu and floating point version  are fitting together
@@ -209,7 +209,7 @@ def configure(conf):
     # Setup startup and linker script
     if conf.env.CPU_MAJOR == 'STM32F4xx':
         conf.env.ldscript_filename = 'STM32F429ZIT6_FLASH.ld'
-        conf.env.startupscript_filename = 'startup_stm32f429xx.S'
+        conf.env.startupscript_filename = 'startup_stm32f429xx.s'
 
     utcnow = datetime.datetime.utcnow()
     utcnow = ''.join(utcnow.isoformat('-').split('.')
@@ -225,15 +225,22 @@ def configure(conf):
     conf.define('BUILD_VERSION_SECONDARY', conf.env.version_secondary)
 
     conf.env.target = conf.options.target
-    conf.env.EXT_CC += ['.S']
 
     env_debug = conf.env.derive()
     env_debug.detach()
+    env_bare_metal = conf.env.derive()
+    env_bare_metal.detach()
     env_release = conf.env.derive()
     env_release.detach()
 
     # configuration for debug
     conf.setenv('debug', env_debug)
+    conf.define('RELEASE', 1)
+    conf.undefine('DEBUG')
+    conf.env.CFLAGS += ['-g', '-O0']
+
+    # configuration for bare-metal
+    conf.setenv('bare-metal', env_bare_metal)
     conf.define('RELEASE', 1)
     conf.undefine('DEBUG')
     conf.env.CFLAGS += ['-g', '-O0']
@@ -244,17 +251,25 @@ def configure(conf):
 
     if conf.options.target == 'release':
         conf.setenv('', env_release)
+    elif conf.options.target == 'bare-metal':
+        conf.setenv('', env_bare_metal)
     else:
         conf.setenv('', env_debug)
 
     env_release.store(os.path.join(out, 'env-store.log'))
 
     config_dir = 'config'
-    try:
-        os.makedirs(os.path.join(out, config_dir))
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
+    conf.path.get_bld().make_node(config_dir).mkdir()
+    conf.confdir = conf.path.get_bld().find_node(config_dir)
+
+    _cmd = [Utils.subst_vars('${CC} ', conf.env), '-dM', '-E', '-']
+    std_out, std_err = conf.cmd_and_log(_cmd, output=0, input='\n'.encode())
+    std_out = '/* WARNING: DO NOT EDIT */\n' \
+              '/* INTERNAL GCC MARCOS */\n' \
+              '/* FOR INFORMATION ONLY */\n' \
+              '\n' \
+              '{}'.format(std_out)
+    conf.confdir.make_node('gcc_builtin_macros.h').write(std_out)
 
     header_file_name = conf.env.appname_prefix + 'config.h'
     header_file_path = os.path.join(config_dir, header_file_name),
@@ -270,26 +285,32 @@ def configure(conf):
     print('Config header:       {}'.format(conf.env.cfg_files))
     print('Build configuration: {}'.format(conf.env.target))
     print('---')
-    with open(os.path.join(out, 'linkflags.log'), 'w') as f:
-        f.write('\n'.join(conf.env.linkflags) + '\n')
     with open(os.path.join(out, 'cflags.log'), 'w') as f:
         f.write('\n'.join(conf.env.CFLAGS) + '\n')
-
-    conf.path.get_bld().make_node('lib').mkdir()
-    x = conf.path.get_bld().find_node('lib')
-    conf.env.LIBPATH_USER = x.abspath()
-    print('Library directory:   {}'.format(x, x.path_from(conf.path)))
-
-    conf.path.get_bld().make_node('include').mkdir()
-    x = conf.path.get_bld().find_node('include')
-    conf.env.INCLUDES_USER = x.abspath()
-    print('Include directory:   {}'.format(x, x.path_from(conf.path)))
+    with open(os.path.join(out, 'asmflags.log'), 'w') as f:
+        f.write('\n'.join(conf.env.ASMFLAGS) + '\n')
+    with open(os.path.join(out, 'linkflags.log'), 'w') as f:
+        f.write('\n'.join(conf.env.LINKFLAGS) + '\n')
+    with open(os.path.join(out, 'xlinker.log'), 'w') as f:
+        f.write('\n'.join(conf.env.XLINKER) + '\n')
 
     if conf.options.libs:
-        conf.env.LIB_USER = conf.options.libs
-        print('Using library:       {}'.format(conf.options.libs))
+        conf.path.get_bld().make_node('lib').mkdir()
+        x = conf.path.get_bld().find_node('lib')
+        conf.env.append_value('LIBPATH', x.abspath())
+        conf.env.BUILD_DIR_LIBS = x.abspath()
+        Logs.info('Additional Library directory:   {}'.format(x, x.path_from(conf.path)))
+
+        conf.path.get_bld().make_node('include').mkdir()
+        x = conf.path.get_bld().find_node('include')
+        conf.env.append_value('INCLUDES', x.abspath())
+        conf.env.INCLUDE_DIR_LIBS = x.abspath()
+        Logs.info('Additional Include directory:   {}'.format(x, x.path_from(conf.path)))
+
+        conf.env.USER_DEFINED_LIBS = conf.options.libs
+        Logs.info('Using library:                  {}'.format(conf.options.libs))
     else:
-        conf.env.LIB_USER = None
+        conf.env.USER_DEFINED_LIBS = None
 
 
 def build(bld):
@@ -339,15 +360,17 @@ def build(bld):
 def size(bld):
     base_cmd = '{} --format=berkley'.format(bld.env.SIZE[0])
     print('Running: \'{}\' on all binaries.'.format(base_cmd))
-    out_pref = out + '/' + bld.variant + '/'
     _out = '\n'
-    for _f in ['**/*.elf', '**/*.a', '**/*.o']:
-        for filename in glob.glob(out_pref + _f, recursive=True):
-            cmd = '{} {}'.format(base_cmd, os.path.abspath(filename))
-            _std_out, _std_err = bld.cmd_and_log(cmd, output=waflib.Context.BOTH, quiet=waflib.Context.STDOUT)
-            _out += '{}\n'.format(cmd)
-            if _std_out:
-                _out += '\n{}'.format(_std_out)
+    obs = bld.path.get_bld().ant_glob('**/*.elf **/*.a **/*.o',
+                                      quiet=True)
+    for filename in obs:
+        cmd = '{} {}'.format(base_cmd, filename.abspath())
+        _std_out, _std_err = bld.cmd_and_log(cmd,
+                                             output=waflib.Context.BOTH,
+                                             quiet=waflib.Context.STDOUT)
+        _out += '{}\n'.format(cmd)
+        if _std_out:
+            _out += '\n{}'.format(_std_out)
     size_log_file = os.path.join(bld.bldnode.abspath(), 'size_' + bld.variant + '.log')
     with open(size_log_file, 'w') as f:
         f.write(_out)
@@ -540,18 +563,23 @@ found in PATH)')
 
 
 class strip(Task.Task):
-    run_str = '${STRIP} ${SRC}'
+    always_run = True
+    after = ['tsk_binflashheaderpatch']
+    run_str = '${STRIP} ${SRC} -o ${TGT}'
     color = 'BLUE'
 
 
 @TaskGen.feature('strip')
-@TaskGen.after('apply_link')
+@TaskGen.after('add_chksum_task')
+@TaskGen.after('add_bingen_task')
 def add_strip_task(self):
     try:
         link_task = self.link_task
     except AttributeError:
         return
-    self.create_task('strip', link_task.outputs[0])
+    self.create_task('strip',
+                     src=link_task.outputs[0],
+                     tgt=link_task.outputs[0].change_ext('_nd.elf'))
 
 
 class hexgen(Task.Task):
@@ -603,16 +631,16 @@ def add_bingen_task(self):
     self.binflashheaderpatch_task = self.create_task('tsk_binflashheaderpatch', src=[link_task.outputs[0], self.binflashheadergen_task.outputs[0]])
 
 
-import waflib.Tools.asm    # noqa: E402 import before redefining
+import waflib.Tools.asm  # noqa: E402 import before redefining
 from waflib.TaskGen import extension  # noqa: E402
 
 
 class Sasm(Task.Task):
     color = 'BLUE'
-    run_str = '${CC} ${CFLAGS} ${CPPPATH_ST:INCPATHS} -DHSE_VALUE=8000000 -MMD -MP -MT${TGT} -c -x assembler -o ${TGT} ${SRC}'
+    run_str = '${CC} ${ASMFLAGS} ${CPPPATH_ST:INCPATHS} -o ${TGT} ${SRC}'
 
 
-@extension('.S')
+@extension('.s')
 def asm_hook(self, node):
     name = 'Sasm'
     out = node.change_ext('.o')

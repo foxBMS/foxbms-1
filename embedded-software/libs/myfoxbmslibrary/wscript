@@ -37,18 +37,23 @@
 #
 # &Prime;This product is derived from foxBMS&reg;&Prime;
 
-"""WAF script lists the subdirectories of src/ to be built
-"""
+import os
 
 
 def build(bld):
-    header_files_src = bld.path.ant_glob('**/*.h')
-    header_filenames = [n.name for n in header_files_src]
-    if not len(header_filenames) == len(set(header_filenames)):
-        duplicates = list(set([x for x in header_filenames
-                          if header_filenames.count(x) > 1]))
-        err_msg = 'There are headers with the same file name recursively ' \
-                  ' inside directory \'{}\':\n' \
-                  '{}'.format(bld.path.abspath(), '\n'.join(duplicates))
-        bld.fatal(err_msg)
-    bld.recurse('testlib myfoxbmslibrary')
+    header_files_src = bld.path.ant_glob('*.h')
+    header_files_tar = [os.path.join(bld.env.INCLUDE_DIR_LIBS,
+                        x.path_from(bld.path)) for x in header_files_src]
+    srcs = ' '.join([
+        os.path.join('myfoxbmsalgorithms.c')])
+
+    includes = os.path.join(bld.bldnode.abspath()) + ' '
+    includes += ' '.join(['.'])
+
+    bld.stlib(target=os.path.join(bld.env.BUILD_DIR_LIBS, 'my-foxbms-library'),
+              source=srcs,
+              includes=includes)
+    bld(features='subst',
+        source=header_files_src,
+        target=header_files_tar,
+        is_copy=True)

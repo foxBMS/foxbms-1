@@ -121,7 +121,6 @@ uint32_t VIC_PreOsInterruptInit(void) {
 
 
 uint32_t VIC_PostOsInterruptInit(void) {
-
     uint32_t retErr = 0;
 
     HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);

@@ -97,11 +97,11 @@ typedef enum {
 */
 #define BS_NR_OF_BAT_CELLS_PER_MODULE               12
 
-#if BS_NR_OF_BAT_CELLS_PER_MODULE<=12
+#if BS_NR_OF_BAT_CELLS_PER_MODULE <= 12
     #define BS_MAX_SUPPORTED_CELLS         12
-#elif BS_NR_OF_BAT_CELLS_PER_MODULE<=15
+#elif BS_NR_OF_BAT_CELLS_PER_MODULE <= 15
     #define BS_MAX_SUPPORTED_CELLS         15
-#elif BS_NR_OF_BAT_CELLS_PER_MODULE<=18
+#elif BS_NR_OF_BAT_CELLS_PER_MODULE <= 18
     #define BS_MAX_SUPPORTED_CELLS         18
 #else
     #error "Unsupported number of cells per module, higher than 18"
@@ -112,7 +112,7 @@ typedef enum {
  * 5 for 12 cell version
  * 9 for 18 cell version
  */
-#if BS_MAX_SUPPORTED_CELLS==12
+#if BS_MAX_SUPPORTED_CELLS == 12
     #define BS_NR_OF_GPIOS_PER_MODULE               5
 #else
     #define BS_NR_OF_GPIOS_PER_MODULE               9
@@ -254,6 +254,16 @@ typedef enum {
 
 /**
  * @ingroup CONFIG_BATTERYSYSTEM
+ * number of voltages measured by MCU internal ADC
+ * \par Type:
+ * int
+ * \par Default:
+ * 3
+*/
+#define BS_NR_OF_VOLTAGES_FROM_MCU_ADC      2
+
+/**
+ * @ingroup CONFIG_BATTERYSYSTEM
  * number of contactors
  * On the foxBMS Basic Board 6 contactors are supported. On the foxBMS
  * Basic Extension board one can use 3 more contactors.
@@ -285,6 +295,41 @@ typedef enum {
  */
 #define BS_REST_CURRENT_mA                          200
 
+/**
+ * maximum voltage drop over fuse. If the measured voltage difference
+ * between battery voltage measured voltage after fuse is larger than this
+ * value. It can be concluded, that the fuse has tripped. The voltage
+ * difference can be estimated by the maximum current and the resistance.
+ *
+ * For a Cooper Bussmann 1000A fuse the voltage drop can be estimated to:
+ * Imax =  1000A, Ploss = 206W: -> voltage drop at 1000A roughly 206mV
+ * -> select 500mV because of measurement inaccuracies
+ */
+#define BS_MAX_VOLTAGE_DROP_OVER_FUSE_mV            500
+
+/**
+ * Set to TRUE if fuse in NORMAL path should be checked. This can only be done
+ * if one dedicated HV measurement is used to monitor the voltage directly after
+ * the fuse. Then a voltage difference between Vbat and Vfuse indicates a tripped
+ * fuse.
+ *
+ *    Vbat   ------      Vfuse       Precharge/Main+ contactor
+ * -----+---| FUSE |-----+------------/   -----------------
+ *           ------
+ */
+#define BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH          TRUE
+
+/**
+ * Set to TRUE if fuse in CHARGE path should be checked. This can only be done
+ * if one dedicated HV measurement is used to monitor the voltage directly after
+ * the fuse. Then a voltage difference between Vbat and Vfuse indicates a tripped
+ * fuse.
+ *
+ *    Vbat   ------      Vfuse       Precharge/Charge+ contactor
+ * -----+---| FUSE |-----+------------/   -----------------
+ *           ------
+ */
+#define BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH          FALSE
 
 /*================== Constant and Variable Definitions ====================*/
 
@@ -294,7 +339,7 @@ typedef enum {
  * @brief   Checks current direction, read current from database
  *
  * @return  BS_CURRENT_DISCHARGE or BS_CURRENT_CHARGE depending
- *          on current direction ( (type: BS_CURRENT_DIRECTION_e)
+ *          on current direction ((type: BS_CURRENT_DIRECTION_e)
  */
 extern BS_CURRENT_DIRECTION_e BS_CheckCurrent_Direction(void);
 
@@ -302,7 +347,7 @@ extern BS_CURRENT_DIRECTION_e BS_CheckCurrent_Direction(void);
   * @brief   Checks current direction, current value as function parameter
   *
   * @return  BS_CURRENT_DISCHARGE or BS_CURRENT_CHARGE depending
-  *          on current direction ( (type: BS_CURRENT_DIRECTION_e)
+  *          on current direction ((type: BS_CURRENT_DIRECTION_e)
   */
 extern BS_CURRENT_DIRECTION_e BS_CheckCurrentValue_Direction(float current);
 

@@ -172,7 +172,6 @@ static STD_RETURN_TYPE_e CAN_InterpretReceivedMsg(CAN_NodeTypeDef_e canNode, uin
  ****************************************/
 
 uint32_t CAN_Init(void) {
-
     uint32_t retval = 0;
 
 #if CAN_USE_CAN_NODE0
@@ -352,13 +351,11 @@ static uint32_t CAN_InitFilter(CAN_HandleTypeDef* ptrHcan, CAN_MSG_RX_TYPE_s* ca
 
                     switch (numberRegistersUsed) {
                         case 0:  /* first 32bit per filter bank */
-                            if (caseID  ==  ID_32BIT_FIFO0 || caseID  ==  ID_32BIT_FIFO1) {   /* list mode 32bit */
-
+                            if (caseID  ==  ID_32BIT_FIFO0 || caseID  ==  ID_32BIT_FIFO1) {  /* list mode 32bit */
                                 sFilterConfig.FilterIdHigh = ((can_RxMsgs[posRxMsgs].ID << 3) >> 16);  /* 1 << 2 is for setting IDE bit to receive extended identifiers */
                                 sFilterConfig.FilterIdLow = (uint16_t)((can_RxMsgs[posRxMsgs].ID << 3) | 1 << 2
                                         | can_RxMsgs[posRxMsgs].RTR << 1);
                             } else if (caseID  ==  MSK_16BIT_FIFO0 || caseID  ==  MSK_16BIT_FIFO1) {  /* mask mode 16bit */
-
                                 sFilterConfig.FilterIdHigh = ((can_RxMsgs[posRxMsgs].ID << 5)
                                         | can_RxMsgs[posRxMsgs].RTR << 4);
                                 sFilterConfig.FilterMaskIdHigh = can_RxMsgs[posRxMsgs].mask;
@@ -369,13 +366,11 @@ static uint32_t CAN_InitFilter(CAN_HandleTypeDef* ptrHcan, CAN_MSG_RX_TYPE_s* ca
                             break;
 
                         case 1:  /* second 32bit per filter bank */
-                            if (caseID  ==  ID_32BIT_FIFO0 || caseID  ==  ID_32BIT_FIFO1) {   /* list mode 32bit */
-
+                            if (caseID  ==  ID_32BIT_FIFO0 || caseID  ==  ID_32BIT_FIFO1) {  /* list mode 32bit */
                                 sFilterConfig.FilterMaskIdHigh = ((can_RxMsgs[posRxMsgs].ID << 3) >> 16);  /*  1 << 2 is for setting IDE bit to receive extended identifiers */
                                 sFilterConfig.FilterMaskIdLow = (uint16_t)((can_RxMsgs[posRxMsgs].ID << 3) | 1 << 2
                                         | can_RxMsgs[posRxMsgs].RTR << 1);
                             } else if (caseID  ==  MSK_16BIT_FIFO0 || caseID  ==  MSK_16BIT_FIFO1) {  /* mask mode 16bit */
-
                                 sFilterConfig.FilterIdLow = ((can_RxMsgs[posRxMsgs].ID << 5)
                                         | can_RxMsgs[posRxMsgs].RTR << 4);
                                 sFilterConfig.FilterMaskIdLow = can_RxMsgs[posRxMsgs].mask;
@@ -415,7 +410,7 @@ static uint32_t CAN_InitFilter(CAN_HandleTypeDef* ptrHcan, CAN_MSG_RX_TYPE_s* ca
         if (numberOfDifferentIDs[MSK_32BIT] > 0) {
             /* Mask mode 32bit */
 
-            while (j < numberOfDifferentIDs[MSK_32BIT]) {    /*  Get array position of next ID */
+            while (j < numberOfDifferentIDs[MSK_32BIT]) {  /*  Get array position of next ID */
                 /* Until all IDs in that filter case are treated */
                 posRxMsgs = CAN_GetNextID(can_RxMsgs, numberOfRxMsgs, posRxMsgs, MSK_32BIT);
 
@@ -468,7 +463,6 @@ static uint8_t CAN_NumberOfNeededFilters(CAN_MSG_RX_TYPE_s* can_RxMsgs, uint8_t*
     }
 
     for (int i = 0; i < can_rx_length; i++) {
-
 #if CAN0_BUFFER_BYPASS_NUMBER_OF_IDs > 0 && CAN_USE_CAN_NODE0 == 1
 
         if (can_RxMsgs  ==  &can0_RxMsgs[0]) {
@@ -498,7 +492,6 @@ static uint8_t CAN_NumberOfNeededFilters(CAN_MSG_RX_TYPE_s* can_RxMsgs, uint8_t*
         }
 #endif
         if (can_RxMsgs[i].mask  ==  0 && IS_CAN_STDID(can_RxMsgs[i].ID)) {
-
             /* ID List mode 16bit */
 
             if (can_RxMsgs[i].fifo  ==  CAN_FIFO0) {
@@ -605,7 +598,6 @@ static uint8_t CAN_GetNextID(CAN_MSG_RX_TYPE_s* can_RxMsgs, uint8_t numberOfRxID
  ****************************************/
 
 void CAN_TX_IRQHandler(CAN_HandleTypeDef* ptrHcan) {
-
     /* Check End of transmission flag */
     if (__HAL_CAN_GET_IT_SOURCE(ptrHcan, CAN_IT_TME)) {
         if ((__HAL_CAN_TRANSMIT_STATUS(ptrHcan, CAN_TXMAILBOX_0))
@@ -730,7 +722,6 @@ void CAN_Error_IRQHandler(CAN_NodeTypeDef_e canNode, CAN_HandleTypeDef* ptrHcan)
 
     /* Call Error callback function */
     if (ptrHcan->ErrorCode != HAL_CAN_ERROR_NONE) {
-
         /* Set last error code in CAN_errorStruct */
         errorStruct->canError = ptrHcan->ErrorCode;
 
@@ -780,7 +771,6 @@ static void CAN_Disable_Transmit_IT(CAN_HandleTypeDef* ptrHcan) {
     if (ptrHcan->Instance  ==  CAN1) {
         /* Transmission complete callback */
         CAN_TxCpltCallback(CAN_NODE1);
-
     }
 #endif
 }
@@ -815,7 +805,6 @@ static void CAN_TxCpltCallback(CAN_NodeTypeDef_e canNode) {
         } else {
             retVal = CAN_TxMsgBuffer(canNode);
             if (retVal  ==  E_OK) {
-
             } else {
                 retVal = E_NOT_OK;        /* Error during transmission, retransmit message later */
             }
@@ -833,7 +822,6 @@ static void CAN_TxCpltCallback(CAN_NodeTypeDef_e canNode) {
  * @retval None
  */
 static void CAN_ErrorCallback(CAN_HandleTypeDef* ptrHcan) {
-
 }
 
 /* ***************************************
@@ -847,13 +835,11 @@ STD_RETURN_TYPE_e CAN_TxMsg(CAN_NodeTypeDef_e canNode, uint32_t msgID, uint8_t* 
     CAN_HandleTypeDef *ptrHcan;
 
     if (canNode  ==  CAN_NODE0) {
-
         if (canNode0_listenonly_mode)
             ptrHcan = NULL;
         else
             ptrHcan = &hcan0;
     } else if (canNode  ==  CAN_NODE1) {
-
         if (canNode1_listenonly_mode)
             ptrHcan = NULL;
         else
@@ -904,7 +890,6 @@ STD_RETURN_TYPE_e CAN_Send(CAN_NodeTypeDef_e canNode, uint32_t msgID, uint8_t* p
     }
 
     if (can_txbuffer != NULL) {
-
         tmptxbuffer_wr = can_txbuffer->ptrWrite;
 
         if (tmptxbuffer_wr  ==  can_txbuffer->ptrRead) {
@@ -969,7 +954,6 @@ STD_RETURN_TYPE_e CAN_TxMsgBuffer(CAN_NodeTypeDef_e canNode) {
     if (canNode  ==  CAN_NODE0) {
 #if CAN_USE_CAN_NODE0 == 1
         if (!canNode0_listenonly_mode) {
-
             can_txbuffer = &can0_txbuffer;
             ptrHcan = &hcan0;
         }
@@ -977,7 +961,6 @@ STD_RETURN_TYPE_e CAN_TxMsgBuffer(CAN_NodeTypeDef_e canNode) {
     } else if (canNode  ==  CAN_NODE1) {
 #if CAN_USE_CAN_NODE1 == 1
         if (!canNode1_listenonly_mode) {
-
             can_txbuffer = &can1_txbuffer;
             ptrHcan = &hcan1;
         }
@@ -1282,19 +1265,17 @@ static STD_RETURN_TYPE_e CAN_BufferBypass(CAN_NodeTypeDef_e canNode, uint32_t ms
 
     /* Perform SW reset */
     if (msgID == CAN_ID_SOFTWARE_RESET_MSG && DLC == 8) {
-
         uint8_t reset = 0;
 
         /* CAN data = FF FF FF FF FF FF FF FF */
         for (uint8_t i = 0; i < DLC; i++) {
-
             if (rxData[i] != 0xFF)
                 reset = 1;
         }
 #if CAN_SW_RESET_WITH_DEVICE_ID == 1
 
-/*         /* CAN data = MCU Device ID Byte [0] [1] [2] [3] [4] [5] [6] [7] */
-/*         if(rxData[0] == (uint8_t)mcu_unique_deviceID.off0 && data[1] == (uint8_t)(mcu_unique_deviceID.off0 >> 8) &&
+/*         CAN data = MCU Device ID Byte [0] [1] [2] [3] [4] [5] [6] [7] */
+/*         if (rxData[0] == (uint8_t)mcu_unique_deviceID.off0 && data[1] == (uint8_t)(mcu_unique_deviceID.off0 >> 8) &&
                 rxData[2] == (uint8_t)(mcu_unique_deviceID.off0 >> 16) && rxData[3] == (uint8_t)(mcu_unique_deviceID.off0 >> 24) &&
                 rxData[4] == (uint8_t)mcu_unique_deviceID.off32 && rxData[5] == (uint8_t)(mcu_unique_deviceID.off32 >> 8) &&
                 rxData[6] == (uint8_t)(mcu_unique_deviceID.off32 >> 16) && rxData[7] == (uint8_t)(mcu_unique_deviceID.off32 >> 24)) {
@@ -1313,7 +1294,6 @@ static STD_RETURN_TYPE_e CAN_BufferBypass(CAN_NodeTypeDef_e canNode, uint32_t ms
 
         if (reset == 1)
             HAL_NVIC_SystemReset();
-
     }
     return retVal;
 }

@@ -62,24 +62,24 @@
 
 
 const CONT_CONFIG_s cont_contactors_config[BS_NR_OF_CONTACTORS] = {
-        {CONT_MAIN_PLUS_CONTROL,        CONT_MAIN_PLUS_FEEDBACK,        CONT_FEEDBACK_NORMALLY_OPEN},
-        {CONT_PRECHARGE_PLUS_CONTROL,   CONT_PRECHARGE_PLUS_FEEDBACK,   CONT_FEEDBACK_NORMALLY_OPEN},
-        {CONT_MAIN_MINUS_CONTROL,       CONT_MAIN_MINUS_FEEDBACK,       CONT_FEEDBACK_NORMALLY_OPEN},
+    {CONT_MAIN_PLUS_CONTROL,        CONT_MAIN_PLUS_FEEDBACK,        CONT_FEEDBACK_NORMALLY_OPEN},
+    {CONT_PRECHARGE_PLUS_CONTROL,   CONT_PRECHARGE_PLUS_FEEDBACK,   CONT_FEEDBACK_NORMALLY_OPEN},
+    {CONT_MAIN_MINUS_CONTROL,       CONT_MAIN_MINUS_FEEDBACK,       CONT_FEEDBACK_NORMALLY_OPEN},
 #if BS_SEPARATE_POWERLINES == 1
-        {CONT_CHARGE_MAIN_PLUS_CONTROL,         CONT_CHARGE_MAIN_PLUS_FEEDBACK,         CONT_FEEDBACK_NORMALLY_OPEN},
-        {CONT_CHARGE_PRECHARGE_PLUS_CONTROL,    CONT_CHARGE_PRECHARGE_PLUS_FEEDBACK,    CONT_FEEDBACK_NORMALLY_OPEN},
-        {CONT_CHARGE_MAIN_MINUS_CONTROL,        CONT_CHARGE_MAIN_MINUS_FEEDBACK,        CONT_FEEDBACK_NORMALLY_OPEN}
+    {CONT_CHARGE_MAIN_PLUS_CONTROL,         CONT_CHARGE_MAIN_PLUS_FEEDBACK,         CONT_FEEDBACK_NORMALLY_OPEN},
+    {CONT_CHARGE_PRECHARGE_PLUS_CONTROL,    CONT_CHARGE_PRECHARGE_PLUS_FEEDBACK,    CONT_FEEDBACK_NORMALLY_OPEN},
+    {CONT_CHARGE_MAIN_MINUS_CONTROL,        CONT_CHARGE_MAIN_MINUS_FEEDBACK,        CONT_FEEDBACK_NORMALLY_OPEN}
 #endif /* BS_SEPARATE_POWERLINES == 1 */
 };
 
 CONT_ELECTRICAL_STATE_s cont_contactor_states[BS_NR_OF_CONTACTORS] = {
-        {0,    CONT_SWITCH_OFF},
-        {0,    CONT_SWITCH_OFF},
-        {0,    CONT_SWITCH_OFF},
+    {0,    CONT_SWITCH_OFF},
+    {0,    CONT_SWITCH_OFF},
+    {0,    CONT_SWITCH_OFF},
 #if BS_SEPARATE_POWERLINES == 1
-        {0,    CONT_SWITCH_OFF},
-        {0,    CONT_SWITCH_OFF},
-        {0,    CONT_SWITCH_OFF},
+    {0,    CONT_SWITCH_OFF},
+    {0,    CONT_SWITCH_OFF},
+    {0,    CONT_SWITCH_OFF},
 #endif /* BS_SEPARATE_POWERLINES == 1 */
 };
 
@@ -137,4 +137,79 @@ STD_RETURN_TYPE_e CONT_CheckPrecharge(CONT_WHICH_POWERLINE_e caller) {
 }
 
 
+STD_RETURN_TYPE_e CONT_CheckFuse(CONT_WHICH_POWERLINE_e caller) {
+#if (BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH == TRUE) || (BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH == TRUE)
+    STD_RETURN_TYPE_e fuseState = E_NOT_OK;
+    DATA_BLOCK_CURRENT_SENSOR_s curSensTab;
+    DATA_BLOCK_CONTFEEDBACK_s contFeedbackTab;
+    uint32_t voltDiff_mV = 0;
+    STD_RETURN_TYPE_e checkFuseState = E_NOT_OK;
+
+    DB_ReadBlock(&curSensTab, DATA_BLOCK_ID_CURRENT_SENSOR);
+    DB_ReadBlock(&contFeedbackTab, DATA_BLOCK_ID_CONTFEEDBACK);
+
+    if (caller == CONT_POWERLINE_NORMAL) {
+        /* Fuse state can only be checked if plus and minus contactors are closed. */
+        if ((((contFeedbackTab.contactor_feedback & 0x01) == 0x01) ||
+                ((contFeedbackTab.contactor_feedback & 0x02) == 0x02)) &&
+                ((contFeedbackTab.contactor_feedback & 0x04) == 0x04)) {
+                    /* main plus OR main precharge AND minus are closed */
+                checkFuseState = E_OK;
+        }  else {
+            /* Fuse state can't be checked if no plus contactors are closed */
+            checkFuseState = E_NOT_OK;
+        }
+        /* Check voltage difference between battery voltage and voltage after fuse */
+        if (checkFuseState == E_OK) {
+            if (curSensTab.voltage[0] > curSensTab.voltage[1]) {
+                voltDiff_mV = curSensTab.voltage[0] - curSensTab.voltage[1];
+            } else {
+                voltDiff_mV = curSensTab.voltage[1] - curSensTab.voltage[0];
+            }
+
+            /* If voltage difference is larger than max. allowed voltage drop over fuse*/
+            if (voltDiff_mV > BS_MAX_VOLTAGE_DROP_OVER_FUSE_mV) {
+                fuseState = E_NOT_OK;
+            } else {
+                fuseState = E_OK;
+            }
+        } else {
+            /* Can't draw any conclusions about fuse state -> do not return E_NOT_OK */
+            fuseState = E_OK;
+        }
+    } else if (caller == CONT_POWERLINE_CHARGE) {
+        /* Fuse state can only be checked if plus and minus contactors are closed. */
+        if ((((contFeedbackTab.contactor_feedback & 0x08) == 0x08) ||
+                ((contFeedbackTab.contactor_feedback & 0x10) == 0x10)) &&
+                ((contFeedbackTab.contactor_feedback & 0x20) == 0x20)) {
+            /* charge plus OR charge precharge AND minus are closed */
+                checkFuseState = E_OK;
+        } else {
+            /* Fuse state can't be checked if no plus contactors are closed */
+            checkFuseState = E_NOT_OK;
+        }
+        /* Check voltage difference between battery voltage and voltage after fuse */
+        if (checkFuseState == E_OK) {
+            if (curSensTab.voltage[0] > curSensTab.voltage[1]) {
+                voltDiff_mV = curSensTab.voltage[0] - curSensTab.voltage[2];
+            } else {
+                voltDiff_mV = curSensTab.voltage[2] - curSensTab.voltage[0];
+            }
+
+            /* If voltage difference is larger than max. allowed voltage drop over fuse*/
+            if (voltDiff_mV > BS_MAX_VOLTAGE_DROP_OVER_FUSE_mV) {
+                fuseState = E_NOT_OK;
+            } else {
+                fuseState = E_OK;
+            }
+        } else {
+            /* Can't draw any conclusions about fuse state -> do not return E_NOT_OK */
+            fuseState = E_OK;
+        }
+    }
+    return fuseState;
+#else /* BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH == FALSE && BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH == FALSE */
+    return E_OK;
+#endif /* BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH || BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH */
+}
 #endif /* BUILD_MODULE_ENABLE_CONTACTOR */

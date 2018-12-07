@@ -58,17 +58,15 @@
 
 /*================== Macros and Definitions ===============================*/
 
-/* FIXME Why is there no 1 in following enum? */
 /** diagnosis handler return types */
 typedef enum {
     DIAG_HANDLER_RETURN_OK                  = 0,            /*!<  error not occured or occured but threshold not reached */
-    DIAG_HANDLER_RETURN_ERR_OCCURED         = 2,            /*!<  error occured and enabled */
-    DIAG_HANDLER_RETURN_WARNING_OCCURRED    = 3,            /*!<  warning occured (error occured but not enabled) */
-    DIAG_HANDLER_RETURN_ERR_OCCURRED        = 4,            /*!<  error occured and enabled */
-    DIAG_HANDLER_RETURN_WRONG_ID            = 5,            /*!<  wrong diagnosis id */
-    DIAG_HANDLER_RETURN_UNKNOWN             = 6,            /*!<  unknown return type */
-    DIAG_HANDLER_INVALID_TYPE               = 7,            /*!<  invalid diagnosis type, error in configuration */
-    DIAG_HANDLER_INVALID_DATA               = 8,            /*!<  invalid data, dependent of the diagHandler */
+    DIAG_HANDLER_RETURN_ERR_OCCURRED        = 1,            /*!<  error occured and enabled */
+    DIAG_HANDLER_RETURN_WARNING_OCCURRED    = 2,            /*!<  warning occured (error occured but not enabled) */
+    DIAG_HANDLER_RETURN_WRONG_ID            = 3,            /*!<  wrong diagnosis id */
+    DIAG_HANDLER_RETURN_UNKNOWN             = 4,            /*!<  unknown return type */
+    DIAG_HANDLER_INVALID_TYPE               = 5,            /*!<  invalid diagnosis type, error in configuration */
+    DIAG_HANDLER_INVALID_DATA               = 6,            /*!<  invalid data, dependent of the diagHandler */
     DIAG_HANDLER_RETURN_NOT_READY           = 0xFFFFFFFF,   /*!<  diagnosis handler not ready */
 } DIAG_RETURNTYPE_e;
 
@@ -157,9 +155,9 @@ typedef struct {
     uint16_t         occurrence_cnt[DIAG_ID_MAX];            /*!< */
     uint8_t         id2ch[DIAG_ID_MAX];                     /*!< diagnosis-id to configuration channel selector*/
     uint8_t         nr_of_ch;                               /*!< number of configured channels*/
-    uint32_t        errflag[(DIAG_ID_MAX+31)/32];           /*!< detected error   flags (bit_nr = diag_id ) */
-    uint32_t        warnflag[(DIAG_ID_MAX+31)/32];          /*!< detected warning flags (bit_nr = diag_id ) */
-    uint32_t        err_enableflag[(DIAG_ID_MAX+31)/32];    /*!< enabled error flags (bit_nr = diag_id )    */
+    uint32_t        errflag[(DIAG_ID_MAX+31)/32];           /*!< detected error   flags (bit_nr = diag_id) */
+    uint32_t        warnflag[(DIAG_ID_MAX+31)/32];          /*!< detected warning flags (bit_nr = diag_id) */
+    uint32_t        err_enableflag[(DIAG_ID_MAX+31)/32];    /*!< enabled error flags (bit_nr = diag_id)    */
 } DIAG_s;
 
 /*================== Constant and Variable Definitions ====================*/

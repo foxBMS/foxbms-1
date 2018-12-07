@@ -96,6 +96,7 @@ def build(bld):
                 os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'mcu'),
                 os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'rcc'),
                 os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'rtc'),
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'spi'),
                 os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'driver', 'uart'),
 
                 os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'engine', 'database'),

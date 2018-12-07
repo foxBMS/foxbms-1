@@ -80,7 +80,6 @@ static STD_RETURN_TYPE_e GPIO_Check(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO
 /*================== Public functions =====================================*/
 
 STD_RETURN_TYPE_e IO_Init(const IO_PIN_CFG_s *io_cfg) {
-
     if (NULL_PTR == io_cfg) {
         return E_NOT_OK; /* configuration error */
     }
@@ -93,8 +92,7 @@ STD_RETURN_TYPE_e IO_Init(const IO_PIN_CFG_s *io_cfg) {
     clk_ok = IO_ClkInit();
 
     if (E_OK == clk_ok) {
-        for (uint8_t i = 0; i < io_cfg_length; i++)
-        {
+        for (uint8_t i = 0; i < io_cfg_length; i++) {
             GPIO_InitStructure.Pin = (uint16_t) (1<< ((io_cfg[i].pin) % IO_NR_OF_PINS_PER_PORT));
             GPIO_InitStructure.Mode = io_cfg[i].mode;
             GPIO_InitStructure.Pull = io_cfg[i].pinpull;
@@ -106,15 +104,13 @@ STD_RETURN_TYPE_e IO_Init(const IO_PIN_CFG_s *io_cfg) {
             HAL_GPIO_Init(IO_GET_GPIOx(io_cfg[i].pin/IO_NR_OF_PINS_PER_PORT), &GPIO_InitStructure);
 
             if (IO_PIN_SET  ==  io_cfg[i].initvalue) {
-                if((IO_MODE_OUTPUT_PP  ==  io_cfg[i].mode)||(IO_MODE_OUTPUT_OD  ==  io_cfg[i].mode)||
-                        (IO_MODE_AF_PP  ==  io_cfg[i].mode)||(IO_MODE_AF_OD  ==  io_cfg[i].mode)
-                ) {
+                if ((IO_MODE_OUTPUT_PP  ==  io_cfg[i].mode) || (IO_MODE_OUTPUT_OD  ==  io_cfg[i].mode) ||
+                        (IO_MODE_AF_PP  ==  io_cfg[i].mode) || (IO_MODE_AF_OD  ==  io_cfg[i].mode)) {
                     IO_WritePin(io_cfg[i].pin, IO_PIN_SET);
                 }
-            }
-            else {
+            } else {
                 IO_WritePin(io_cfg[i].pin, IO_PIN_RESET);
-            };
+            }
 
             config_ok = (GPIO_Check(IO_GET_GPIOx(io_cfg[i].pin/IO_NR_OF_PINS_PER_PORT), &GPIO_InitStructure) == E_OK ? config_ok : E_NOT_OK);
         }
@@ -134,8 +130,7 @@ STD_RETURN_TYPE_e IO_Init(const IO_PIN_CFG_s *io_cfg) {
             }
             if (IO_HAL_STATUS_OK == pinLockingState) {
                 successfulLocks++;
-            }
-            else {
+            } else {
                 break;
             }
             pinLockingState = IO_HAL_STATUS_ERROR;
@@ -151,7 +146,7 @@ STD_RETURN_TYPE_e IO_Init(const IO_PIN_CFG_s *io_cfg) {
 #ifdef IO_PIN_LOCKING
         && (E_OK == pinLocking_ok)
 #endif
-         ) {
+        ) {
         retVal = E_OK;
     }
     return retVal;
@@ -159,27 +154,27 @@ STD_RETURN_TYPE_e IO_Init(const IO_PIN_CFG_s *io_cfg) {
 
 IO_PIN_STATE_e IO_ReadPin(IO_PORTS_e pin) {
     IO_PIN_STATE_e currentPinState;
-    uint16_t getPin = (uint16_t) (1<<(pin%IO_NR_OF_PINS_PER_PORT));
+    uint16_t getPin = (uint16_t) (1 << (pin%IO_NR_OF_PINS_PER_PORT));
     currentPinState = HAL_GPIO_ReadPin(IO_GET_GPIOx(pin/IO_NR_OF_PINS_PER_PORT), getPin);
     return currentPinState;
 }
 
 void IO_WritePin(IO_PORTS_e pin, IO_PIN_STATE_e requestedPinState) {
-    uint16_t setPin = (uint16_t) (1<<(pin%IO_NR_OF_PINS_PER_PORT));
+    uint16_t setPin = (uint16_t) (1 << (pin%IO_NR_OF_PINS_PER_PORT));
     HAL_GPIO_WritePin(IO_GET_GPIOx(pin/IO_NR_OF_PINS_PER_PORT), setPin, requestedPinState);
 }
 
 void IO_TogglePin(IO_PORTS_e pin) {
-    uint16_t setPin = (uint16_t) (1<<(pin%IO_NR_OF_PINS_PER_PORT));
+    uint16_t setPin = (uint16_t) (1 << (pin%IO_NR_OF_PINS_PER_PORT));
     HAL_GPIO_TogglePin(IO_GET_GPIOx(pin/IO_NR_OF_PINS_PER_PORT), setPin);
 }
 
 void IO_EXTI_IRQHandler(IO_PORTS_e pin) {
-    HAL_GPIO_EXTI_IRQHandler((uint16_t) (1<<(pin%IO_NR_OF_PINS_PER_PORT)));
+    HAL_GPIO_EXTI_IRQHandler((uint16_t) (1 << (pin%IO_NR_OF_PINS_PER_PORT)));
 }
 
 void IO_EXTI_Callback(IO_PORTS_e pin) {
-    HAL_GPIO_EXTI_Callback((uint16_t) (1<<(pin%IO_NR_OF_PINS_PER_PORT)));
+    HAL_GPIO_EXTI_Callback((uint16_t) (1 << (pin%IO_NR_OF_PINS_PER_PORT)));
 }
 
 /*================== Static functions =====================================*/
@@ -238,7 +233,7 @@ static STD_RETURN_TYPE_e IO_ClkInit(void) {
  */
 static IO_HAL_STATUS_e IO_LockPin(IO_PORTS_e pin) {
     IO_HAL_STATUS_e currentPinStatus;
-    uint16_t setPin = (uint16_t) (1<<(pin%IO_NR_OF_PINS_PER_PORT));
+    uint16_t setPin = (uint16_t) (1 << (pin%IO_NR_OF_PINS_PER_PORT));
     currentPinStatus = HAL_GPIO_LockPin(IO_GET_GPIOx(pin/IO_NR_OF_PINS_PER_PORT), setPin);
     return currentPinStatus;
 }
@@ -287,9 +282,7 @@ static IO_HAL_STATUS_e IO_LockPin(IO_PORTS_e pin) {
   *         the configuration information for the specified GPIO peripheral.
   * @retval E_OK on success, E_NOT_OK on failure
   */
-STD_RETURN_TYPE_e GPIO_Check(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
-{
-
+STD_RETURN_TYPE_e GPIO_Check(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init) {
   uint32_t position;
   uint32_t ioposition = 0x00U;
   uint32_t iocurrent = 0x00U;
@@ -302,97 +295,88 @@ STD_RETURN_TYPE_e GPIO_Check(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
   assert_param(IS_GPIO_PULL(GPIO_Init->Pull));
 
   /* Check the port pins */
-  for(position = 0U; position < GPIO_NUMBER; position++)
-  {
+  for (position = 0U; position < GPIO_NUMBER; position++) {
     /* Get the IO position */
     ioposition = ((uint32_t)0x01U) << position;
     /* Get the current IO position */
     iocurrent = (uint32_t)(GPIO_Init->Pin) & ioposition;
 
-    if(iocurrent == ioposition)
-    {
+    if (iocurrent == ioposition) {
       /*--------------------- GPIO Mode Checking ------------------------*/
       /* In case of Alternate function mode selection */
-      if((GPIO_Init->Mode == GPIO_MODE_AF_PP) || (GPIO_Init->Mode == GPIO_MODE_AF_OD))
-      {
+      if ((GPIO_Init->Mode == GPIO_MODE_AF_PP) || (GPIO_Init->Mode == GPIO_MODE_AF_OD)) {
         /* Check Alternate function mapped with the current IO */
         temp = GPIOx->AFR[position >> 3U];
-        temp &= ~((uint32_t)0xFU << ((uint32_t)(position & (uint32_t)0x07U) * 4U)) ;
+        temp &= ~((uint32_t)0xFU << ((uint32_t)(position & (uint32_t)0x07U) * 4U));
         temp |= ((uint32_t)(GPIO_Init->Alternate) << (((uint32_t)position & (uint32_t)0x07U) * 4U));
-        if(GPIOx->AFR[position >> 3U] != temp) return E_NOT_OK;
+        if (GPIOx->AFR[position >> 3U] != temp) return E_NOT_OK;
       }
 
       /* Check IO Direction mode (Input, Output, Alternate or Analog) */
       temp = GPIOx->MODER;
       temp &= ~(GPIO_MODER_MODER0 << (position * 2U));
       temp |= ((GPIO_Init->Mode & GPIO_MODE) << (position * 2U));
-      if(GPIOx->MODER != temp) return E_NOT_OK;
+      if (GPIOx->MODER != temp) return E_NOT_OK;
 
       /* In case of Output or Alternate function mode selection */
-      if((GPIO_Init->Mode == GPIO_MODE_OUTPUT_PP) || (GPIO_Init->Mode == GPIO_MODE_AF_PP) ||
-         (GPIO_Init->Mode == GPIO_MODE_OUTPUT_OD) || (GPIO_Init->Mode == GPIO_MODE_AF_OD))
-      {
+      if ((GPIO_Init->Mode == GPIO_MODE_OUTPUT_PP) || (GPIO_Init->Mode == GPIO_MODE_AF_PP) ||
+         (GPIO_Init->Mode == GPIO_MODE_OUTPUT_OD) || (GPIO_Init->Mode == GPIO_MODE_AF_OD)) {
         /* Check the IO Speed */
         temp = GPIOx->OSPEEDR;
         temp &= ~(GPIO_OSPEEDER_OSPEEDR0 << (position * 2U));
         temp |= (GPIO_Init->Speed << (position * 2U));
-        if(GPIOx->OSPEEDR != temp) return E_NOT_OK;
+        if (GPIOx->OSPEEDR != temp) return E_NOT_OK;
 
         /* Check the IO Output Type */
         temp = GPIOx->OTYPER;
-        temp &= ~(GPIO_OTYPER_OT_0 << position) ;
+        temp &= ~(GPIO_OTYPER_OT_0 << position);
         temp |= (((GPIO_Init->Mode & GPIO_OUTPUT_TYPE) >> 4U) << position);
-        if(GPIOx->OTYPER != temp) return E_NOT_OK;
+        if (GPIOx->OTYPER != temp) return E_NOT_OK;
       }
 
       /* Activate the Pull-up or Pull down resistor for the current IO */
       temp = GPIOx->PUPDR;
       temp &= ~(GPIO_PUPDR_PUPDR0 << (position * 2U));
       temp |= ((GPIO_Init->Pull) << (position * 2U));
-      if(GPIOx->PUPDR != temp) return E_NOT_OK;
+      if (GPIOx->PUPDR != temp) return E_NOT_OK;
 
       /*--------------------- EXTI Mode Configuration ------------------------*/
       /* Check the External Interrupt or event for the current IO */
-      if((GPIO_Init->Mode & EXTI_MODE) == EXTI_MODE)
-      {
+      if ((GPIO_Init->Mode & EXTI_MODE) == EXTI_MODE) {
         temp = SYSCFG->EXTICR[position >> 2U];
         temp &= ~(((uint32_t)0x0FU) << (4U * (position & 0x03U)));
         temp |= ((uint32_t)(GPIO_GET_INDEX(GPIOx)) << (4U * (position & 0x03U)));
-        if(SYSCFG->EXTICR[position >> 2U] != temp) return E_NOT_OK;
+        if (SYSCFG->EXTICR[position >> 2U] != temp) return E_NOT_OK;
 
         /* Check EXTI line configuration */
         temp = EXTI->IMR;
         temp &= ~((uint32_t)iocurrent);
-        if((GPIO_Init->Mode & GPIO_MODE_IT) == GPIO_MODE_IT)
-        {
+        if ((GPIO_Init->Mode & GPIO_MODE_IT) == GPIO_MODE_IT) {
           temp |= iocurrent;
         }
-        if(EXTI->IMR != temp) return E_NOT_OK;
+        if (EXTI->IMR != temp) return E_NOT_OK;
 
         temp = EXTI->EMR;
         temp &= ~((uint32_t)iocurrent);
-        if((GPIO_Init->Mode & GPIO_MODE_EVT) == GPIO_MODE_EVT)
-        {
+        if ((GPIO_Init->Mode & GPIO_MODE_EVT) == GPIO_MODE_EVT) {
           temp |= iocurrent;
         }
-        if(EXTI->EMR != temp) return E_NOT_OK;
+        if (EXTI->EMR != temp) return E_NOT_OK;
 
         /* Check Rising Falling edge configuration */
         temp = EXTI->RTSR;
         temp &= ~((uint32_t)iocurrent);
-        if((GPIO_Init->Mode & RISING_EDGE) == RISING_EDGE)
-        {
+        if ((GPIO_Init->Mode & RISING_EDGE) == RISING_EDGE) {
           temp |= iocurrent;
         }
-        if(EXTI->RTSR != temp) return E_NOT_OK;
+        if (EXTI->RTSR != temp) return E_NOT_OK;
 
         temp = EXTI->FTSR;
         temp &= ~((uint32_t)iocurrent);
-        if((GPIO_Init->Mode & FALLING_EDGE) == FALLING_EDGE)
-        {
+        if ((GPIO_Init->Mode & FALLING_EDGE) == FALLING_EDGE) {
           temp |= iocurrent;
         }
-        if(EXTI->FTSR != temp) return E_NOT_OK;
+        if (EXTI->FTSR != temp) return E_NOT_OK;
       }
     }
   }

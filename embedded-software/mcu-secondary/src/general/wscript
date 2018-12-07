@@ -125,17 +125,24 @@ def build(bld):
         'foxbms-stmhal',
         'foxbms-common-util']
 
+    if bld.env.USER_DEFINED_LIBS:
+        libs = bld.env.USER_DEFINED_LIBS.split(',')
+        for i, v in enumerate(libs):
+            user_lib_string = 'USER_{}'.format(i)
+            bld.env.append_value('LIB_{}'.format(user_lib_string), v)
+            use.append(user_lib_string)
+
     if bld.env.target == 'release':
         bld.program(source=srcs + ' ' + startupscript,
-                    target=bld.env.basename + '.elf',
+                    target=bld.env.appname + '_' + bld.variant + '.elf',
                     includes=includes,
-                    features='strip',
-                    linkflags=['-T' + bld.env.ldscript, '-Xlinker', '--gc-sections', '--specs=nosys.specs', '--specs=nano.specs'],
+                    features=['strip', 'hexgen', 'bingen', 'chksum'],
+                    linkflags=bld.env.LINKFLAGS + ['-T' + bld.env.ldscript, '-Wl,-Map,foxbms.map'] + bld.env.XLINKER,
                     use=use)
     else:
         bld.program(source=srcs + ' ' + startupscript,
                     target=bld.env.appname + '_' + bld.variant + '.elf',
                     includes=includes,
                     features=['hexgen', 'bingen', 'chksum'],
-                    linkflags=bld.env.linkflags + ['-T' + bld.env.ldscript, '-Wl,-Map,foxbms.map', '-Xlinker', '--gc-sections', '--specs=nosys.specs', '--specs=nano.specs'],
+                    linkflags=bld.env.LINKFLAGS + ['-T' + bld.env.ldscript, '-Wl,-Map,foxbms.map'] + bld.env.XLINKER,
                     use=use)

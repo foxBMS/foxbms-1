@@ -40,46 +40,28 @@
  */
 
 /**
- * @file    misc.h
+ * @file    myfoxbmsalgorithms.c
  * @author  foxBMS Team
- * @date    23.12.2015 (date of creation)
- * @ingroup UTIL
+ * @date    05.10.2018 (date of creation)
+ * @ingroup USER_LIB
  * @prefix  none
  *
- * @brief   Headers for the miscellaneous functions
+ * @brief   Example on how to create a user library that is included in foxBMS
  *
  */
 
-#ifndef MISC_H_
-#define MISC_H_
 
 /*================== Includes =============================================*/
-#include "general.h"
+#include "myfoxbmsalgorithms.h"
 
 /*================== Macros and Definitions ===============================*/
 
-
 /*================== Constant and Variable Definitions ====================*/
 
-
 /*================== Function Prototypes ==================================*/
-extern uint8_t *U8ToDecascii(uint8_t *destptr, uint8_t *dataptr, uint8_t minDigits);
-extern uint8_t *hex2ascii(uint8_t *destptr, uint8_t *srcptr, uint8_t len);
-extern uint8_t *U32ToHexascii(uint8_t *destptr, uint32_t *dataptr);
-extern uint8_t *U16ToHexascii(uint8_t *destptr, uint16_t *dataptr);
-extern uint8_t *U8ToHexascii(uint8_t *destptr, uint8_t *dataptr);
-extern uint8_t *I32ToDecascii(uint8_t *destptr, int32_t *dataptr);
-extern uint8_t *U16ToDecascii(uint8_t *destptr, uint16_t *dataptr, uint8_t minDigits);
-
-/**
- * @brief   Converts one ASCII number to its corresponding integer value
- *
- * @param   number between 0-9 in ASCII format
- *
- * @return  uint8_t integer value
- */
-extern uint8_t AsciiNumberToU8(uint8_t asciiChar);
 
 /*================== Function Implementations =============================*/
 
-#endif /* MISC_H_ */
+uint16_t another_super_function(uint8_t a, uint8_t b) {
+    return a + b;
+}

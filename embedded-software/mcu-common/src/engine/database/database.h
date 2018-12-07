@@ -115,7 +115,7 @@ extern void * DATA_GetTablePtrBeginCritical(DATA_BLOCK_ID_TYPE_e  blockID);
  /**
   * @brief   trigger of database manager
   */
- extern void DATA_Task(void);
+extern void DATA_Task(void);
 
 /*================== Function Implementations =============================*/
 

@@ -91,30 +91,30 @@ void HardFault_Handler(void)
     uint32_t caller_addr_at_stack;
   /* Go to infinite loop when Hard Fault exception occurs */
 /*   while (1) */
-/*   { */
+/*   {*/
 /*   } */
 
 #ifdef STM32F4
 
-    __ASM volatile ("mov %0, r14" : "=r" (lr_register) );
+    __ASM volatile ("mov %0, r14" : "=r" (lr_register));
 
 /*     VOID_FUNC_VOID fuptr; */
 /*     fuptr = (VOID_FUNC_VOID)(0xB0000020); */
 /*     fuptr(); */
 
     /* Check EXC_RETURN at exception entry to identify the used stack (MSP or PSP) */
-    if(lr_register== 0xFFFFFFFD)   /* Return to Thread mode, exception return uses non-floating-point state from */
-    {                              /* the PSP and execution uses PSP after return */
+    if (lr_register== 0xFFFFFFFD)   /* Return to Thread mode, exception return uses non-floating-point state from */
+    {  /* the PSP and execution uses PSP after return */
         sp_register = __get_PSP();
     }
-    else if(lr_register== 0xFFFFFFF1)  /* Return to Handler mode, exception return uses non-floating-point state from */
-    {                                  /* MSP and execution uses MSP after return */
+    else if (lr_register== 0xFFFFFFF1)  /* Return to Handler mode, exception return uses non-floating-point state from */
+    {  /* MSP and execution uses MSP after return */
         sp_register = __get_MSP() + 0x20;    /* because of function local variables stack will be changed in MSP */
     }
 
     diag_fc.Val0 = SCB->CFSR;
     /* Check if division by zero exception occured */
-    if(SCB->CFSR &= 0x02000000)  /* FLAG: DIVBYZERO */
+    if (SCB->CFSR &= 0x02000000)  /* FLAG: DIVBYZERO */
     {
         caller_addr_at_stack = sp_register + 0x18;
 
@@ -123,8 +123,8 @@ void HardFault_Handler(void)
 
     }
 
-    else if(SCB->CFSR &= 0x00010000)  /* FLAG: UNDEFINSTR */
-    {   /* tested by undefined instruction in memory: "0xF7F0A000" */
+    else if (SCB->CFSR &= 0x00010000)  /* FLAG: UNDEFINSTR */
+    {  /* tested by undefined instruction in memory: "0xF7F0A000" */
         caller_addr_at_stack = sp_register+0x18;
 
         diag_fc.Val1 = *(uint32_t*)caller_addr_at_stack;  /* report instruction address with undefined instruction */
@@ -133,14 +133,14 @@ void HardFault_Handler(void)
 
 
     /* Check if data bus error occured or data access violation */
-    else if(SCB->CFSR &= 0x00000202) /* FLAG: PRECIS ERR or DACC VIOL */
-    {   /* tested by data pointer to address area 0x04000000, 0xb0000000... */
+    else if (SCB->CFSR &= 0x00000202) /* FLAG: PRECIS ERR or DACC VIOL */
+    {  /* tested by data pointer to address area 0x04000000, 0xb0000000... */
         caller_addr_at_stack = sp_register+0x18;
 
         diag_fc.Val1 = *(uint32_t*)(caller_addr_at_stack);    /* report instruction address where data bus error has occured */
 
         faultaddress = SCB->BFAR;
-        if(SCB->CFSR &= 0x00008000) /* check if BFAR (reported Bus Fault Address) is valid */
+        if (SCB->CFSR &= 0x00008000) /* check if BFAR (reported Bus Fault Address) is valid */
         {
             diag_fc.Val2 = faultaddress;                    /* report bus address being accessed */
         }
@@ -149,14 +149,14 @@ void HardFault_Handler(void)
     }
 
     /* Check if instruction bus error occured or instruction access violation */
-    else if(SCB->CFSR &= 0x00000101) /* FLAG: IBUS ERR or IACC VIOL */
-    {   /* tested by using function pointer to address area 0x04000000, 0xb0000000... */
+    else if (SCB->CFSR &= 0x00000101) /* FLAG: IBUS ERR or IACC VIOL */
+    {  /* tested by using function pointer to address area 0x04000000, 0xb0000000... */
         caller_addr_at_stack = (sp_register+0x18);
 
         diag_fc.Val1 = *(uint32_t*)(caller_addr_at_stack);    /* report instruction address where instruction bus error has occured */
 
         faultaddress = SCB->BFAR;
-        if(SCB->CFSR &= 0x00008000) /* check if BFAR (reported Bus Fault Address) is valid */
+        if (SCB->CFSR &= 0x00008000) /* check if BFAR (reported Bus Fault Address) is valid */
         {
             diag_fc.Val2 = faultaddress;                        /* report bus address being accessed */
         }
@@ -170,7 +170,7 @@ void HardFault_Handler(void)
     }
 #endif
 
-    while(1) {
+    while (1) {
         ;
     }
 

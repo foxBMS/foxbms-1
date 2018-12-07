@@ -87,6 +87,10 @@
 
 
 /*================== Function Prototypes ==================================*/
+
+/**
+ * Function to send out boot message with SW version
+ */
 extern void SYS_SendBootMessage(uint8_t directTransmission);
 
 /*================== Function Implementations =============================*/

@@ -111,6 +111,11 @@ extern float ADC_GetVBAT_mV(void);
  */
 extern float ADC_GetMCUTemp_C(void);
 
+/**
+ * @brief get voltage in mV
+ */
+extern uint16_t ADC_GetValue(uint32_t value);
+
 /*================== Function Implementations =============================*/
 
 #endif /* ADC_H_ */

@@ -38,59 +38,31 @@
  * &Prime;This product is derived from foxBMS&reg;&Prime;
  *
  */
+
 /**
- * @file    batterysystem_cfg.c
+ * @file    myfoxbmsalgorithms.h
  * @author  foxBMS Team
- * @date    23.09.2015 (date of creation)
- * @ingroup DRIVERS_CONF
- * @prefix  CONT
+ * @date    05.10.2018 (date of creation)
+ * @ingroup USER_LIB
+ * @prefix  none
  *
- * @brief   Configuration for the battery system.
+ * @brief   Example on how to create a user library that is included in foxBMS
  *
  */
 
+#ifndef MYFOXBMSALGORITHMS_H_
+#define MYFOXBMSALGORITHMS_H_
+
 /*================== Includes =============================================*/
-#include "batterysystem_cfg.h"
-#include "database.h"
+#include <stdint.h>
 
 /*================== Macros and Definitions ===============================*/
 
 /*================== Constant and Variable Definitions ====================*/
 
 /*================== Function Prototypes ==================================*/
+extern uint16_t another_super_function(uint8_t a, uint8_t b);
 
 /*================== Function Implementations =============================*/
 
-BS_CURRENT_DIRECTION_e BS_CheckCurrent_Direction(void) {
-    BS_CURRENT_DIRECTION_e retVal = BS_CURRENT_DISCHARGE;
-    DATA_BLOCK_CURRENT_SENSOR_s current_tab = {0};
-
-    DB_ReadBlock(&current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
-
-    retVal = BS_CheckCurrentValue_Direction(current_tab.current);
-
-    return retVal;
-}
-
-BS_CURRENT_DIRECTION_e BS_CheckCurrentValue_Direction(float current) {
-    BS_CURRENT_DIRECTION_e retVal = BS_CURRENT_DISCHARGE;
-
-    if (POSITIVE_DISCHARGE_CURRENT == TRUE) {
-        if (current >= BS_REST_CURRENT_mA) {
-            retVal = BS_CURRENT_DISCHARGE;
-        } else if (current <= -BS_REST_CURRENT_mA) {
-            retVal = BS_CURRENT_CHARGE;
-        } else {
-            retVal = BS_CURRENT_NO_CURRENT;
-        }
-    } else {
-        if (current <= -BS_CURRENT_NO_CURRENT) {
-            retVal = BS_CURRENT_DISCHARGE;
-        } else if (current >= BS_REST_CURRENT_mA) {
-            retVal = BS_CURRENT_CHARGE;
-        } else {
-            retVal = BS_CURRENT_NO_CURRENT;
-        }
-    }
-    return retVal;
-}
+#endif /* MYFOXBMSALGORITHMS_H_ */

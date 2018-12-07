@@ -441,7 +441,7 @@ typedef struct {
     uint8_t * spi_RX_withPEC;                /* 12 byte */
     uint16_t * GPIOVoltages;                 /* LTC2_NUMBER_OF_GPIOS * NR_OF_LTCs */
     uint16_t * valid_GPIOPECs;               /* NR_OF_LTCs */
-}LTC_DATAPTR_s;
+} LTC_DATAPTR_s;
 
 /**
  * This struct contains error counter and pointer to used error buffers
@@ -454,7 +454,7 @@ typedef struct {
     uint8_t errSPIRetryCnt;
     uint8_t errOccurred;
     uint32_t nrOfConsecutiveErrors;
-}LTC_ERROR_s;
+} LTC_ERROR_s;
 
 /**
  * This struct contains the measurement configuration for the LTC
@@ -479,57 +479,66 @@ typedef struct {
     uint8_t numberActiveOfStates;   /* number of active states */
     uint8_t activeStates[12];       /* array holds the different substates that are executed one after another */
                                     /* maximum number of states : 12 */
-}LTC_CONFIG_s;
+} LTC_CONFIG_s;
 
+/**
+ *
+ */
+typedef enum {
+    LTC_NOT_REUSED = 0,
+    LTC_REUSE_READVOLT_FOR_ADOW_PUP = 1,
+    LTC_REUSE_READVOLT_FOR_ADOW_PDOWN = 2,
+} LTC_REUSE_MODE_e;
 
 /**
  * This structure contains all the variables relevant for the LTC state machine.
  * The user can get the current state of the LTC state machine with this variable
  */
 typedef struct {
-    uint16_t timer;                         /*!< time in ms before the state machine processes the next state, e.g. in counts of 1ms    */
-    LTC_TASK_TYPE_e taskMode;                /*!< current task of the state machine                                                      */
-    LTC_STATE_REQUEST_e statereq;           /*!< current state request made to the state machine                                        */
-    LTC_STATEMACH_e state;                  /*!< state of Driver State Machine                                                          */
-    uint8_t substate;                       /*!< current substate of the state machine                                                  */
-    LTC_STATEMACH_e laststate;              /*!< previous state of the state machine                                                    */
-    uint8_t lastsubstate;                   /*!< previous substate of the state machine                                                 */
-    uint8_t configuration[6];               /*!< holds the configuration of the ltc (configuration register)                            */
-    LTC_ADCMODE_e adcMode;                  /*!< current LTC ADCmeasurement mode (fast, normal or filtered)                                             */
-    LTC_ADCMODE_e voltMeasMode;             /*!< current LTC ADCmeasurement mode (fast, normal or filtered)                                             */
-    LTC_ADCMODE_e gpioMeasMode;             /*!< current LTC ADCmeasurement mode (fast, normal or filtered)                                             */
-    LTC_ADCMODE_e adcModereq;               /*!< requested LTC ADCmeasurement mode (fast, normal or filtered)                                           */
-    LTC_ADCMEAS_CHAN_e adcMeasCh;           /*!< current number of channels measured for GPIOS (one at a time for multiplexers or all five GPIOs)       */
-    LTC_ADCMEAS_CHAN_e adcMeasChreq;        /*!< requested number of channels measured for GPIOS (one at a time for multiplexers or all five GPIOs)     */
-    uint8_t numberOfMeasuredMux;            /*!< number of multiplexer channels measured by the LTC chip before a voltage measurement is made           */
-    uint32_t ErrPECCounter;                 /*!< counts the number of times there was A PEC (CRC) error during communication with LTC*/
-    uint8_t ErrRetryCounter;                /*!< counts how many times the drivers retried to communicate with LTC in case of a communication error*/
-    uint32_t ErrRequestCounter;             /*!< counts the number of illegal requests to the LTC state machine */
-    uint8_t triggerentry;                   /*!< counter for re-entrance protection (function running flag) */
-    uint32_t commandDataTransferTime;       /*!< time needed for sending an instruction to the LTC, followed by data transfer from the LTC   */
-    uint32_t commandTransferTime;           /*!< time needed for sending an instruction to the LTC                                           */
-    uint32_t gpioClocksTransferTime;        /*!< time needed for sending 72 clock signal to the LTC, used for I2C communication              */
-    uint32_t VoltageSampleTime;             /*!< time stamp at which the cell voltage were measured                                          */
-    uint32_t muxSampleTime;                 /*!< time stamp at which a multiplexer input was measured                                        */
-    LTC_MUX_CH_CFG_s *muxmeas_seqptr;       /*!< pointer to the multiplexer sequence to be measured (contains a list of elements [multiplexer id, multiplexer channels]) (1,-1)...(3,-1),(0,1),...(0,7) */
-    LTC_MUX_CH_CFG_s *muxmeas_seqendptr;    /*!< point to the end of the multiplexer sequence; pointer to ending point of sequence */
-    uint8_t muxmeas_nr_end;                 /*!< number of multiplexer channels that have to be measured; end number of sequence, where measurement is finished*/
-    SPI_HandleType_s *spiHandle;           /*!< pointer to SPI Handle the LTC is connected to                                               */
-    LTC_DATAPTR_s ltcData;                  /*!< contains pointer to the local data buffer                                                   */
-    uint8_t instanceID;                     /*!< number to distinguish between different ltc states, starting with 0,1,2,3....8              */
-    uint8_t nrBatcellsPerModule;            /*!< number of cells per module                                                                  */
-    uint8_t busSize;                        /*!< number of connected LTCs to parallel bus network                                            */
-    LTC_ERROR_s errStatus;                  /*!< contains pointer to local error buffer and error indicators                                 */
-    uint8_t * ltcIDs;                       /*!< array with LTC IDs                                                                          */
-    uint8_t cntDeviceRD;                    /*!< current Index of array ltcIDs to determine device ID                                        */
-    uint32_t ctrlCallCnt;                   /*!< counts the LTC2_CTRL calls                                                                  */
-    uint8_t taskCycleCnt;                   /*!< counts the current task cycle                                                               */
-    uint8_t reusageMeasurementMode;         /*!< flag that indicates if currently any state is reused i.e. cell voltage measurement          */
-    LTC_CONFIG_s ltcConfig;                 /*!< struct that holds the measurement configuration of the ltc network                          */
-    uint8_t first_measurement_made;         /*!< flag that indicates if the first measurement cycle was completed                            */
-    STD_RETURN_TYPE_e ltc_muxcycle_finished;/*!< flag that indictes if the measurement sequence of the multiplexers is finished              */
-    STD_RETURN_TYPE_e check_spi_flag;       /*!< indicates if interrupt flag or timer must be considered*/
-    STD_RETURN_TYPE_e balance_control_done; /*!< indicates if balance control was done*/
+    uint16_t timer;                           /*!< time in ms before the state machine processes the next state, e.g. in counts of 1ms    */
+    LTC_TASK_TYPE_e taskMode;                  /*!< current task of the state machine                                                      */
+    LTC_STATE_REQUEST_e statereq;             /*!< current state request made to the state machine                                        */
+    LTC_STATEMACH_e state;                    /*!< state of Driver State Machine                                                          */
+    uint8_t substate;                         /*!< current substate of the state machine                                                  */
+    LTC_STATEMACH_e laststate;                /*!< previous state of the state machine                                                    */
+    uint8_t lastsubstate;                     /*!< previous substate of the state machine                                                 */
+    uint8_t configuration[6];                 /*!< holds the configuration of the ltc (configuration register)                            */
+    LTC_ADCMODE_e adcMode;                    /*!< current LTC ADCmeasurement mode (fast, normal or filtered)                                             */
+    LTC_ADCMODE_e voltMeasMode;               /*!< current LTC ADCmeasurement mode (fast, normal or filtered)                                             */
+    LTC_ADCMODE_e gpioMeasMode;               /*!< current LTC ADCmeasurement mode (fast, normal or filtered)                                             */
+    LTC_ADCMODE_e adcModereq;                 /*!< requested LTC ADCmeasurement mode (fast, normal or filtered)                                           */
+    LTC_ADCMEAS_CHAN_e adcMeasCh;             /*!< current number of channels measured for GPIOS (one at a time for multiplexers or all five GPIOs)       */
+    LTC_ADCMEAS_CHAN_e adcMeasChreq;          /*!< requested number of channels measured for GPIOS (one at a time for multiplexers or all five GPIOs)     */
+    uint8_t numberOfMeasuredMux;              /*!< number of multiplexer channels measured by the LTC chip before a voltage measurement is made           */
+    uint32_t ErrPECCounter;                   /*!< counts the number of times there was A PEC (CRC) error during communication with LTC*/
+    uint8_t ErrRetryCounter;                  /*!< counts how many times the drivers retried to communicate with LTC in case of a communication error*/
+    uint32_t ErrRequestCounter;               /*!< counts the number of illegal requests to the LTC state machine */
+    uint8_t triggerentry;                     /*!< counter for re-entrance protection (function running flag) */
+    uint32_t commandDataTransferTime;         /*!< time needed for sending an instruction to the LTC, followed by data transfer from the LTC   */
+    uint32_t commandTransferTime;             /*!< time needed for sending an instruction to the LTC                                           */
+    uint32_t gpioClocksTransferTime;          /*!< time needed for sending 72 clock signal to the LTC, used for I2C communication              */
+    uint32_t VoltageSampleTime;               /*!< time stamp at which the cell voltage were measured                                          */
+    uint32_t muxSampleTime;                   /*!< time stamp at which a multiplexer input was measured                                        */
+    LTC_MUX_CH_CFG_s *muxmeas_seqptr;         /*!< pointer to the multiplexer sequence to be measured (contains a list of elements [multiplexer id, multiplexer channels]) (1,-1)...(3,-1),(0,1),...(0,7) */
+    LTC_MUX_CH_CFG_s *muxmeas_seqendptr;      /*!< point to the end of the multiplexer sequence; pointer to ending point of sequence */
+    uint8_t muxmeas_nr_end;                   /*!< number of multiplexer channels that have to be measured; end number of sequence, where measurement is finished*/
+    SPI_HandleType_s *spiHandle;              /*!< pointer to SPI Handle the LTC is connected to                                               */
+    LTC_DATAPTR_s ltcData;                    /*!< contains pointer to the local data buffer                                                   */
+    uint8_t instanceID;                       /*!< number to distinguish between different ltc states, starting with 0,1,2,3....8              */
+    uint8_t nrBatcellsPerModule;              /*!< number of cells per module                                                                  */
+    uint8_t busSize;                          /*!< number of connected LTCs to parallel bus network                                            */
+    LTC_ERROR_s errStatus;                    /*!< contains pointer to local error buffer and error indicators                                 */
+    uint8_t * ltcIDs;                         /*!< array with LTC IDs                                                                          */
+    uint8_t cntDeviceRD;                      /*!< current Index of array ltcIDs to determine device ID                                        */
+    uint32_t ctrlCallCnt;                     /*!< counts the LTC2_CTRL calls                                                                  */
+    uint8_t taskCycleCnt;                     /*!< counts the current task cycle                                                               */
+    LTC_REUSE_MODE_e reusageMeasurementMode;  /*!< flag that indicates if currently any state is reused i.e. cell voltage measurement          */
+    LTC_CONFIG_s ltcConfig;                   /*!< struct that holds the measurement configuration of the ltc network                          */
+    uint8_t first_measurement_made;           /*!< flag that indicates if the first measurement cycle was completed                            */
+    STD_RETURN_TYPE_e ltc_muxcycle_finished;  /*!< flag that indictes if the measurement sequence of the multiplexers is finished              */
+    STD_RETURN_TYPE_e check_spi_flag;         /*!< indicates if interrupt flag or timer must be considered */
+    STD_RETURN_TYPE_e balance_control_done;   /*!< indicates if balance control was done */
+    uint8_t resendCommandCounter;             /*!< counter if commandy should be send multiple times e.g. ADOW command */
 } LTC_STATE_s;
 
 /*================== Function Prototypes ==================================*/

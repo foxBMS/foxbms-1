@@ -49,7 +49,6 @@ def build(bld):
     srcs = ' '.join([
         os.path.join('config', 'contactor_cfg.c'),
         os.path.join('config', 'eepr_cfg.c'),
-        os.path.join('config', 'nvram_cfg.c'),
         os.path.join('config', 'isoguard_cfg.c'),
         os.path.join('contactor', 'contactor.c'),
         os.path.join('isoguard', 'ir155.c'),

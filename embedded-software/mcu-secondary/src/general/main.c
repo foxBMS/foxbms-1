@@ -90,8 +90,7 @@ void BOOT_Init(void);
   * @return int
   *
   */
-int main(void)
-{
+int main(void) {
     uint32_t retErrorCode = 0;
     STD_RETURN_TYPE_e retval = E_NOT_OK;
 
@@ -131,40 +130,35 @@ int main(void)
         DIAG_Handler(DIAG_CH_VIC_INIT_FAILURE, DIAG_EVENT_NOK, retErrorCode, NULL);
     }
 
-    if(CHK_Flashchecksum(&ver_sw_validation)==E_OK)
-    {
+    if (CHK_Flashchecksum(&ver_sw_validation) == E_OK) {
         chk_status.checksumstatus = CHK_CHECKSUM_PASSED;
-    }
-    else
-    {
+    } else {
         chk_status.checksumstatus = CHK_CHECKSUM_FAILED;
-        if(DIAG_HANDLER_RETURN_OK != DIAG_Handler(DIAG_CH_FLASHCHECKSUM, DIAG_EVENT_NOK, 0, NULL))
-        {
-            while (1);
+        if (DIAG_HANDLER_RETURN_OK != DIAG_Handler(DIAG_CH_FLASHCHECKSUM, DIAG_EVENT_NOK, 0, NULL)) {
+            while (1) {
+                /* TODO: explain why infinite loop */
+            }
         }
     }
 
     os_boot = OS_INIT_OSSTARTKERNEL;    /* start scheduler */
     vTaskStartScheduler();              /* vTaskStartScheduler() should never return */
 
-    while(1)
-    {
-        ;
+    while (1) {
+        /* TODO: explain why infinite loop */
     }
     return 0;
 }
 
 
-void SystemClock_Config(void)
-{
+void SystemClock_Config(void) {
     RCC_ClockConfig();
 }
 
 /**
  * Set boot reset date, time and status
  */
-void BOOT_Init(void)
-{
+void BOOT_Init(void) {
     uint32_t errCode = 0;
     RTC_Time_s currTime;
     RTC_Date_s currDate;

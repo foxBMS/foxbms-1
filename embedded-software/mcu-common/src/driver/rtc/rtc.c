@@ -60,14 +60,12 @@
 
 /*================== Constant and Variable Definitions ====================*/
 /* Days since the beginning of the year without the days in the current month and without leap days */
-const short days_since_newYearsEve[12] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
-
+const int16_t days_since_newYearsEve[12] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
 /*================== Function Prototypes ==================================*/
 
 
 /*================== Function Implementations =============================*/
 void RTC_Init(void) {
-
     /* Configure RTC clocks */
     HAL_RCC_OscConfig(&rtc_cfg.oscInitStruct);
 
@@ -86,7 +84,6 @@ void RTC_Init(void) {
 
     /* set time and date if not already initialized or V_BAT failed */
     if (!(hrtc.Instance->ISR & (uint32_t)RTC_ISR_INITS)) {
-
         RTC_DATAVALID_VARIABLE = 0;        /* invalidate rtc backup data */
         HAL_RTC_SetTime(&hrtc, &rtc_cfg.defaultTime, rtc_cfg.timeformat);
 

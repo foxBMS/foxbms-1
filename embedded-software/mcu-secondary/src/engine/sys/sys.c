@@ -65,7 +65,7 @@
 /**
  * Saves the last state and the last substate
  */
-#define SYS_SAVELASTSTATES()    sys_state.laststate=sys_state.state; \
+#define SYS_SAVELASTSTATES()    sys_state.laststate = sys_state.state; \
                                 sys_state.lastsubstate = sys_state.substate
 
 /*================== Constant and Variable Definitions ====================*/
@@ -250,7 +250,7 @@ void SYS_Trigger(void) {
                 sys_state.state = SYS_STATEMACH_INITIALIZATION;
                 sys_state.substate = SYS_ENTRY;
             } else if (statereq == SYS_STATE_NO_REQUEST) {
-                /* no actual request pending /*  */
+                /* no actual request pending */
             } else {
                 sys_state.ErrRequestCounter++;   /* illegal request pending */
             }
@@ -323,7 +323,7 @@ void SYS_Trigger(void) {
             case SYS_STATEMACH_INITIALIZE_BMS:
                 SYS_SAVELASTSTATES();
 
-                if (sys_state.substate == SYS_ENTRY){
+                if (sys_state.substate == SYS_ENTRY) {
                     BMS_SetStateRequest(BMS_STATE_INIT_REQUEST);
                     sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
                     sys_state.substate = SYS_WAIT_INITIALIZATION_BMS;
@@ -361,6 +361,6 @@ void SYS_Trigger(void) {
             SYS_SAVELASTSTATES();
             sys_state.timer = SYS_STATEMACH_LONGTIME_MS;
             break;
-    }  /* end switch(sys_state.state) */
+    }  /* end switch (sys_state.state) */
     sys_state.triggerentry--;
 }

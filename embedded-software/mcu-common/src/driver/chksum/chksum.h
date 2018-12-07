@@ -70,11 +70,10 @@ typedef enum {
 } CHK_CHECKSUM_STATUS_e;
 
 
-typedef struct
-{
-   uint32_t                 checksum; /* 16 bit checksum for validating the Application SW */
-   uint32_t                 resetstatus; /*  last reset status */
-   CHK_CHECKSUM_STATUS_e    checksumstatus;
+typedef struct {
+    uint32_t                 checksum; /* 16 bit checksum for validating the Application SW */
+    uint32_t                 resetstatus; /*  last reset status */
+    CHK_CHECKSUM_STATUS_e    checksumstatus;
 } CHK_STATUS_s;
 
 extern CHK_STATUS_s chk_status;

@@ -59,9 +59,11 @@
 #include "contactor.h"
 #include "com.h"
 #include "os.h"
-#include "misc.h"
 #include "nvramhandler.h"
 #include "rtc.h"
+#include "stdio.h"
+
+extern int _write(int fd, char *ptr, int len);
 
 /*================== Macros and Definitions ===============================*/
 
@@ -109,19 +111,18 @@ static DIAG_RETURNTYPE_e DIAG_ContHandler(DIAG_CH_ID_e eventID, uint32_t cont_nr
  * It clears memory and counters used by diag later on.
  */
 
-static void DIAG_Reset(void)
-{
+static void DIAG_Reset(void) {
     uint32_t i;
     uint32_t *u32ptr = (uint32_t*)(&diag_memory[0]);
 
     diag_locked = 1;
 
     /* Delete memory */
-    for(i = 0; i < (sizeof(diag_memory))/4; i++)
+    for (i = 0; i < (sizeof(diag_memory))/4; i++)
         *u32ptr++ = 0;
 
     /* Reset counter */
-    for(i = 0; i < sizeof(diag.entry_cnt); i++)
+    for (i = 0; i < sizeof(diag.entry_cnt); i++)
         diag.entry_cnt[i] = 0;
 
     /* Set pointer to beginning of buffer */
@@ -132,17 +133,16 @@ static void DIAG_Reset(void)
     u32ptr = (uint32_t*)(&diagContactorErrorMemory[0]);
 
     /* Delete memory */
-    for(i = 0; i < (sizeof(diagContactorErrorMemory))/4; i++)
+    for (i = 0; i < (sizeof(diagContactorErrorMemory))/4; i++)
         *u32ptr++ = 0;
 
     /* Set pointer to beginning of buffer */
     diagContactorError_entry_wrptr = diagContactorError_entry_rdptr = &diagContactorErrorMemory[0];
-    diag_locked=0;
+    diag_locked = 0;
 }
 
 
 STD_RETURN_TYPE_e DIAG_Init(DIAG_DEV_s *diag_dev_pointer, STD_RETURN_TYPE_e bkpramValid) {
-
     STD_RETURN_TYPE_e retval = E_OK;
     uint8_t c = 0;
     uint8_t id_nr = DIAG_ID_MAX;
@@ -153,33 +153,32 @@ STD_RETURN_TYPE_e DIAG_Init(DIAG_DEV_s *diag_dev_pointer, STD_RETURN_TYPE_e bkpr
     diag.state = DIAG_STATE_UNINITIALIZED;
     uint16_t checkfail = 0;
 
-    if( (diag_entry_rdptr<&diag_memory[0]) || (diag_entry_rdptr >= &diag_memory[DIAG_FAIL_ENTRY_LENGTH]))
+    if ((diag_entry_rdptr < &diag_memory[0]) || (diag_entry_rdptr >= &diag_memory[DIAG_FAIL_ENTRY_LENGTH]))
         checkfail |= 0x01;
 
-    if( (diag_entry_wrptr<&diag_memory[0]) || (diag_entry_wrptr >= &diag_memory[DIAG_FAIL_ENTRY_LENGTH]))
+    if ((diag_entry_wrptr < &diag_memory[0]) || (diag_entry_wrptr >= &diag_memory[DIAG_FAIL_ENTRY_LENGTH]))
         checkfail |= 0x02;
 
-    if(bkpramValid == E_NOT_OK)
+    if (bkpramValid == E_NOT_OK)
         checkfail |= 0x04;
 
-    if( (diagContactorError_entry_rdptr < &diagContactorErrorMemory[0]) ||
-            (diagContactorError_entry_rdptr >= &diagContactorErrorMemory[DIAG_FAIL_ENTRY_CONTACTOR_LENGTH]) )
+    if ((diagContactorError_entry_rdptr < &diagContactorErrorMemory[0]) ||
+            (diagContactorError_entry_rdptr >= &diagContactorErrorMemory[DIAG_FAIL_ENTRY_CONTACTOR_LENGTH]))
         checkfail |= 0x08;
 
-    if( (diagContactorError_entry_wrptr < &diagContactorErrorMemory[0]) ||
+    if ((diagContactorError_entry_wrptr < &diagContactorErrorMemory[0]) ||
             (diagContactorError_entry_wrptr >= &diagContactorErrorMemory[DIAG_FAIL_ENTRY_CONTACTOR_LENGTH]))
         checkfail |= 0x10;
 
 
-    if(checkfail) {
+    if (checkfail) {
         DIAG_Reset();
     }
 
     /* Fill lookup table id2ch */
-    for(c = 0; c < diag_dev_pointer->nr_of_ch; c++) {
-
+    for (c = 0; c < diag_dev_pointer->nr_of_ch; c++) {
         id_nr = diag_dev_pointer->ch_cfg[c].id;
-        if(id_nr < DIAG_ID_MAX) {
+        if (id_nr < DIAG_ID_MAX) {
             diag.id2ch[id_nr] = c;      /* e.g. diag.id2ch[DIAG_ID_90] = configured channel index */
         } else {
             /* Configuration error -> set retval to E_NOT_OK */
@@ -188,26 +187,25 @@ STD_RETURN_TYPE_e DIAG_Init(DIAG_DEV_s *diag_dev_pointer, STD_RETURN_TYPE_e bkpr
         }
     }
 
-    for(int i = 0; i < (DIAG_ID_MAX+31)/32; i++)
+    for (int i = 0; i < (DIAG_ID_MAX+31)/32; i++)
         tmperr_Check[i] = 0;
 
     /* Fill enable array err_enableflag */
-    for(int i = 0; i < diag_dev_pointer->nr_of_ch; i++) {
-        if(diag_dev_pointer->ch_cfg[i].state == DIAG_DISABLED) {
-
+    for (int i = 0; i < diag_dev_pointer->nr_of_ch; i++) {
+        if (diag_dev_pointer->ch_cfg[i].state == DIAG_DISABLED) {
             /* Disable diagnosis entry */
             tmperr_Check[diag_dev_pointer->ch_cfg[i].id/32] |= 1 << (diag_dev_pointer->ch_cfg[i].id % 32);
         }
     }
 
     /* take over configured error enable masks*/
-    for(c = 0; c < (DIAG_ID_MAX+31)/32; c++) {
+    for (c = 0; c < (DIAG_ID_MAX+31)/32; c++) {
         diag.err_enableflag[c] = ~tmperr_Check[c];
     }
 
     diag.state = DIAG_STATE_INITIALIZED;
 
-    if(checkfail) {
+    if (checkfail) {
         /* make first entry after DIAG_Reset() */
         (void)(DIAG_Handler(DIAG_CH_BKPDIAG_FAILURE, DIAG_EVENT_NOK, checkfail, NULL));
     }
@@ -216,150 +214,96 @@ STD_RETURN_TYPE_e DIAG_Init(DIAG_DEV_s *diag_dev_pointer, STD_RETURN_TYPE_e bkpr
 
 
 void DIAG_PrintErrors(void) {
-
     /* FIXME if read once, rdptr is on writeptr, therefore in the next call the errors aren't
      * printed again. Maybe tmp save rdptr and set again at end of function. But when is the
      * diag memory cleared then? */
 
-    uint8_t buf[24] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-
-    if(diag_entry_rdptr == diag_entry_wrptr)
-    {
-        DEBUG_PRINTF((const uint8_t * )"no new entries in DIAG");
-        DEBUG_PRINTF((const uint8_t * )"\r\n");
-    }
-    else
-    {
-        DEBUG_PRINTF((const uint8_t * )"DIAG error entries:");
-        DEBUG_PRINTF((const uint8_t * )"\r\n");
-        DEBUG_PRINTF((const uint8_t * )"Date and Time:      Error Code/Item   Status     Description");
-        DEBUG_PRINTF((const uint8_t * )"\r\n");
+    if (diag_entry_rdptr == diag_entry_wrptr) {
+        DEBUG_PRINTF(("no new entries in DIAG\r\n"));
+    } else {
+        DEBUG_PRINTF(("DIAG error entries:\r\n"));
+        DEBUG_PRINTF(("Date and Time:      Error Code/Item   Status     Description\r\n"));
     }
     uint8_t c = 0;
-    while(diag_entry_rdptr != diag_entry_wrptr && c < 7)
-    {
-
-        if( diag_entry_rdptr >= &diag_memory[DIAG_FAIL_ENTRY_LENGTH]) {
+    while (diag_entry_rdptr != diag_entry_wrptr && c < 7) {
+        if (diag_entry_rdptr >= &diag_memory[DIAG_FAIL_ENTRY_LENGTH]) {
             diag_entry_rdptr = &diag_memory[0];
         }
 
-        DEBUG_PRINTF(U8ToDecascii(buf, &diag_entry_rdptr->DD, 2));
-        DEBUG_PRINTF((const uint8_t * )".");
-        DEBUG_PRINTF(U8ToDecascii(buf, &diag_entry_rdptr->MM, 2));
-        DEBUG_PRINTF((const uint8_t * )".");
-        DEBUG_PRINTF(U8ToDecascii(buf, &diag_entry_rdptr->YY, 2));
-        DEBUG_PRINTF((const uint8_t * )" - ");
-        DEBUG_PRINTF(U8ToDecascii(buf, &diag_entry_rdptr->hh, 2));
-        DEBUG_PRINTF((const uint8_t * )":");
-        DEBUG_PRINTF(U8ToDecascii(buf, &diag_entry_rdptr->mm, 2));
-        DEBUG_PRINTF((const uint8_t * )":");
-        DEBUG_PRINTF(U8ToDecascii(buf, &diag_entry_rdptr->ss, 2));
-        DEBUG_PRINTF((const uint8_t * )"     ");
-        DEBUG_PRINTF(U8ToDecascii(buf, (uint8_t*)(&diag_entry_rdptr->event_id), 2));
 
-        DEBUG_PRINTF((const uint8_t * )" / 0x");
-        DEBUG_PRINTF(U32ToHexascii(buf, &diag_entry_rdptr->item));
-        DEBUG_PRINTF((const uint8_t * )"      ");
+        DEBUG_PRINTF(("%02d.%02d.20%02d - %02d:%02d:%02d     ", diag_entry_rdptr->DD, diag_entry_rdptr->MM, diag_entry_rdptr->YY,
+          diag_entry_rdptr->hh, diag_entry_rdptr->mm, diag_entry_rdptr->ss));
 
-        if(diag_entry_rdptr->event == DIAG_EVENT_OK)
-            DEBUG_PRINTF((const uint8_t * )"cleared     ");
-        else if(diag_entry_rdptr->event == DIAG_EVENT_NOK)
-            DEBUG_PRINTF((const uint8_t * )"occurred    ");
+        DEBUG_PRINTF(("%02d / 0x%08x      ", diag_entry_rdptr->event_id, diag_entry_rdptr->event_id));
+
+        if (diag_entry_rdptr->event == DIAG_EVENT_OK)
+            DEBUG_PRINTF(("cleared     "));
+        else if (diag_entry_rdptr->event == DIAG_EVENT_NOK)
+            DEBUG_PRINTF(("occurred    "));
         else
-            DEBUG_PRINTF((const uint8_t * )"reset       ");
+            DEBUG_PRINTF(("reset       "));
 
-        for(uint8_t i = 0; i < 24; i++)
-            buf[i] = diag_devptr->ch_cfg[diag.id2ch[diag_entry_rdptr->event_id]].description[i];
 
-        DEBUG_PRINTF((const uint8_t *)buf);
-        DEBUG_PRINTF((const uint8_t * )"\r\n");
+        DEBUG_PRINTF(("%s\r\n", diag_devptr->ch_cfg[diag.id2ch[diag_entry_rdptr->event_id]].description));
 
         diag_entry_rdptr++;
         c++;
-
     }
-
     /* More entries in diag buffer */
-    if(diag_entry_rdptr != diag_entry_wrptr)
-        DEBUG_PRINTF((const uint8_t * )"Please repeat command. Additional error entries in DIAG buffer available!\r\n");
-
+    if (diag_entry_rdptr != diag_entry_wrptr)
+        DEBUG_PRINTF(("Please repeat command. Additional error entries in DIAG buffer available!\r\n"));
 }
 
-void DIAG_PrintContactorInfo(void)
-{
+void DIAG_PrintContactorInfo(void) {
     /* FIXME if read once, rdptr is on writeptr, therefore in the next call the errors aren't
      * printed again. Maybe tmp save rdptr and set again at end of function. But when is the
      * diag memory cleared then? */
 
-    uint8_t buf[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    int32_t tmp = 0;
     DIAG_CONTACTOR_s diagContactor;
 
     NVM_Get_contactorcnt(&diagContactor);
 
-    DEBUG_PRINTF((const uint8_t * )"Contactor switching entries:");
-    DEBUG_PRINTF((const uint8_t * )"\r\n");
+    DEBUG_PRINTF(("Contactor switching entries:"));
+    DEBUG_PRINTF(("\r\n"));
 
-    for(uint8_t i = 0; i < BS_NR_OF_CONTACTORS; i++) {
-        DEBUG_PRINTF((const uint8_t * )"Contactor ");
-        DEBUG_PRINTF(U8ToDecascii(buf, &i, 2));
-        DEBUG_PRINTF((const uint8_t * )"\r\nOpening switches: ");
-        DEBUG_PRINTF(U16ToHexascii(buf, &diagContactor.cont_switch_opened[i]));
-        DEBUG_PRINTF((const uint8_t * )"\r\nClosing switches: ");
-        DEBUG_PRINTF(U16ToHexascii(buf, &diagContactor.cont_switch_closed[i]));
-        DEBUG_PRINTF((const uint8_t * )"\r\nOpening switches hard at current: ");
-        DEBUG_PRINTF(U16ToHexascii(buf, &diagContactor.cont_switch_opened_hard_at_current[i]));
-        DEBUG_PRINTF((const uint8_t * )"\r\n\n");
-        DEBUG_PRINTF((const uint8_t * )"\r\n");
+    for (uint8_t i = 0; i < BS_NR_OF_CONTACTORS; i++) {
+        DEBUG_PRINTF(("Contactor %02d\r\n", i));
+        DEBUG_PRINTF(("Opening switches: %04x\r\n", diagContactor.cont_switch_opened[i]));
+        DEBUG_PRINTF(("Closing switches: %04x\r\n", diagContactor.cont_switch_closed[i]));
+        DEBUG_PRINTF(("Opening switches hard at current: %04x\r\n", diagContactor.cont_switch_opened_hard_at_current[i]));
+        DEBUG_PRINTF(("\r\n\n"));
+        DEBUG_PRINTF(("\r\n"));
     }
 
-    DEBUG_PRINTF((const uint8_t * )"\r\n");
-    if(diagContactorError_entry_rdptr == diagContactorError_entry_wrptr)
-    {
-        DEBUG_PRINTF((const uint8_t * )"no entries in Contactor");
-        DEBUG_PRINTF((const uint8_t * )"\r\n");
-    }
-    else
-    {
-        DEBUG_PRINTF((const uint8_t * )"Contactor error entries:");
-        DEBUG_PRINTF((const uint8_t * )"\r\n");
-        DEBUG_PRINTF((const uint8_t * )"Date and Time       Contactor     Opening current");
-        DEBUG_PRINTF((const uint8_t * )"\r\n");
+    DEBUG_PRINTF(("\r\n"));
+    if (diagContactorError_entry_rdptr == diagContactorError_entry_wrptr) {
+        DEBUG_PRINTF(("no entries in Contactor"));
+        DEBUG_PRINTF(("\r\n"));
+    } else {
+        DEBUG_PRINTF(("Contactor error entries:"));
+        DEBUG_PRINTF(("\r\n"));
+        DEBUG_PRINTF(("Date and Time       Contactor     Opening current"));
+        DEBUG_PRINTF(("\r\n"));
     }
 
 
 
-    while(diagContactorError_entry_rdptr != diagContactorError_entry_wrptr)
-    {
-        if( diagContactorError_entry_rdptr >= &diagContactorErrorMemory[DIAG_FAIL_ENTRY_CONTACTOR_LENGTH]) {
+    while (diagContactorError_entry_rdptr != diagContactorError_entry_wrptr) {
+        if (diagContactorError_entry_rdptr >= &diagContactorErrorMemory[DIAG_FAIL_ENTRY_CONTACTOR_LENGTH]) {
             diagContactorError_entry_rdptr = &diagContactorErrorMemory[0];
         }
+        DEBUG_PRINTF(("%02d.%02d.%02d - %02d:%02d:%02d     ", diagContactorError_entry_rdptr->DD, diagContactorError_entry_rdptr->MM,
+          diagContactorError_entry_rdptr->YY, diagContactorError_entry_rdptr->hh, diagContactorError_entry_rdptr->mm,
+          diagContactorError_entry_rdptr->ss));
 
-        DEBUG_PRINTF(U8ToDecascii(buf, &diagContactorError_entry_rdptr->DD, 2));
-        DEBUG_PRINTF((const uint8_t * )".");
-        DEBUG_PRINTF(U8ToDecascii(buf, &diagContactorError_entry_rdptr->MM, 2));
-        DEBUG_PRINTF((const uint8_t * )".");
-        DEBUG_PRINTF(U8ToDecascii(buf, &diagContactorError_entry_rdptr->YY, 2));
-        DEBUG_PRINTF((const uint8_t * )" - ");
-        DEBUG_PRINTF(U8ToDecascii(buf, &diagContactorError_entry_rdptr->hh, 2));
-        DEBUG_PRINTF((const uint8_t * )":");
-        DEBUG_PRINTF(U8ToDecascii(buf, &diagContactorError_entry_rdptr->mm, 2));
-        DEBUG_PRINTF((const uint8_t * )":");
-        DEBUG_PRINTF(U8ToDecascii(buf, &diagContactorError_entry_rdptr->ss, 2));
-        DEBUG_PRINTF((const uint8_t * )"     ");
-
-        DEBUG_PRINTF(U8ToDecascii(buf, (uint8_t*)(&diagContactorError_entry_rdptr->contactor), 2));
-        DEBUG_PRINTF((const uint8_t * )"        ");
-        tmp = (int32_t)diagContactorError_entry_rdptr->openingCurrent;
-        DEBUG_PRINTF(I32ToDecascii(buf, &tmp));
-        DEBUG_PRINTF((const uint8_t * )"mA\r\n");
+        DEBUG_PRINTF(("%02d        ", diagContactorError_entry_rdptr->contactor));
+        DEBUG_PRINTF(("%fmA\r\n", diagContactorError_entry_rdptr->openingCurrent));
 
         diagContactorError_entry_rdptr++;
     }
 
     /* Reset counter for open errors */
     diagContactor.errcntreported = 0;
-
 }
 
 
@@ -378,33 +322,31 @@ void DIAG_PrintContactorInfo(void)
  * @return 0xFF if event is logged, otherwise 0
  */
 static uint8_t DIAG_EntryWrite(uint8_t eventID, DIAG_EVENT_e event, uint32_t item_nr) {
-
     uint8_t ret_val = 0;
     uint8_t c;
     RTC_Time_s currTime;
     RTC_Date_s currDate;
-    uint8_t buf[25] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; /* max. description length = 24 + 1 to identify end of array */
 
-    if(diag_locked)
+    if (diag_locked)
         return ret_val;    /* only locked when clearing the diagnosis memory */
 
-    if(diag.entry_event[eventID] == event)
+    if (diag.entry_event[eventID] == event)
         return ret_val;        /* same event of same error type already recorded before -> ignore until event toggles */
-    if((diag.entry_event[eventID] == DIAG_EVENT_OK) && (event ==  DIAG_EVENT_RESET))
+    if ((diag.entry_event[eventID] == DIAG_EVENT_OK) && (event ==  DIAG_EVENT_RESET))
         return ret_val;     /* do record DIAG_EVENT_RESET-event only if last event was an error (re-initialization) */
                             /* meaning: DIAG_EVENT_RESET-event at first time call or after DIAG_EVENT_OK-event will not be recorded */
 
-    if(++diag.entry_cnt[eventID] > DIAG_MAX_ENTRIES_OF_ERROR){
+    if (++diag.entry_cnt[eventID] > DIAG_MAX_ENTRIES_OF_ERROR) {
         diag.entry_cnt[eventID] = DIAG_MAX_ENTRIES_OF_ERROR;
         return ret_val;        /* this type of error has been recorded too many times -> ignore to avoid filling buffer with same failurecodes */
     }
 
-    if( diag_entry_wrptr >= &diag_memory[DIAG_FAIL_ENTRY_LENGTH] ) {
+    if (diag_entry_wrptr >= &diag_memory[DIAG_FAIL_ENTRY_LENGTH]) {
         diag_entry_wrptr = &diag_memory[0];
     }
 
     /* now record failurecode */
-    ret_val=0xFF;
+    ret_val = 0xFF;
     RTC_getTime(&currTime);
     RTC_getDate(&currDate);
 
@@ -430,29 +372,19 @@ static uint8_t DIAG_EntryWrite(uint8_t eventID, DIAG_EVENT_e event, uint32_t ite
     ++diag.errcnttotal;            /* total counts of diagnosis entry records */
 
     diag.entry_event[eventID] = event;
-    DEBUG_PRINTF((const uint8_t * )"New Error entry! (");
     c = (uint8_t) diag.errcntreported;
-    DEBUG_PRINTF(U8ToDecascii(buf, &c,3));
-    DEBUG_PRINTF((const uint8_t * )"): Error Code/Item ");
-    DEBUG_PRINTF(U8ToDecascii(buf, &eventID, 3));
-    DEBUG_PRINTF((const uint8_t * )"/0x");
-    DEBUG_PRINTF(U32ToHexascii(buf, &item_nr));
-    DEBUG_PRINTF((const uint8_t * )" ");
 
-    /* Copy error description  in buffer, maximum description length = 24 characters */
-    for(uint8_t i = 0; i < 24; i++)
-        buf[i] = diag_devptr->ch_cfg[diag.id2ch[eventID]].description[i];
+    DEBUG_PRINTF(("New Error entry! (%03d): Error Code/Item %03d/0x%08x ", c, eventID, (unsigned int)item_nr));
 
-    DEBUG_PRINTF((const uint8_t *)buf);
+    DEBUG_PRINTF(("%s", diag_devptr->ch_cfg[diag.id2ch[eventID]].description));
 
-    if(event==DIAG_EVENT_OK)
-        DEBUG_PRINTF((const uint8_t * )" cleared");
-    else if (event==DIAG_EVENT_NOK)
-        DEBUG_PRINTF((const uint8_t * )" occurred");
+    if (event == DIAG_EVENT_OK)
+        DEBUG_PRINTF((" cleared\r\n"));
+    else if (event == DIAG_EVENT_NOK)
+        DEBUG_PRINTF((" occured\r\n"));
     else /* DIAG_EVENT_RESET */
-        DEBUG_PRINTF((const uint8_t * )" reset");
+        DEBUG_PRINTF((" reset\r\n"));
 
-    DEBUG_PRINTF((const uint8_t * )"\r\n");
 
     return ret_val;
 }
@@ -460,13 +392,12 @@ static uint8_t DIAG_EntryWrite(uint8_t eventID, DIAG_EVENT_e event, uint32_t ite
 
 
 DIAG_RETURNTYPE_e DIAG_Handler(DIAG_CH_ID_e diag_ch_id, DIAG_EVENT_e event, uint32_t item_nr, void* data) {
-
     DIAG_RETURNTYPE_e retVal = DIAG_HANDLER_RETURN_UNKNOWN;
 
     /* Get diagnosis type */
     DIAG_TYPE_e diagType = diag_dev.ch_cfg[diag.id2ch[diag_ch_id]].type;
 
-    switch(diagType) {
+    switch (diagType) {
     /* Call handler function depending on diagnosis type */
 
         case DIAG_GENERAL_TYPE:
@@ -489,7 +420,6 @@ DIAG_RETURNTYPE_e DIAG_Handler(DIAG_CH_ID_e diag_ch_id, DIAG_EVENT_e event, uint
 
         default:
             break;
-
     }
 
     return retVal;
@@ -522,20 +452,20 @@ static DIAG_RETURNTYPE_e DIAG_GeneralHandler(DIAG_CH_ID_e diag_ch_id, DIAG_EVENT
 
     DIAG_TYPE_RECORDING_e recordingenabled;
 
-    if(diag.state == DIAG_STATE_UNINITIALIZED) {
+    if (diag.state == DIAG_STATE_UNINITIALIZED) {
         return (DIAG_HANDLER_RETURN_NOT_READY);
     }
 
-    if(diag_ch_id >= DIAG_ID_MAX) {
+    if (diag_ch_id >= DIAG_ID_MAX) {
         return (DIAG_HANDLER_RETURN_WRONG_ID);
     }
 
-    if((diag_ch_id == DIAG_CH_CONTACTOR_DAMAGED) || (diag_ch_id == DIAG_CH_CONTACTOR_OPENING) ||
+    if ((diag_ch_id == DIAG_CH_CONTACTOR_DAMAGED) || (diag_ch_id == DIAG_CH_CONTACTOR_OPENING) ||
             (diag_ch_id == DIAG_CH_CONTACTOR_CLOSING)) {
         return (DIAG_HANDLER_INVALID_TYPE);
     }
     err_enable_idx      = diag_ch_id/32;        /* array index of diag.err_enableflag[..] */
-    err_enable_bitmask  = 1<<(diag_ch_id%32);   /* bit number (mask) of diag.err_enableflag[idx] */
+    err_enable_bitmask  = 1 << (diag_ch_id%32);   /* bit number (mask) of diag.err_enableflag[idx] */
 
 
     u32ptr_errCodemsk   = &diag.errflag[err_enable_idx];
@@ -544,27 +474,21 @@ static DIAG_RETURNTYPE_e DIAG_GeneralHandler(DIAG_CH_ID_e diag_ch_id, DIAG_EVENT
     cfg_threshold       = diag_devptr->ch_cfg[diag.id2ch[diag_ch_id]].thresholds;
     recordingenabled    = diag_devptr->ch_cfg[diag.id2ch[diag_ch_id]].enablerecording;
 
-    if(event == DIAG_EVENT_OK)
-    {
-        if(diag.err_enableflag[err_enable_idx] & err_enable_bitmask)
-        {
+    if (event == DIAG_EVENT_OK) {
+        if (diag.err_enableflag[err_enable_idx] & err_enable_bitmask) {
             /* if (((*u16ptr_threshcounter) == 0) && (*u32ptr_errCodemsk == 0)) */
-            if (((*u16ptr_threshcounter) == 0))
-            {
-                ;   /* everything ok, nothing to be handled */
-            }
-            else if ((*u16ptr_threshcounter) > 1 )
-            {
+            if (((*u16ptr_threshcounter) == 0)) {
+                /* everything ok, nothing to be handled */
+            } else if ((*u16ptr_threshcounter) > 1) {
                 (*u16ptr_threshcounter)--;   /* Error did not occur, decrement Error-Counter */
-            }
-            /* else if ((*u16ptr_threshcounter) <= 1) */
-            else if ((*u16ptr_threshcounter) == 1)
-            {   /*  Error did not occur, now decrement to zero and clear Error- or Warning-Flag and make recording if enabled */
+            } else if ((*u16ptr_threshcounter) == 1) {
+                /* else if ((*u16ptr_threshcounter) <= 1) */
+                /*  Error did not occur, now decrement to zero and clear Error- or Warning-Flag and make recording if enabled */
                 *u32ptr_errCodemsk &= ~err_enable_bitmask;      /* ERROR:   clear corresponding bit in errflag[idx] */
                 *u32ptr_warnCodemsk &= ~err_enable_bitmask;     /* WARNING: clear corresponding bit in warnflag[idx] */
                 (*u16ptr_threshcounter) = 0;
                 /* Make entry in error-memory (error disappeared) */
-                if(recordingenabled == DIAG_RECORDING_ENABLED)
+                if (recordingenabled == DIAG_RECORDING_ENABLED)
                     DIAG_EntryWrite(diag_ch_id, event, item_nr);
 
                 /* Call callback function and reset error */
@@ -572,53 +496,41 @@ static DIAG_RETURNTYPE_e DIAG_GeneralHandler(DIAG_CH_ID_e diag_ch_id, DIAG_EVENT
             }
         }
         ret_val = DIAG_HANDLER_RETURN_OK; /* Function does not return an error-message! */
-    }
-    else if(event == DIAG_EVENT_NOK)
-    {
-        if( diag.err_enableflag[err_enable_idx] & err_enable_bitmask )
-        {
-            if ((*u16ptr_threshcounter) < cfg_threshold )
-            {
+    } else if (event == DIAG_EVENT_NOK) {
+        if (diag.err_enableflag[err_enable_idx] & err_enable_bitmask) {
+            if ((*u16ptr_threshcounter) < cfg_threshold) {
                 (*u16ptr_threshcounter)++;   /* error-threshold not exceeded yet, increment Error-Counter */
                 ret_val = DIAG_HANDLER_RETURN_OK; /* Function does not return an error-message! */
-            }
-            else if ((*u16ptr_threshcounter) == cfg_threshold )
-            {
+            } else if ((*u16ptr_threshcounter) == cfg_threshold) {
                 /* Error occured AND error-threshold exceeded */
                 (*u16ptr_threshcounter)++;
                 *u32ptr_errCodemsk |= err_enable_bitmask;      /* ERROR:   set corresponding bit in errflag[idx] */
                 *u32ptr_warnCodemsk &= ~err_enable_bitmask;    /* WARNING: clear corresponding bit in warnflag[idx] */
 
                 /* Make entry in error-memory (error occurred) */
-                if(recordingenabled == DIAG_RECORDING_ENABLED)
+                if (recordingenabled == DIAG_RECORDING_ENABLED)
                     DIAG_EntryWrite(diag_ch_id, event, item_nr);
 
                 /* Call callback function and set error */
                 diag_ch_cfg[diag.id2ch[diag_ch_id]].callbackfunc(diag_ch_id, DIAG_EVENT_NOK);
                 /* Function returns an error-message! */
                 ret_val = DIAG_HANDLER_RETURN_ERR_OCCURRED;
+            } else if (((*u16ptr_threshcounter) > cfg_threshold)) {
+                /* error-threshold already exceeded, nothing to be handled */
             }
-            else if (((*u16ptr_threshcounter) > cfg_threshold))
-            {
-                ;   /* error-threshold already exceeded, nothing to be handled */
-            }
-        }
-        else
-        {
+        } else {
             /* Error occured BUT NOT enabled by mask */
             *u32ptr_errCodemsk &= ~err_enable_bitmask;        /* ERROR:   clear corresponding bit in errflag[idx] */
             *u32ptr_warnCodemsk |= err_enable_bitmask;        /* WARNING: set corresponding bit in warnflag[idx] */
             ret_val = DIAG_HANDLER_RETURN_WARNING_OCCURRED;   /* Function returns an error-message! */
         }
-    }
-    else if(event == DIAG_EVENT_RESET)
-    {
-        if(diag.err_enableflag[err_enable_idx] & err_enable_bitmask)
-        {    /* clear counter, Error-, Warning-Flag and make recording if enabled */
+    } else if (event == DIAG_EVENT_RESET) {
+        if (diag.err_enableflag[err_enable_idx] & err_enable_bitmask) {
+            /* clear counter, Error-, Warning-Flag and make recording if enabled */
             *u32ptr_errCodemsk &= ~err_enable_bitmask;      /* ERROR:   clear corresponding bit in errflag[idx] */
             *u32ptr_warnCodemsk &= ~err_enable_bitmask;     /* WARNING: clear corresponding bit in warnflag[idx] */
             (*u16ptr_threshcounter) = 0;
-            if(recordingenabled==DIAG_RECORDING_ENABLED)
+            if (recordingenabled == DIAG_RECORDING_ENABLED)
                 DIAG_EntryWrite(diag_ch_id, event, item_nr);      /* Make entry in error-memory (error disappeared) if error was recorded before */
         }
         ret_val = DIAG_HANDLER_RETURN_OK; /* Function does not return an error-message! */
@@ -646,41 +558,36 @@ static DIAG_RETURNTYPE_e DIAG_GeneralHandler(DIAG_CH_ID_e diag_ch_id, DIAG_EVENT
  *          DIAG_HANDLER_INVALID_DATA if no opening current is passed in case of hard opening
  */
 static DIAG_RETURNTYPE_e DIAG_ContHandler(DIAG_CH_ID_e eventID, uint32_t cont_nr, float* openingCur) {
-
     DIAG_RETURNTYPE_e retVal = DIAG_HANDLER_RETURN_UNKNOWN;
     uint8_t updateNVRAM = 0;
 
-    if(diag_locked)
+    if (diag_locked)
         return retVal;    /*  only locked when clearing the diagnosis memory */
     DIAG_CONTACTOR_s diagContactor;
     NVM_Get_contactorcnt(&diagContactor);
-    if(eventID == DIAG_CH_CONTACTOR_OPENING) {
+    if (eventID == DIAG_CH_CONTACTOR_OPENING) {
         diagContactor.cont_switch_opened[cont_nr]++;
         retVal = DIAG_HANDLER_RETURN_OK;
-    }
-    else if(eventID == DIAG_CH_CONTACTOR_CLOSING) {
+    } else if (eventID == DIAG_CH_CONTACTOR_CLOSING) {
         diagContactor.cont_switch_closed[cont_nr]++;
         retVal = DIAG_HANDLER_RETURN_OK;
-    }
-    else if(eventID == DIAG_CH_CONTACTOR_DAMAGED) {
+    } else if (eventID == DIAG_CH_CONTACTOR_DAMAGED) {
         if (NULL_PTR == openingCur) {
             retVal = DIAG_HANDLER_INVALID_DATA;
-        }
-        else {
+        } else {
             RTC_Time_s currTime;
             RTC_Date_s currDate;
-            uint8_t buf[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
             updateNVRAM = 1;
 
             diagContactor.cont_switch_opened_hard_at_current[cont_nr]++;
 
-            if(diagContactor.cont_switch_opened_hard_at_current[cont_nr] >= CONT_NUMBER_OF_BAD_COUNTINGS)
+            if (diagContactor.cont_switch_opened_hard_at_current[cont_nr] >= CONT_NUMBER_OF_BAD_COUNTINGS)
                 retVal = DIAG_HANDLER_RETURN_ERR_OCCURRED;
             else
                 retVal = DIAG_HANDLER_RETURN_OK;
 
-            if( diagContactorError_entry_wrptr >= &diagContactorErrorMemory[DIAG_FAIL_ENTRY_CONTACTOR_LENGTH]) {
+            if (diagContactorError_entry_wrptr >= &diagContactorErrorMemory[DIAG_FAIL_ENTRY_CONTACTOR_LENGTH]) {
                 diagContactorError_entry_wrptr = &diagContactorErrorMemory[0];
             }
 
@@ -703,21 +610,16 @@ static DIAG_RETURNTYPE_e DIAG_ContHandler(DIAG_CH_ID_e eventID, uint32_t cont_nr
 
             diagContactorError_entry_wrptr++;
 
-            DEBUG_PRINTF((const uint8_t * )"new Contactor error entry! currently ");
-            uint8_t tmp = (uint8_t)diagContactor.errcntreported;
-            DEBUG_PRINTF(U8ToDecascii(buf, &tmp, 2));
-            DEBUG_PRINTF((const uint8_t * )" error entrys");
-            DEBUG_PRINTF((const uint8_t * )"\r\n");
+            DEBUG_PRINTF(("new Contactor error entry! currently %02d error entrys\r\n", diagContactor.errcntreported));
         }
-    }
-    else {
+    } else {
         retVal = DIAG_HANDLER_INVALID_TYPE;
     }
     if ((DIAG_HANDLER_RETURN_ERR_OCCURRED == retVal) || (DIAG_HANDLER_RETURN_OK == retVal)) {
         /* Write new value in nvram buffer */
         NVM_Set_contactorcnt(&diagContactor);
         if (updateNVRAM == 1) {
-            /* Update NVRAM only if contactor opened hard at curren */
+            /* Update NVRAM only if contactor opened hard at current */
             NVRAM_setWriteRequest(NVRAM_BLOCK_ID_CONT_COUNTER);
         }
     }
@@ -741,19 +643,17 @@ void DIAG_SysMon(void) {
 
     /* check modules */
     for (module_id = 0; module_id < DIAG_SYSMON_MODULE_ID_MAX; module_id++) {
-
         if ((diag_sysmon_ch_cfg[module_id].type == DIAG_SYSMON_CYCLICTASK) &&
            (diag_sysmon_ch_cfg[module_id].state == DIAG_ENABLED)) {
-
-            if(diag_sysmon[module_id].timestamp -  diag_sysmon_last[module_id].timestamp <  1) {
+            if (diag_sysmon[module_id].timestamp -  diag_sysmon_last[module_id].timestamp <  1) {
                 /* module not running */
-                if(++diag_sysmon_cnt[module_id] >= diag_sysmon_ch_cfg[module_id].threshold) {
+                if (++diag_sysmon_cnt[module_id] >= diag_sysmon_ch_cfg[module_id].threshold) {
                     /* @todo configurable timeouts ! */
-                    if(diag_sysmon_ch_cfg[module_id].enablerecording == DIAG_RECORDING_ENABLED) {
-                        DIAG_Handler(DIAG_CH_SYSTEMMONITORING_TIMEOUT,DIAG_EVENT_NOK,module_id, NULL);
+                    if (diag_sysmon_ch_cfg[module_id].enablerecording == DIAG_RECORDING_ENABLED) {
+                        DIAG_Handler(DIAG_CH_SYSTEMMONITORING_TIMEOUT, DIAG_EVENT_NOK, module_id, NULL);
                     }
 #if BUILD_MODULE_ENABLE_CONTACTOR == 1
-                    if(diag_sysmon_ch_cfg[module_id].handlingtype == DIAG_SYSMON_HANDLING_SWITCHOFFCONTACTOR) {
+                    if (diag_sysmon_ch_cfg[module_id].handlingtype == DIAG_SYSMON_HANDLING_SWITCHOFFCONTACTOR) {
                         /* system not working trustfully, switch off contactors! */
                         CONT_SwitchAllContactorsOff();
                     }
@@ -767,7 +667,7 @@ void DIAG_SysMon(void) {
                 /*  module running */
                 diag_sysmon_cnt[module_id] = 0;
 
-                if(diag_sysmon[module_id].state != 0) {
+                if (diag_sysmon[module_id].state != 0) {
                     /* check state of module */
                     /* @todo: do something now! */
                 }
@@ -781,9 +681,7 @@ void DIAG_SysMon(void) {
 
 
 void DIAG_SysMonNotify(DIAG_SYSMON_MODULE_ID_e module_id, uint32_t state) {
-
     if (module_id < DIAG_SYSMON_MODULE_ID_MAX) {
-
         taskENTER_CRITICAL();
         diag_sysmon[module_id].timestamp = OS_getOSSysTick();
         diag_sysmon[module_id].state = state;
@@ -793,22 +691,20 @@ void DIAG_SysMonNotify(DIAG_SYSMON_MODULE_ID_e module_id, uint32_t state) {
 
 
 void DIAG_configASSERT(void) {
-
 #ifdef STM32F4
     uint32_t lr_register;
     uint32_t sp_register;
-
-    __ASM volatile ("mov %0, r14" : "=r" (lr_register) );
-    __ASM volatile ("mov %0, r13" : "=r" (sp_register) );
+    __ASM volatile("mov %0, r14" : "=r" (lr_register));
+    __ASM volatile("mov %0, r13" : "=r" (sp_register));
 
     lr_register = lr_register & 0xFFFFFFFE;     /* mask out LSB as this only is indicates thumb instruction */
     diag_fc.Val0 = sp_register;                 /* actual stack pointer */
     diag_fc.Val1 = lr_register;                 /* report instruction address where this function has been called */
     diag_fc.Val2 = *(uint32_t*)(sp_register + 0x1C);        /* return address of callers context (one above caller) */
-    DIAG_Handler(DIAG_CH_CONFIGASSERT,DIAG_EVENT_NOK,0, NULL);
+    DIAG_Handler(DIAG_CH_CONFIGASSERT, DIAG_EVENT_NOK, 0, NULL);
 #endif
 
     while (1) {
-        ;
+        /* TODO: explain why infinite loop */
     }
 }

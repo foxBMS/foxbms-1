@@ -94,6 +94,7 @@ def build(bld):
 
                 os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'engine', 'database'),
 
+                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'module', 'hwinfo'),
                 os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'module', 'interlock'),
                 os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'module', 'ltc'),
                 os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'module', 'meas'),

@@ -81,7 +81,6 @@
  always have the state defined in vic_interrupts[]
  */
 VIC_InitStruct_s vic_interrupts[] = {
-
         /* CAN1 Interrupts */
         { CAN1_TX_IRQn, 7, VIC_IRQ_LOCK_ENABLE, VIC_IRQ_ENABLE },
         { CAN1_RX0_IRQn, 7, VIC_IRQ_LOCK_ENABLE, VIC_IRQ_ENABLE },
@@ -103,7 +102,6 @@ VIC_InitStruct_s vic_interrupts[] = {
         { CAN2_RX0_IRQn, 7, VIC_IRQ_LOCK_ENABLE, VIC_IRQ_ENABLE },
         { CAN2_RX1_IRQn, 7, VIC_IRQ_LOCK_ENABLE, VIC_IRQ_ENABLE },
         { CAN2_SCE_IRQn, 7, VIC_IRQ_LOCK_ENABLE, VIC_IRQ_ENABLE },
-
 };
 
 const uint8_t vic_cfg_length = sizeof(vic_interrupts) / sizeof(vic_interrupts[0]);

@@ -96,21 +96,21 @@
 #if ALGO_TICK_MS > ISA_CURRENT_CYCLE_TIME_MS
 #if MOVING_AVERAGE_DURATION_CURRENT_CONFIG_MS/ALGO_TICK_MS > 60000/ALGO_TICK_MS
 /* If array length of configured time > 60s array take this array size */
-static float MEM_EXT_SDRAM curValues[(MOVING_AVERAGE_DURATION_CURRENT_CONFIG_MS/ALGO_TICK_MS)+1] = { };
+static float MEM_EXT_SDRAM curValues[(MOVING_AVERAGE_DURATION_CURRENT_CONFIG_MS/ALGO_TICK_MS)+1] = {};
 static uint32_t movMeanCurLength = (MOVING_AVERAGE_DURATION_CURRENT_CONFIG_MS/ALGO_TICK_MS)+1;
 #else
 /* Take array size of 60s moving average */
-static float MEM_EXT_SDRAM curValues[(60000/ALGO_TICK_MS)+1] = { };
+static float MEM_EXT_SDRAM curValues[(60000/ALGO_TICK_MS)+1] = {};
 static uint32_t movMeanCurLength = (60000/ALGO_TICK_MS)+1;
 #endif
 #else
 /* If array length of configured time > 60s array take this array size */
 #if MOVING_AVERAGE_DURATION_CURRENT_CONFIG_MS/ISA_CURRENT_CYCLE_TIME_MS > 60000/ISA_CURRENT_CYCLE_TIME_MS
-static float MEM_EXT_SDRAM curValues[(MOVING_AVERAGE_DURATION_CURRENT_CONFIG_MS/ISA_CURRENT_CYCLE_TIME_MS)+1] = { };
+static float MEM_EXT_SDRAM curValues[(MOVING_AVERAGE_DURATION_CURRENT_CONFIG_MS/ISA_CURRENT_CYCLE_TIME_MS)+1] = {};
 static uint32_t movMeanCurLength = (MOVING_AVERAGE_DURATION_CURRENT_CONFIG_MS/ISA_CURRENT_CYCLE_TIME_MS)+1;
 #else
 /* Take array size of 60s moving average */
-static float MEM_EXT_SDRAM curValues[(60000/ISA_CURRENT_CYCLE_TIME_MS)+1] = { };
+static float MEM_EXT_SDRAM curValues[(60000/ISA_CURRENT_CYCLE_TIME_MS)+1] = {};
 static uint32_t movMeanCurLength = (60000/ISA_CURRENT_CYCLE_TIME_MS)+1;
 #endif
 #endif
@@ -119,21 +119,21 @@ static uint32_t movMeanCurLength = (60000/ISA_CURRENT_CYCLE_TIME_MS)+1;
 #if ALGO_TICK_MS > ISA_POWER_CYCLE_TIME_MS
 #if MOVING_AVERAGE_DURATION_POWER_CONFIG_MS/ALGO_TICK_MS > 60000/ALGO_TICK_MS
 /* If array length of configured time > 60s array take this array size */
-static float MEM_EXT_SDRAM powValues[(MOVING_AVERAGE_DURATION_POWER_CONFIG_MS/ALGO_TICK_MS)+1] = { };
+static float MEM_EXT_SDRAM powValues[(MOVING_AVERAGE_DURATION_POWER_CONFIG_MS/ALGO_TICK_MS)+1] = {};
 static uint32_t movMeanPowLength = (MOVING_AVERAGE_DURATION_POWER_CONFIG_MS/ALGO_TICK_MS)+1;
 #else
 /* Take array size of 60s moving average */
-static float MEM_EXT_SDRAM powValues[(60000/ALGO_TICK_MS)+1] = { };
+static float MEM_EXT_SDRAM powValues[(60000/ALGO_TICK_MS)+1] = {};
 static uint32_t movMeanPowLength = (60000/ALGO_TICK_MS)+1;
 #endif
 #else
 #if MOVING_AVERAGE_DURATION_POWER_CONFIG_MS/ISA_POWER_CYCLE_TIME_MS > 60000/ISA_POWER_CYCLE_TIME_MS
 /* If array length of configured time > 60s array take this array size */
-static float MEM_EXT_SDRAM powValues[(MOVING_AVERAGE_DURATION_POWER_CONFIG_MS/ISA_POWER_CYCLE_TIME_MS)+1] = { };
+static float MEM_EXT_SDRAM powValues[(MOVING_AVERAGE_DURATION_POWER_CONFIG_MS/ISA_POWER_CYCLE_TIME_MS)+1] = {};
 static uint32_t movMeanPowLength = (MOVING_AVERAGE_DURATION_POWER_CONFIG_MS/ISA_POWER_CYCLE_TIME_MS)+1;
 #else
 /* Take array size of 60s moving average */
-static float MEM_EXT_SDRAM powValues[(60000/ISA_POWER_CYCLE_TIME_MS)+1] = { };
+static float MEM_EXT_SDRAM powValues[(60000/ISA_POWER_CYCLE_TIME_MS)+1] = {};
 static uint32_t movMeanPowLength = (60000/ISA_POWER_CYCLE_TIME_MS)+1;
 #endif
 #endif
@@ -163,7 +163,7 @@ static void algo_movAverage(uint32_t algoIdx);
 /*================== Function Implementations =============================*/
 
 ALGO_TASKS_s algo_algorithms[] = {
-    { ALGO_READY, 100, 1000, 0, &algo_movAverage },
+    {ALGO_READY, 100, 1000, 0, &algo_movAverage },
 };
 
 const uint16_t algo_length = sizeof(algo_algorithms)/sizeof(algo_algorithms[0]);
@@ -184,12 +184,10 @@ static void algo_movAverage(uint32_t algoIdx) {
 
     /* Check if new current value */
     if (curCounter != curPow_tab.newCurrent) {
-
         curCounter = curPow_tab.newCurrent;
 
         /* Check if valid value */
         if (curPow_tab.state_current == 0) {
-
             /* new Values -> Save later in database */
             newValues = 1;
 

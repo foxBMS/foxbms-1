@@ -95,11 +95,11 @@ static SOX_SOF_s sof_msl_Level;
 /*================== Function Prototypes ==================================*/
 static void SOF_CalculateCurves(const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues);
 static void SOF_Calculate(int16_t maxtemp, int16_t mintemp, uint16_t maxvolt, uint16_t minvolt, uint16_t maxsoc, uint16_t minsoc);
-static void SOF_CalculateVoltageBased(float MinVoltage,float MaxVoltage, SOX_SOF_s *ResultValues, const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues);
-static void SOF_CalculateSocBased(float MinSoc,float MaxSoc, SOX_SOF_s *ResultValues, const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues);
-static void SOF_CalculateTemperatureBased(float MinTemp,float MaxTemp, SOX_SOF_s *ResultValues, const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues);
+static void SOF_CalculateVoltageBased(float MinVoltage, float MaxVoltage, SOX_SOF_s *ResultValues, const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues);
+static void SOF_CalculateSocBased(float MinSoc, float MaxSoc, SOX_SOF_s *ResultValues, const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues);
+static void SOF_CalculateTemperatureBased(float MinTemp, float MaxTemp, SOX_SOF_s *ResultValues, const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues);
 static void SOF_MinimumOfThreeSofValues(SOX_SOF_s Ubased, SOX_SOF_s Sbased, SOX_SOF_s Tbased, SOX_SOF_s *resultValues);
-static float SOF_MinimumOfThreeValues (float value1,float value2, float value3);
+static float SOF_MinimumOfThreeValues(float value1, float value2, float value3);
 static float SOC_GetFromVoltage(float voltage);
 
 /*================== Function Implementations =============================*/
@@ -139,12 +139,10 @@ void SOC_Init(uint8_t cc_present) {
         sox.state = 0;
         sox.timestamp = 0;
         sox.previous_timestamp = 0;
-    }
-    else {
+    } else {
         soc_previous_current_timestamp = sox_current_tab.timestamp_cur;
         error_flags.can_cc_used = 0;
         sox_state.sensor_cc_used = FALSE;
-
     }
     DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
     DB_WriteBlock(&sox, DATA_BLOCK_ID_SOX);
@@ -187,10 +185,9 @@ void SOC_SetValue(float soc_value_min, float soc_value_max, float soc_value_mean
         sox.timestamp = 0;
         sox.previous_timestamp = 0;
 
-        DB_WriteBlock(&sox,DATA_BLOCK_ID_SOX);
+        DB_WriteBlock(&sox, DATA_BLOCK_ID_SOX);
 
-    }
-    else {
+    } else {
         DB_ReadBlock(&sox_current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
         soc.mean = soc_value_mean;
         soc.min = soc_value_min;
@@ -212,7 +209,7 @@ void SOC_SetValue(float soc_value_min, float soc_value_max, float soc_value_mean
         if (sox.soc_max > 100.0)  { sox.soc_max = 100.0;  }
         if (sox.soc_max < 0.0)    { sox.soc_max = 0.0;    }
         NVM_setSOC(&soc);
-        DB_WriteBlock(&sox,DATA_BLOCK_ID_SOX);
+        DB_WriteBlock(&sox, DATA_BLOCK_ID_SOX);
     }
 }
 
@@ -230,7 +227,6 @@ void SOC_Set_Lookup_Table(void) {
     soc_max = SOC_GetFromVoltage((float)(cellminmax.voltage_max));
 
     SOC_SetValue(soc_min, soc_max, soc_mean);
-
 }
 
 
@@ -253,13 +249,12 @@ void SOC_Calculation(void) {
         timestamp = sox_current_tab.timestamp_cur;
         previous_timestamp = sox_current_tab.previous_timestamp_cur;
 
-        if (soc_previous_current_timestamp != timestamp) { /* check if current measurement has been updated */
+        if (soc_previous_current_timestamp != timestamp) {  /* check if current measurement has been updated */
             timestep = timestamp - previous_timestamp;
             if (timestep > 0) {
-
                 NVM_getSOC(&soc);
                 /* Current in charge direction negative means SOC increasing --> BAT naming, not ROB */
-                /* soc_mean = soc_mean - (sox_current_tab.current *mA* /(float)SOX_CELL_CAPACITY (*mAh*)) * (float)(timestep) * (10.0/3600.0); /*milliseconds*/
+                /* soc_mean = soc_mean - (sox_current_tab.current *mA* /(float)SOX_CELL_CAPACITY (*mAh*)) * (float)(timestep) * (10.0/3600.0); */ /*milliseconds*/
 
                 if (POSITIVE_DISCHARGE_CURRENT == TRUE) {
                     deltaSOC = (((sox_current_tab.current)*(float)(timestep)/10))/(3600.0*SOX_CELL_CAPACITY); /* ((mA *ms *(1s/1000ms)) / (3600(s/h) *mAh)) *100% */
@@ -283,22 +278,19 @@ void SOC_Calculation(void) {
                 NVM_setSOC(&soc);
                 sox.state++;
                 DB_WriteBlock(&sox, DATA_BLOCK_ID_SOX);
-
             }
         } /* end check if current measurement has been updated */
         /* update the variable for the next check */
         soc_previous_current_timestamp = sox_current_tab.timestamp;
 
-    }
-    else {
-
+    } else {
         DB_ReadBlock(&sox_current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
 
         timestamp_cc = sox_current_tab.timestamp_cc;
         previous_timestamp_cc = sox_current_tab.previous_timestamp_cc;
 
-        if (previous_timestamp_cc != timestamp_cc) { /* check if cc measurement has been updated */
-            DB_ReadBlock(&cans_current_tab,DATA_BLOCK_ID_CURRENT_SENSOR);
+        if (previous_timestamp_cc != timestamp_cc) {  /* check if cc measurement has been updated */
+            DB_ReadBlock(&cans_current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
 
             if (POSITIVE_DISCHARGE_CURRENT == TRUE) {
                 sox.soc_mean = sox_state.cc_scaling - 100.0*cans_current_tab.current_counter/(3600.0*(SOX_CELL_CAPACITY/1000.0));
@@ -323,12 +315,9 @@ void SOC_Calculation(void) {
         }
         soc_previous_current_timestamp_cc = sox_current_tab.timestamp_cc;
     }
-
-
 }
 
 void SOF_Init(void) {
-
     /* Calculating SOF curve for the recommended operating current */
     SOF_CalculateCurves(&sox_sof_config_maxAllowedCurrent, &sofCurveRecOperatingCurrent);
 
@@ -345,7 +334,6 @@ void SOF_Init(void) {
 }
 
 static void SOF_CalculateCurves(const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues) {
-
     /* Calculating SOF curve for the maximum allowed current for MOL/RSL/MSL */
     calcCurveValues->Slope_TLowDischa = (configLimitValues->I_DischaMax_Cont - configLimitValues->I_Limphome) / (configLimitValues->Cutoff_TLow_Discha - configLimitValues->Limit_TLow_Discha);
     calcCurveValues->Offset_TLowDischa = configLimitValues->I_Limphome - (calcCurveValues->Slope_TLowDischa * configLimitValues->Limit_TLow_Discha);
@@ -375,8 +363,8 @@ static void SOF_CalculateCurves(const SOX_SOF_CONFIG_s *configLimitValues, SOF_c
 
 void SOF_Calculation(void) {
     DB_ReadBlock(&cellminmax, DATA_BLOCK_ID_MINMAX);
-    DB_ReadBlock(&sox,DATA_BLOCK_ID_SOX);
-    DB_ReadBlock(&sof,DATA_BLOCK_ID_SOF);
+    DB_ReadBlock(&sox, DATA_BLOCK_ID_SOX);
+    DB_ReadBlock(&sof, DATA_BLOCK_ID_SOF);
     DB_ReadBlock(&contfeedbacktab, DATA_BLOCK_ID_CONTFEEDBACK);
 
     /* Calculate SOF limits */
@@ -394,9 +382,9 @@ void SOF_Calculation(void) {
 
     /* if Contactor MainPlus and MainMinus are not closed (when they are closed, state_feedback is 0x0C) */
 #if BS_SEPARATE_POWERLINES == 1
-    if ( ! ( (contfeedbacktab.contactor_feedback & 0x3F) == 0x28 || (contfeedbacktab.contactor_feedback & 0x3F) == 0x05) ){
+    if (!((contfeedbacktab.contactor_feedback & 0x3F) == 0x28 || (contfeedbacktab.contactor_feedback & 0x3F) == 0x05)) {
 #else
-    if ( (contfeedbacktab.contactor_feedback & 0x3F) != 0x05) {
+    if ((contfeedbacktab.contactor_feedback & 0x3F) != 0x05) {
 #endif /* BS_SEPARATE_POWERLINES == 1 */
         sof.recommended_continuous_charge = 0.0;
         sof.recommended_continuous_discharge = 0.0;
@@ -420,7 +408,6 @@ void SOF_Calculation(void) {
  */
 
 float SOC_GetFromVoltage(float voltage) {
-
     float SOC = 0.50;
 
     return SOC;
@@ -443,28 +430,28 @@ static void SOF_Calculate(int16_t maxtemp, int16_t mintemp, uint16_t maxvolt, ui
     SOX_SOF_s TbasedSof = {0.0, 0.0, 0.0};
 
     /* Calculate maximum allowed current depending on current values */
-    SOF_CalculateVoltageBased((float)minvolt,(float)maxvolt,&UbasedSof, &sox_sof_config_maxAllowedCurrent, &sofCurveRecOperatingCurrent);
-    SOF_CalculateSocBased((float)minsoc,(float)maxsoc,&SbasedSof, &sox_sof_config_maxAllowedCurrent, &sofCurveRecOperatingCurrent);
-    SOF_CalculateTemperatureBased((float)mintemp,(float)maxtemp,&TbasedSof, &sox_sof_config_maxAllowedCurrent, &sofCurveRecOperatingCurrent);
+    SOF_CalculateVoltageBased((float)minvolt, (float)maxvolt, &UbasedSof, &sox_sof_config_maxAllowedCurrent, &sofCurveRecOperatingCurrent);
+    SOF_CalculateSocBased((float)minsoc, (float)maxsoc, &SbasedSof, &sox_sof_config_maxAllowedCurrent, &sofCurveRecOperatingCurrent);
+    SOF_CalculateTemperatureBased((float)mintemp, (float)maxtemp, &TbasedSof, &sox_sof_config_maxAllowedCurrent, &sofCurveRecOperatingCurrent);
     SOF_MinimumOfThreeSofValues(UbasedSof, SbasedSof, TbasedSof, &sof_recOperatingCurrent);
 
 #if BMS_TEST_CELL_SOF_LIMITS == TRUE
     /* Calculate maximum allowed current MOL level */
-    SOF_CalculateVoltageBased((float)minvolt,(float)maxvolt,&UbasedSof, &sox_sof_config_MOL, &sofCurve_MOL);
-    SOF_CalculateSocBased((float)minsoc,(float)maxsoc,&SbasedSof, &sox_sof_config_MOL, &sofCurve_MOL);
-    SOF_CalculateTemperatureBased((float)mintemp,(float)maxtemp,&TbasedSof, &sox_sof_config_MOL, &sofCurve_MOL);
+    SOF_CalculateVoltageBased((float)minvolt, (float)maxvolt, &UbasedSof, &sox_sof_config_MOL, &sofCurve_MOL);
+    SOF_CalculateSocBased((float)minsoc, (float)maxsoc, &SbasedSof, &sox_sof_config_MOL, &sofCurve_MOL);
+    SOF_CalculateTemperatureBased((float)mintemp, (float)maxtemp, &TbasedSof, &sox_sof_config_MOL, &sofCurve_MOL);
     SOF_MinimumOfThreeSofValues(UbasedSof, SbasedSof, TbasedSof, &sof_mol_Level);
 
     /* Calculate maximum allowed current RSL level */
-    SOF_CalculateVoltageBased((float)minvolt,(float)maxvolt,&UbasedSof, &sox_sof_config_RSL, &sofCurve_RSL);
-    SOF_CalculateSocBased((float)minsoc,(float)maxsoc,&SbasedSof, &sox_sof_config_RSL, &sofCurve_RSL);
-    SOF_CalculateTemperatureBased((float)mintemp,(float)maxtemp,&TbasedSof, &sox_sof_config_RSL, &sofCurve_RSL);
+    SOF_CalculateVoltageBased((float)minvolt, (float)maxvolt, &UbasedSof, &sox_sof_config_RSL, &sofCurve_RSL);
+    SOF_CalculateSocBased((float)minsoc, (float)maxsoc, &SbasedSof, &sox_sof_config_RSL, &sofCurve_RSL);
+    SOF_CalculateTemperatureBased((float)mintemp, (float)maxtemp, &TbasedSof, &sox_sof_config_RSL, &sofCurve_RSL);
     SOF_MinimumOfThreeSofValues(UbasedSof, SbasedSof, TbasedSof, &sof_rsl_Level);
 
     /* Calculate maximum allowed current MSL level */
-    SOF_CalculateVoltageBased((float)minvolt,(float)maxvolt,&UbasedSof, &sox_sof_config_MSL, &sofCurve_MSL);
-    SOF_CalculateSocBased((float)minsoc,(float)maxsoc,&SbasedSof, &sox_sof_config_MSL, &sofCurve_MSL);
-    SOF_CalculateTemperatureBased((float)mintemp,(float)maxtemp,&TbasedSof, &sox_sof_config_MSL, &sofCurve_MSL);
+    SOF_CalculateVoltageBased((float)minvolt, (float)maxvolt, &UbasedSof, &sox_sof_config_MSL, &sofCurve_MSL);
+    SOF_CalculateSocBased((float)minsoc, (float)maxsoc, &SbasedSof, &sox_sof_config_MSL, &sofCurve_MSL);
+    SOF_CalculateTemperatureBased((float)mintemp, (float)maxtemp, &TbasedSof, &sox_sof_config_MSL, &sofCurve_MSL);
     SOF_MinimumOfThreeSofValues(UbasedSof, SbasedSof, TbasedSof, &sof_msl_Level);
 #else
     sof_mol_Level.current_Charge_cont_max = BC_CURRENTMAX_CHARGE_MOL;
@@ -474,7 +461,6 @@ static void SOF_Calculate(int16_t maxtemp, int16_t mintemp, uint16_t maxvolt, ui
     sof_msl_Level.current_Charge_cont_max = BC_CURRENTMAX_CHARGE_MOL;
     sof_msl_Level.current_Discha_cont_max = BC_CURRENTMAX_DISCHARGE_MOL;
 #endif
-
 }
 
 /**
@@ -484,18 +470,16 @@ static void SOF_Calculate(int16_t maxtemp, int16_t mintemp, uint16_t maxvolt, ui
  *  @param  MaxVoltage maximum cell voltage
  *  @param  ResultValues Voltage-based SOF
  */
-static void SOF_CalculateVoltageBased(float MinVoltage,float MaxVoltage, SOX_SOF_s *ResultValues, const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues) {
+static void SOF_CalculateVoltageBased(float MinVoltage, float MaxVoltage, SOX_SOF_s *ResultValues, const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues) {
     /* min voltage issues */
     if (MinVoltage <= configLimitValues->Limit_Voltage_Discha) {
         ResultValues->current_Discha_cont_max = 0;
         ResultValues->current_Discha_peak_max = 0;
-    }
-    else {
+    } else {
         if (MinVoltage <= configLimitValues->Cutoff_Voltage_Discha) {
             ResultValues->current_Discha_cont_max = (calcCurveValues->Slope_VoltageDischa * (MinVoltage-configLimitValues->Limit_Voltage_Discha));
             ResultValues->current_Discha_peak_max = ResultValues->current_Discha_cont_max;
-        }
-        else {
+        } else {
             ResultValues->current_Discha_cont_max = configLimitValues->I_DischaMax_Cont;
             ResultValues->current_Discha_peak_max = configLimitValues->I_DischaMax_Cont;
         }
@@ -504,13 +488,11 @@ static void SOF_CalculateVoltageBased(float MinVoltage,float MaxVoltage, SOX_SOF
     if (MaxVoltage >= configLimitValues->Limit_Voltage_Charge) {
         ResultValues->current_Charge_cont_max = 0;
         ResultValues->current_Charge_peak_max = 0;
-    }
-    else {
+    } else {
         if (MaxVoltage >= configLimitValues->Cutoff_Voltage_Charge) {
             ResultValues->current_Charge_cont_max =  (calcCurveValues->Slope_VoltageCharge * (MaxVoltage- configLimitValues->Limit_Voltage_Charge));
             ResultValues->current_Charge_peak_max = ResultValues->current_Charge_cont_max;
-        }
-        else {
+        } else {
             ResultValues->current_Charge_cont_max = configLimitValues->I_ChargeMax_Cont;
             ResultValues->current_Charge_peak_max = configLimitValues->I_ChargeMax_Cont;
         }
@@ -524,34 +506,30 @@ static void SOF_CalculateVoltageBased(float MinVoltage,float MaxVoltage, SOX_SOF
  * @param   MaxSoc maximum State of Charge
  * @param   ResultValues pointer where to store the results
  */
-static void SOF_CalculateSocBased(float MinSoc,float MaxSoc, SOX_SOF_s *ResultValues, const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues) {
+static void SOF_CalculateSocBased(float MinSoc, float MaxSoc, SOX_SOF_s *ResultValues, const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues) {
     /* min voltage issues */
-    if (MinSoc <= configLimitValues->Limit_Soc_Discha){
+    if (MinSoc <= configLimitValues->Limit_Soc_Discha) {
         ResultValues->current_Discha_cont_max = configLimitValues->I_Limphome;
         ResultValues->current_Discha_peak_max = configLimitValues->I_Limphome;
-    }
-    else {
-        if (MinSoc <= configLimitValues->Cutoff_Soc_Discha){
+    } else {
+        if (MinSoc <= configLimitValues->Cutoff_Soc_Discha) {
             ResultValues->current_Discha_cont_max =  calcCurveValues->Slope_SocDischa * MinSoc + calcCurveValues->Offset_SocDischa;
             ResultValues->current_Discha_peak_max =  ResultValues->current_Discha_cont_max;
-        }
-        else{
+        } else {
             ResultValues->current_Discha_cont_max =  configLimitValues->I_DischaMax_Cont;
             ResultValues->current_Discha_peak_max =  configLimitValues->I_DischaMax_Cont;
         }
     }
 
     /* max voltage issues */
-    if (MaxSoc >= configLimitValues->Limit_Soc_Charge){
+    if (MaxSoc >= configLimitValues->Limit_Soc_Charge) {
         ResultValues->current_Charge_cont_max = 0;
         ResultValues->current_Charge_peak_max = 0;
-    }
-    else {
-        if (MaxSoc >= configLimitValues->Cutoff_Soc_Charge){
+    } else {
+        if (MaxSoc >= configLimitValues->Cutoff_Soc_Charge) {
             ResultValues->current_Charge_cont_max =  calcCurveValues->Slope_SocCharge * MaxSoc + calcCurveValues->Offset_SocCharge;
             ResultValues->current_Charge_peak_max = ResultValues->current_Charge_cont_max;
-        }
-        else{
+        } else {
             ResultValues->current_Charge_cont_max = configLimitValues->I_ChargeMax_Cont;
             ResultValues->current_Charge_peak_max = configLimitValues->I_ChargeMax_Cont;
         }
@@ -565,20 +543,17 @@ static void SOF_CalculateSocBased(float MinSoc,float MaxSoc, SOX_SOF_s *ResultVa
  * @param   MaxTemp maximum temperature of cells
  * @param   ResultValues pointer where to store the results
  */
-static void  SOF_CalculateTemperatureBased(float MinTemp,float MaxTemp, SOX_SOF_s *ResultValues, const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues) {
-
+static void  SOF_CalculateTemperatureBased(float MinTemp, float MaxTemp, SOX_SOF_s *ResultValues, const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues) {
     SOX_SOF_s dummyResultValues = {0.0, 0.0, 0.0};
     /* Temperature low Discharge */
     if (MinTemp <= configLimitValues->Limit_TLow_Discha) {
         ResultValues->current_Discha_cont_max = configLimitValues->I_Limphome;
         ResultValues->current_Discha_peak_max = configLimitValues->I_Limphome;
-    }
-    else {
+    } else {
         if (MinTemp <= configLimitValues->Cutoff_TLow_Discha) {
             ResultValues->current_Discha_cont_max = calcCurveValues->Slope_TLowDischa * MinTemp + calcCurveValues->Offset_TLowDischa;
             ResultValues->current_Discha_peak_max = ResultValues->current_Discha_cont_max;
-        }
-        else {
+        } else {
             ResultValues->current_Discha_cont_max = configLimitValues->I_DischaMax_Cont;
             ResultValues->current_Discha_peak_max = configLimitValues->I_DischaMax_Cont;
         }
@@ -587,13 +562,11 @@ static void  SOF_CalculateTemperatureBased(float MinTemp,float MaxTemp, SOX_SOF_
     if (MinTemp <= configLimitValues->Limit_TLow_Charge) {
         ResultValues->current_Charge_cont_max = 0;
         ResultValues->current_Charge_peak_max = 0;
-    }
-    else {
+    } else {
         if (MinTemp <= configLimitValues->Cutoff_TLow_Charge) {
             ResultValues->current_Charge_cont_max = calcCurveValues->Slope_TLowCharge * MinTemp + calcCurveValues->Offset_TLowCharge;
             ResultValues->current_Charge_peak_max = ResultValues->current_Charge_cont_max;
-        }
-        else{
+        } else {
             ResultValues->current_Charge_cont_max =  configLimitValues->I_ChargeMax_Cont;
             ResultValues->current_Charge_peak_max =  configLimitValues->I_ChargeMax_Cont;
         }
@@ -604,17 +577,14 @@ static void  SOF_CalculateTemperatureBased(float MinTemp,float MaxTemp, SOX_SOF_
         ResultValues->current_Discha_peak_max = 0;
         dummyResultValues.current_Discha_cont_max = 0;
         dummyResultValues.current_Discha_peak_max = 0;
-    }
-    else {
+    } else {
         if (MaxTemp >= configLimitValues->Cutoff_THigh_Discha) {
             dummyResultValues.current_Discha_cont_max = (calcCurveValues->Slope_THighDischa * MaxTemp + calcCurveValues->Offset_THighDischa);
             dummyResultValues.current_Discha_peak_max = dummyResultValues.current_Discha_cont_max;
-        }
-        else {
+        } else {
             /* do nothing because this situation is handled with MinTemp */
             dummyResultValues.current_Discha_cont_max = configLimitValues->I_DischaMax_Cont;
             dummyResultValues.current_Discha_peak_max = configLimitValues->I_DischaMax_Cont;
-
         }
         /* take the smaller current as limit */
         if (dummyResultValues.current_Discha_cont_max < ResultValues->current_Discha_cont_max)
@@ -628,13 +598,11 @@ static void  SOF_CalculateTemperatureBased(float MinTemp,float MaxTemp, SOX_SOF_
         ResultValues->current_Charge_peak_max = 0;
         dummyResultValues.current_Charge_cont_max = 0;
         dummyResultValues.current_Charge_peak_max = 0;
-    }
-    else {
-        if (MaxTemp >= configLimitValues->Cutoff_THigh_Charge){
+    } else {
+        if (MaxTemp >= configLimitValues->Cutoff_THigh_Charge) {
             dummyResultValues.current_Charge_cont_max = (calcCurveValues->Slope_THighCharge * MaxTemp + calcCurveValues->Offset_THighCharge);
             dummyResultValues.current_Charge_peak_max = dummyResultValues.current_Charge_cont_max;
-        }
-        else {
+        } else {
             /* do nothing because this situation is handled with MinTemp */
             dummyResultValues.current_Charge_cont_max = configLimitValues->I_ChargeMax_Cont;
             dummyResultValues.current_Charge_peak_max = configLimitValues->I_ChargeMax_Cont;
@@ -671,21 +639,18 @@ static void SOF_MinimumOfThreeSofValues(SOX_SOF_s Ubased, SOX_SOF_s Sbased, SOX_
  *
  * @return minimum of the 3 parameters
  */
-static float SOF_MinimumOfThreeValues (float value1,float value2, float value3) {
+static float SOF_MinimumOfThreeValues(float value1, float value2, float value3) {
     float result = 0.0;
     if (value1 <= value2) {
-        if (value3 <= value1){
+        if (value3 <= value1) {
             result = value3;
-        }
-        else {
+        } else {
             result = value1;
         }
-    }
-    else {
-        if (value3 <= value2){
+    } else {
+        if (value3 <= value2) {
             result = value3;
-        }
-        else{
+        } else {
             result = value2;
         }
     }

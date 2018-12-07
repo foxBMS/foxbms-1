@@ -98,7 +98,6 @@ static ISO_INIT_STATE_e iso_state = ISO_STATE_UNINITIALIZED;
 /*================== Function Implementations =============================*/
 
 void ISO_Init(void) {
-
 #ifdef ISO_ISOGUARD_ENABLE
     /* Initialize Software-Module */
     IR155_Init(ISO_CYCLE_TIME);
@@ -112,7 +111,6 @@ void ISO_Init(void) {
 
 
 void ISO_ReInit(void) {
-
 #ifdef ISO_ISOGUARD_ENABLE
 
     iso_state = ISO_STATE_UNINITIALIZED;
@@ -132,12 +130,10 @@ void ISO_ReInit(void) {
     /* Init and enable timer module and Isometer*/
     ISO_Init();
 #endif
-
 }
 
 
 void ISO_MeasureInsulation(void) {
-
 #ifdef ISO_ISOGUARD_ENABLE
 
     /* Do not continue if ISOGUARD module is still uninitialized */
@@ -149,7 +145,7 @@ void ISO_MeasureInsulation(void) {
     IO_PIN_STATE_e ohksState = IO_PIN_RESET;    /* high -> no error, low -> error */
     uint32_t resistance = 0;
     IR155_STATE_e state = IR155_STATE_UNDEFINED;
-    static DATA_BLOCK_ISOMETER_s ISO_measData = {    /* database structure */
+    static DATA_BLOCK_ISOMETER_s ISO_measData = {  /* database structure */
             .valid = 1,
             .state = 1,
             .resistance_kOhm = 0,
@@ -162,7 +158,7 @@ void ISO_MeasureInsulation(void) {
     /* Get resistance */
     ISO_measData.resistance_kOhm = resistance;
 
-    if(state == IR155_MEAS_NOT_VALID) {
+    if (state == IR155_MEAS_NOT_VALID) {
         /* Measurement result is not valid */
         ISO_measData.valid = 1;
     } else {
@@ -170,7 +166,7 @@ void ISO_MeasureInsulation(void) {
     }
 
     /* Set state valid/invalid based on resistance threshold */
-    if(retVal == E_OK && resistance > ISO_RESISTANCE_THRESHOLD_kOhm &&
+    if (retVal == E_OK && resistance > ISO_RESISTANCE_THRESHOLD_kOhm &&
             (state == IR155_RESIST_MEAS_GOOD || state == IR155_RESIST_ESTIM_GOOD)) {
         ISO_measData.state = 0;     /* Good resistance measured */
     } else {
@@ -187,7 +183,6 @@ void ISO_MeasureInsulation(void) {
         DIAG_Handler(DIAG_CH_INSULATION_ERROR, DIAG_EVENT_OK, 0, 0);
     } else {
         /* Do nothing, Pin == okay, but measurement invalid */
-        ;
     }
 
     ISO_measData.previous_timestamp = ISO_measData.timestamp;

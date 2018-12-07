@@ -2,6 +2,7 @@
 *[wW]orkspace*
 *[pP]ackages*
 .ws/
+*eclipse*
 
 # ignore complete build directory
 build/

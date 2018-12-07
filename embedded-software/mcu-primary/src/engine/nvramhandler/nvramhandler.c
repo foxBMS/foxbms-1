@@ -68,7 +68,6 @@
 /*================== Extern Function Implementations ========================*/
 
 void NVRAM_dataHandlerInit(void) {
-
     /* Reset last update time */
     for (uint8_t i = 0; i < nvram_number_of_blocks; i++) {
         nvram_dataHandlerBlocks[i].lastUpdate = 0;
@@ -77,7 +76,6 @@ void NVRAM_dataHandlerInit(void) {
 
 
 void NVRAM_dataHandler(void) {
-
     static float timestamp = 0;
     STD_RETURN_TYPE_e retval = E_NOT_OK;
 
@@ -85,7 +83,6 @@ void NVRAM_dataHandler(void) {
     timestamp = (float) OS_getOSSysTick();
 
     for (uint8_t i = 0; i < nvram_number_of_blocks; i++) {
-
         /* Check if cyclic nvram block needs to be updated */
         if (nvram_dataHandlerBlocks[i].mode == NVRAM_Cyclic) {
             /* If passed time > update cycle time: -> update channel OR additional asynchronous request has been made */
@@ -103,7 +100,6 @@ void NVRAM_dataHandler(void) {
                         nvram_dataHandlerBlocks[i].state = NVRAM_wait;
                     } else {
                         /* Try again next NVRAM_dataHandler() call */
-                        ;
                     }
                 } else {
                     /* Invalid pointer access -> do nothing */
@@ -113,7 +109,6 @@ void NVRAM_dataHandler(void) {
         } else if (nvram_dataHandlerBlocks[i].mode == NVRAM_Triggered) {
             /* Check if triggered nvram block needs to be updated */
             if (nvram_dataHandlerBlocks[i].state == NVRAM_write) {
-
                 /* Update nvram block */
                 if (nvram_dataHandlerBlocks[i].funcWR != NULL_PTR) {
                     retval = nvram_dataHandlerBlocks[i].funcWR();
@@ -123,15 +118,13 @@ void NVRAM_dataHandler(void) {
                         nvram_dataHandlerBlocks[i].state = NVRAM_wait;
                     } else {
                         /* Try again next NVRAM_dataHandler() call */
-                        ;
                     }
                 } else {
                     /* Invalid pointer access -> do nothing */
                     nvram_dataHandlerBlocks[i].state = NVRAM_wait;
                 }
             }
-        }
-        else if (nvram_dataHandlerBlocks[i].state == NVRAM_read) {
+        } else if (nvram_dataHandlerBlocks[i].state == NVRAM_read) {
             /* Check if read is requested */
 
             /* Read nvram block */
@@ -142,7 +135,6 @@ void NVRAM_dataHandler(void) {
                     nvram_dataHandlerBlocks[i].state = NVRAM_wait;
                 } else {
                     /* Try again next NVRAM_dataHandler() call */
-                    ;
                 }
             } else {
                 /* Invalid pointer access -> do nothing */

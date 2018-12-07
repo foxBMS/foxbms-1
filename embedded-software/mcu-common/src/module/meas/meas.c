@@ -64,14 +64,11 @@
 /*================== Function Implementations =============================*/
 
 
-void MEAS_Ctrl(void)
-{
-
+void MEAS_Ctrl(void) {
 }
 
 
-extern uint8_t MEAS_Request_IO_Write(void){
-
+extern uint8_t MEAS_Request_IO_Write(void) {
     STD_RETURN_TYPE_e retval = E_NOT_OK;
 
     if (LTC_SetStateRequest(LTC_STATE_USER_IO_WRITE_REQUEST) == LTC_OK) {
@@ -81,8 +78,7 @@ extern uint8_t MEAS_Request_IO_Write(void){
     return (retval);
 }
 
-extern uint8_t MEAS_Request_IO_Read(void){
-
+extern uint8_t MEAS_Request_IO_Read(void) {
     STD_RETURN_TYPE_e retval = E_NOT_OK;
 
     if (LTC_SetStateRequest(LTC_STATE_USER_IO_READ_REQUEST) == LTC_OK) {
@@ -92,8 +88,7 @@ extern uint8_t MEAS_Request_IO_Read(void){
     return (retval);
 }
 
-extern uint8_t MEAS_Request_Temperature_Read(void){
-
+extern uint8_t MEAS_Request_Temperature_Read(void) {
     STD_RETURN_TYPE_e retval = E_NOT_OK;
 
     if (LTC_SetStateRequest(LTC_STATE_TEMP_SENS_READ_REQUEST) == LTC_OK) {
@@ -103,8 +98,7 @@ extern uint8_t MEAS_Request_Temperature_Read(void){
     return (retval);
 }
 
-extern uint8_t MEAS_Request_BalancingFeedback_Read(void){
-
+extern uint8_t MEAS_Request_BalancingFeedback_Read(void) {
     STD_RETURN_TYPE_e retval = E_NOT_OK;
 
     if (LTC_SetStateRequest(LTC_STATE_BALANCEFEEDBACK_REQUEST) == LTC_OK) {
@@ -115,8 +109,7 @@ extern uint8_t MEAS_Request_BalancingFeedback_Read(void){
 }
 
 
-extern uint8_t MEAS_Request_EEPROM_Read(void){
-
+extern uint8_t MEAS_Request_EEPROM_Read(void) {
     STD_RETURN_TYPE_e retval = E_NOT_OK;
 
     if (LTC_SetStateRequest(LTC_STATE_EEPROM_READ_REQUEST) == LTC_OK) {
@@ -126,8 +119,7 @@ extern uint8_t MEAS_Request_EEPROM_Read(void){
     return (retval);
 }
 
-extern uint8_t MEAS_Request_EEPROM_Write(void){
-
+extern uint8_t MEAS_Request_EEPROM_Write(void) {
     STD_RETURN_TYPE_e retval = E_NOT_OK;
 
     if (LTC_SetStateRequest(LTC_STATE_EEPROM_WRITE_REQUEST) == LTC_OK) {
@@ -137,9 +129,18 @@ extern uint8_t MEAS_Request_EEPROM_Write(void){
     return (retval);
 }
 
+extern uint8_t MEAS_Request_OpenWireCheck(void) {
+    STD_RETURN_TYPE_e retval = E_NOT_OK;
 
-extern STD_RETURN_TYPE_e MEAS_IsFirstMeasurementCycleFinished(void){
+    if (LTC_SetStateRequest(LTC_STATE_OPENWIRE_CHECK_REQUEST) == LTC_OK) {
+        retval = E_OK;
+    }
 
+    return (retval);
+}
+
+
+extern STD_RETURN_TYPE_e MEAS_IsFirstMeasurementCycleFinished(void) {
     uint8_t retval = FALSE;
 
     retval    = LTC_IsFirstMeasurementCycleFinished();
@@ -148,8 +149,7 @@ extern STD_RETURN_TYPE_e MEAS_IsFirstMeasurementCycleFinished(void){
 }
 
 
-extern STD_RETURN_TYPE_e MEAS_StartMeasurement(void){
-
+extern STD_RETURN_TYPE_e MEAS_StartMeasurement(void) {
     STD_RETURN_TYPE_e retval = E_NOT_OK;
 
     if (LTC_SetStateRequest(LTC_STATE_INIT_REQUEST) == LTC_OK) {

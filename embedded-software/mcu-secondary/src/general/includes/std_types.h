@@ -53,6 +53,9 @@
 #define STD_TYPES_H_
 
 /*================== Includes =============================================*/
+#ifndef NOECLIPSE
+#include "gcc_builtin_macros.h"
+#endif
 
 /*================== Macros and Definitions ===============================*/
 

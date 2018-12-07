@@ -57,12 +57,16 @@
 #include "general.h"
 
 #include "cpu_cfg.h"
+#include "batterysystem_cfg.h"
 
 /*================== Macros and Definitions ===============================*/
 
 /*================== Constant and Variable Definitions ====================*/
 extern ADC_HandleTypeDef adc_devices[];
 extern const uint8_t adc_number_of_used_devices;
+extern uint32_t adc_ChannelList[BS_NR_OF_VOLTAGES_FROM_MCU_ADC];
+extern uint16_t adc_values[BS_NR_OF_VOLTAGES_FROM_MCU_ADC];
+
 
 /*================== Function Prototypes ==================================*/
 

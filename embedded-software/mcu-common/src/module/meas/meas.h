@@ -114,6 +114,12 @@ extern uint8_t MEAS_Request_EEPROM_Read(void);
  */
 extern uint8_t MEAS_Request_EEPROM_Write(void);
 
+/**
+ * @brief   Makes the request to the LTC state machine to perform open-wire check
+ *
+ */
+extern uint8_t MEAS_Request_OpenWireCheck(void);
+
 /*================== Function Implementations =============================*/
 
 

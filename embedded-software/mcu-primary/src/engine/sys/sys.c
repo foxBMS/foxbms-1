@@ -335,7 +335,6 @@ void SYS_Trigger(void) {
             SYS_SAVELASTSTATES();
 
             if (sys_state.substate == SYS_ENTRY) {
-
                 CONT_SetStateRequest(CONT_STATE_INIT_REQUEST);
 
                 sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
@@ -410,7 +409,7 @@ void SYS_Trigger(void) {
                 sys_state.substate = SYS_ENTRY;
                 break;
 
-            /****************************START FIRT MEAS CYCLE**************************/
+            /****************************START FIRST MEAS CYCLE**************************/
             case SYS_STATEMACH_FIRST_MEASUREMENT_CYCLE:
                 SYS_SAVELASTSTATES();
                 if (sys_state.substate == SYS_ENTRY) {
@@ -419,6 +418,7 @@ void SYS_Trigger(void) {
                     sys_state.substate = SYS_WAIT_FIRST_MEASUREMENT_CYCLE;
                 } else if (sys_state.substate == SYS_WAIT_FIRST_MEASUREMENT_CYCLE) {
                     if (MEAS_IsFirstMeasurementCycleFinished() == TRUE) {
+                        MEAS_Request_OpenWireCheck();
                         sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
                         if (CURRENT_SENSOR_PRESENT == TRUE)
                             sys_state.state = SYS_STATEMACH_CHECK_CURRENT_SENSOR_PRESENCE;
@@ -533,6 +533,6 @@ void SYS_Trigger(void) {
             CANS_Enable_Periodic(TRUE);
             sys_state.timer = SYS_STATEMACH_LONGTIME_MS;
             break;
-    }  /* end switch(sys_state.state) */
+    }  /* end switch (sys_state.state) */
     sys_state.triggerentry--;
 }

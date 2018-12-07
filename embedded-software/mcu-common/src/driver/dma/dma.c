@@ -62,39 +62,33 @@
 /*================== Function Implementations =============================*/
 
 void DMA_Init(DMA_HandleTypeDef *hdma) {
-
     uint8_t i = 0;
 
-    if(hdma != NULL) {
-
+    if (hdma != NULL) {
         for (i = 0; i < dma_number_of_used_streams; i++) {
-
-            if ( (hdma[i].Instance == DMA1_Stream0)
+            if ((hdma[i].Instance == DMA1_Stream0)
                 ||(hdma[i].Instance == DMA1_Stream1)
                 ||(hdma[i].Instance == DMA1_Stream2)
                 ||(hdma[i].Instance == DMA1_Stream3)
                 ||(hdma[i].Instance == DMA1_Stream4)
                 ||(hdma[i].Instance == DMA1_Stream5)
                 ||(hdma[i].Instance == DMA1_Stream6)
-                ||(hdma[i].Instance == DMA1_Stream7)
-                ) {
+                ||(hdma[i].Instance == DMA1_Stream7)) {
                 __HAL_RCC_DMA1_CLK_ENABLE();
             }
 
-            if ( (hdma[i].Instance == DMA2_Stream0)
+            if ((hdma[i].Instance == DMA2_Stream0)
                 ||(hdma[i].Instance == DMA2_Stream1)
                 ||(hdma[i].Instance == DMA2_Stream2)
                 ||(hdma[i].Instance == DMA2_Stream3)
                 ||(hdma[i].Instance == DMA2_Stream4)
                 ||(hdma[i].Instance == DMA2_Stream5)
                 ||(hdma[i].Instance == DMA2_Stream6)
-                ||(hdma[i].Instance == DMA2_Stream7)
-                ) {
+                ||(hdma[i].Instance == DMA2_Stream7)) {
                 __HAL_RCC_DMA2_CLK_ENABLE();
             }
 
             HAL_DMA_Init(&hdma[i]);
-
         }
     }
 }

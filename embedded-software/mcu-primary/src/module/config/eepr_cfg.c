@@ -135,7 +135,7 @@ EEPR_CH_CFG_s eepr_ch_cfg[] = {
  *  - backup and recover the data in eeprom
  *
  * Note: A modification of channel address, data length or data structure will lead to data loss if data transfer
- * is not handled (e.g. manually or automatically in EEPR_FormatCheck() )
+ * is not handled (e.g. manually or automatically in EEPR_FormatCheck())
  *
  * */
 extern uint8_t compiler_throw_an_error_1[(sizeof(EEPR_HEADER_s) == 0x20)?1:-1];  /* EEPROM FORMAT ERROR! Change of data size. Please note comment above!!! */
@@ -155,7 +155,7 @@ uint8_t eepr_WR_RD_buffer[EEPR_CH_MAXLENGTH];
 
 
 /* write buffer checksum */
-uint16_t eepr_WR_RD_Chksum=0xFFFF;
+uint16_t eepr_WR_RD_Chksum = 0xFFFF;
 
 uint8_t eepr_spi_rxbuf[EEPR_TXBUF_LENGTH];
 uint16_t eepr_spi_rxoffset;
@@ -171,9 +171,9 @@ uint8_t MEM_BKP_SRAM eepr_bkpsram_buffer[EEPR_CH_MAXLENGTH];
 
 
 /*================== Function Implementations =============================*/
-void EEPR_delete_bkpsrambuffer(EEPR_CHANNEL_ID_TYPE_e eepr_channel){
+void EEPR_delete_bkpsrambuffer(EEPR_CHANNEL_ID_TYPE_e eepr_channel) {
     uint16_t counter;
-    for(counter = 0; counter < eepr_ch_cfg[eepr_channel].length; counter++){
+    for (counter = 0; counter < eepr_ch_cfg[eepr_channel].length; counter++) {
         eepr_bkpsram_buffer[counter] = 0xFF;
     }
 }
@@ -210,7 +210,6 @@ EEPR_RETURNTYPE_e SPI_ReceiveData(uint8_t* buffer, uint16_t length) {
 
 
 EEPR_RETURNTYPE_e SPI_SendData(uint8_t* data, uint16_t length, uint16_t receiveoffset) {
-
     EEPR_RETURNTYPE_e retVal = EEPR_ERROR;
     HAL_StatusTypeDef eepr_spi_halstate = HAL_ERROR;
 
@@ -219,7 +218,7 @@ EEPR_RETURNTYPE_e SPI_SendData(uint8_t* data, uint16_t length, uint16_t receiveo
     eepr_spi_halstate = HAL_SPI_TransmitReceive_IT(&spi_devices[1], data, eepr_spi_rxbuf, length);
     eepr_spi_rxoffset = receiveoffset;
 
-    if(eepr_spi_halstate == HAL_OK) {
+    if (eepr_spi_halstate == HAL_OK) {
         retVal = EEPR_OK;
     } else {
         retVal = EEPR_ERROR;
@@ -232,21 +231,20 @@ EEPR_RETURNTYPE_e SPI_SendData(uint8_t* data, uint16_t length, uint16_t receiveo
 uint16_t EEPR_CalcChecksum(uint8_t*dataptr, uint16_t byte_len) {
     uint16_t u16_chksum = 0;
 
-    for (;byte_len > 0;byte_len--) {
+    for (; byte_len > 0; byte_len--) {
         u16_chksum += *dataptr++;
     }
     return (u16_chksum);
 }
 
 
-STD_RETURN_TYPE_e EEPR_BkpSramCheckChksum(EEPR_CHANNEL_ID_TYPE_e eepr_channel, uint8_t *ptr)
-{
+STD_RETURN_TYPE_e EEPR_BkpSramCheckChksum(EEPR_CHANNEL_ID_TYPE_e eepr_channel, uint8_t *ptr) {
     STD_RETURN_TYPE_e retVal = E_NOT_OK;
     uint8_t*dataptr = eepr_ch_cfg[eepr_channel].bkpsramptr;
     uint16_t byte_len = eepr_ch_cfg[eepr_channel].length;
 
-    if(dataptr == NULL_PTR) {
-        if(ptr != NULL_PTR) {
+    if (dataptr == NULL_PTR) {
+        if (ptr != NULL_PTR) {
             dataptr = ptr;
         } else {
             retVal = E_NOT_OK;
@@ -260,12 +258,11 @@ STD_RETURN_TYPE_e EEPR_BkpSramCheckChksum(EEPR_CHANNEL_ID_TYPE_e eepr_channel, u
 
 void EEPR_SetDefaultValue(EEPR_CHANNEL_ID_TYPE_e eepr_channel) {
     switch (eepr_channel) {
-
         case EEPR_CH_NVSOC:
             bkpsram_nvsoc.data = default_nvsoc.data;
             bkpsram_nvsoc.previous_timestamp = bkpsram_nvsoc.timestamp;
             bkpsram_nvsoc.timestamp = RTC_getUnixTime();
-            bkpsram_nvsoc.checksum = EEPR_CalcChecksum((uint8_t*)(&bkpsram_nvsoc),sizeof(bkpsram_nvsoc)-4);
+            bkpsram_nvsoc.checksum = EEPR_CalcChecksum((uint8_t*)(&bkpsram_nvsoc), sizeof(bkpsram_nvsoc)-4);
             EEPR_SetChDirtyFlag(EEPR_CH_NVSOC);
             break;
 
@@ -273,7 +270,7 @@ void EEPR_SetDefaultValue(EEPR_CHANNEL_ID_TYPE_e eepr_channel) {
             bkpsram_contactors_count.data = default_contactors_count.data;
             bkpsram_contactors_count.previous_timestamp = bkpsram_contactors_count.timestamp;
             bkpsram_contactors_count.timestamp = RTC_getUnixTime();
-            bkpsram_contactors_count.checksum = EEPR_CalcChecksum((uint8_t*)(&bkpsram_contactors_count),sizeof(bkpsram_contactors_count)-4);
+            bkpsram_contactors_count.checksum = EEPR_CalcChecksum((uint8_t*)(&bkpsram_contactors_count), sizeof(bkpsram_contactors_count)-4);
             EEPR_SetChDirtyFlag(EEPR_CH_CONTACTOR);
             break;
 
@@ -281,7 +278,7 @@ void EEPR_SetDefaultValue(EEPR_CHANNEL_ID_TYPE_e eepr_channel) {
             bkpsram_operating_hours.data = default_operating_hours.data;
             bkpsram_operating_hours.previous_timestamp = bkpsram_operating_hours.timestamp;
             bkpsram_operating_hours.timestamp = RTC_getUnixTime();
-            bkpsram_operating_hours.checksum = EEPR_CalcChecksum((uint8_t*)(&bkpsram_operating_hours),sizeof(bkpsram_operating_hours)-4);
+            bkpsram_operating_hours.checksum = EEPR_CalcChecksum((uint8_t*)(&bkpsram_operating_hours), sizeof(bkpsram_operating_hours)-4);
             EEPR_SetChDirtyFlag(EEPR_CH_OPERATING_HOURS);
             break;
 
@@ -302,13 +299,12 @@ void EEPR_SetDefaultValue(EEPR_CHANNEL_ID_TYPE_e eepr_channel) {
 
 
 uint8_t EEPR_FormatCheck(void) {
-    uint8_t retval=1;
+    uint8_t retval = 1;
     /* EEPR_ERRORTYPES_e errtype; */
 
     /* check if application software supports the same data format of data which is stored in eeprom */
-    if(eepr_header.eepr_headerpattern == eepr_header_default.eepr_headerpattern) {
-
-        if(eepr_header.versionnumbermajor == eepr_header_default.versionnumbermajor) {
+    if (eepr_header.eepr_headerpattern == eepr_header_default.eepr_headerpattern) {
+        if (eepr_header.versionnumbermajor == eepr_header_default.versionnumbermajor) {
             retval = 0;
         } else {
             retval = 1;  /* FIXME: handle data transfer (update) in case of new version with different data format */

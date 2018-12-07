@@ -65,14 +65,14 @@ extern uint32_t _jumpadressvectable[];
  * @brief   Software Version Number
  *
  * Use Case:
- * uint8_t  Version[16] example:     "V0.4.0 "   ( 15 char + '\0' )
+ * uint8_t  Version[16] example:     "V0.4.0 "   (15 char + '\0')
  */
 #define VER_SW_VERSION              BUILD_VERSION_SECONDARY
 
 /**
  * @brief   Software Project Name
  * Use Case:
- * uint8_t  Version[16] example:     " foxBMS"   ( 15 char + '\0' )
+ * uint8_t  Version[16] example:     " foxBMS"   (15 char + '\0')
  */
 #define VER_PROJECT                 BUILD_APPNAME_SECONDARY
 
@@ -106,8 +106,7 @@ typedef enum {
  * Adress-Range of Checksum-Test (SW-Startup) will depend on following data which
  * is place at the end of the flash memory (see SECTION FLASH_HEADER)
  * */
-typedef struct
-{
+typedef struct {
 /*0x00*/    uint64_t Valid_u64;                 /* not used (Application-Validation marker) */
 /*0x08*/    uint64_t Invalid_u64;               /* not used (Application-Invalidation marker)*/
 /*0x10*/    uint32_t Checksum_u32;              /* checksum for validating the Application SW */

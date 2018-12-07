@@ -58,6 +58,8 @@
 #include "database.h"
 #include "diag.h"
 #include "interlock.h"
+#include "ltc_cfg.h"
+#include "meas.h"
 #include "os.h"
 
 
@@ -98,6 +100,8 @@ static void BMS_CheckVoltages(void);
 static void BMS_CheckTemperatures(void);
 static void BMS_CheckCurrent(void);
 static void BMS_CheckSlaveTemperatures(void);
+static void BMS_CheckOpenSenseWire(void);
+
 /*================== Function Implementations =============================*/
 
 /**
@@ -213,6 +217,8 @@ void BMS_Trigger(void) {
     BMS_STATE_REQUEST_e statereq = BMS_STATE_NO_REQUEST;
     CONT_STATEMACH_e contstate = CONT_STATEMACH_UNDEFINED;
     DATA_BLOCK_SYSTEMSTATE_s systemstate = {0};
+    uint32_t timestamp = OS_getOSSysTick();
+    static uint32_t nextOpenWireCheck = 0;
 
     DIAG_SysMonNotify(DIAG_SYSMON_BMS_ID, 0);  /* task is running, state = ok */
 
@@ -221,6 +227,7 @@ void BMS_Trigger(void) {
         BMS_CheckTemperatures();
         BMS_CheckCurrent();
         BMS_CheckSlaveTemperatures();
+        BMS_CheckOpenSenseWire();
     }
     /* Check re-entrance of function */
     if (BMS_CheckReEntrance()) {
@@ -246,7 +253,7 @@ void BMS_Trigger(void) {
                 bms_state.state = BMS_STATEMACH_INITIALIZATION;
                 bms_state.substate = BMS_ENTRY;
             } else if (statereq == BMS_STATE_NO_REQUEST) {
-                /* no actual request pending /*  */
+                /* no actual request pending */
             } else {
                 bms_state.ErrRequestCounter++;  /* illegal request pending */
             }
@@ -313,15 +320,17 @@ void BMS_Trigger(void) {
         case BMS_STATEMACH_STANDBY:
             BMS_SAVELASTSTATES();
 
-            if (bms_state.substate == BMS_ENTRY){
+            if (bms_state.substate == BMS_ENTRY) {
                 BAL_SetStateRequest(BAL_STATE_ALLOWBALANCING_REQUEST);
 #if BUILD_MODULE_ENABLE_CONTACTOR == 1
                 CONT_SetStateRequest(CONT_STATE_STANDBY_REQUEST);
-#endif
+#endif /* BUILD_MODULE_ENABLE_CONTACTOR == 1 */
 #if BUILD_MODULE_ENABLE_ILCK == 1
                 ILCK_SetStateRequest(ILCK_STATE_CLOSE_REQUEST);
-#endif
-
+#endif /* BUILD_MODULE_ENABLE_ILCK == 1 */
+#if LTC_STANDBY_PERIODIC_OPEN_WIRE_CHECK == TRUE
+                nextOpenWireCheck = timestamp + LTC_STANDBY_OPEN_WIRE_PERIOD_ms;
+#endif /* LTC_STANDBY_PERIODIC_OPEN_WIRE_CHECK == TRUE */
                 bms_state.timer = BMS_STATEMACH_MEDIUMTIME_MS;
                 bms_state.substate = BMS_CHECK_ERROR_FLAGS_INTERLOCK;
                 DB_ReadBlock(&systemstate, DATA_BLOCK_ID_SYSTEMSTATE);
@@ -339,8 +348,7 @@ void BMS_Trigger(void) {
                     bms_state.substate = BMS_INTERLOCK_CHECKED;
                     break;
                 }
-            }
-            else if (bms_state.substate == BMS_INTERLOCK_CHECKED){
+            } else if (bms_state.substate == BMS_INTERLOCK_CHECKED) {
                 bms_state.timer = BMS_STATEMACH_VERYLONGTIME_MS;
                 bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                 break;
@@ -362,12 +370,18 @@ void BMS_Trigger(void) {
                     bms_state.substate = BMS_ENTRY;
                     break;
                 }
-                if (BMS_CheckCANRequests() == BMS_REQ_ID_CHARGE){
+                if (BMS_CheckCANRequests() == BMS_REQ_ID_CHARGE) {
                     bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                     bms_state.state = BMS_STATEMACH_CHARGE_PRECHARGE;
                     bms_state.substate = BMS_ENTRY;
                     break;
                 } else {
+#if LTC_STANDBY_PERIODIC_OPEN_WIRE_CHECK == TRUE
+                    if (nextOpenWireCheck <= timestamp) {
+                        MEAS_Request_OpenWireCheck();
+                        nextOpenWireCheck = timestamp + LTC_STANDBY_OPEN_WIRE_PERIOD_ms;
+                    }
+#endif /* LTC_STANDBY_PERIODIC_OPEN_WIRE_CHECK == TRUE */
                     bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                     bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                     break;
@@ -443,6 +457,9 @@ void BMS_Trigger(void) {
             BMS_SAVELASTSTATES();
 
             if (bms_state.substate == BMS_ENTRY) {
+#if LTC_NORMAL_PERIODIC_OPEN_WIRE_CHECK == TRUE
+                nextOpenWireCheck = timestamp + LTC_NORMAL_OPEN_WIRE_PERIOD_ms;
+#endif /* LTC_NORMAL_PERIODIC_OPEN_WIRE_CHECK == TRUE */
                 DB_ReadBlock(&systemstate, DATA_BLOCK_ID_SYSTEMSTATE);
                 systemstate.bms_state = BMS_STATEMACH_NORMAL;
                 DB_WriteBlock(&systemstate, DATA_BLOCK_ID_SYSTEMSTATE);
@@ -467,6 +484,12 @@ void BMS_Trigger(void) {
                     bms_state.substate = BMS_ENTRY;
                     break;
                 } else {
+#if LTC_NORMAL_PERIODIC_OPEN_WIRE_CHECK == TRUE
+                    if (nextOpenWireCheck <= timestamp) {
+                        MEAS_Request_OpenWireCheck();
+                        nextOpenWireCheck = timestamp + LTC_NORMAL_OPEN_WIRE_PERIOD_ms;
+                    }
+#endif /* LTC_NORMAL_PERIODIC_OPEN_WIRE_CHECK == TRUE */
                     bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                     bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                     break;
@@ -478,7 +501,7 @@ void BMS_Trigger(void) {
             case BMS_STATEMACH_CHARGE_PRECHARGE:
                 BMS_SAVELASTSTATES();
 
-                if (bms_state.substate == BMS_ENTRY){
+                if (bms_state.substate == BMS_ENTRY) {
                     BAL_SetStateRequest(BAL_STATE_NOBALANCING_REQUEST);
                     DB_ReadBlock(&systemstate, DATA_BLOCK_ID_SYSTEMSTATE);
                     systemstate.bms_state = BMS_STATEMACH_CHARGE_PRECHARGE;
@@ -489,20 +512,19 @@ void BMS_Trigger(void) {
                     bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                     bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                     break;
-                }
-                else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS){
-                    if (BMS_CheckAnyErrorFlagSet() == E_NOT_OK){
+                } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS) {
+                    if (BMS_CheckAnyErrorFlagSet() == E_NOT_OK) {
                         bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                         bms_state.state = BMS_STATEMACH_ERROR;
                         bms_state.substate = BMS_ENTRY;
                         break;
-                    } else{
+                    } else {
                         bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                         bms_state.substate = BMS_CHECK_STATE_REQUESTS;
                         break;
                     }
-                } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS){
-                    if (BMS_CheckCANRequests() == BMS_REQ_ID_STANDBY){
+                } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
+                    if (BMS_CheckCANRequests() == BMS_REQ_ID_STANDBY) {
                         bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                         bms_state.state = BMS_STATEMACH_STANDBY;
                         bms_state.substate = BMS_ENTRY;
@@ -518,19 +540,19 @@ void BMS_Trigger(void) {
                         break;
                     }
 #if BUILD_MODULE_ENABLE_CONTACTOR == 1
-                } else if (bms_state.substate == BMS_CHECK_CONTACTOR_CHARGE_STATE){
+                } else if (bms_state.substate == BMS_CHECK_CONTACTOR_CHARGE_STATE) {
                     contstate = CONT_GetState();
-                    if (contstate == CONT_STATEMACH_CHARGE){
+                    if (contstate == CONT_STATEMACH_CHARGE) {
                         bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                         bms_state.state = BMS_STATEMACH_CHARGE;
                         bms_state.substate = BMS_ENTRY;
                         break;
-                    } else if (contstate == CONT_STATEMACH_ERROR){
+                    } else if (contstate == CONT_STATEMACH_ERROR) {
                         bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                         bms_state.state = BMS_STATEMACH_ERROR;
                         bms_state.substate = BMS_ENTRY;
                         break;
-                    } else{
+                    } else {
                         bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                         bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                     }
@@ -545,31 +567,40 @@ void BMS_Trigger(void) {
             case BMS_STATEMACH_CHARGE:
                 BMS_SAVELASTSTATES();
 
-                if (bms_state.substate == BMS_ENTRY){
+                if (bms_state.substate == BMS_ENTRY) {
+#if LTC_CHARGE_PERIODIC_OPEN_WIRE_CHECK == TRUE
+                    nextOpenWireCheck = timestamp + LTC_CHARGE_OPEN_WIRE_PERIOD_ms;
+#endif /* LTC_CHARGE_PERIODIC_OPEN_WIRE_CHECK == TRUE */
                     DB_ReadBlock(&systemstate, DATA_BLOCK_ID_SYSTEMSTATE);
                     systemstate.bms_state = BMS_STATEMACH_CHARGE;
                     DB_WriteBlock(&systemstate, DATA_BLOCK_ID_SYSTEMSTATE);
                     bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                     bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                     break;
-                } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS){
-                    if (BMS_CheckAnyErrorFlagSet() == E_NOT_OK){
+                } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS) {
+                    if (BMS_CheckAnyErrorFlagSet() == E_NOT_OK) {
                         bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                         bms_state.state = BMS_STATEMACH_ERROR;
                         bms_state.substate = BMS_ENTRY;
                         break;
-                    } else{
+                    } else {
                         bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                         bms_state.substate = BMS_CHECK_STATE_REQUESTS;
                         break;
                     }
-                } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS){
-                    if (BMS_CheckCANRequests() == BMS_REQ_ID_STANDBY){
+                } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
+                    if (BMS_CheckCANRequests() == BMS_REQ_ID_STANDBY) {
                         bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                         bms_state.state = BMS_STATEMACH_STANDBY;
                         bms_state.substate = BMS_ENTRY;
                         break;
                     } else {
+#if LTC_CHARGE_PERIODIC_OPEN_WIRE_CHECK == TRUE
+                    if (nextOpenWireCheck <= timestamp) {
+                        MEAS_Request_OpenWireCheck();
+                        nextOpenWireCheck = timestamp + LTC_CHARGE_OPEN_WIRE_PERIOD_ms;
+                    }
+#endif /* LTC_CHARGE_PERIODIC_OPEN_WIRE_CHECK == TRUE */
                         bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                         bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                         break;
@@ -599,13 +630,19 @@ void BMS_Trigger(void) {
 #if BUILD_MODULE_ENABLE_ILCK == 1
             } else if (bms_state.substate == BMS_OPEN_INTERLOCK) {
                 ILCK_SetStateRequest(ILCK_STATE_OPEN_REQUEST);
+                nextOpenWireCheck = timestamp + LTC_ERROR_OPEN_WIRE_PERIOD_ms;
                 bms_state.timer = BMS_STATEMACH_VERYLONGTIME_MS;
                 bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                 break;
 #endif
             } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS) {
                 if (BMS_CheckAnyErrorFlagSet() == E_NOT_OK) {
-                    /* we stay already in requested state, nothing to do */
+                    /* we stay already in requested state */
+                    if (nextOpenWireCheck <= timestamp) {
+                        /* Perform open-wire check periodically */
+                        MEAS_Request_OpenWireCheck();
+                        nextOpenWireCheck = timestamp + LTC_ERROR_OPEN_WIRE_PERIOD_ms;
+                    }
                 } else {
                     bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                     bms_state.substate = BMS_CHECK_STATE_REQUESTS;
@@ -646,7 +683,7 @@ void BMS_Trigger(void) {
             break;
         default:
             break;
-    }  /* end switch(bms_state.state) */
+    }  /* end switch (bms_state.state) */
 
     bms_state.triggerentry--;
     bms_state.counter++;
@@ -671,8 +708,9 @@ static uint8_t BMS_CheckCANRequests(void) {
     } else if (request.state_request == BMS_REQ_ID_NORMAL) {
         retVal = BMS_REQ_ID_NORMAL;
     }
+
 #if BS_SEPARATE_POWERLINES == 1
-    else if (request.state_request == BMS_REQ_ID_CHARGE){
+    else if (request.state_request == BMS_REQ_ID_CHARGE) { /* NOLINT(readability/braces) */
         retVal = BMS_REQ_ID_CHARGE;
     }
 #endif /*  BS_SEPARATE_POWERLINES == 1 */
@@ -956,9 +994,9 @@ static void BMS_CheckCurrent(void) {
             }
         }
     } else {
-        ; /* BS_CURRENT_NO_CURRENT */
+        /* BS_CURRENT_NO_CURRENT */
+        /* TODO: explain why empty else */
     }
-
 }
 
 /**
@@ -967,8 +1005,38 @@ static void BMS_CheckCurrent(void) {
  * @details FOR FUTURE COMPATIBILITY; DUMMY FUNCTION; DO NOT USE
  */
 static void BMS_CheckSlaveTemperatures(void) {
-    ;
+    /* TODO: to be implemented */
 }
+
+
+/**
+ * @brief   Check for any open voltage sense wire
+ */
+static void BMS_CheckOpenSenseWire(void) {
+    DATA_BLOCK_OPENWIRE_s ow_tab;
+    DB_ReadBlock(&ow_tab, DATA_BLOCK_ID_OPEN_WIRE);
+    uint8_t openWireDetected = 0;
+
+    /* Iterate over all modules */
+    for (uint8_t m = 0; m < BS_NR_OF_MODULES; m++) {
+        /* Iterate over all voltage sense wires: cells per module + 1 */
+        for (uint8_t wire = 0; wire < (BS_NR_OF_BAT_CELLS_PER_MODULE + 1); wire++) {
+            /* open wire detected */
+            if (ow_tab.openwire[wire + m*(BS_NR_OF_BAT_CELLS_PER_MODULE + 1) == 1]) {
+                openWireDetected++;
+
+                /* Add additional error handling here */
+            }
+        }
+    }
+    /* Set error if open wire detected */
+    if (openWireDetected == 0) {
+        DIAG_Handler(DIAG_CH_OPEN_WIRE, DIAG_EVENT_OK, 0, NULL_PTR);
+    } else {
+        DIAG_Handler(DIAG_CH_OPEN_WIRE, DIAG_EVENT_NOK, 0, NULL_PTR);
+    }
+}
+
 
 /**
  * @brief   Checks the error flags
@@ -994,7 +1062,6 @@ static STD_RETURN_TYPE_e BMS_CheckAnyErrorFlagSet(void) {
         msl_flags.over_temperature_discharge  == 1 ||
         msl_flags.under_temperature_charge    == 1 ||
         msl_flags.under_temperature_discharge == 1) {
-
         retVal = E_NOT_OK;
         msl_flags.general_MSL = 1;
     } else {
@@ -1008,17 +1075,19 @@ static STD_RETURN_TYPE_e BMS_CheckAnyErrorFlagSet(void) {
         error_flags.charge_main_plus          == 1 ||
         error_flags.charge_main_minus         == 1 ||
         error_flags.charge_precharge          == 1 ||
+        error_flags.fuse_state_normal         == 1 ||
+        error_flags.fuse_state_charge         == 1 ||
         error_flags.interlock                 == 1 ||
         error_flags.crc_error                 == 1 ||
         error_flags.mux_error                 == 1 ||
         error_flags.spi_error                 == 1 ||
         error_flags.currentsensorresponding   == 1 ||
+        error_flags.open_wire                 == 1 ||
 #if BMS_OPEN_CONTACTORS_ON_INSULATION_ERROR == TRUE
         error_flags.insulation_error          == 1 ||
 #endif /* BMS_OPEN_CONTACTORS_ON_INSULATION_ERROR */
         error_flags.can_timing_cc             == 1 ||
-        error_flags.can_timing                == 1 ) {
-
+        error_flags.can_timing                == 1) {
         retVal = E_NOT_OK;
         error_flags.general_error = 1;
     } else {

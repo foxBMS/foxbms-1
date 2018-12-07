@@ -334,38 +334,85 @@ Building and Linking with a Library
 -----------------------------------
 
 The toolchain enables to build a library and then links against the library.
+it is possible to build and link multiple libraries to the binaries.
 
 The ``wscript`` in ``embedded-software\libs`` lists the libraries to be build.
 Libraries that should be build have to be listed here. Based on the example
 library ``testlib`` it is shown how to include a library in |foxbms|.
 
-.. literalinclude:: ./../../../../embedded-software/libs/wscript
-   :language: python
-   :linenos:
-   :lines: 44-
+.. note::
+    Infact the ``libs`` directory contains two test libraries (``foxbms-user-lib`` and
+    ``my-foxbms-library``) in order to show how multiple libraries can be used.
+    The first example shows how to build one single library and in the second
+    example it is shown, how to build and use more than one library.
 
 **General Setup**
 
-The actual build of the library is in ``embedded-software\libs\testlib``.
-All source and header files have to be in the library directory, for this example
-these are are ``testlib.c`` and ``testlib.h``.
-The library is then build by the ``wscript`` in ``embedded-software\libs\testlib``.
+The ``wscript`` in ``embedded-software\libs`` lists in the function
+``bld.recurse(...)`` the directories containg the sources for the to be build
+library (see line 11 in :numref:`libs_wscript`).
 
-- All source files that should be build have to be listed in the ``srcs`` list (see line 4).
-- The name of the library is ``foxbms-user-lib`` (see line 11).
-- All header files get copied to the output directory (see line 14).
+.. literalinclude:: ./../../../../embedded-software/libs/wscript
+   :language: python
+   :caption: The ``wscript`` in ``embedded-software\libs``
+   :name: libs_wscript
+   :linenos:
+   :lines: 44-
+   :emphasize-lines: 11
+
+..  note::
+    For every additional library that should be build, the directory
+    containing the library must be added to this line, e.g., if the library
+    sources are in a directory called ``advancedalgorithms``
+    this lines needs to look like this:
+
+        .. code-block:: python
+            :caption: Adding the library source directory ``advancedalgorithms``
+            :name: add_libs_to_wscript
+            :linenos:
+
+            def build(bld):
+                bld.recurse('testlib myfoxbmslibrary advancedalgorithms')
+
+The actual build of the library is defined in the ``wscript`` in
+``embedded-software\libs\testlib``. All source and header files have to be in
+the library directory, for this example these are are ``testlib.c`` and
+``testlib.h``. The library is then build by the ``wscript`` in
+``embedded-software\libs\testlib``.
+
+:numref:`wscript_for_testlib` explained in detail:
+
+ -  All source files that should be build have to be listed in the ``srcs`` list
+    (see line 5-6.).
+ -  The name of the library is set to ``foxbms-user-lib`` (see line 11).
+
+    ..  note::
+        For later on further expanding the ``advanced-algorithms`` example, the
+        library name ``my-advanced-algorithm`` is assumed.
+
+ -  All header files get copied to the output directory (see line 14-17).
+
 
 .. literalinclude:: ./../../../../embedded-software/libs/testlib/wscript
    :caption: wscript
+   :name: wscript_for_testlib
    :language: python
    :linenos:
    :lines: 43-
-   :emphasize-lines: 4-6,11,14-
+   :emphasize-lines: 5-6,11,14-
 
-- The library ouput (the ``*.o``\ -files of the library build are stored in ``build\lib``.
-  For this example it is ``build\lib\testlib\libfoxbms-user-lib.o``. The *lib*-prefix is
-  generated automatically.
+- The object files (``*.o``) are found in ``build\libs\embedded-software\*``.
+- The library outputs (the ``*.a``\ -files) are stored in
+  ``build\lib\*.a``. When building the default dummy libraries these are
+  ``build\lib\libfoxbms-user-lib.a`` and ``build\lib\libmy-foxbms-library.a``.
+  The *lib*-prefix is generated automatically.
 - The headers are copied to ``build\include``.
+
+.. warning::
+    **The header names for all library headers are checked for uniqueness.**
+    Header files with the same name recursively inside the ``libs`` directory
+    will lead to a build error. This check needs to be performed, as all
+    headers get copied to include directory at ``build\include``.
 
 **The library**
 
@@ -388,7 +435,8 @@ The library defines a function ``super_function(uint8_t a, uint8_t b)`` in ``tes
 
 **Building**
 
-#.  Configure the |foxbms| project to work with a library, here it is ``foxbms-user-lib``
+#.  Configure the |foxbms| project to work with a library, in the frist example
+    it is the ``foxbms-user-lib`` library.
 
     ..  code-block::    console
         :name: configwithlib
@@ -396,7 +444,17 @@ The library defines a function ``super_function(uint8_t a, uint8_t b)`` in ``tes
 
         python tools\waf configure --libs=foxbms-user-lib
 
-#.  Build the library or libraries
+.. note::
+    For including the hypothetical ``my-advanced-algorithm`` library the command
+    would be:
+
+    ..  code-block::    console
+
+        python tools\waf configure --libs=my-advanced-algorithm
+
+
+
+#.  Build the library (or libraries):
 
     ..  code-block::    console
         :name: builthelibs
@@ -427,10 +485,68 @@ The library defines a function ``super_function(uint8_t a, uint8_t b)`` in ``tes
             /* other code */
         }
 
-#.  Build the |foxbms| binary as usally.
+#.  Build the |foxbms| binary as usual.
 
     ..  code-block::    console
         :name: builthebinarywithlib
+        :caption: Build the |foxbms| binary
+
+        python tools\waf build_primary
+
+**Building with Multiple Libraries**
+
+A project may want to use multiple libraries. For this example the two provided
+dummy libraries are assumed (``foxbms-user-lib`` and ``my-foxbms-library``).
+
+#.  The project is configured to work with both libraries. The library names are
+    given as command line argument separated by comma (**no addtional \
+    whitespace**).
+
+    ..  code-block::    console
+        :name: configwithmultiplelib
+        :caption: Configuration with multiple library useage
+
+        python tools\waf configure --libs=foxbms-user-lib,my-foxbms-library
+
+#.  Build the library (or libraries):
+
+    ..  code-block::    console
+        :name: builthelibs2
+        :caption: Build the libraries
+
+        python tools\waf build_libs
+
+#.  Include the headers needed for the functions in the sources and use the functions
+    as needed.
+
+    ..  code-block::    c
+        :name: includecfunctionsfromlibraries
+        :caption: Include header and use a function from the library
+        :linenos:
+        :emphasize-lines: 3,4,11,15
+
+        /*================== Includes =============================================*/
+        /* some other includes  */
+        #include "testlib.h"
+        #include "myfoxbmsalgorithms.h"
+
+        /*================== Function Prototypes ==================================*/
+
+        /*================== Function Implementations =============================*/
+        int main(void) {
+            uint16_t a = 0;
+            /* Use the function super_function from the library foxbms-user-lib */
+            a = super_function(2,2);
+            uint16_t b = 0;
+            /* Use the function another_super_function from the library my-foxbms-library */
+            a = another_super_function(2,2);
+            /* other code */
+        }
+
+#.  Build the |foxbms| binary as usual.
+
+    ..  code-block::    console
+        :name: builthebinarywithlib2
         :caption: Build the |foxbms| binary
 
         python tools\waf build_primary

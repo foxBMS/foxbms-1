@@ -93,7 +93,6 @@ typedef volatile union {
         unsigned int BP1            : 1;    /*!< BP1 Block Protection Bit 1                     */
         unsigned int                : 3;    /*!< dummy                                          */
         unsigned int WPEN           : 1;    /*!< WPEN                                           */
-
     } B;
     uint8_t u8;
 } EEPR_STATUSREGISTER_s;

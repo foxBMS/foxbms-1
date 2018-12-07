@@ -63,7 +63,7 @@
  */
 LTC_MUX_CH_CFG_s ltc_mux_seq_main_ch1[] = {
     /*  multiplexer 0 measurement */
-/*         { */
+/*         {*/
 /*             .muxID    = 0, */
 /*             .muxCh    = 0xFF, */
 /*         }, */
@@ -236,7 +236,6 @@ const uint8_t ltc_voltage_input_used[BS_MAX_SUPPORTED_CELLS] = {
 /*================== Function Implementations =============================*/
 
 float LTC_Convert_MuxVoltages_to_Temperatures(float v_adc) {
-
     float temperature = 0.0;
     /* float v_adc2 = v_adc*v_adc; */
     /* float v_adc3 = v_adc2*v_adc; */

@@ -77,7 +77,7 @@
  * @ingroup CONFIG_CONTACTOR
  * This macro describes the limiting current from the the positive to
  * negative side of the contactor at which a damaging of the
- * contactor occurs. If this limit is exceeded the contacor
+ * contactor occurs. If this limit is exceeded the contactor
  * module makes an entry in the diagnosis module indicating a
  * switching off of the contactors under a bad  condition
  *
@@ -94,7 +94,7 @@
  * @ingroup CONFIG_CONTACTOR
  * This macro describes the limiting current from the the negative to
  * positive side of the contactor at which a damaging of the
- * contactor occurs. If this limit is exceeded the contacor
+ * contactor occurs. If this limit is exceeded the contactor
  * module makes an entry in the diagnosis module indicating a
  * switching off of the contactors under a bad  condition
  *
@@ -113,12 +113,9 @@
  * Every contactor consists of 1 control pin and 1 feedback pin
  * counting together as 1 contactor.
  * E.g. if you have 1 contactor your define has to be:
- *      #define CONT_INTERLOCK_CONTROL       PIN_MCU_0_INTERLOCK_CONTROL
- *      #define CONT_INTERLOCK_FEEDBACK      PIN_MCU_0_INTERLOCK_FEEDBACK
+ *      #define CONT_MAIN_PLUS_CONTROL      IO_PIN_MCU_0_CONTACTOR_0_CONTROL
+ *      #define CONT_MAIN_PLUS_FEEDBACK     IO_PIN_MCU_0_CONTACTOR_0_FEEDBACK
  */
-#define CONT_INTERLOCK_CONTROL                  IO_PIN_MCU_0_INTERLOCK_CONTROL
-#define CONT_INTERLOCK_FEEDBACK                 IO_PIN_MCU_0_INTERLOCK_FEEDBACK
-
 #define CONT_MAIN_PLUS_CONTROL                  IO_PIN_MCU_0_CONTACTOR_0_CONTROL
 #define CONT_MAIN_PLUS_FEEDBACK                 IO_PIN_MCU_0_CONTACTOR_0_FEEDBACK
 
@@ -328,12 +325,14 @@ typedef enum {
  * the contactor_config[] array
  */
 typedef enum {
-    CONT_MAIN_PLUS      = 0,    /*!< Main contactor in the positive path of the powerline      */
-    CONT_PRECHARGE_PLUS = 1,    /*!< Precharge contactor in the positive path of the powerline */
-    CONT_MAIN_MINUS     = 2,    /*!< Main contactor in the negative path of the powerline      */
+    CONT_MAIN_PLUS              = 0,    /*!< Main contactor in the positive path of the powerline      */
+    CONT_PRECHARGE_PLUS         = 1,    /*!< Precharge contactor in the positive path of the powerline */
+    CONT_MAIN_MINUS             = 2,    /*!< Main contactor in the negative path of the powerline      */
+#if BS_SEPARATE_POWERLINES == 1
     CONT_CHARGE_MAIN_PLUS       = 3,    /*!< Main contactor in the positive charge path of the powerline      */
     CONT_CHARGE_PRECHARGE_PLUS  = 4,    /*!< Precharge contactor in the positive charge path of the powerline */
     CONT_CHARGE_MAIN_MINUS      = 5,    /*!< Main contactor in the negative charge path of the powerline      */
+#endif /* BS_SEPARATE_POWERLINES == 1 */
 } CONT_NAMES_e;
 
 /**
@@ -367,9 +366,6 @@ typedef enum {
 extern const CONT_CONFIG_s cont_contactors_config[BS_NR_OF_CONTACTORS];
 extern CONT_ELECTRICAL_STATE_s cont_contactor_states[BS_NR_OF_CONTACTORS];
 
-extern const uint8_t cont_contactors_config_length;
-extern const uint8_t cont_contactors_states_length;
-
 /*================== Function Prototypes ==================================*/
 
 /**
@@ -377,7 +373,18 @@ extern const uint8_t cont_contactors_states_length;
  *
  * @return  E_OK if the current limitations are NOT violated, else E_NOT_OK (type: STD_RETURN_TYPE_e)
  */
-extern STD_RETURN_TYPE_e CONT_CheckPrecharge(CONT_WHICH_POWERLINE_e);
+extern STD_RETURN_TYPE_e CONT_CheckPrecharge(CONT_WHICH_POWERLINE_e caller);
+
+
+/**
+ * Function to check fuse state. Fuse state can only be checked if at least
+ * plus contactors are closed. Furthermore fuse needs to be placed in plus
+ * path and monitored by Isabellenhuette HV measurement
+ *
+ * @return  Returns E_OK if fuse is intact, and E_NOT_OK if fuse is tripped.
+ *
+ */
+extern STD_RETURN_TYPE_e CONT_CheckFuse(CONT_WHICH_POWERLINE_e caller);
 
 /*================== Function Implementations =============================*/
 

@@ -242,7 +242,7 @@ void BMS_Trigger(void) {
                 bms_state.state = BMS_STATEMACH_INITIALIZATION;
                 bms_state.substate = BMS_ENTRY;
             } else if (statereq == BMS_STATE_NO_REQUEST) {
-                /* no actual request pending /*  */
+                /* no actual request pending */
             } else {
                 bms_state.ErrRequestCounter++;  /* illegal request pending */
             }
@@ -273,33 +273,28 @@ void BMS_Trigger(void) {
         case BMS_STATEMACH_STANDBY:
             BMS_SAVELASTSTATES();
 
-            if (bms_state.substate == BMS_ENTRY){
+            if (bms_state.substate == BMS_ENTRY) {
                 ILCK_SetStateRequest(ILCK_STATE_CLOSE_REQUEST);
                 bms_state.timer = BMS_STATEMACH_MEDIUMTIME_MS;
                 bms_state.substate = BMS_CHECK_ERROR_FLAGS_INTERLOCK;
                 break;
-            }
-
-            else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS_INTERLOCK){
-                if (BMS_CheckAnyErrorFlagSet() == E_NOT_OK){
+            } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS_INTERLOCK) {
+                if (BMS_CheckAnyErrorFlagSet() == E_NOT_OK) {
                     bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                     bms_state.state = BMS_STATEMACH_ERROR;
                     bms_state.substate = BMS_ENTRY;
                     break;
-                }
-                else{
+                } else {
                     bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                     bms_state.substate = BMS_INTERLOCK_CHECKED;
                     break;
                 }
-            }
-            else if (bms_state.substate == BMS_INTERLOCK_CHECKED){
+            } else if (bms_state.substate == BMS_INTERLOCK_CHECKED) {
                 bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                 bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                 break;
-            }
-            else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS){
-                if (BMS_CheckAnyErrorFlagSet() == E_NOT_OK){
+            } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS) {
+                if (BMS_CheckAnyErrorFlagSet() == E_NOT_OK) {
                     bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
                     bms_state.state = BMS_STATEMACH_ERROR;
                     bms_state.substate = BMS_ENTRY;
@@ -312,17 +307,15 @@ void BMS_Trigger(void) {
         case BMS_STATEMACH_ERROR:
             BMS_SAVELASTSTATES();
 
-            if (bms_state.substate == BMS_ENTRY){
+            if (bms_state.substate == BMS_ENTRY) {
                 ILCK_SetStateRequest(ILCK_STATE_OPEN_REQUEST);
                 bms_state.timer = BMS_STATEMACH_MEDIUMTIME_MS;
                 bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                 break;
-            }
-            else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS){
-                if (BMS_CheckAnyErrorFlagSet() == E_NOT_OK){
+            } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS) {
+                if (BMS_CheckAnyErrorFlagSet() == E_NOT_OK) {
                     /* we stay already in requested state, nothing to do */
-                }
-                else {
+                } else {
                     if (SECONDARY_OUT_OF_ERROR_STATE == TRUE) {
                         ILCK_SetFeedbackIgnoreCounter(10);
                         ILCK_SetStateRequest(ILCK_STATE_CLOSE_REQUEST);
@@ -337,7 +330,7 @@ void BMS_Trigger(void) {
             break;
         default:
             break;
-    }  /* end switch(bms_state.state) */
+    }  /* end switch (bms_state.state) */
 
     bms_state.triggerentry--;
     bms_state.counter++;
@@ -346,17 +339,15 @@ void BMS_Trigger(void) {
 /*================== Static functions =====================================*/
 
 
-static uint8_t BMS_CheckCANRequests(void){
-
+static uint8_t BMS_CheckCANRequests(void) {
     uint8_t retVal = BMS_REQ_ID_NOREQ;
     DATA_BLOCK_STATEREQUEST_s request;
 
     DB_ReadBlock(&request, DATA_BLOCK_ID_STATEREQUEST);
 
-    if (request.state_request == BMS_REQ_ID_STANDBY){
+    if (request.state_request == BMS_REQ_ID_STANDBY) {
         retVal = BMS_REQ_ID_STANDBY;
-    }
-    else if (request.state_request == BMS_REQ_ID_NORMAL){
+    } else if (request.state_request == BMS_REQ_ID_NORMAL) {
         retVal = BMS_REQ_ID_NORMAL;
     }
 
@@ -402,31 +393,31 @@ static void BMS_CheckTemperatures(void) {
     DB_ReadBlock(&curr_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
     DB_ReadBlock(&minmax, DATA_BLOCK_ID_MINMAX);
 
-    if(curr_tab.current>=0.0){
+    if (curr_tab.current >= 0.0) {
         if (minmax.temperature_max > BC_TEMPMAX_DISCHARGE_MSL) {
-            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_NOK,0, NULL_PTR);
-        } else{
-            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_OK,0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+        } else {
+            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
         }
-    } else{
+    } else {
         if (minmax.temperature_max > BC_TEMPMAX_CHARGE_MSL) {
-            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_NOK,0, NULL_PTR);
-        } else{
-            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK,0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+        } else {
+            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
         }
     }
 
-    if(curr_tab.current>=0.0){
+    if (curr_tab.current >= 0.0) {
         if (minmax.temperature_min < BC_TEMPMIN_DISCHARGE_MSL) {
-            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_NOK,0, NULL_PTR);
-        } else{
-            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_OK,0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+        } else {
+            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
         }
-    } else{
+    } else {
         if (minmax.temperature_min < BC_TEMPMIN_CHARGE_MSL) {
-            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_NOK,0, NULL_PTR);
-        } else{
-            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK,0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+        } else {
+            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
         }
     }
 }
@@ -454,21 +445,19 @@ static void BMS_CheckCurrent(void) {
     }
 #endif
 
-    if(curr_tab.current<0.0){
+    if (curr_tab.current < 0.0) {
         if (-curr_tab.current > BC_CURRENTMAX_CHARGE_MSL) {
-            DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_MSL, DIAG_EVENT_NOK,0, NULL_PTR);
-        } else{
-            DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_MSL, DIAG_EVENT_OK,0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+        } else {
+            DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
         }
-    }
-    else{
+    } else {
         if (curr_tab.current > BC_CURRENTMAX_DISCHARGE_MSL) {
-            DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_MSL, DIAG_EVENT_NOK,0, NULL_PTR);
-        } else{
-            DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_MSL, DIAG_EVENT_OK,0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+        } else {
+            DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
         }
     }
-
 }
 
 /**
@@ -477,7 +466,7 @@ static void BMS_CheckCurrent(void) {
  * @details FOR FUTURE COMPATIBILITY; DUMMY FUNCTION; DO NOT USE
  */
 static void BMS_CheckSlaveTemperatures(void) {
-    ;
+    /* TODO: to be implemented */
 }
 
 /**
@@ -504,7 +493,6 @@ static STD_RETURN_TYPE_e BMS_CheckAnyErrorFlagSet(void) {
         msl_flags.over_temperature_discharge  == 1 ||
         msl_flags.under_temperature_charge    == 1 ||
         msl_flags.under_temperature_discharge == 1) {
-
         retVal = E_NOT_OK;
         msl_flags.general_MSL = 1;
     } else {
@@ -524,8 +512,7 @@ static STD_RETURN_TYPE_e BMS_CheckAnyErrorFlagSet(void) {
         error_flags.spi_error                 == 1 ||
         error_flags.currentsensorresponding   == 1 ||
         error_flags.can_timing_cc             == 1 ||
-        error_flags.can_timing                == 1 ) {
-
+        error_flags.can_timing                == 1) {
         retVal = E_NOT_OK;
         error_flags.general_error = 1;
     } else {

@@ -61,7 +61,7 @@
 
 
 /*================== Constant and Variable Definitions ====================*/
-static OS_Task_Definition_s eng_tskdef_engine  = { 0,      1,  OS_PRIORITY_REALTIME,          1024/4};
+static OS_Task_Definition_s eng_tskdef_engine  = {0,      1,  OS_PRIORITY_REALTIME,          1024/4};
 
 /**
  * Definition of task handle of the engine task
@@ -99,64 +99,57 @@ static TaskHandle_t eng_handle_tsk_eventhandler;
 /*================== Function Implementations =============================*/
 
 void ENG_CreateTask(void) {
-
     /* Database Task */
-    if (xTaskCreate((TaskFunction_t)ENG_TSK_Engine,(const portCHAR *)"TSK_Engine",
+    if (xTaskCreate((TaskFunction_t)ENG_TSK_Engine, (const portCHAR *)"TSK_Engine",
             eng_tskdef_engine.Stacksize, NULL, eng_tskdef_engine.Priority,
                 &eng_handle_engine) != pdPASS)  {
-
       while (1) {
-          ;     /* TODO: do something */
+          /* TODO: explain why infinite loop */
       }
     }
 
     /* Cyclic Task 1ms */
-    if (xTaskCreate((TaskFunction_t)ENG_TSK_Cyclic_1ms,(const portCHAR *)"TSK_Cyclic_1ms",
+    if (xTaskCreate((TaskFunction_t)ENG_TSK_Cyclic_1ms, (const portCHAR *)"TSK_Cyclic_1ms",
             eng_tskdef_cyclic_1ms.Stacksize, NULL, eng_tskdef_cyclic_1ms.Priority,
                 &eng_handle_tsk_1ms) != pdPASS)  {
-
       while (1) {
-          ;     /* TODO: do something */
+          /* TODO: explain why infinite loop */
       }
     }
 
     /* Cyclic Task 10ms */
-    if (xTaskCreate((TaskFunction_t)ENG_TSK_Cyclic_10ms,(const portCHAR *)"TSK_Cyclic_10ms",
+    if (xTaskCreate((TaskFunction_t)ENG_TSK_Cyclic_10ms, (const portCHAR *)"TSK_Cyclic_10ms",
             eng_tskdef_cyclic_10ms.Stacksize, NULL, eng_tskdef_cyclic_10ms.Priority,
                 &eng_handle_tsk_10ms) != pdPASS)  {
-
       while (1) {
-          ;     /* TODO: do something */
+          /* TODO: explain why infinite loop */
       }
     }
 
     /* Cyclic Task 100ms */
-    if (xTaskCreate((TaskFunction_t)ENG_TSK_Cyclic_100ms,(const portCHAR *)"TSK_Cyclic_100ms",
+    if (xTaskCreate((TaskFunction_t)ENG_TSK_Cyclic_100ms, (const portCHAR *)"TSK_Cyclic_100ms",
             eng_tskdef_cyclic_100ms.Stacksize, NULL, eng_tskdef_cyclic_100ms.Priority,
                 &eng_handle_tsk_100ms) != pdPASS)  {
-
       while (1) {
-          ;     /* TODO: do something */
+          /* TODO: explain why infinite loop */
       }
     }
 
     /* EventHandler Task */
-    if (xTaskCreate((TaskFunction_t)ENG_TSK_EventHandler,(const portCHAR *)"TSK_EventHandler",
+    if (xTaskCreate((TaskFunction_t)ENG_TSK_EventHandler, (const portCHAR *)"TSK_EventHandler",
             eng_tskdef_eventhandler.Stacksize, NULL, eng_tskdef_eventhandler.Priority,
                 &eng_handle_tsk_eventhandler) != pdPASS)  {
-
       while (1) {
-          ;     /*  TODO: do something */
+          /* TODO: explain why infinite loop */
       }
     }
 
     /* Diagnosis Task */
-    if (xTaskCreate((TaskFunction_t)ENG_TSK_Diagnosis,(const portCHAR *)"TSK_Diagnosis",
+    if (xTaskCreate((TaskFunction_t)ENG_TSK_Diagnosis, (const portCHAR *)"TSK_Diagnosis",
             eng_tskdef_diagnosis.Stacksize, NULL, eng_tskdef_diagnosis.Priority,
                 &eng_handle_tsk_diagnosis) != pdPASS)  {
-
       while (1) {
-          ;     /* TODO: do something */
+          /* TODO: explain why infinite loop */
       }
     }
 }
@@ -168,11 +161,9 @@ void ENG_CreateEvent(void) {
 }
 
 void ENG_CreateQueues(void) {
-
 }
 
 void ENG_TSK_Engine(void) {
-
     DATA_Init();
     ENG_PostOSInit();
 
@@ -187,7 +178,6 @@ void ENG_TSK_Engine(void) {
 
 void ENG_TSK_Cyclic_1ms(void) {
     while (os_boot != OS_SYSTEM_RUNNING) {
-        ;
     }
 
     if (eng_init == FALSE) {
@@ -209,7 +199,6 @@ void ENG_TSK_Cyclic_1ms(void) {
 
 void ENG_TSK_Cyclic_10ms(void) {
     while (os_boot != OS_SYSTEM_RUNNING) {
-        ;
     }
 
     OS_taskDelayUntil(&os_schedulerstarttime, eng_tskdef_cyclic_10ms.Phase);
@@ -223,7 +212,6 @@ void ENG_TSK_Cyclic_10ms(void) {
 
 void ENG_TSK_Cyclic_100ms(void) {
     while (os_boot != OS_SYSTEM_RUNNING) {
-        ;
     }
 
     OS_taskDelayUntil(&os_schedulerstarttime, eng_tskdef_cyclic_100ms.Phase);
@@ -238,7 +226,6 @@ void ENG_TSK_Cyclic_100ms(void) {
 
 void ENG_TSK_EventHandler(void) {
     while (os_boot != OS_SYSTEM_RUNNING) {
-        ;
     }
 
     OS_taskDelayUntil(&os_schedulerstarttime, eng_tskdef_eventhandler.Phase);
@@ -252,7 +239,6 @@ void ENG_TSK_EventHandler(void) {
 
 void ENG_TSK_Diagnosis(void) {
     while (os_boot != OS_SYSTEM_RUNNING) {
-        ;
     }
 
     OS_taskDelayUntil(&os_schedulerstarttime, eng_tskdef_diagnosis.Phase);

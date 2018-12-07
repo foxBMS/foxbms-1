@@ -60,8 +60,7 @@
 /*================== Constant and Variable Definitions ====================*/
 /********************  S E C T I O N     FLASH_HEADER  ********************/
 
-const VER_ValidStruct_s __attribute__((section (".FLASH_HEADERSection"))) ver_sw_validation =
-{
+const VER_ValidStruct_s __attribute__((section(".FLASH_HEADERSection"))) ver_sw_validation = {
     /* not used (Application-Validation marker) */
         VER_FLASH_APPL_VALID_MARKER,                       /*!< address 0x00*/
     /* not used (Application-Invalidation marker) */
@@ -91,34 +90,34 @@ const VER_ValidStruct_s __attribute__((section (".FLASH_HEADERSection"))) ver_sw
     (uint32_t)&_jumpadressvectable[0],                     /*address 0x50*/
     (uint32_t)0,
     /* the start and end address of trap table */
-    (uint32_t)(0 ),                                        /*!< address 0x58*/
-    (uint32_t)(0 ),
+    (uint32_t)(0),                                        /*!< address 0x58*/
+    (uint32_t)(0),
     /* the start and end address of flashheader */
-    (uint32_t)(0 ),                                        /*!< address 0x60*/
-    (uint32_t)(0 ),
+    (uint32_t)(0),                                        /*!< address 0x60*/
+    (uint32_t)(0),
     /* the start and end address of text-section */
-    (uint32_t)(0 ),                                        /*!< address 0x68*/
+    (uint32_t)(0),                                        /*!< address 0x68*/
     (uint32_t)(0),
     /* the start and end address of pcptext-section */
-    (uint32_t)(0 ),                                        /*!< address 0x70*/
-    (uint32_t)(0 ),
+    (uint32_t)(0),                                        /*!< address 0x70*/
+    (uint32_t)(0),
     /* the start and end address of rodata-section */
-    (uint32_t)(0 ),                                        /*!< address 0x78*/
-    (uint32_t)(0 ),
+    (uint32_t)(0),                                        /*!< address 0x78*/
+    (uint32_t)(0),
     /* the start and end address of library text-section */
-    (uint32_t)(0 ),                                        /*!< address 0x80*/
-    (uint32_t)(0 ),
+    (uint32_t)(0),                                        /*!< address 0x80*/
+    (uint32_t)(0),
     /* the start and end address of pcpdata- and data-section in Flash */
-    (uint32_t)(0 ),                                        /*!< address 0x88*/
-    (uint32_t)(0 ),
+    (uint32_t)(0),                                        /*!< address 0x88*/
+    (uint32_t)(0),
 
     /* the start and end address of data logging in external NVRAM */
-    (uint32_t)(0 ),                                        /*!< address 0x90*/
-    (uint32_t)(0 ),
+    (uint32_t)(0),                                        /*!< address 0x90*/
+    (uint32_t)(0),
 
     /* the start and end address of diagnosis memory in external NVRAM */
-    (uint32_t)(0 ),                                        /*!< address 0x98*/
-    (uint32_t)(0 ),
+    (uint32_t)(0),                                        /*!< address 0x98*/
+    (uint32_t)(0),
 
     /*12 Byte date format "Mmm dd yyyy"*/
     __DATE__,                                             /*!< address 0xA0*/
