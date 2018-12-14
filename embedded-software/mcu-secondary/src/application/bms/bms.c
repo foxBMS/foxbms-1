@@ -317,7 +317,6 @@ void BMS_Trigger(void) {
                     /* we stay already in requested state, nothing to do */
                 } else {
                     if (SECONDARY_OUT_OF_ERROR_STATE == TRUE) {
-                        ILCK_SetFeedbackIgnoreCounter(10);
                         ILCK_SetStateRequest(ILCK_STATE_CLOSE_REQUEST);
                         bms_state.timer = BMS_STATEMACH_MEDIUMTIME_MS;
                         bms_state.substate = BMS_CHECK_INTERLOCK_CLOSE_AFTER_ERROR;

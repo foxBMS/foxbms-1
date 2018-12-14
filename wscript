@@ -388,7 +388,10 @@ def build_all(bld):
     """builds all parts of the project (binaries and documentation)"""
     from waflib import Options
     commands_after = Options.commands
-    Options.commands = ['build_libs', 'build_primary', 'build_secondary', 'doxygen_primary', 'doxygen_secondary', 'sphinx']
+    Options.commands = []
+    if bld.options.libs:
+        Options.commands = ['build_libs']
+    Options.commands += ['build_primary', 'build_secondary', 'doxygen_primary', 'doxygen_secondary', 'sphinx']
     Options.commands += commands_after
 
 
