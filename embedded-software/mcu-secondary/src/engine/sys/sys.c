@@ -287,7 +287,6 @@ void SYS_Trigger(void) {
             } else if (sys_state.substate == SYS_WAIT_INITIALIZATION_INTERLOCK) {
                 ilckstate = ILCK_GetState();
                 if (ilckstate == ILCK_STATEMACH_WAIT_FIRST_REQUEST) {
-                    ILCK_SetFeedbackIgnoreCounter(10);
                     ILCK_SetStateRequest(ILCK_STATE_CLOSE_REQUEST);
                     sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
                     sys_state.state = SYS_STATEMACH_INITIALIZE_MISC;

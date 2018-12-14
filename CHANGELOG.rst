@@ -2,6 +2,41 @@
 Changelog
 =========
 
+**Release 1.5.4**
+
+Software:
+
+* Toolchain:
+
+  * Added a Python script that implements a graphical user interface
+    to communicate with foxBMS. The instructions in the README.md file
+    supplied with the script must be followed.
+  * Removed obsolet ``build.py`` wrapper
+  * Updated to ``waf-2.0.13`` (from ``waf-2.0.12``)
+  * Fixed a build error when using the ``build_all`` option
+
+* Bugfixes:
+
+  * In BMS module, wait time between error request to contactors and open
+    request to interlock was increased. Otherwise, interlock opened before
+    contactors were open. If this is the case, both contactors open at the
+    same time without any delay between first and second contactor.
+  * Fixed error in reading of interlock feedback.
+
+* Enhancements:
+
+  * none
+
+Hardware:
+
+* none
+
+Documentation:
+
+* none
+
+------------------------------------------------------------------------------
+
 **Release 1.5.3**
 
 Software:

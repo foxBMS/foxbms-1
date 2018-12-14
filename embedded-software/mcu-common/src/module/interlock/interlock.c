@@ -305,14 +305,6 @@ static ILCK_RETURN_TYPE_e ILCK_CheckStateRequest(ILCK_STATE_REQUEST_e statereq) 
     }
 }
 
-
-void ILCK_SetFeedbackIgnoreCounter(uint32_t ignores) {
-    taskENTER_CRITICAL();
-    ilck_state.counter = ignores;
-    taskEXIT_CRITICAL();
-}
-
-
 /**
  * @brief   trigger function for the ILCK driver state machine.
  *
@@ -331,11 +323,7 @@ void ILCK_Trigger(void) {
 
     /****Happens every time the state machine is triggered**************/
     if (ilck_state.state != ILCK_STATEMACH_UNINITIALIZED) {
-        if (ilck_state.state > 0) {
-            ilck_state.counter--;
-        } else {
             ILCK_CheckFeedback();
-        }
     }
 
     if (ilck_state.timer) {

@@ -617,7 +617,7 @@ void BMS_Trigger(void) {
 #if BUILD_MODULE_ENABLE_CONTACTOR == 1
                 CONT_SetStateRequest(CONT_STATE_ERROR_REQUEST);
 #endif
-                bms_state.timer = BMS_STATEMACH_MEDIUMTIME_MS;
+                bms_state.timer = BMS_STATEMACH_VERYLONGTIME_MS;
 #if BUILD_MODULE_ENABLE_ILCK == 1
                 bms_state.substate = BMS_OPEN_INTERLOCK;
 #else

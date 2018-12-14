@@ -106,13 +106,6 @@ extern STD_RETURN_TYPE_e ILCK_SwitchInterlockOff(void);
  */
 extern STD_RETURN_TYPE_e ILCK_SwitchInterlockOn(void);
 
-/**
- * @brief   Sets interlock counter. This counter is used to ignore the
- *          evaluation of the interlock feedback for x times.
- *
- * @param   number of times the feedback signal is not evaluated
- */
-extern void ILCK_SetFeedbackIgnoreCounter(uint32_t ignores);
 /*================== Function Implementations =============================*/
 
 
