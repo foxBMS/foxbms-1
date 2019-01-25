@@ -1,6 +1,6 @@
 .. include:: ../../macros.rst
 
-.. _getting_started_build:
+.. _GETTING_STARTED_BUILD:
 
 ==============================================
 Building the foxBMS Software and Documentation

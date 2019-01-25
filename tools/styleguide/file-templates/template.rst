@@ -1,6 +1,5 @@
 .. include:: ../../macros.rst (RELATIVE LINK, MUST BE ADAPTED)
 
-
 .. _DEFINE_A_LABEL_WHICH_STARTS_WITH_UNDERSCORE:
 
 ========

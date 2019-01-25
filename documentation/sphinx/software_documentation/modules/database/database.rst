@@ -1,6 +1,6 @@
 .. include:: ../../../macros.rst
 
-.. _software_documentation_modules_database:
+.. _SOFTWARE_DOCUMENTATION_MODULES_DATABASE:
 
 ========
 Database

@@ -1,6 +1,6 @@
 .. include:: ../../macros.rst
 
-.. _general_information_safety:
+.. _GENERAL_INFORMATION_SAFETY:
 
 ======
 Safety

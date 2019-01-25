@@ -1,8 +1,6 @@
 .. include:: ../../macros.rst
 
-
-
-.. _getting_started_communicating:
+.. _GETTING_STARTED_COMMUNICATING:
 
 ===========================
 Communicating with |foxbms|

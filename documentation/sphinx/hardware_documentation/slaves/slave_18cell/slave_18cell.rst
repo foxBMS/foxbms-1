@@ -1,10 +1,10 @@
-.. include:: /macros.rst
-
-.. _hw_slave_18cell:
+.. include:: ../../../macros.rst
 
 ##################################
 Slave 18-Cell ``v1.1.3 and above``
 ##################################
+
+.. _HW_SLAVE_18CELL:
 
 ========
 Overview
@@ -165,9 +165,9 @@ The analog multiplexer can be controlled via I²C by the |LTC-18| (7-bit address
 multiplexer input, the output signal of the multiplexer is buffered by an operational amplifier. Finally the analog voltage of the selected sensor
 is measured on the GPIO1 pin of the |LTC-18|.
 
-------------------------------
-On-board EEPROM with unique ID
-------------------------------
+---------------
+On-board EEPROM
+---------------
 
 The primary unit as well as the secondary unit of the foxBMS BMS-Slave board is equipped with an EEPROM IC (IC801).
 The EEPROM for example can be used for storing data such as calibration values. Similar to the analog multiplexers, the EEPROM device is connected to the I²C bus of the |LTC-18| (7-bit address: 0x50).

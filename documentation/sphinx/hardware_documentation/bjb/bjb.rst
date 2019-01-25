@@ -1,8 +1,6 @@
 .. include:: ../../macros.rst
 
-
-
-.. _hardware_documentation_bjb:
+.. _HARDWARE_DOCUMENTATION_BJB:
 
 ====================
 Battery Junction Box

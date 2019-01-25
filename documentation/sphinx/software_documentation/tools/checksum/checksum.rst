@@ -1,8 +1,6 @@
 .. include:: ../../../macros.rst
 
-
-
-.. _software_documentation_checksum_tool:
+.. _SOFTWARE_DOCUMENTATION_CHECKSUM_TOOL:
 
 =============
 Checksum Tool

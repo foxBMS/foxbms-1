@@ -1,8 +1,6 @@
 .. include:: ../../macros.rst
 
-
-
-.. _software_documentation_faq:
+.. _SOFTWARE_DOCUMENTATION_FAQ:
 
 =======================
 Software FAQ and HOWTOs

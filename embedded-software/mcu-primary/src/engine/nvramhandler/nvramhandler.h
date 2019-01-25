@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2018, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -40,7 +40,7 @@
  */
 
 /**
- * @file    datahandler.h
+ * @file    nvramhandler.h
  * @author  foxBMS Team
  * @date    17.09.2018 (date of creation)
  * @ingroup ENGINE

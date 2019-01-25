@@ -1,6 +1,6 @@
 .. include:: ../../macros.rst
 
-.. _software_documentation_architecture:
+.. _SOFTWARE_DOCUMENTATION_ARCHITECTURE:
 
 =====================
 Software Architecture

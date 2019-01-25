@@ -1,7 +1,6 @@
 .. include:: ../../macros.rst
 
-
-.. _software_documentation_build_process:
+.. _SOFTWARE_DOCUMENTATION_BUILD_PROCESS:
 
 =============
 Build Process

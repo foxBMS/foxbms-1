@@ -2,6 +2,52 @@
 Changelog
 =========
 
+**Release 1.5.5**
+
+Software:
+
+* Toolchain:
+
+  * Updated to ``waf-2.0.14`` (from ``waf-2.0.13``)
+
+* Bugfixes:
+
+  * fixed UART Frame Error with floating RX pin by enabling Pull-Up
+  * fixed a bug, that read wrong wrong entry from database when checking
+    battery system current against SOF limits
+  * fixed a bug, that flag ``SPI transmit_ongoing`` flag was reset after
+    SPI dummy byte was transmitted. This lead to invalid measured cell voltages
+    if the daisy-chain was too long
+  * enabled simultaneous measurement of V_bat and MCU temperature in ADC module
+  * fixed temperature calculation in ADC module
+  * fixed a bug, that balancing threshold for voltage-based balancing was set
+    not in function ``BAL_Activate_Balancing_Voltage`` but in bal statemachine
+
+
+* Enhancements:
+
+  * database entries are initialized with 0 to prevent undefined data if
+    entries are read before valid values are written into the database
+
+Hardware:
+
+* Slave 18-cell v1.1.5
+
+  * EMI layout improvements
+  * adapted component variants to other changes
+  * replaced DC/DC converter power inductor with AEC-Q compliant one
+  * added circuit for switching off DC/DC converters in LTC sleep mode
+  * added pull-ups on all GPIOs of the LTCs
+
+Documentation:
+
+* Fixed pin 11 in the pinout of the interface connectors for 1.2.0 and above
+* Updated Slave 18-cell hardware documentation for version 1.1.5
+* Updated year in copyright
+* Fixed some wrong @file attributes in doxygen comments
+
+------------------------------------------------------------------------------
+
 **Release 1.5.4**
 
 Software:
@@ -11,7 +57,7 @@ Software:
   * Added a Python script that implements a graphical user interface
     to communicate with foxBMS. The instructions in the README.md file
     supplied with the script must be followed.
-  * Removed obsolet ``build.py`` wrapper
+  * Removed obsolete ``build.py`` wrapper
   * Updated to ``waf-2.0.13`` (from ``waf-2.0.12``)
   * Fixed a build error when using the ``build_all`` option
 
@@ -114,7 +160,13 @@ Software:
 
 Hardware:
 
-* adapted CAN filter circuit on master and extension board for improved fault tolerance at short of CAN_L to GND or CAN_H to supply
+* Master v1.0.6
+
+  * adapted CAN filter circuit for improved fault tolerance at short of CAN_L to GND or CAN_H to supply
+
+* Extension v1.0.5
+
+  * adapted CAN filter circuit for improved fault tolerance at short of CAN_L to GND or CAN_H to supply
 
 Documentation:
 
@@ -476,6 +528,8 @@ The hardware changelog is now included in the regular changelog (since version
 *foxBMS Master*
 
 +--------+------------------------------------------------------------------------------------------------------+
+| V1.0.6 | adapted CAN filter circuit for improved fault tolerance at short of CAN_L to GND or CAN_H to supply  |
++--------+------------------------------------------------------------------------------------------------------+
 | V1.0.5 | schematic cleanup, improved fonts and sizes on PCB                                                   |
 +--------+------------------------------------------------------------------------------------------------------+
 | V1.0.4 | | introduced minor improvements to design                                                            |
@@ -495,6 +549,8 @@ The hardware changelog is now included in the regular changelog (since version
 *foxBMS Extension*
 
 +--------+------------------------------------------------------------------------------------------------------+
+| V1.0.5 | adapted CAN filter circuit for improved fault tolerance at short of CAN_L to GND or CAN_H to supply  |
++--------+------------------------------------------------------------------------------------------------------+
 | V1.0.4 | schematic cleanup, improved fonts and sizes on PCB                                                   |
 +--------+------------------------------------------------------------------------------------------------------+
 | V1.0.3 | | ported schematics and layout to Altium Designer                                                    |
@@ -509,6 +565,7 @@ The hardware changelog is now included in the regular changelog (since version
 +--------+------------------------------------------------------------------------------------------------------+
 
 *foxBMS Interface*
+
 +--------+------------------------------------------------------------------------------------------------------+
 | V1.9.3 | replace NAND-gate with SN74LVC00AQPWRQ1                                                              |
 +--------+------------------------------------------------------------------------------------------------------+
@@ -566,6 +623,13 @@ The hardware changelog is now included in the regular changelog (since version
 
 *foxBMS Slave 18-cell (LTC6813-1)*
 
++--------+------------------------------------------------------------------------------------------------------+
+| V1.1.5 | | EMI layout improvements                                                                            |
+|        | | adapted component variants to other changes                                                        |
++--------+------------------------------------------------------------------------------------------------------+
+| V1.1.4 | | replaced DC/DC converter power inductor with AEC-Q compliant one                                   |
+|        | | added circuit for switching off DC/DC converters in LTC sleep mode                                 |
+|        | | added pull-ups on all GPIOs of the LTCs                                                            |
 +--------+------------------------------------------------------------------------------------------------------+
 | V1.1.3 | schematic cleanup, improved fonts and sizes on PCB                                                   |
 +--------+------------------------------------------------------------------------------------------------------+

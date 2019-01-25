@@ -1,6 +1,6 @@
 .. include:: ../../macros.rst
 
-.. _general_information_motivation:
+.. _GENERAL_INFORMATION_MOTIVATION:
 
 ==========
 Motivation

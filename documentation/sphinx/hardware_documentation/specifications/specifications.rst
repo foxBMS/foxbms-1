@@ -1,8 +1,6 @@
 .. include:: ../../macros.rst
 
-
-
-.. _hardware_documentation_specifications:
+.. _HARDWARE_DOCUMENTATION_SPECIFICATIONS:
 
 ==============
 Specifications

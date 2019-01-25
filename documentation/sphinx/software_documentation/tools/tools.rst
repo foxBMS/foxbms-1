@@ -1,8 +1,6 @@
 .. include:: ../../macros.rst
 
-
-
-.. _software_documentation_tools:
+.. _SOFTWARE_DOCUMENTATION_TOOLS:
 
 ==============
 Software Tools

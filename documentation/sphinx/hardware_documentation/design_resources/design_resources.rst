@@ -1,8 +1,6 @@
 .. include:: ../../macros.rst
 
-
-
-.. _hardware_design_resources:
+.. _HARDWARE_DESIGN_RESOURCES:
 
 ================
 Design Resources

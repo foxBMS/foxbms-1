@@ -1,6 +1,6 @@
 .. include:: ../../macros.rst
 
-.. _getting_started_cabling:
+.. _GETTING_STARTED_CABLING:
 
 ================
 Cabling |foxbms|

@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2018, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -919,10 +919,9 @@ static void BMS_CheckTemperatures(void) {
  * @details verify for cell current measurements (I), if minimum and maximum values are out of range
  */
 static void BMS_CheckCurrent(void) {
-    DATA_BLOCK_SOX_s sof_tab;
+    DATA_BLOCK_SOF_s sof_tab;
     DATA_BLOCK_CURRENT_SENSOR_s curr_tab;
 
-    DB_ReadBlock(&sof_tab, DATA_BLOCK_ID_SOX);
     DB_ReadBlock(&curr_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
 
     float i_current = curr_tab.current;
@@ -935,6 +934,9 @@ static void BMS_CheckCurrent(void) {
     }
 
 #if MEAS_TEST_CELL_SOF_LIMITS == TRUE
+    /* Database entry only needed if current is checked against SOF values */
+    DB_ReadBlock(&sof_tab, DATA_BLOCK_ID_SOF);
+
     if (((i_current < (-1000*(sof_tab.sof_continuous_charge))) ||
             (i_current > (1000*sof_tab.sof_continuous_discharge)))) {
         retVal = FALSE;

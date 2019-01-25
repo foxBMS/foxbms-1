@@ -1,6 +1,6 @@
 .. include:: ../../macros.rst
 
-.. _software_documentation_defines:
+.. _SOFTWARE_DOCUMENTATION_DEFINES:
 
 ==========================
 Important Switches in Code

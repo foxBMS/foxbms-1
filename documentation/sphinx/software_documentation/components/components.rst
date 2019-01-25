@@ -1,8 +1,6 @@
 .. include:: ../../macros.rst
 
-
-
-.. _software_documentation_components:
+.. _SOFTWARE_DOCUMENTATION_COMPONENTS:
 
 ===================
 Software Components

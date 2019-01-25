@@ -3,7 +3,7 @@
 .. -----------------------------------------------
 .. General Documentation Macros
 .. -----------------------------------------------
-.. |version| replace:: ``1.5.4``
+.. |version| replace:: ``1.5.5``
 .. |version-hal| replace:: ``V1.5.0``
 .. |version-cmsis| replace:: ``V2.5.6``
 .. |version-freertos| replace:: ``V9.0.0``

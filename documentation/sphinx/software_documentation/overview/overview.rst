@@ -1,8 +1,6 @@
 .. include:: ../../macros.rst
 
-
-
-.. _software_documentation_overview:
+.. _SOFTWARE_DOCUMENTATION_OVERVIEW:
 
 =================
 Software Overview

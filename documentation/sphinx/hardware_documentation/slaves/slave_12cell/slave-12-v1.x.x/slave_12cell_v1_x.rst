@@ -1,10 +1,10 @@
-.. include:: /macros.rst
-
-.. _hw_slave_12cell_v1_x:
+.. include:: ../../../../macros.rst
 
 ########################
 Slave 12-Cell ``v1.x.x``
 ########################
+
+.. _HW_SLAVE_12CELL_V1_X:
 
 ========
 Overview

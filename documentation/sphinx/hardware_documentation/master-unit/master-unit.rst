@@ -1,8 +1,6 @@
 .. include:: ../../macros.rst
 
-
-
-.. _hardware_documentation_overview:
+.. _HARDWARE_DOCUMENTATION_OVERVIEW:
 
 ===========
 Master-Unit

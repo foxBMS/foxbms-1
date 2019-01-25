@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2018, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -64,8 +64,9 @@
  *
  */
 typedef struct {
-    uint8_t transmit_ongoing;               /*!< time in ms before the state machine processes the next state, e.g. in counts of 1ms    */
-    uint8_t counter;                        /*!< general purpose counter */
+    uint8_t transmit_ongoing;         /*!< time in ms before the state machine processes the next state, e.g. in counts of 1ms    */
+    uint8_t dummyByte_ongoing;        /*!< SPI dummy byte is currently transmitted */
+    uint8_t counter;                  /*!< general purpose counter */
 } SPI_STATE_s;
 
 /*================== Constant and Variable Definitions ====================*/

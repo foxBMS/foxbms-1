@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2018, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -157,6 +157,7 @@ static uint8_t BAL_Activate_Balancing_Voltage(void) {
         if (bal_cellvoltage.voltage[i] > min+bal_state.balancing_threshold) {
             bal_balancing.balancing_state[i] = 1;
             finished = FALSE;
+            bal_state.balancing_threshold = BAL_THRESHOLD_MV;
             bal_state.active = TRUE;
             bal_balancing.enable_balancing = 1;
         } else {
@@ -675,7 +676,6 @@ void BAL_Trigger(void) {
                     bal_state.state = BAL_STATEMACH_CHECK_BALANCING;
                     bal_state.substate = BAL_ENTRY;
                 } else {
-                    bal_state.balancing_threshold = BAL_THRESHOLD_MV;
                     finished = BAL_Activate_Balancing_Voltage();
                     if (finished == TRUE) {
                         bal_state.balancing_threshold = BAL_THRESHOLD_MV + BAL_HYSTERESIS_MV;
