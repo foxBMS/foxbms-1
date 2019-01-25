@@ -1,8 +1,6 @@
 .. include:: ../../macros.rst
 
-
-
-.. _general_information_team:
+.. _GENERAL_INFORMATION_TEAM:
 
 ====
 Team

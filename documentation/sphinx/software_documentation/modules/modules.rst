@@ -1,6 +1,6 @@
 .. include:: ../../macros.rst
 
-.. _software_documentation_modules:
+.. _SOFTWARE_DOCUMENTATION_MODULES:
 
 ================
 Software Modules

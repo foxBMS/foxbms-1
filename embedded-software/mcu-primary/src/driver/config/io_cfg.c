@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2018, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -218,7 +218,7 @@ const IO_PIN_CFG_s io_cfg[] = {
     {IO_PIN_MCU_0_CAN_1_RX,                        IO_MODE_AF_PP,          IO_PIN_NOPULL,      IO_SPEED_HIGH,      IO_ALTERNATE_AF9_CAN1,      IO_PIN_LOCK_ENABLE},
 
     {IO_PIN_MCU_0_FTDI_TX,                         IO_MODE_AF_PP,          IO_PIN_NOPULL,      IO_SPEED_HIGH,      IO_ALTERNATE_AF7_USART3,    IO_PIN_LOCK_ENABLE},
-    {IO_PIN_MCU_0_FTDI_RX,                         IO_MODE_AF_PP,          IO_PIN_NOPULL,      IO_SPEED_HIGH,      IO_ALTERNATE_AF7_USART3,    IO_PIN_LOCK_ENABLE},
+    {IO_PIN_MCU_0_FTDI_RX,                         IO_MODE_AF_PP,          IO_PIN_PULLUP,      IO_SPEED_HIGH,      IO_ALTERNATE_AF7_USART3,    IO_PIN_LOCK_ENABLE},
 
     {IO_PIN_MCU_0_RS485_TX,                        IO_MODE_AF_PP,          IO_PIN_NOPULL,      IO_SPEED_HIGH,      IO_ALTERNATE_AF7_USART2,    IO_PIN_LOCK_ENABLE},
     {IO_PIN_MCU_0_RS485_RX,                        IO_MODE_AF_PP,          IO_PIN_NOPULL,      IO_SPEED_HIGH,      IO_ALTERNATE_AF7_USART2,    IO_PIN_LOCK_ENABLE},

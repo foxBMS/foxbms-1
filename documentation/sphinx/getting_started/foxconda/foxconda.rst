@@ -1,6 +1,6 @@
 .. include:: ../../macros.rst
 
-.. _getting_started_foxconda:
+.. _GETTING_STARTED_FOXCONDA:
 
 ======================
 Installing |foxconda3|

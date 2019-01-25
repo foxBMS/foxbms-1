@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2018, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -65,6 +65,7 @@
  */
 static SPI_STATE_s spi_state = {
     .transmit_ongoing       = FALSE,
+    .dummyByte_ongoing      = FALSE,
     .counter                = 0,
 };
 
@@ -120,7 +121,11 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleType_s *hspi) {
     if (hspi  ==  &spi_devices[0]) {
         /* Iso-SPI Main */
         SPI_UnsetCS(1);
-        spi_state.transmit_ongoing = FALSE;
+        if (spi_state.dummyByte_ongoing == TRUE) {
+            spi_state.dummyByte_ongoing = FALSE;
+        } else {
+            spi_state.transmit_ongoing = FALSE;
+        }
     }
     if (hspi  ==  &spi_devices[1]) {
         /* Eeprom */
@@ -135,7 +140,14 @@ void HAL_SPI_TxCpltCallback(SPI_HandleType_s *hspi) {
     if (hspi  ==  &spi_devices[0]) {
         /* Iso-SPI Main */
         SPI_UnsetCS(1);
-        spi_state.transmit_ongoing = FALSE;
+        /* if currently dummy byte was transmitted: reset dummy byte flag,
+         * otherwise reset normal SPI transmission flag
+         */
+        if (spi_state.dummyByte_ongoing == TRUE) {
+            spi_state.dummyByte_ongoing = FALSE;
+        } else {
+            spi_state.transmit_ongoing = FALSE;
+        }
     }
 
     if (hspi  ==  &spi_devices[1]) {
@@ -275,6 +287,8 @@ STD_RETURN_TYPE_e SPI_SendDummyByte(uint8_t busID, SPI_HandleType_s *hspi) {
     HAL_StatusTypeDef statusSPI;
     STD_RETURN_TYPE_e retVal = E_OK;
 
+    spi_state.dummyByte_ongoing = TRUE;
+
     statusSPI = HAL_SPI_Transmit_DMA(hspi, (uint8_t *)spi_cmdDummy, 1);
     if (statusSPI != HAL_OK)
         retVal = E_NOT_OK;
@@ -288,7 +302,7 @@ STD_RETURN_TYPE_e SPI_SendDummyByte(uint8_t busID, SPI_HandleType_s *hspi) {
  *
  */
 void SPI_Wait(void) {
-    MCU_Wait_us(SPI_DUMMY_BYTE_WAIT_TIME);
+    MCU_Wait_us(SPI_DUMMY_BYTE_WAIT_TIME_us);
 }
 
 extern STD_RETURN_TYPE_e SPI_IsTransmitOngoing(void) {

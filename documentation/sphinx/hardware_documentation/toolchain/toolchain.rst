@@ -1,7 +1,6 @@
 .. include:: ../../macros.rst
 
-
-.. _hardware_documentation_toolchain:
+.. _HARDWARE_DOCUMENTATION_TOOLCHAIN:
 
 =========
 Toolchain

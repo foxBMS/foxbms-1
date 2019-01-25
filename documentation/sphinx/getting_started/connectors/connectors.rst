@@ -1,6 +1,6 @@
 .. include:: ../../macros.rst
 
-.. _getting_started_connectors:
+.. _GETTING_STARTED_CONNECTORS:
 
 =================
 Connectors Pinout
@@ -202,7 +202,7 @@ Daisy Chain - Primary and Secondary (X1601 on |BMS-Master|)
     8      OUT+ (Primary |BMS-Slave| reverse)
     9      OUT- (Secondary |BMS-Slave| forward)
     10     NC
-    11     OUT- (Secondary |BMS-Slave| forward)
+    11     OUT- (Secondary |BMS-Slave| reverse)
     12     NC
     13     NC
     14     OUT- (Primary |BMS-Slave| forward)

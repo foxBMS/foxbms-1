@@ -1,6 +1,6 @@
 .. include:: ../../macros.rst
 
-.. _getting_started_checking:
+.. _GETTING_STARTED_CHECKING:
 
 ====================
 Checking-up |foxbms|

@@ -1,8 +1,6 @@
 .. include:: ../../../macros.rst
 
-
-
-.. _software_documentation_flashtool:
+.. _SOFTWARE_DOCUMENTATION_FLASHTOOL:
 
 =========
 Flashtool

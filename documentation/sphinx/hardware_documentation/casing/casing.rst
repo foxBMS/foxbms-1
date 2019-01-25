@@ -1,7 +1,6 @@
 .. include:: ../../macros.rst
 
-
-.. _hardware_documentation_casing:
+.. _HARDWARE_DOCUMENTATION_CASING:
 
 ======
 Casing

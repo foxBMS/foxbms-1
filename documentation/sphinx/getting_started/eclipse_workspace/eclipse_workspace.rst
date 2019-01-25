@@ -1,6 +1,6 @@
 .. include:: ../../macros.rst
 
-.. _getting_started_eclipse_workspace:
+.. _GETTING_STARTED_ECLIPSE_WORKSPACE:
 
 ====================================
 Eclipse Workspace Setup and Flashing

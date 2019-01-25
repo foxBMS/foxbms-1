@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2018, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -79,7 +79,7 @@ void DATA_Init(void) {
         /* todo fatal error! */
 
         while (1) {
-            /* TODO: explain why infinite loop */
+            /* No database defined - this should not have happened! */
         }
     }
 
@@ -110,6 +110,23 @@ void DATA_Init(void) {
             /* Single buffering -> read = write pointer */
             data_block_access[i].RDptr = data_block_access[i].WRptr;
         }
+
+        /* Initialize database entry with 0, set read and write pointer in case double
+         * buffering is used for database entries */
+        uint8_t * startDatabaseEntryWR = (uint8_t *)data_block_access[i].WRptr;
+        uint8_t * startDatabaseEntryRD = (uint8_t *)data_block_access[i].RDptr;
+
+        for (uint16_t j = 0; j < (data_base_dev.blockheaderptr + i)->datalength; j++) {
+            /* Set write pointer database entry to 0 */
+            *startDatabaseEntryWR = 0;
+            startDatabaseEntryWR++;
+
+            /* Set read pointer database entry to 0 - identical to write pointer
+             * if database entry is SINGLE_BUFFERED */
+            *startDatabaseEntryRD = 0;
+            startDatabaseEntryRD++;
+        }
+
         /* Create a mutex for each database entry */
         data_base_mutex[i] = xSemaphoreCreateMutex();
     }

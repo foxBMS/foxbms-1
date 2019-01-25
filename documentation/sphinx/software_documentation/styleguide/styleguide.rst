@@ -1,8 +1,6 @@
 .. include:: ../../macros.rst
 
-
-
-.. _software_styleguide:
+.. _SOFTWARE_STYLEGUIDE:
 
 ====================
 Software Style Guide

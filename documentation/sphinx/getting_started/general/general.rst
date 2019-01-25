@@ -1,7 +1,6 @@
 .. include:: ../../macros.rst
 
-
-.. _getting_started_general:
+.. _GETTING_STARTED_GENERAL:
 
 =============================
 Getting Started with |foxbms|

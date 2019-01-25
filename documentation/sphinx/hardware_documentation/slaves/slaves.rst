@@ -1,6 +1,6 @@
 .. include:: ../../macros.rst
 
-.. _hw_slave:
+.. _HW_SLAVE:
 
 ======
 Slaves

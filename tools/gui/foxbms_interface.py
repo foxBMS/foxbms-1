@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @copyright &copy; 2010 - 2018, Fraunhofer-Gesellschaft zur Foerderung der
+# @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
 #   angewandten Forschung e.V. All rights reserved.
 #
 # BSD 3-Clause License
@@ -883,7 +883,7 @@ class MainFrame(wx.Frame):
         box = wx.StaticBox(
             self.panel_list[0],
             wx.ID_ANY,
-            'Contactor and Interlock State',
+            'Contactors and Interlock',
             pos=(self.ref_x + 545, self.ref_y + 70),
             size=(178, 370))
         font = wx.Font(10, wx.DECORATIVE, wx.NORMAL, wx.BOLD)

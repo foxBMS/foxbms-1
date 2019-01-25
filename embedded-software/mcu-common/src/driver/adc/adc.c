@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2018, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -68,7 +68,7 @@
 #define ADC_VBAT_VOLTAGE_DIVIDER    4.0
 #define ADC_FULL_RANGE              4095.0        /* 12bit adc converter --> range [0, ..., 4095] */
 #define ADC_VREF_EXT                2.5
-#define ADC_V25                     0.76
+#define ADC_V25                     760
 #define ADC_AVG_SLOPE               2.5
 
 /*================== Constant and Variable Definitions ====================*/
@@ -124,14 +124,14 @@ void ADC_Ctrl(void) {
     /* Alternate ADC conversion between inputs defined in ADC channel list */
     if (adc_conversion_state == ADC_CONVERT) {
         adc_cfg.Channel = adc_ChannelList[adc_channel_num];
-
-        /* Switch between different adc channels */
-        adc_channel_num++;
-        if (adc_channel_num == BS_NR_OF_VOLTAGES_FROM_MCU_ADC) {
-          adc_channel_num = 0;
-        }
-
         /* Configure ADC Channel */
+#if defined(STM32F411xE) || defined(STM32F427xx) || defined(STM32F437xx) || defined(STM32F429xx) || defined(STM32F439xx) || \
+    defined(STM32F446xx) || defined(STM32F469xx) || defined(STM32F479xx)
+    if (adc_cfg.Channel == ADC_CHANNEL_TEMPSENSOR) {
+        ADC->CCR &= ~(ADC_CCR_VBATE);
+    }
+#endif /* STM32F411xE || STM32F427xx || STM32F437xx || STM32F429xx || STM32F439xx || STM32F446xx || STM32F469xx || STM32F479xx */
+
         HAL_ADC_ConfigChannel(&adc_devices[0], &adc_cfg);
     }
 
@@ -157,7 +157,10 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle) {
     if (adc_cfg.Channel == ADC_CHANNEL_TEMPSENSOR) {
       adc_mcuTemp = adc_values[adc_channel_num];
     }
-
+    adc_channel_num++;
+    if (adc_channel_num > BS_NR_OF_VOLTAGES_FROM_MCU_ADC - 1) {
+      adc_channel_num = 0;
+    }
     /* Start new conversion */
     adc_conversion_state = ADC_CONVERT;
 }
@@ -175,7 +178,7 @@ extern float ADC_GetVBAT_mV(void) {
  * @brief get MCU temperature
  */
 extern float ADC_GetMCUTemp_C(void) {
-    float scaled_temperature = (adc_mcuTemp - ADC_V25)/(1000.0*ADC_AVG_SLOPE) + 25.0;
+    float scaled_temperature = (adc_mcuTemp - ADC_V25)/(ADC_AVG_SLOPE) + 25.0;
     return scaled_temperature;
 }
 

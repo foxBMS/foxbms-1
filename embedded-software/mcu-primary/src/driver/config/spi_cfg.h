@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2018, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -68,7 +68,7 @@
 /**
  * Wait time in [us] after sending dummy byte on SPI. Max wait time: 1000us
  */
-#define SPI_DUMMY_BYTE_WAIT_TIME        20
+#define SPI_DUMMY_BYTE_WAIT_TIME_us        25
 
 /**
  * Wait time in [us] during initialization.
@@ -80,6 +80,11 @@
 #define SPI_HASEEPROM
 
 typedef SPI_HandleTypeDef       SPI_HandleType_s;
+
+
+#if SPI_DUMMY_BYTE_WAIT_TIME_us < 25
+#error "Dummy byte wait duration can't be less than 25us, otherwise LTC module will read invalid values!"
+#endif
 
 /*================== Constant and Variable Definitions ====================*/
 extern SPI_HandleType_s spi_devices[];

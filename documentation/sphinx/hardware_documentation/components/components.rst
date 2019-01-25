@@ -1,8 +1,6 @@
 .. include:: ../../macros.rst
 
-
-
-.. _hardware_documentation_components:
+.. _HARDWARE_DOCUMENTATION_COMPONENTS:
 
 =================
 Safety Components

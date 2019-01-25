@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2018, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -114,6 +114,12 @@ static CONT_STATE_s cont_state = {
     .PrechargeTryCounter    = 0,
     .PrechargeTimeOut       = 0,
     .counter                = 0,
+};
+
+static DATA_BLOCK_CONTFEEDBACK_s contfeedback_tab = {
+        .contactor_feedback = 0,
+        .timestamp = 0,
+        .previous_timestamp = 0,
 };
 
 
@@ -947,11 +953,8 @@ void CONT_Trigger(void) {
  * @details makes a DIAG entry for each contactor when the feedback does not match the set value
  */
 void CONT_CheckFeedback(void) {
-    DATA_BLOCK_CONTFEEDBACK_s contfeedback_tab;
     CONT_ELECTRICAL_STATE_TYPE_s feedback;
     uint16_t contactor_feedback_state = 0;
-
-    DB_ReadBlock(&contfeedback_tab, DATA_BLOCK_ID_CONTFEEDBACK);
 
     for (uint8_t i = 0; i < BS_NR_OF_CONTACTORS; i++) {
         feedback = CONT_GetContactorFeedback(i);

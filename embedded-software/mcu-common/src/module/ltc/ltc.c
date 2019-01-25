@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2018, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -2216,12 +2216,10 @@ static void LTC_SaveRXtoVoltagebuffer(uint8_t registerSet, uint8_t *rxBuffer, ui
         return;
     }
 
-    //////////////////////////////////////////////////
     /* reinitialize index counter at begin of cycle */
     if (i_offset == 0) {
         ltc_used_cells_index = 0;
     }
-    //////////////////////////////////////////////////
 
     /* Retrieve data without command and CRC*/
     for (i=0; i < LTC_N_LTC; i++) {

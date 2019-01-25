@@ -1,6 +1,6 @@
 .. include:: ./macros.rst
 
-
+.. _INDEX:
 
 ==========================
 The |foxbms| Documentation

@@ -1,3 +1,5 @@
+.. include:: ../../../macros.rst
+
 :orphan:
 
 .. contents:: :local:

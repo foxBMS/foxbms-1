@@ -1,8 +1,6 @@
 .. include:: ../../macros.rst
 
-
-
-.. _general_information_releases:
+.. _GENERAL_INFORMATION_RELEASES:
 
 ========
 Releases
@@ -44,6 +42,8 @@ released. The first line is the most recent one, the last one the oldest one.
 +--------+----------+--------------+
 | foxbms | foxconda | Release date |
 +========+==========+==============+
+| v1.5.5 | 3.0.3    | 2019-01-25   |
++--------+----------+--------------+
 | v1.5.4 | 3.0.3    | 2018-12-14   |
 +--------+----------+--------------+
 | v1.5.3 | 3.0.3    | 2018-12-07   |
