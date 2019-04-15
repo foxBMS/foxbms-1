@@ -262,7 +262,7 @@ def configure(conf):
     conf.path.get_bld().make_node(config_dir).mkdir()
     conf.confdir = conf.path.get_bld().find_node(config_dir)
 
-    _cmd = [Utils.subst_vars('${CC} ', conf.env), '-dM', '-E', '-']
+    _cmd = [Utils.subst_vars('${CC}', conf.env), '-dM', '-E', '-']
     std_out, std_err = conf.cmd_and_log(_cmd, output=0, input='\n'.encode())
     std_out = '/* WARNING: DO NOT EDIT */\n' \
               '/* INTERNAL GCC MARCOS */\n' \
