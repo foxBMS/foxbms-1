@@ -205,8 +205,12 @@ def configure(conf):
     '''
     print('Doxygen documentation tools:')
     conf.find_program('doxygen', var='DOXYGEN', mandatory=False)
-    conf.find_program('dot', var='dot', mandatory=True) 
+    conf.find_program('dot', var='dot', mandatory=True)
     conf.find_program('tar', var='TAR', mandatory=False)
+    if Utils.unversioned_sys_platform()=='win32':
+        path_list = [os.path.join('C:', os.sep, 'Program Files', 'Git', 'usr', 'bin')]
+        Logs.debug('Did not find native tar, searching for git tar...')
+        conf.find_program('tar', var='TAR', path_list=path_list, mandatory=False)
 
 # doxygen docs
 from waflib.Build import BuildContext

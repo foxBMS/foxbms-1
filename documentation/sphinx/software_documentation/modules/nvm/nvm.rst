@@ -24,7 +24,8 @@ reset characteristics:
 * SRAM (cleared memory section):
    data loss in case of any kind of reset
 * SRAM (non-cleared memory section):
-   data loss only in case of power down, no data loss in case of software reset or warm startup
+   data loss only in case of power down, no data loss in case of software reset
+   or warm startup
 
 
 
@@ -50,9 +51,19 @@ Data Management
 Data Structure
 --------------
 
-The data storage of the EEPROM is organized in coherent data entities called channels. Each channel has its own storage area reserved in the EEPROM. EEPROM channels can be used as a non-volatile backup for corresponding BKPSRAM channels. Furthermore, every channel has a checksum, an ID, and optionally a software write protection and a pointer to the location of the corresponding channel in the SRAM or BKPSRAM. Additionally, every channel has a dirty flag, which is set to indicate a modification of data to initiate a backup process to the EEPROM. EEPROM channels can be configured to be updated automatically during startup, if data is not up-to-date or in case it is corrupted.
+The data storage of the EEPROM is organized in coherent data entities called
+channels. Each channel has its own storage area reserved in the EEPROM. EEPROM
+channels can be used as a non-volatile backup for corresponding BKPSRAM
+channels. Furthermore, every channel has a checksum, an ID, and optionally a
+software write protection and a pointer to the location of the corresponding
+channel in the SRAM or BKPSRAM. Additionally, every channel has a dirty flag,
+which is set to indicate a modification of data to initiate a backup process to
+the EEPROM. EEPROM channels can be configured to be updated automatically
+during startup, if data is not up-to-date or in case it is corrupted.
 
-Example: EEPROM-channels A, B and C have coherent BKPSRAM channels. E has a coherent SRAM channel. D does not have a coherent channel: the data are written directly into this channel.
+Example: EEPROM-channels A, B and C have coherent BKPSRAM channels. E has a
+coherent SRAM channel. D does not have a coherent channel: the data are
+written directly into this channel.
 
 .. _nvm_datastructure:
 .. figure:: ./nvm_datastructure.png
@@ -65,7 +76,8 @@ Example: EEPROM-channels A, B and C have coherent BKPSRAM channels. E has a cohe
 Statemachine of the EEPROM Driver
 ---------------------------------
 
-The statemachine is capable of handling the requests to write, read or to go into an idle mode. The states of the statemachine are:
+The statemachine is capable of handling the requests to write, read or to go
+into an idle mode. The states of the statemachine are:
 
 +-----------------------------------+-----------------------------------------------------------------------------------------------+
 | State                             | Description                                                                                   |
@@ -109,13 +121,19 @@ The statemachine is capable of handling the requests to write, read or to go int
 Startup
 -------
 
-Before any data can be written or read, the EEPROM is being initialized by sending the request to go to idle. If the initialization was successful, the version number of the software and the EEPROM Header Information is checked, to ensure an equal memory layout software and NVM. Afterwards the data channels will be initialized.
+Before any data can be written or read, the EEPROM is being initialized by
+sending the request to go to idle. If the initialization was successful, the
+version number of the software and the EEPROM Header Information is checked,
+to ensure an equal memory layout software and NVM. Afterwards the data
+channels will be initialized.
 
 
 Channel Initialization
 ----------------------
 
-During the initialization, the driver will check and update the data of the selected channels as shown in :numref:`Fig. %s <nvm_channelinit>`. The specific control mechanisms to identify corrupt data are:
+During the initialization, the driver will check and update the data of the
+selected channels as shown in :numref:`Fig. %s <nvm_channelinit>`. The
+specific control mechanisms to identify corrupt data are:
 
 (1) Hardware-Check of Brownout Reset (BOR)
 (2) Software-Check of BKPSRAM checksum
@@ -140,22 +158,40 @@ Users can create new channels by declaring them in the array ``eepr_ch_cfg[]``.
 
 When creating channels, attention should be paid to the following aspects:
 
-(1) It is advisable to create a structure to work with the correct data format.
-(2) When creating the structure, users have to pay attention to the correct data alignment. Data should be stored in blocks of 4 byte (32 bit) to avoid errors when reading or writing data.
-    Example: Do not store a 32 bit number directly behind a 16 bit number. Instead, insert a 16 bit dummy in between.
-(3) Make sure channels do not overlap.
-(4) The checksum must always be stored in the last 4 bytes of the channel.
-(5) Make sure that the channel ID matches the position in the array.
-(6) Setting the write protection is optional and should only be set if the channel data in the EEPROM does not have to be changed during the runtime.
-(7) Setting the pointer to the location of the corresponding channel (BKPSRAM or SRAM) is also optional, but necessary if an automatic update of the data should be done during the initialization.
-(8) To support the automatic update function, the user has to make two function calls in the function ``EEPR_InitChannelData()``, just like the other channels that are handled there.
-(9) In the function ``EEPR_SetDefaultValue(EEPR_CHANNEL_ID_TYPE_e eepr_channel)`` the default values of the new channel must be set.
-(10) It is advisable to implement a GET and SET function for the new channel in the ``bkpsram_cfg.c``, similar to the implemented examples, to ensure data consistency.
+#. It is advisable to create a structure to work with the correct data format.
+#. When creating the structure, users have to pay attention to the correct
+   data alignment. Data should be stored in blocks of 4 byte (32 bit) to avoid
+   errors when reading or writing data.
+   Example: Do not store a 32 bit number directly behind a 16 bit number.
+   Instead, insert a 16 bit dummy in between.
+#. Make sure channels do not overlap.
+#. The checksum must always be stored in the last 4 bytes of the channel.
+#. Make sure that the channel ID matches the position in the array.
+#. Setting the write protection is optional and should only be set if the
+   channel data in the EEPROM does not have to be changed during the runtime.
+#. Setting the pointer to the location of the corresponding channel (BKPSRAM
+   or SRAM) is also optional, but necessary if an automatic update of the data
+   should be done during the initialization.
+#. To support the automatic update function, the user has to make two function
+   calls in the function ``EEPR_InitChannelData()``, just like the other
+   channels that are handled there.
+#. In the function ``EEPR_SetDefaultValue(EEPR_CHANNEL_ID_TYPE_e eepr_channel)``
+   the default values of the new channel must be set.
+#. It is advisable to implement a GET and SET function for the new channel in
+   the ``bkpsram_cfg.c``, similar to the implemented examples, to ensure data
+   consistency.
 
 Write and Read during Runtime
 -----------------------------
 
-To write or read an EEPROM channel during runtime, the user should use the functions ``EEPR_SetChannelData(EEPR_CHANNEL_ID_TYPE_e eepr_channel, uint8_t *dest_ptr)`` or ``EEPR_GetChannelData(EEPR_CHANNEL_ID_TYPE_e eepr_channel, uint8_t *dest_ptr)`` and trigger the state machine until it is either in the idle mode again or in an error state. To use the BKPSRAM pointer defined in the channel config, the source/destination pointer can be declared to be a NULL-pointer. To write or read the data of a BKPSRAM channel, the implemented GET and SET functions can be used.
+To write or read an EEPROM channel during runtime, the user should use the
+functions ``EEPR_SetChannelData(EEPR_CHANNEL_ID_TYPE_e eepr_channel, uint8_t *dest_ptr)``
+or ``EEPR_GetChannelData(EEPR_CHANNEL_ID_TYPE_e eepr_channel, uint8_t *dest_ptr)``
+and trigger the state machine until it is either in the idle mode again or in
+an error state. To use the BKPSRAM pointer defined in the channel config, the
+source/destination pointer can be declared to be a NULL-pointer. To write or
+read the data of a BKPSRAM channel, the implemented GET and SET functions can
+be used.
 
 Usage
 ~~~~~
@@ -163,13 +199,24 @@ Usage
 Initialization
 ---------------------------
 
-The EEPROM can be initialized manually, by setting the request to go to IDLE and triggering the state machine until the desired state is reached. Alternatively, the EEPROM can be initialized automatically by calling the function ``EEPR_ERRORTYPES_e EEPR_Init(void)``, which will initialize the EEPROM first and the channels afterwards. The BKPSRAM module can be initialized by calling ``void BKP_SRAM_Init(void)``.
+The EEPROM can be initialized manually, by setting the request to go to IDLE
+and triggering the state machine until the desired state is reached.
+Alternatively, the EEPROM can be initialized automatically by calling the
+function ``EEPR_ERRORTYPES_e EEPR_Init(void)``, which will initialize the
+EEPROM first and the channels afterwards. The BKPSRAM module can be
+initialized by calling ``void BKP_SRAM_Init(void)``.
 
 Usage during runtime
 ---------------------------
-During runtime a datahandler will manage the write and read process of the channels. It continuously checks if there is a read request or a write request for every channel.
-The read/write requests can be set with ``void EEPR_SetChReadReqFlag(EEPR_CHANNEL_ID_TYPE_e eepr_channel)`` for read requests and ``void EEPR_SetChDirtyFlag(EEPR_CHANNEL_ID_TYPE_e eepr_channel)`` for write requests.
-Afterwards the datahandler will take care of the write-process itself. How the write/read-process works can be seen in :numref:`Fig. %s <nvm_datahandler>`.
+During runtime a datahandler will manage the write and read process of the
+channels. It continuously checks if there is a read request or a write request
+for every channel.
+The read/write requests can be set with
+``void EEPR_SetChReadReqFlag(EEPR_CHANNEL_ID_TYPE_e eepr_channel)`` for read
+requests and ``void EEPR_SetChDirtyFlag(EEPR_CHANNEL_ID_TYPE_e eepr_channel)``
+for write requests.
+Afterwards the datahandler will take care of the write-process itself. How the
+write/read-process works can be seen in :numref:`Fig. %s <nvm_datahandler>`.
 
 
 
@@ -177,13 +224,19 @@ Afterwards the datahandler will take care of the write-process itself. How the w
 .. figure:: ./nvm_datahandler.png
     :width: 100 %
 
-After the write/read process is complete, the datahandler will diagnose the errors in ``EEPR_DATAHANDLING_ERROR_e EEPR_ch_dataerrors``.
+After the write/read process is complete, the datahandler will diagnose the
+errors in ``EEPR_DATAHANDLING_ERROR_e EEPR_ch_dataerrors``.
 
 
 Other Functions
 -----------------
-``void EEPR_Trigger(void)`` triggers the statemachine of the EEPROM. ``EEPR_RETURNTYPE_e EEPR_SetStateRequest(EEPR_STATE_e state_req, EEPR_CHANNEL_ID_TYPE_e channel, uint8_t* ramaddress)`` is used to request the desired state and returns if the request was accepted. ``EEPR_ERRORTYPES_e EEPR_Init(void)`` initializes the EEPROM.
+``void EEPR_Trigger(void)`` triggers the statemachine of the EEPROM.
+``EEPR_RETURNTYPE_e EEPR_SetStateRequest(EEPR_STATE_e state_req,
+EEPR_CHANNEL_ID_TYPE_e channel, uint8_t* ramaddress)`` is used to request the
+desired state and returns if the request was accepted.
+``EEPR_ERRORTYPES_e EEPR_Init(void)`` initializes the EEPROM.
 
 
 Sources
 ~~~~~~~
++

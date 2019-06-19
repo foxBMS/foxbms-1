@@ -1,6 +1,10 @@
-.. include:: ../../../macros.rst
-
 :orphan:
+
+.. _SOX_SRC:
+
+==================
+SOX Module Sources
+==================
 
 .. contents:: :local:
 

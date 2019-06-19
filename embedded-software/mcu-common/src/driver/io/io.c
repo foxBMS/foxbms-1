@@ -52,6 +52,7 @@
 
 /*================== Includes =============================================*/
 #include "io.h"
+#include "driver_assert.h"
 
 /*================== Macros and Definitions ===============================*/
 #define IO_GET_GPIOx(_N) ((GPIO_TypeDef *)(GPIOA_BASE + (GPIOB_BASE-GPIOA_BASE)*(_N)))
@@ -79,8 +80,8 @@ static STD_RETURN_TYPE_e GPIO_Check(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO
 
 /*================== Public functions =====================================*/
 
-STD_RETURN_TYPE_e IO_Init(const IO_PIN_CFG_s *io_cfg) {
-    if (NULL_PTR == io_cfg) {
+STD_RETURN_TYPE_e IO_Init(const IO_PIN_CFG_s *io_config) {
+    if (NULL_PTR == io_config) {
         return E_NOT_OK; /* configuration error */
     }
 
@@ -93,26 +94,32 @@ STD_RETURN_TYPE_e IO_Init(const IO_PIN_CFG_s *io_cfg) {
 
     if (E_OK == clk_ok) {
         for (uint8_t i = 0; i < io_cfg_length; i++) {
-            GPIO_InitStructure.Pin = (uint16_t) (1<< ((io_cfg[i].pin) % IO_NR_OF_PINS_PER_PORT));
-            GPIO_InitStructure.Mode = io_cfg[i].mode;
-            GPIO_InitStructure.Pull = io_cfg[i].pinpull;
-            GPIO_InitStructure.Speed = io_cfg[i].speed;
+            GPIO_InitStructure.Pin = (uint16_t) (1<< ((io_config[i].pin) % IO_NR_OF_PINS_PER_PORT));
+            GPIO_InitStructure.Mode = io_config[i].mode;
+            GPIO_InitStructure.Pull = io_config[i].pinpull;
+            GPIO_InitStructure.Speed = io_config[i].speed;
 
-            if (IO_ALTERNATE_NO_ALTERNATE != io_cfg[i].alternate) {
-                GPIO_InitStructure.Alternate = io_cfg[i].alternate;
+            if (IO_ALTERNATE_NO_ALTERNATE != io_config[i].alternate) {
+                GPIO_InitStructure.Alternate = io_config[i].alternate;
             }
-            HAL_GPIO_Init(IO_GET_GPIOx(io_cfg[i].pin/IO_NR_OF_PINS_PER_PORT), &GPIO_InitStructure);
+            HAL_GPIO_Init(IO_GET_GPIOx(io_config[i].pin/IO_NR_OF_PINS_PER_PORT), &GPIO_InitStructure);
 
-            if (IO_PIN_SET  ==  io_cfg[i].initvalue) {
-                if ((IO_MODE_OUTPUT_PP  ==  io_cfg[i].mode) || (IO_MODE_OUTPUT_OD  ==  io_cfg[i].mode) ||
-                        (IO_MODE_AF_PP  ==  io_cfg[i].mode) || (IO_MODE_AF_OD  ==  io_cfg[i].mode)) {
-                    IO_WritePin(io_cfg[i].pin, IO_PIN_SET);
+            if (io_config[i].initvalue == IO_PIN_SET) {
+                /* IO pin shall be high, check if the pin supports this */
+                if ((IO_MODE_OUTPUT_PP  ==  io_config[i].mode) || (IO_MODE_OUTPUT_OD  ==  io_config[i].mode) ||
+                        (IO_MODE_AF_PP  ==  io_config[i].mode) || (IO_MODE_AF_OD  ==  io_config[i].mode)) {
+                    IO_WritePin(io_config[i].pin, IO_PIN_SET);
                 }
+            } else if ((io_config[i].initvalue == IO_PIN_RESET) ||
+                       (io_config[i].initvalue == IO_PIN_DC)) {
+                /* IO pin shall be low or state does not matter */
+                IO_WritePin(io_config[i].pin, IO_PIN_RESET);
             } else {
-                IO_WritePin(io_cfg[i].pin, IO_PIN_RESET);
+                /* configuration error, an unknown init value has been used */
+                DAS_trap();
             }
 
-            config_ok = (GPIO_Check(IO_GET_GPIOx(io_cfg[i].pin/IO_NR_OF_PINS_PER_PORT), &GPIO_InitStructure) == E_OK ? config_ok : E_NOT_OK);
+            config_ok = (GPIO_Check(IO_GET_GPIOx(io_config[i].pin/IO_NR_OF_PINS_PER_PORT), &GPIO_InitStructure) == E_OK ? config_ok : E_NOT_OK);
         }
     }
 
@@ -124,9 +131,9 @@ STD_RETURN_TYPE_e IO_Init(const IO_PIN_CFG_s *io_cfg) {
         uint8_t requestedLocks = 0;
         uint8_t successfulLocks = 0;
         for (uint8_t i = 0; i < io_cfg_length; i++) {
-            if (IO_PIN_LOCK_ENABLE  ==  io_cfg[i].pinlock) {
+            if (IO_PIN_LOCK_ENABLE  ==  io_config[i].pinlock) {
                 requestedLocks++;
-                pinLockingState = IO_LockPin(io_cfg[i].pin);
+                pinLockingState = IO_LockPin(io_config[i].pin);
             }
             if (IO_HAL_STATUS_OK == pinLockingState) {
                 successfulLocks++;

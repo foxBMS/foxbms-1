@@ -176,13 +176,14 @@ typedef struct {
  */
 typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
-    uint32_t timestamp;                         /*!< timestamp of database entry                */
-    uint32_t previous_timestamp;                /*!< timestamp of last database entry           */
-    uint16_t voltage[BS_NR_OF_BAT_CELLS];       /*!< unit: mV                                   */
-    uint32_t valid_voltPECs[BS_NR_OF_MODULES];  /*!< bitmask if PEC was okay. 0->ok, 1->error   */
-    uint32_t sumOfCells[BS_NR_OF_MODULES];      /*!< unit: mV                                   */
-    uint8_t valid_socPECs[BS_NR_OF_MODULES];   /*!< 0 -> if PEC okay; 1 -> PEC error           */
-    uint8_t state;                              /*!< for future use                             */
+    uint32_t timestamp;                         /*!< timestamp of database entry                         */
+    uint32_t previous_timestamp;                /*!< timestamp of last database entry                    */
+    uint16_t voltage[BS_NR_OF_BAT_CELLS];       /*!< unit: mV                                            */
+    uint32_t valid_volt[BS_NR_OF_MODULES];      /*!< bitmask if voltages are valid. 0->valid, 1->invalid */
+    uint32_t sumOfCells[BS_NR_OF_MODULES];      /*!< unit: mV                                            */
+    uint8_t valid_socPECs[BS_NR_OF_MODULES];    /*!< 0 -> if PEC okay; 1 -> PEC error                    */
+    uint32_t packVoltage_mV;                    /*!< uint: mV                                            */
+    uint8_t state;                              /*!< for future use                                      */
 } DATA_BLOCK_CELLVOLTAGE_s;
 
 /**
@@ -200,12 +201,12 @@ typedef struct {
  * data block struct of cell temperatures
  */
 typedef struct {
-    /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
-    uint32_t timestamp;                         /*!< timestamp of database entry                */
-    uint32_t previous_timestamp;                /*!< timestamp of last database entry           */
-    int16_t temperature[BS_NR_OF_TEMP_SENSORS];             /*!< unit: degree Celsius                       */
-    uint16_t valid_temperaturePECs[BS_NR_OF_MODULES];  /*!< bitmask if PEC was okay. 0->ok, 1->error   */
-    uint8_t state;                                          /*!< for future use                             */
+    /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock                      */
+    uint32_t timestamp;                            /*!< timestamp of database entry                             */
+    uint32_t previous_timestamp;                   /*!< timestamp of last database entry                        */
+    int16_t temperature[BS_NR_OF_TEMP_SENSORS];    /*!< unit: degree Celsius                                    */
+    uint16_t valid_temperature[BS_NR_OF_MODULES];  /*!< bitmask if temperatures are valid. 0->valid, 1->invalid */
+    uint8_t state;                                 /*!< for future use                                          */
 } DATA_BLOCK_CELLTEMPERATURE_s;
 
 /**
@@ -303,7 +304,7 @@ typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
     uint32_t timestamp;                         /*!< timestamp of database entry                */
     uint32_t previous_timestamp;                /*!< timestamp of last database entry           */
-    float current;                                         /*!< unit: mA                */
+    int32_t current;                                       /*!< unit: mA                */
     float voltage[BS_NR_OF_VOLTAGES_FROM_CURRENT_SENSOR];  /*!< unit: mV                */
     float temperature;                                     /*!< unit: 0.1&deg;C             */
     float power;                                           /*!< unit: W                */
@@ -431,7 +432,6 @@ typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
     uint32_t timestamp;                              /*!< timestamp of database entry      */
     uint32_t previous_timestamp;                     /*!< timestamp of last database entry */
-    uint8_t general_error;                           /*!< 0 -> no error, 1 -> error        */
     uint8_t currentsensorresponding;                 /*!< 0 -> no error, 1 -> error        */
     uint8_t main_plus;                               /*!< 0 -> no error, 1 -> error        */
     uint8_t main_minus;                              /*!< 0 -> no error, 1 -> error        */
@@ -449,9 +449,11 @@ typedef struct {
     uint8_t open_wire;                               /*!< 0 -> no error, 1 -> error        */
     uint8_t can_timing;                              /*!< 0 -> no error, 1 -> error        */
     uint8_t can_timing_cc;                           /*!< 0 -> no error, 1 -> error        */
-    uint8_t can_cc_used;                             /*!< 0 -> not present, 1 -> present   */
     uint8_t mcuDieTemperature;                       /*!< 0 -> no error, 1 -> error        */
     uint8_t coinCellVoltage;                         /*!< 0 -> no error, 1 -> error        */
+    uint8_t plausibilityCheck;                       /*!< 0 -> no error, else: error       */
+    uint8_t deepDischargeDetected;                   /*!< 0 -> no error, 1 -> error        */
+    uint8_t currentOnOpenPowerline;                  /*!< 0 -> no error, 1 -> error        */
 } DATA_BLOCK_ERRORSTATE_s;
 
 
@@ -459,15 +461,18 @@ typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock  */
     uint32_t timestamp;                     /*!< timestamp of database entry                */
     uint32_t previous_timestamp;            /*!< timestamp of last database entry           */
-    uint8_t general_MSL;                    /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
     uint8_t over_voltage;                   /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
     uint8_t under_voltage;                  /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
     uint8_t over_temperature_charge;        /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
     uint8_t over_temperature_discharge;     /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
     uint8_t under_temperature_charge;       /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
     uint8_t under_temperature_discharge;    /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
-    uint8_t over_current_charge;            /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
-    uint8_t over_current_discharge;         /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
+    uint8_t over_current_charge_cell;       /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
+    uint8_t over_current_charge_pl0;        /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
+    uint8_t over_current_charge_pl1;        /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
+    uint8_t over_current_discharge_cell;    /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
+    uint8_t over_current_discharge_pl0;     /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
+    uint8_t over_current_discharge_pl1;     /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
     uint8_t pcb_over_temperature;           /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
     uint8_t pcb_under_temperature;          /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
 } DATA_BLOCK_MSL_FLAG_s;
@@ -477,15 +482,18 @@ typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock  */
     uint32_t timestamp;                     /*!< timestamp of database entry                */
     uint32_t previous_timestamp;            /*!< timestamp of last database entry           */
-    uint8_t general_RSL;                    /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
     uint8_t over_voltage;                   /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
     uint8_t under_voltage;                  /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
     uint8_t over_temperature_charge;        /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
     uint8_t over_temperature_discharge;     /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
     uint8_t under_temperature_charge;       /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
     uint8_t under_temperature_discharge;    /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
-    uint8_t over_current_charge;            /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
-    uint8_t over_current_discharge;         /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
+    uint8_t over_current_charge_cell;       /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
+    uint8_t over_current_charge_pl0;        /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
+    uint8_t over_current_charge_pl1;        /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
+    uint8_t over_current_discharge_cell;    /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
+    uint8_t over_current_discharge_pl0;     /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
+    uint8_t over_current_discharge_pl1;     /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
     uint8_t pcb_over_temperature;           /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
     uint8_t pcb_under_temperature;          /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
 } DATA_BLOCK_RSL_FLAG_s;
@@ -495,15 +503,18 @@ typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
     uint32_t timestamp;                     /*!< timestamp of database entry                */
     uint32_t previous_timestamp;            /*!< timestamp of last database entry           */
-    uint8_t general_MOL;                    /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
     uint8_t over_voltage;                   /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
     uint8_t under_voltage;                  /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
     uint8_t over_temperature_charge;        /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
     uint8_t over_temperature_discharge;     /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
     uint8_t under_temperature_charge;       /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
     uint8_t under_temperature_discharge;    /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
-    uint8_t over_current_charge;            /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
-    uint8_t over_current_discharge;         /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
+    uint8_t over_current_charge_cell;       /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
+    uint8_t over_current_charge_pl0;        /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
+    uint8_t over_current_charge_pl1;        /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
+    uint8_t over_current_discharge_cell;    /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
+    uint8_t over_current_discharge_pl0;     /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
+    uint8_t over_current_discharge_pl1;     /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
     uint8_t pcb_over_temperature;           /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
     uint8_t pcb_under_temperature;          /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
 } DATA_BLOCK_MOL_FLAG_s;
@@ -562,10 +573,11 @@ typedef struct {
  */
 typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
-    uint32_t timestamp;                                                       /*!< timestamp of database entry                */
-    uint32_t previous_timestamp;                                              /*!< timestamp of last database entry           */
-    uint16_t gpiovoltage[BS_NR_OF_MODULES * BS_NR_OF_GPIOS_PER_MODULE];       /*!< unit: mV                                   */
-    uint8_t state;                                                            /*!< for future use                             */
+    uint32_t timestamp;                                                  /*!< timestamp of database entry                         */
+    uint32_t previous_timestamp;                                         /*!< timestamp of last database entry                    */
+    uint16_t gpiovoltage[BS_NR_OF_MODULES * BS_NR_OF_GPIOS_PER_MODULE];  /*!< unit: mV                                            */
+    uint16_t valid_gpiovoltages[BS_NR_OF_MODULES];                       /*!< bitmask if voltages are valid. 0->valid, 1->invalid */
+    uint8_t state;                                                       /*!< for future use                                      */
 } DATA_BLOCK_ALLGPIOVOLTAGE_s;
 
 /**

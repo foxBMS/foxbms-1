@@ -42,8 +42,13 @@ import logging
 import os
 import sys
 import time
-import yaml
 import stm32flasher
+import yaml
+# try to use FullLoader (PyYAML5.1+ and fall back to normale Loader)
+try:
+    from yaml import FullLoader as YAMLLoader
+except ImportError:
+    from yaml import Loader as YAMLLoader
 
 
 class FoxFlasher(stm32flasher.STM32Flasher):
@@ -172,7 +177,7 @@ This program has been released under the conditions of the BSD 3-Clause License.
         and creates the variables with the values from the configfile
     '''
     with open(args.config, 'r') as stream:
-        yaml_data = yaml.load(stream)
+        yaml_data = yaml.load(stream, Loader=YAMLLoader)
 
     start_address_flashmemory = \
         yaml_data['Controller'][0]['start_address_flashmemory']

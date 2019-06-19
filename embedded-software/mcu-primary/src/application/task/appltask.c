@@ -52,6 +52,8 @@
 /*================== Includes =============================================*/
 #include "appltask.h"
 
+#include "runtime_stats_light.h"
+
 /*================== Macros and Definitions ===============================*/
 
 /*================== Constant and Variable Definitions ====================*/
@@ -62,14 +64,86 @@
 static TaskHandle_t appl_handle_tsk_1ms;
 
 /**
+ * @brief Task Struct for #appl_handle_tsk_1ms.
+ */
+StaticTask_t xAppl_1ms_TaskStruct;
+
+/**
+ * Stack of #appl_handle_tsk_1ms.
+ */
+StackType_t xAppl_1ms_Stack[ APPL_TSK_C_1MS_STACKSIZE ];
+
+/**
  *  Definition of task handle 10 milliseconds task
  */
 static TaskHandle_t appl_handle_tsk_10ms;
 
 /**
+ * @brief Task Struct for #appl_handle_tsk_10ms.
+ */
+StaticTask_t xAppl_10ms_TaskStruct;
+
+/**
+ * Stack of #appl_handle_tsk_10ms.
+ */
+StackType_t xAppl_10ms_Stack[ APPL_TSK_C_10MS_STACKSIZE ];
+
+/**
  *  Definition of task handle 100 milliseconds task
  */
 static TaskHandle_t appl_handle_tsk_100ms;
+
+/**
+ * @brief Task Struct for #appl_handle_tsk_100ms.
+ */
+StaticTask_t xAppl_100ms_TaskStruct;
+
+/**
+ * Stack of #appl_handle_tsk_100ms.
+ */
+StackType_t xAppl_100ms_Stack[ APPL_TSK_C_100MS_STACKSIZE ];
+
+/**
+ *  Definition of task handle aperiodic
+ */
+static TaskHandle_t appl_handle_tsk_aperiodic;
+
+/**
+ * @brief Task Struct for #appl_handle_tsk_aperiodic.
+ */
+StaticTask_t xAppl_aperiodic_TaskStruct;
+
+/**
+ * Stack of #appl_handle_tsk_aperiodic.
+ */
+StackType_t xAppl_aperiodic_Stack[ APPL_TSK_APERIODIC_STACKSIZE ];
+
+
+#if BUILD_DIAG_ENABLE_TASK_STATISTICS
+static TASK_METRICS_s appl_metric_tsk_1ms = {
+        .call_period = 0,
+        .jitter = 0,
+        .lastCalltime = 0,
+};
+
+static TASK_METRICS_s appl_metric_tsk_10ms = {
+        .call_period = 0,
+        .jitter = 0,
+        .lastCalltime = 0,
+};
+
+static TASK_METRICS_s appl_metric_tsk_100ms = {
+        .call_period = 0,
+        .jitter = 0,
+        .lastCalltime = 0,
+};
+
+static TASK_METRICS_s appl_metric_tsk_aperiodic = {
+        .call_period = 0,
+        .jitter = 0,
+        .lastCalltime = 0,
+};
+#endif /* BUILD_DIAG_ENABLE_TASK_STATISTICS */
 
 /*================== Function Prototypes ==================================*/
 
@@ -78,31 +152,36 @@ static TaskHandle_t appl_handle_tsk_100ms;
 
 void APPL_CreateTask(void) {
     /* Cyclic Task 1ms */
-    if (xTaskCreate((TaskFunction_t)APPL_TSK_Cyclic_1ms, (const portCHAR *)"APPL_TSK_Cyclic_1ms",
-            appl_tskdef_cyclic_1ms.Stacksize, NULL, appl_tskdef_cyclic_1ms.Priority,
-                &appl_handle_tsk_1ms) != pdPASS)  {
-      while (1) {
-          /* TODO: explain why infinite loop */
-      }
-    }
+    appl_handle_tsk_1ms = xTaskCreateStatic(
+            (TaskFunction_t) APPL_TSK_Cyclic_1ms,
+            (const portCHAR *) "APPL_TSK_Cyclic_1ms",
+            appl_tskdef_cyclic_1ms.Stacksize, NULL,
+            appl_tskdef_cyclic_1ms.Priority, xAppl_1ms_Stack,
+            &xAppl_1ms_TaskStruct);
 
     /* Cyclic Task 10ms */
-    if (xTaskCreate((TaskFunction_t)APPL_TSK_Cyclic_10ms, (const portCHAR *)"APPL_TSK_Cyclic_10ms",
-            appl_tskdef_cyclic_10ms.Stacksize, NULL, appl_tskdef_cyclic_10ms.Priority,
-                &appl_handle_tsk_10ms) != pdPASS)  {
-      while (1) {
-          /* TODO: explain why infinite loop */
-      }
-    }
+    appl_handle_tsk_10ms = xTaskCreateStatic(
+            (TaskFunction_t) APPL_TSK_Cyclic_10ms,
+            (const portCHAR *) "APPL_TSK_Cyclic_10ms",
+            appl_tskdef_cyclic_10ms.Stacksize, NULL,
+            appl_tskdef_cyclic_10ms.Priority, xAppl_10ms_Stack,
+            &xAppl_10ms_TaskStruct);
 
     /* Cyclic Task 100ms */
-    if (xTaskCreate((TaskFunction_t)APPL_TSK_Cyclic_100ms, (const portCHAR *)"APPL_TSK_Cyclic_100ms",
-            appl_tskdef_cyclic_100ms.Stacksize, NULL, appl_tskdef_cyclic_100ms.Priority,
-                &appl_handle_tsk_100ms) != pdPASS)  {
-      while (1) {
-          /* TODO: explain why infinite loop */
-      }
-    }
+    appl_handle_tsk_100ms = xTaskCreateStatic(
+            (TaskFunction_t) APPL_TSK_Cyclic_100ms,
+            (const portCHAR *) "APPL_TSK_Cyclic_100ms",
+            appl_tskdef_cyclic_100ms.Stacksize, NULL,
+            appl_tskdef_cyclic_100ms.Priority, xAppl_100ms_Stack,
+            &xAppl_100ms_TaskStruct);
+
+    /* Aperiodic Task */
+    appl_handle_tsk_aperiodic = xTaskCreateStatic(
+            (TaskFunction_t) APPL_TSK_Aperiodic,
+            (const portCHAR *) "APPL_TSK_Aperiodic",
+            appl_tskdef_aperiodic.Stacksize, NULL,
+            appl_tskdef_aperiodic.Priority, xAppl_aperiodic_Stack,
+            &xAppl_aperiodic_TaskStruct);
 }
 
 void APPL_CreateMutex(void) {
@@ -123,7 +202,13 @@ void APPL_TSK_Cyclic_1ms(void) {
     while (1) {
         uint32_t currentTime = OS_getOSSysTick();
         APPL_Cyclic_1ms();
+#if BUILD_DIAG_ENABLE_TASK_STATISTICS
+        uint32_t time_entry_into_wait = OS_getOSSysTick();
+#endif /* BUILD_DIAG_ENABLE_TASK_STATISTICS */
         OS_taskDelayUntil(&currentTime, appl_tskdef_cyclic_1ms.CycleTime);
+#if BUILD_DIAG_ENABLE_TASK_STATISTICS
+        diag_calc_runtime_stats(&appl_metric_tsk_1ms, appl_tskdef_cyclic_1ms.CycleTime, time_entry_into_wait);
+#endif /* BUILD_DIAG_ENABLE_TASK_STATISTICS */
     }
 }
 
@@ -136,7 +221,13 @@ void APPL_TSK_Cyclic_10ms(void) {
     while (1) {
         uint32_t currentTime = OS_getOSSysTick();
         APPL_Cyclic_10ms();
+#if BUILD_DIAG_ENABLE_TASK_STATISTICS
+        uint32_t time_entry_into_wait = OS_getOSSysTick();
+#endif /* BUILD_DIAG_ENABLE_TASK_STATISTICS */
         OS_taskDelayUntil(&currentTime, appl_tskdef_cyclic_10ms.CycleTime);
+#if BUILD_DIAG_ENABLE_TASK_STATISTICS
+        diag_calc_runtime_stats(&appl_metric_tsk_10ms, appl_tskdef_cyclic_10ms.CycleTime, time_entry_into_wait);
+#endif /* BUILD_DIAG_ENABLE_TASK_STATISTICS */
     }
 }
 
@@ -149,6 +240,31 @@ void APPL_TSK_Cyclic_100ms(void) {
     while (1) {
         uint32_t currentTime = OS_getOSSysTick();
         APPL_Cyclic_100ms();
+#if BUILD_DIAG_ENABLE_TASK_STATISTICS
+        uint32_t time_entry_into_wait = OS_getOSSysTick();
+#endif /* BUILD_DIAG_ENABLE_TASK_STATISTICS */
         OS_taskDelayUntil(&currentTime, appl_tskdef_cyclic_100ms.CycleTime);
+#if BUILD_DIAG_ENABLE_TASK_STATISTICS
+        diag_calc_runtime_stats(&appl_metric_tsk_100ms, appl_tskdef_cyclic_100ms.CycleTime, time_entry_into_wait);
+#endif /* BUILD_DIAG_ENABLE_TASK_STATISTICS */
     }
+}
+
+void APPL_TSK_Aperiodic(void) {
+  while (os_boot != OS_SYSTEM_RUNNING) {
+  }
+
+  OS_taskDelayUntil(&os_schedulerstarttime, appl_tskdef_aperiodic.Phase);
+
+  while (1) {
+      uint32_t currentTime = OS_getOSSysTick();
+      APPL_Aperiodic();
+#if BUILD_DIAG_ENABLE_TASK_STATISTICS
+        uint32_t time_entry_into_wait = OS_getOSSysTick();
+#endif /* BUILD_DIAG_ENABLE_TASK_STATISTICS */
+      OS_taskDelayUntil(&currentTime, appl_tskdef_aperiodic.CycleTime);
+#if BUILD_DIAG_ENABLE_TASK_STATISTICS
+      diag_calc_runtime_stats(&appl_metric_tsk_aperiodic, appl_tskdef_aperiodic.CycleTime, time_entry_into_wait);
+#endif /* BUILD_DIAG_ENABLE_TASK_STATISTICS */
+  }
 }

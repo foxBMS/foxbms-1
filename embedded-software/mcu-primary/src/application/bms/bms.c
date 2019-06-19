@@ -61,6 +61,7 @@
 #include "ltc_cfg.h"
 #include "meas.h"
 #include "os.h"
+#include "plausibility.h"
 
 
 /*================== Macros and Definitions ===============================*/
@@ -85,8 +86,16 @@ static BMS_STATE_s bms_state = {
     .lastsubstate           = 0,
     .triggerentry           = 0,
     .ErrRequestCounter      = 0,
+    .initFinished           = E_NOT_OK,
     .counter                = 0,
 };
+
+static DATA_BLOCK_CELLVOLTAGE_s bms_tab_cellvolt;
+static DATA_BLOCK_CURRENT_SENSOR_s bms_tab_cur_sensor;
+static DATA_BLOCK_MINMAX_s bms_tab_minmax;
+static DATA_BLOCK_OPENWIRE_s bms_ow_tab;
+static DATA_BLOCK_SOF_s bms_tab_sof;
+
 
 /*================== Function Prototypes ==================================*/
 
@@ -96,6 +105,7 @@ static BMS_STATE_REQUEST_e BMS_TransferStateRequest(void);
 static uint8_t BMS_CheckReEntrance(void);
 static uint8_t BMS_CheckCANRequests(void);
 static STD_RETURN_TYPE_e BMS_CheckAnyErrorFlagSet(void);
+static void BMS_GetMeasurementValues(void);
 static void BMS_CheckVoltages(void);
 static void BMS_CheckTemperatures(void);
 static void BMS_CheckCurrent(void);
@@ -147,6 +157,12 @@ static BMS_STATE_REQUEST_e BMS_GetStateRequest(void) {
 BMS_STATEMACH_e BMS_GetState(void) {
     return (bms_state.state);
 }
+
+
+STD_RETURN_TYPE_e BMS_GetInitializationState(void) {
+    return (bms_state.initFinished);
+}
+
 
 /**
  * @brief   transfers the current state request to the state machine.
@@ -223,11 +239,15 @@ void BMS_Trigger(void) {
     DIAG_SysMonNotify(DIAG_SYSMON_BMS_ID, 0);  /* task is running, state = ok */
 
     if (bms_state.state != BMS_STATEMACH_UNINITIALIZED) {
+        BMS_GetMeasurementValues();
         BMS_CheckVoltages();
         BMS_CheckTemperatures();
         BMS_CheckCurrent();
         BMS_CheckSlaveTemperatures();
         BMS_CheckOpenSenseWire();
+
+        /* Plausibility check */
+        PL_CheckPackvoltage(&bms_tab_cellvolt, &bms_tab_cur_sensor);
     }
     /* Check re-entrance of function */
     if (BMS_CheckReEntrance()) {
@@ -263,7 +283,6 @@ void BMS_Trigger(void) {
         /****************************INITIALIZATION**********************************/
         case BMS_STATEMACH_INITIALIZATION:
             BMS_SAVELASTSTATES();
-            /* CONT_SetStateRequest(CONT_STATE_INIT_REQUEST); */
 
             bms_state.timer = BMS_STATEMACH_LONGTIME_MS;
             bms_state.state = BMS_STATEMACH_INITIALIZED;
@@ -274,6 +293,7 @@ void BMS_Trigger(void) {
         /****************************INITIALIZED*************************************/
         case BMS_STATEMACH_INITIALIZED:
             BMS_SAVELASTSTATES();
+            bms_state.initFinished = E_OK;
             bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
             bms_state.state = BMS_STATEMACH_IDLE;
             bms_state.substate = BMS_ENTRY;
@@ -691,6 +711,20 @@ void BMS_Trigger(void) {
 
 /*================== Static functions =====================================*/
 /*
+ * @brief   Get latest database entries for static module variables
+ */
+static void BMS_GetMeasurementValues(void) {
+    DB_ReadBlock(&bms_tab_cellvolt, DATA_BLOCK_ID_CELLVOLTAGE);
+    DB_ReadBlock(&bms_tab_cur_sensor, DATA_BLOCK_ID_CURRENT_SENSOR);
+    DB_ReadBlock(&bms_ow_tab, DATA_BLOCK_ID_OPEN_WIRE);
+    DB_ReadBlock(&bms_tab_minmax, DATA_BLOCK_ID_MINMAX);
+#if MEAS_TEST_CELL_SOF_LIMITS == TRUE
+    /* Database entry only needed if current is checked against SOF values */
+    DB_ReadBlock(&bms_tab_sof, DATA_BLOCK_ID_SOF);
+#endif /* MEAS_TEST_CELL_SOF_LIMITS == TRUE */
+}
+
+/*
  * @brief   Checks the state requests made to the BMS state machine
  *
  * @details Checks of the state request in the database and sets this value as return value
@@ -724,59 +758,62 @@ static uint8_t BMS_CheckCANRequests(void) {
  * @details verify for cell voltage measurements (U), if minimum and maximum values are out of range
  */
 static void BMS_CheckVoltages(void) {
-    DATA_BLOCK_MINMAX_s minmax;
-
-    DB_ReadBlock(&minmax, DATA_BLOCK_ID_MINMAX);
-    uint16_t vol_max = minmax.voltage_max;
-    uint16_t vol_min = minmax.voltage_min;
-
+    uint16_t vol_max = bms_tab_minmax.voltage_max;
+    uint16_t vol_min = bms_tab_minmax.voltage_min;
+    DIAG_RETURNTYPE_e retvalUndervoltMSL = DIAG_HANDLER_RETURN_ERR_OCCURRED;
 
     if (vol_max >= BC_VOLTMAX_MOL) {
         /* Over voltage maximum operating limit violated */
-        DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MOL, DIAG_EVENT_NOK, 0, NULL_PTR);
+        DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MOL, DIAG_EVENT_NOK, 0);
         if (vol_max >= BC_VOLTMAX_RSL) {
             /* Over voltage recommended safety limit violated */
-            DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_RSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_RSL, DIAG_EVENT_NOK, 0);
             if (vol_max >= BC_VOLTMAX_MSL) {
                 /* Over voltage maximum safety limit violated */
-                DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+                DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MSL, DIAG_EVENT_NOK, 0);
             }
         }
     }
     if (vol_max < BC_VOLTMAX_MSL) {
         /* over voltage maximum safety limit NOT violated */
-        DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
+        DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MSL, DIAG_EVENT_OK, 0);
         if (vol_max < BC_VOLTMAX_RSL) {
             /* over voltage recommended safety limit NOT violated */
-            DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_RSL, DIAG_EVENT_OK, 0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_RSL, DIAG_EVENT_OK, 0);
             if (vol_max < BC_VOLTMAX_MOL) {
                 /* over voltage maximum operating limit NOT violated */
-                DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MOL, DIAG_EVENT_OK, 0, NULL_PTR);
+                DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MOL, DIAG_EVENT_OK, 0);
             }
         }
     }
 
     if (vol_min <= BC_VOLTMIN_MOL) {
         /* Under voltage maximum operating limit violated */
-        DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MOL, DIAG_EVENT_NOK, 0, NULL_PTR);
+        DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MOL, DIAG_EVENT_NOK, 0);
         if (vol_min <= BC_VOLTMIN_RSL) {
             /* Under voltage recommended safety limit violated */
-            DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_RSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_RSL, DIAG_EVENT_NOK, 0);
             if (vol_min <= BC_VOLTMIN_MSL) {
                 /* Under voltage maximum safety limit violated */
-                DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+                retvalUndervoltMSL = DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MSL, DIAG_EVENT_NOK, 0);
+
+                /* If under voltage flag is set and deep-discharge voltage is violated */
+                if ((retvalUndervoltMSL == DIAG_HANDLER_RETURN_ERR_OCCURRED) &&
+                        (vol_min <= BC_VOLT_DEEP_DISCHARGE)) {
+                    DIAG_Handler(DIAG_CH_DEEP_DISCHARGE_DETECTED, DIAG_EVENT_NOK, 0);
+                }
             }
         }
     }
     if (vol_min > BC_VOLTMIN_MSL) {
         /* under voltage maximum safety limit NOT violated */
-        DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
+        DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MSL, DIAG_EVENT_OK, 0);
         if (vol_min > BC_VOLTMIN_RSL) {
             /* under voltage recommended safety limit NOT violated */
-            DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_RSL, DIAG_EVENT_OK, 0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_RSL, DIAG_EVENT_OK, 0);
             if (vol_min > BC_VOLTMIN_MOL) {
                 /* under voltage maximum operating limit NOT violated */
-                DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MOL, DIAG_EVENT_OK, 0, NULL_PTR);
+                DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MOL, DIAG_EVENT_OK, 0);
             }
         }
     }
@@ -789,40 +826,34 @@ static void BMS_CheckVoltages(void) {
  * @details verify for cell temperature measurements (T), if minimum and maximum values are out of range
  */
 static void BMS_CheckTemperatures(void) {
-    DATA_BLOCK_MINMAX_s minmax;
-    DATA_BLOCK_CURRENT_SENSOR_s curr_tab;
-
-    DB_ReadBlock(&curr_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
-    DB_ReadBlock(&minmax, DATA_BLOCK_ID_MINMAX);
-
-    float i_current = curr_tab.current;
-    uint16_t temp_min = minmax.temperature_min;
-    uint16_t temp_max = minmax.temperature_max;
+    int32_t i_current = bms_tab_cur_sensor.current;
+    int16_t temp_min = bms_tab_minmax.temperature_min;
+    int16_t temp_max = bms_tab_minmax.temperature_max;
 
     /* Over temperature check */
     if (BS_CheckCurrentValue_Direction(i_current) == BS_CURRENT_DISCHARGE) {
         /* Discharge */
         if (temp_max >= BC_TEMPMAX_DISCHARGE_MOL) {
             /* Over temperature maximum operating limit violated*/
-            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MOL, DIAG_EVENT_NOK, 0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MOL, DIAG_EVENT_NOK, 0);
             if (temp_max >= BC_TEMPMAX_DISCHARGE_RSL) {
                 /* Over temperature recommended safety limit violated*/
-                DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_RSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+                DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_RSL, DIAG_EVENT_NOK, 0);
                 if (temp_max >= BC_TEMPMAX_DISCHARGE_MSL) {
                     /* Over temperature maximum safety limit violated */
-                    DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_NOK, 0);
                 }
             }
         }
         if (temp_max < BC_TEMPMAX_DISCHARGE_MSL) {
             /* over temperature maximum safety limit NOT violated */
-            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_OK, 0);
             if (temp_max < BC_TEMPMAX_DISCHARGE_RSL) {
                 /* over temperature recommended safety limit NOT violated */
-                DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_RSL, DIAG_EVENT_OK, 0, NULL_PTR);
+                DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_RSL, DIAG_EVENT_OK, 0);
                 if (temp_max < BC_TEMPMAX_DISCHARGE_MOL) {
                     /* over temperature maximum operating limit NOT violated */
-                    DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MOL, DIAG_EVENT_OK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MOL, DIAG_EVENT_OK, 0);
                 }
             }
         }
@@ -831,25 +862,25 @@ static void BMS_CheckTemperatures(void) {
         /* Charge */
         if (temp_max >= BC_TEMPMAX_CHARGE_MOL) {
             /* Over temperature maximum operating limit violated */
-            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MOL, DIAG_EVENT_NOK, 0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MOL, DIAG_EVENT_NOK, 0);
             if (temp_max >= BC_TEMPMAX_CHARGE_RSL) {
                 /* Over temperature recommended safety limit violated */
-                DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_RSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+                DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_RSL, DIAG_EVENT_NOK, 0);
                 /* Over temperature maximum safety limit violated */
                 if (temp_max >= BC_TEMPMAX_CHARGE_MSL) {
-                    DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_NOK, 0);
                 }
             }
         }
         if (temp_max < BC_TEMPMAX_CHARGE_MSL) {
             /* over temperature maximum safety limit NOT violated */
-            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK, 0);
             if (temp_max < BC_TEMPMAX_CHARGE_RSL) {
                 /* over temperature recommended safety limit NOT violated */
-                DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_RSL, DIAG_EVENT_OK, 0, NULL_PTR);
+                DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_RSL, DIAG_EVENT_OK, 0);
                 if (temp_max < BC_TEMPMAX_CHARGE_MOL) {
                     /* over temperature maximum operating limit NOT violated*/
-                    DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MOL, DIAG_EVENT_OK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MOL, DIAG_EVENT_OK, 0);
                 }
             }
         }
@@ -860,25 +891,25 @@ static void BMS_CheckTemperatures(void) {
         /* Discharge */
         if (temp_min <= BC_TEMPMIN_DISCHARGE_MOL) {
             /* Under temperature maximum operating limit violated */
-            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MOL, DIAG_EVENT_NOK, 0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MOL, DIAG_EVENT_NOK, 0);
             if (temp_min <= BC_TEMPMIN_DISCHARGE_RSL) {
                 /* Under temperature recommended safety limit violated*/
-                DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_RSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+                DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_RSL, DIAG_EVENT_NOK, 0);
                 if (temp_min <= BC_TEMPMIN_DISCHARGE_MSL) {
                     /* Under temperature maximum safety limit violated */
-                    DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_NOK, 0);
                 }
             }
         }
         if (temp_min > BC_TEMPMIN_DISCHARGE_MSL) {
             /* under temperature maximum safety limit NOT violated */
-            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_OK, 0);
             if (temp_min > BC_TEMPMIN_DISCHARGE_RSL) {
                 /* under temperature recommended safety limit NOT violated */
-                DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_RSL, DIAG_EVENT_OK, 0, NULL_PTR);
+                DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_RSL, DIAG_EVENT_OK, 0);
                 if (temp_min > BC_TEMPMIN_DISCHARGE_MOL) {
                     /* under temperature maximum operating limit NOT violated*/
-                    DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MOL, DIAG_EVENT_OK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MOL, DIAG_EVENT_OK, 0);
                 }
             }
         }
@@ -886,25 +917,25 @@ static void BMS_CheckTemperatures(void) {
         /* Charge */
         if (temp_min <= BC_TEMPMIN_CHARGE_MOL) {
             /* Under temperature maximum operating limit violated */
-            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MOL, DIAG_EVENT_NOK, 0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MOL, DIAG_EVENT_NOK, 0);
             if (temp_min <= BC_TEMPMIN_CHARGE_RSL) {
                 /* Under temperature recommended safety limit violated */
-                DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_RSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+                DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_RSL, DIAG_EVENT_NOK, 0);
                 if (temp_min <= BC_TEMPMIN_CHARGE_MSL) {
                     /* Under temperature maximum safety limit violated */
-                    DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_NOK, 0);
                 }
             }
         }
         if (temp_min > BC_TEMPMIN_CHARGE_MSL) {
             /* under temperature maximum safety limit NOT violated */
-            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK, 0);
             if (temp_min > BC_TEMPMIN_CHARGE_RSL) {
                 /* under temperature recommended safety limit NOT violated */
-                DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_RSL, DIAG_EVENT_OK, 0, NULL_PTR);
+                DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_RSL, DIAG_EVENT_OK, 0);
                 if (temp_min > BC_TEMPMIN_CHARGE_MOL) {
                     /* under temperature maximum operating limit NOT violated*/
-                    DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MOL, DIAG_EVENT_OK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MOL, DIAG_EVENT_OK, 0);
                 }
             }
         }
@@ -919,86 +950,274 @@ static void BMS_CheckTemperatures(void) {
  * @details verify for cell current measurements (I), if minimum and maximum values are out of range
  */
 static void BMS_CheckCurrent(void) {
-    DATA_BLOCK_SOF_s sof_tab;
-    DATA_BLOCK_CURRENT_SENSOR_s curr_tab;
-
-    DB_ReadBlock(&curr_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
-
-    float i_current = curr_tab.current;
-
-    float i_current_abs = 0.0;
-    if (i_current < 0.0) {
+    int32_t i_current = bms_tab_cur_sensor.current;
+    uint32_t i_current_abs = 0;
+    BS_CURRENT_DIRECTION_e i_dir = BS_CheckCurrentValue_Direction(i_current);
+    if (i_current < 0) {
         i_current_abs = - i_current;
     } else {
         i_current_abs = i_current;
     }
 
-#if MEAS_TEST_CELL_SOF_LIMITS == TRUE
-    /* Database entry only needed if current is checked against SOF values */
-    DB_ReadBlock(&sof_tab, DATA_BLOCK_ID_SOF);
+    /* initialize variables with default values */
+    uint32_t batsys_charge_limit_msl = 0;
+    DIAG_CH_ID_e batsys_charge_limit_diag_msl = DIAG_CH_OVERCURRENT_CHARGE_PL0_MSL;
+    uint32_t batsys_discharge_limit_msl = 0;
+    DIAG_CH_ID_e batsys_discharge_limit_diag_msl = DIAG_CH_OVERCURRENT_DISCHARGE_PL0_MSL;
+    uint32_t batsys_charge_limit_rsl = 0;
+    DIAG_CH_ID_e batsys_charge_limit_diag_rsl = DIAG_CH_OVERCURRENT_CHARGE_PL0_RSL;
+    uint32_t batsys_discharge_limit_rsl = 0;
+    DIAG_CH_ID_e batsys_discharge_limit_diag_rsl = DIAG_CH_OVERCURRENT_DISCHARGE_PL0_RSL;
+    uint32_t batsys_charge_limit_mol = 0;
+    DIAG_CH_ID_e batsys_charge_limit_diag_mol = DIAG_CH_OVERCURRENT_CHARGE_PL0_MOL;
+    uint32_t batsys_discharge_limit_mol = 0;
+    DIAG_CH_ID_e batsys_discharge_limit_diag_mol = DIAG_CH_OVERCURRENT_DISCHARGE_PL0_MOL;
 
-    if (((i_current < (-1000*(sof_tab.sof_continuous_charge))) ||
-            (i_current > (1000*sof_tab.sof_continuous_discharge)))) {
-        retVal = FALSE;
-    }
+    /* get active power line */
+    CONT_POWER_LINE_e powerline = CONT_GetActivePowerLine();
+
+    /* set limits for batterysystem according to current power line */
+    if (powerline == CONT_POWER_LINE_0) {
+        batsys_charge_limit_msl = BS_CURRENTMAX_CHARGE_PL0_MSL_mA;
+        batsys_charge_limit_diag_msl = DIAG_CH_OVERCURRENT_CHARGE_PL0_MSL;
+        batsys_discharge_limit_msl = BS_CURRENTMAX_DISCHARGE_PL0_MSL_mA;
+        batsys_discharge_limit_diag_msl = DIAG_CH_OVERCURRENT_DISCHARGE_PL0_MSL;
+
+        batsys_charge_limit_rsl = BS_CURRENTMAX_CHARGE_PL0_RSL_mA;
+        batsys_charge_limit_diag_rsl = DIAG_CH_OVERCURRENT_CHARGE_PL0_RSL;
+        batsys_discharge_limit_rsl = BS_CURRENTMAX_DISCHARGE_PL0_RSL_mA;
+        batsys_discharge_limit_diag_rsl = DIAG_CH_OVERCURRENT_DISCHARGE_PL0_RSL;
+
+        batsys_charge_limit_mol = BS_CURRENTMAX_CHARGE_PL0_MOL_mA;
+        batsys_charge_limit_diag_mol = DIAG_CH_OVERCURRENT_CHARGE_PL0_MOL;
+        batsys_discharge_limit_mol = BS_CURRENTMAX_DISCHARGE_PL0_MOL_mA;
+        batsys_discharge_limit_diag_mol = DIAG_CH_OVERCURRENT_DISCHARGE_PL0_MOL;
+#if BS_SEPARATE_POWERLINES == 1
+    } else if (powerline == CONT_POWER_LINE_1) {
+        batsys_charge_limit_msl = BS_CURRENTMAX_CHARGE_PL1_MSL_mA;
+        batsys_charge_limit_diag_msl = DIAG_CH_OVERCURRENT_CHARGE_PL1_MSL;
+        batsys_discharge_limit_msl = BS_CURRENTMAX_DISCHARGE_PL1_MSL_mA;
+        batsys_discharge_limit_diag_msl = DIAG_CH_OVERCURRENT_DISCHARGE_PL1_MSL;
+
+        batsys_charge_limit_rsl = BS_CURRENTMAX_CHARGE_PL1_RSL_mA;
+        batsys_charge_limit_diag_rsl = DIAG_CH_OVERCURRENT_CHARGE_PL1_RSL;
+        batsys_discharge_limit_rsl = BS_CURRENTMAX_DISCHARGE_PL1_RSL_mA;
+        batsys_discharge_limit_diag_rsl = DIAG_CH_OVERCURRENT_DISCHARGE_PL1_RSL;
+
+        batsys_charge_limit_mol = BS_CURRENTMAX_CHARGE_PL1_MOL_mA;
+        batsys_charge_limit_diag_mol = DIAG_CH_OVERCURRENT_CHARGE_PL1_MOL;
+        batsys_discharge_limit_mol = BS_CURRENTMAX_DISCHARGE_PL1_MOL_mA;
+        batsys_discharge_limit_diag_mol = DIAG_CH_OVERCURRENT_DISCHARGE_PL1_MOL;
 #endif
+    } else {
+        /* this is a configuration error, assume safe default */
+        batsys_charge_limit_msl = BS_CS_THRESHOLD_NO_CURRENT_mA;
+        batsys_charge_limit_diag_msl = DIAG_CH_OVERCURRENT_PL_NONE;
+        batsys_discharge_limit_msl = BS_CS_THRESHOLD_NO_CURRENT_mA;
+        batsys_discharge_limit_diag_msl = DIAG_CH_OVERCURRENT_PL_NONE;
 
-    if (BS_CheckCurrentValue_Direction(i_current) == BS_CURRENT_CHARGE) {
+        batsys_charge_limit_rsl = BS_CS_THRESHOLD_NO_CURRENT_mA;
+        batsys_charge_limit_diag_rsl = DIAG_CH_OVERCURRENT_PL_NONE;
+        batsys_discharge_limit_rsl = BS_CS_THRESHOLD_NO_CURRENT_mA;
+        batsys_discharge_limit_diag_rsl = DIAG_CH_OVERCURRENT_PL_NONE;
+
+        batsys_charge_limit_mol = BS_CS_THRESHOLD_NO_CURRENT_mA;
+        batsys_charge_limit_diag_mol = DIAG_CH_OVERCURRENT_PL_NONE;
+        batsys_discharge_limit_mol = BS_CS_THRESHOLD_NO_CURRENT_mA;
+        batsys_discharge_limit_diag_mol = DIAG_CH_OVERCURRENT_PL_NONE;
+    }
+
+    /* check limits of battery system */
+    if (i_dir == BS_CURRENT_CHARGE) {
         /* Charge */
-        if (i_current_abs >= BC_CURRENTMAX_CHARGE_MOL) {
-            /* Over current maximum operating limit violated */
-            DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_MOL, DIAG_EVENT_NOK, 0, NULL_PTR);
-            if (i_current_abs >= BC_CURRENTMAX_CHARGE_RSL) {
-                /* Over current recommended safety limit violated */
-                DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_RSL, DIAG_EVENT_NOK, 0, NULL_PTR);
-                if (i_current_abs >= BC_CURRENTMAX_CHARGE_MSL) {
-                    /* Over current maximum safety limit violated */
-                    DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+        if (i_current_abs >= batsys_charge_limit_mol) {
+            /* Over current maximum operating limit of batsys violated */
+            DIAG_Handler(batsys_charge_limit_diag_mol, DIAG_EVENT_NOK, 0);
+            if (i_current_abs >= batsys_charge_limit_rsl) {
+                /* Over current recommended safety limit of batsys violated */
+                DIAG_Handler(batsys_charge_limit_diag_rsl, DIAG_EVENT_NOK, 0);
+                if (i_current_abs >= batsys_charge_limit_msl) {
+                    /* Over current maximum safety limit of batsys violated */
+                    DIAG_Handler(batsys_charge_limit_diag_msl, DIAG_EVENT_NOK, 0);
                 }
             }
         }
-        if (i_current_abs < BC_CURRENTMAX_CHARGE_MSL) {
-            /* over current maximum safety limit NOT violated */
-            DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
-            if (i_current_abs < BC_CURRENTMAX_CHARGE_RSL) {
-                /* over current recommended safety limit NOT violated */
-                DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_RSL, DIAG_EVENT_OK, 0, NULL_PTR);
-                if (i_current_abs < BC_CURRENTMAX_CHARGE_MOL) {
-                    /* over current maximum operating limit NOT violated */
-                    DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_MOL, DIAG_EVENT_OK, 0, NULL_PTR);
+        if (i_current_abs < batsys_charge_limit_msl) {
+            /* Over current maximum safety limit of batsys NOT violated */
+            DIAG_Handler(batsys_charge_limit_diag_msl, DIAG_EVENT_OK, 0);
+            if (i_current_abs < batsys_charge_limit_rsl) {
+                /* Over current recommended safety limit of batsys NOT violated */
+                DIAG_Handler(batsys_charge_limit_diag_rsl, DIAG_EVENT_OK, 0);
+                if (i_current_abs < batsys_charge_limit_mol) {
+                    /* Over current maximum operating limit of batsys NOT violated */
+                    DIAG_Handler(batsys_charge_limit_diag_mol, DIAG_EVENT_OK, 0);
                 }
             }
         }
-    } else if (BS_CheckCurrentValue_Direction(i_current) == BS_CURRENT_DISCHARGE) {
+    } else if (i_dir == BS_CURRENT_DISCHARGE) {
         /* Discharge */
-        if (i_current_abs >= BC_CURRENTMAX_DISCHARGE_MOL) {
-            /* Over current maximum operating limit violated */
-            DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_MOL, DIAG_EVENT_NOK, 0, NULL_PTR);
-            if (i_current_abs >= BC_CURRENTMAX_DISCHARGE_RSL) {
-                /* Over current recommended safety limit violated */
-                DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_RSL, DIAG_EVENT_NOK, 0, NULL_PTR);
-                if (i_current_abs >= BC_CURRENTMAX_DISCHARGE_MSL) {
-                    /* Over current error */
-                    DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+        if (i_current_abs >= batsys_discharge_limit_mol) {
+            /* Over current maximum operating limit of batsys violated */
+            DIAG_Handler(batsys_discharge_limit_diag_mol, DIAG_EVENT_NOK, 0);
+            if (i_current_abs >= batsys_discharge_limit_rsl) {
+                /* Over current recommended safety limit of batsys violated */
+                DIAG_Handler(batsys_discharge_limit_diag_rsl, DIAG_EVENT_NOK, 0);
+                if (i_current_abs >= batsys_discharge_limit_msl) {
+                    /* Over current maximum safety limit of batsys violated */
+                    DIAG_Handler(batsys_discharge_limit_diag_msl, DIAG_EVENT_NOK, 0);
                 }
             }
         }
-        if (i_current_abs < BC_CURRENTMAX_DISCHARGE_MSL) {
-            /* over current maximum safety limit NOT violated */
-            DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
-            if (i_current_abs < BC_CURRENTMAX_CHARGE_RSL) {
-                /* over current recommended safety limit NOT violated */
-                DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_RSL, DIAG_EVENT_OK, 0, NULL_PTR);
-                if (i_current_abs < BC_CURRENTMAX_DISCHARGE_MOL) {
-                    /* over current maximum operating limit NOT violated */
-                    DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_MOL, DIAG_EVENT_OK, 0, NULL_PTR);
+        if (i_current_abs < batsys_discharge_limit_msl) {
+            /* Over current maximum safety limit of batsys NOT violated */
+            DIAG_Handler(batsys_discharge_limit_diag_msl, DIAG_EVENT_OK, 0);
+            if (i_current_abs < batsys_discharge_limit_rsl) {
+                /* Over current recommended safety limit of batsys NOT violated */
+                DIAG_Handler(batsys_discharge_limit_diag_rsl, DIAG_EVENT_OK, 0);
+                if (i_current_abs < batsys_discharge_limit_mol) {
+                    /* Over current maximum operating limit of batsys NOT violated */
+                    DIAG_Handler(batsys_discharge_limit_diag_mol, DIAG_EVENT_OK, 0);
                 }
             }
         }
     } else {
-        /* BS_CURRENT_NO_CURRENT */
-        /* TODO: explain why empty else */
+        /* BS_CURRENT_NO_CURRENT -> no violations */
+        DIAG_Handler(DIAG_CH_OVERCURRENT_PL_NONE, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_PL0_MSL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_PL0_RSL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_PL0_MOL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_PL1_MSL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_PL1_RSL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_PL1_MOL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_PL0_MSL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_PL0_RSL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_PL0_MOL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_PL1_MSL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_PL1_RSL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_PL1_MOL, DIAG_EVENT_OK, 0);
     }
+
+    /* check limits of cells */
+#if MEAS_TEST_CELL_SOF_LIMITS == TRUE
+    if (i_dir == BS_CURRENT_CHARGE) {
+        /* Charge */
+        if (i_current_abs >= bms_tab_sof.continuous_charge_MOL) {
+            /* Over current maximum operating limit violated */
+            DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_CELL_MOL, DIAG_EVENT_NOK, 0);
+            if (i_current_abs >= bms_tab_sof.continuous_charge_RSL) {
+                /* Over current recommended safety limit violated */
+                DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_CELL_RSL, DIAG_EVENT_NOK, 0);
+                if (i_current_abs >= bms_tab_sof.continuous_charge_MSL) {
+                    /* Over current maximum safety limit violated */
+                    DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_CELL_MSL, DIAG_EVENT_NOK, 0);
+                }
+            }
+        }
+        if (i_current_abs < bms_tab_sof.continuous_charge_MSL) {
+            /* over current maximum safety limit NOT violated */
+            DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_CELL_MSL, DIAG_EVENT_OK, 0);
+            if (i_current_abs < bms_tab_sof.continuous_charge_RSL) {
+                /* over current recommended safety limit NOT violated */
+                DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_CELL_RSL, DIAG_EVENT_OK, 0);
+                if (i_current_abs < bms_tab_sof.continuous_charge_MOL) {
+                    /* over current maximum operating limit NOT violated */
+                    DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_CELL_MOL, DIAG_EVENT_OK, 0);
+                }
+            }
+        }
+    } else if (i_dir == BS_CURRENT_DISCHARGE) {
+        /* Discharge */
+        if (i_current_abs >= bms_tab_sof.continuous_discharge_MOL) {
+            /* Over current maximum operating limit violated */
+            DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_CELL_MOL, DIAG_EVENT_NOK, 0);
+            if (i_current_abs >= bms_tab_sof.continuous_discharge_RSL) {
+                /* Over current recommended safety limit violated */
+                DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_CELL_RSL, DIAG_EVENT_NOK, 0);
+                if (i_current_abs >= bms_tab_sof.continuous_discharge_MSL) {
+                    /* Over current error */
+                    DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_CELL_MSL, DIAG_EVENT_NOK, 0);
+                }
+            }
+        }
+
+        if (i_current_abs < bms_tab_sof.continuous_discharge_MSL) {
+            /* over current maximum safety limit NOT violated */
+            DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_CELL_MSL, DIAG_EVENT_OK, 0);
+            if (i_current_abs < bms_tab_sof.continuous_discharge_RSL) {
+                /* over current recommended safety limit NOT violated */
+                DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_CELL_RSL, DIAG_EVENT_OK, 0);
+                if (i_current_abs < bms_tab_sof.continuous_discharge_MOL) {
+                    /* over current maximum operating limit NOT violated */
+                    DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_CELL_MOL, DIAG_EVENT_OK, 0);
+                }
+            }
+        }
+    } else {
+        /* BS_CURRENT_NO_CURRENT -> no check needed if no current is floating */
+    }
+#else /* MEAS_TEST_CELL_SOF_LIMITS == FALSE */
+    if (i_dir == BS_CURRENT_CHARGE) {
+        /* Charge */
+        if (i_current_abs >= BC_CURRENTMAX_CHARGE_MOL) {
+            /* Over current maximum operating limit of cells violated */
+            DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_CELL_MOL, DIAG_EVENT_NOK, 0);
+            if (i_current_abs >= BC_CURRENTMAX_CHARGE_RSL) {
+                /* Over current recommended safety limit of cells violated */
+                DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_CELL_RSL, DIAG_EVENT_NOK, 0);
+                if (i_current_abs >= BC_CURRENTMAX_CHARGE_MSL) {
+                    /* Over current maximum safety limit of cells violated */
+                    DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_CELL_MSL, DIAG_EVENT_NOK, 0);
+                }
+            }
+        }
+        if (i_current_abs < BC_CURRENTMAX_CHARGE_MSL) {
+            /* Over current maximum safety limit of cells NOT violated */
+            DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_CELL_MSL, DIAG_EVENT_OK, 0);
+            if (i_current_abs < BC_CURRENTMAX_CHARGE_RSL) {
+                /* Over current recommended safety limit of cells NOT violated */
+                DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_CELL_RSL, DIAG_EVENT_OK, 0);
+                if (i_current_abs < BC_CURRENTMAX_CHARGE_MOL) {
+                    /* Over current maximum operating limit of cells NOT violated */
+                    DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_CELL_MOL, DIAG_EVENT_OK, 0);
+                }
+            }
+        }
+    } else if (i_dir == BS_CURRENT_DISCHARGE) {
+        /* Discharge */
+        if (i_current_abs >= BC_CURRENTMAX_DISCHARGE_MOL) {
+            /* Over current maximum operating limit of cells violated */
+            DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_CELL_MOL, DIAG_EVENT_NOK, 0);
+            if (i_current_abs >= BC_CURRENTMAX_DISCHARGE_RSL) {
+                /* Over current recommended safety limit of cells violated */
+                DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_CELL_RSL, DIAG_EVENT_NOK, 0);
+                if (i_current_abs >= BC_CURRENTMAX_DISCHARGE_MSL) {
+                    /* Over current maximum safety limit of cells violated */
+                    DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_CELL_MSL, DIAG_EVENT_NOK, 0);
+                }
+            }
+        }
+        if (i_current_abs < BC_CURRENTMAX_DISCHARGE_MSL) {
+            /* Over current maximum safety limit of cells NOT violated */
+            DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_CELL_MSL, DIAG_EVENT_OK, 0);
+            if (i_current_abs < BC_CURRENTMAX_DISCHARGE_RSL) {
+                /* Over current recommended safety limit of cells NOT violated */
+                DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_CELL_RSL, DIAG_EVENT_OK, 0);
+                if (i_current_abs < BC_CURRENTMAX_DISCHARGE_MOL) {
+                    /* Over current maximum operating limit of cells NOT violated */
+                    DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_CELL_MOL, DIAG_EVENT_OK, 0);
+                }
+            }
+        }
+    } else {
+        /* BS_CURRENT_NO_CURRENT -> no violations */
+        DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_CELL_MSL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_CELL_RSL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_CELL_MOL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_CELL_MSL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_CELL_RSL, DIAG_EVENT_OK, 0);
+        DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_CELL_MOL, DIAG_EVENT_OK, 0);
+    }
+#endif /* MEAS_TEST_CELL_SOF_LIMITS == TRUE */
 }
 
 /**
@@ -1015,8 +1234,6 @@ static void BMS_CheckSlaveTemperatures(void) {
  * @brief   Check for any open voltage sense wire
  */
 static void BMS_CheckOpenSenseWire(void) {
-    DATA_BLOCK_OPENWIRE_s ow_tab;
-    DB_ReadBlock(&ow_tab, DATA_BLOCK_ID_OPEN_WIRE);
     uint8_t openWireDetected = 0;
 
     /* Iterate over all modules */
@@ -1024,7 +1241,7 @@ static void BMS_CheckOpenSenseWire(void) {
         /* Iterate over all voltage sense wires: cells per module + 1 */
         for (uint8_t wire = 0; wire < (BS_NR_OF_BAT_CELLS_PER_MODULE + 1); wire++) {
             /* open wire detected */
-            if (ow_tab.openwire[wire + m*(BS_NR_OF_BAT_CELLS_PER_MODULE + 1) == 1]) {
+            if (bms_ow_tab.openwire[wire + m*(BS_NR_OF_BAT_CELLS_PER_MODULE + 1) == 1]) {
                 openWireDetected++;
 
                 /* Add additional error handling here */
@@ -1032,10 +1249,10 @@ static void BMS_CheckOpenSenseWire(void) {
         }
     }
     /* Set error if open wire detected */
-    if (openWireDetected == 0) {
-        DIAG_Handler(DIAG_CH_OPEN_WIRE, DIAG_EVENT_OK, 0, NULL_PTR);
+    if (openWireDetected == 0u) {
+        DIAG_Handler(DIAG_CH_OPEN_WIRE, DIAG_EVENT_OK, 0);
     } else {
-        DIAG_Handler(DIAG_CH_OPEN_WIRE, DIAG_EVENT_NOK, 0, NULL_PTR);
+        DIAG_Handler(DIAG_CH_OPEN_WIRE, DIAG_EVENT_NOK, 0);
     }
 }
 
@@ -1056,22 +1273,26 @@ static STD_RETURN_TYPE_e BMS_CheckAnyErrorFlagSet(void) {
     DB_ReadBlock(&msl_flags, DATA_BLOCK_ID_MSL);
 
     /* Check maximum safety limit flags */
-    if (msl_flags.over_current_charge         == 1 ||
-        msl_flags.over_current_discharge      == 1 ||
+    if (msl_flags.over_current_charge_cell    == 1 ||
+        msl_flags.over_current_charge_pl0     == 1 ||
+        msl_flags.over_current_charge_pl1     == 1 ||
+        msl_flags.over_current_discharge_cell == 1 ||
+        msl_flags.over_current_discharge_pl0  == 1 ||
+        msl_flags.over_current_discharge_pl1  == 1 ||
         msl_flags.over_voltage                == 1 ||
         msl_flags.under_voltage               == 1 ||
         msl_flags.over_temperature_charge     == 1 ||
         msl_flags.over_temperature_discharge  == 1 ||
         msl_flags.under_temperature_charge    == 1 ||
         msl_flags.under_temperature_discharge == 1) {
+        /* error detected */
         retVal = E_NOT_OK;
-        msl_flags.general_MSL = 1;
-    } else {
-        msl_flags.general_MSL = 0;
     }
 
     /* Check system error flags */
-    if (error_flags.main_plus                 == 1 ||
+    if (error_flags.currentOnOpenPowerline    == 1 ||
+        error_flags.deepDischargeDetected     == 1 ||
+        error_flags.main_plus                 == 1 ||
         error_flags.main_minus                == 1 ||
         error_flags.precharge                 == 1 ||
         error_flags.charge_main_plus          == 1 ||
@@ -1090,14 +1311,9 @@ static STD_RETURN_TYPE_e BMS_CheckAnyErrorFlagSet(void) {
 #endif /* BMS_OPEN_CONTACTORS_ON_INSULATION_ERROR */
         error_flags.can_timing_cc             == 1 ||
         error_flags.can_timing                == 1) {
+        /* error detected */
         retVal = E_NOT_OK;
-        error_flags.general_error = 1;
-    } else {
-        error_flags.general_error = 0;
     }
-    /* Save values back to DB */
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    DB_WriteBlock(&msl_flags, DATA_BLOCK_ID_MSL);
 
     return retVal;
 }

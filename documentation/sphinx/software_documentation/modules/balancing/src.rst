@@ -1,6 +1,10 @@
-.. include:: ../../../macros.rst
-
 :orphan:
+
+.. _BALANCING_SRC:
+
+========================
+Balancing Module Sources
+========================
 
 .. contents:: :local:
 

@@ -74,11 +74,11 @@
 /*================== Macros and Definitions ===============================*/
 
 /*================== Constant and Variable Definitions ====================*/
-OS_Task_Definition_s eng_tskdef_cyclic_1ms   = { 0,      1,  OS_PRIORITY_ABOVE_HIGH,        1024/4 };
-OS_Task_Definition_s eng_tskdef_cyclic_10ms  = { 2,     10,  OS_PRIORITY_HIGH,              1024/4 };
-OS_Task_Definition_s eng_tskdef_cyclic_100ms = { 56,    100,  OS_PRIORITY_ABOVE_NORMAL,     1024/4 };
-OS_Task_Definition_s eng_tskdef_eventhandler = { 0,      1,  OS_PRIORITY_VERY_HIGH,         1024/4 };
-OS_Task_Definition_s eng_tskdef_diagnosis    = { 0,      1,  OS_PRIORITY_BELOW_REALTIME,    1024/4 };
+OS_Task_Definition_s eng_tskdef_cyclic_1ms   = { 0,      1,  OS_PRIORITY_ABOVE_HIGH,        ENG_TSK_C_1MS_STACKSIZE };
+OS_Task_Definition_s eng_tskdef_cyclic_10ms  = { 2,     10,  OS_PRIORITY_HIGH,              ENG_TSK_C_10MS_STACKSIZE };
+OS_Task_Definition_s eng_tskdef_cyclic_100ms = { 56,    100,  OS_PRIORITY_ABOVE_NORMAL,     ENG_TSK_C_100MS_STACKSIZE };
+OS_Task_Definition_s eng_tskdef_eventhandler = { 0,      1,  OS_PRIORITY_VERY_HIGH,         ENG_TSK_EVENTHANDLER_STACKSIZE };
+OS_Task_Definition_s eng_tskdef_diagnosis    = { 0,      1,  OS_PRIORITY_BELOW_REALTIME,    ENG_TSK_DIAGNOSIS_STACKSIZE };
 
 /*================== Function Prototypes ==================================*/
 
@@ -92,7 +92,7 @@ void ENG_PostOSInit(void) {
 
     retErrorCode = VIC_PostOsInterruptInit();
     if (retErrorCode != 0) {
-        DIAG_Handler(DIAG_CH_VIC_INIT_FAILURE, DIAG_EVENT_NOK, retErrorCode, NULL);   /* error event in vic init */
+        DIAG_Handler(DIAG_CH_VIC_INIT_FAILURE, DIAG_EVENT_NOK, retErrorCode);  /* error event in vic init */
     }
     retErrorCode = 0;
 
@@ -102,7 +102,7 @@ void ENG_PostOSInit(void) {
 
     retErrorCode = CAN_Init();
     if (retErrorCode != 0) {
-        DIAG_Handler(DIAG_CH_CAN_INIT_FAILURE, DIAG_EVENT_NOK, retErrorCode, NULL);   /* error event in eeprom driver */
+        DIAG_Handler(DIAG_CH_CAN_INIT_FAILURE, DIAG_EVENT_NOK, retErrorCode);   /* error event in eeprom driver */
     }
 
     os_boot = OS_EEPR_INIT;
@@ -110,83 +110,26 @@ void ENG_PostOSInit(void) {
     /* initialize eeprom driver */
     err_type = EEPR_Init();
     if (err_type != EEPR_NO_ERROR)
-        DIAG_Handler(DIAG_CH_POSTOSINIT_FAILURE, DIAG_EVENT_NOK, err_type, NULL);   /* error event in eeprom driver */
+        DIAG_Handler(DIAG_CH_POSTOSINIT_FAILURE, DIAG_EVENT_NOK, err_type);   /* error event in eeprom driver */
 
     os_boot = OS_BMS_INIT;
 }
 
 
 void ENG_Init(void) {
-    SYS_RETURN_TYPE_e sys_retVal = SYS_ILLEGAL_TASK_TYPE;
-
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DATA_BLOCK_MOL_FLAG_s mol_flags;
-    DATA_BLOCK_RSL_FLAG_s rsl_flags;
-    DATA_BLOCK_MSL_FLAG_s msl_flags;
-
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    DB_ReadBlock(&mol_flags, DATA_BLOCK_ID_MOL);
-    DB_ReadBlock(&rsl_flags, DATA_BLOCK_ID_RSL);
-    DB_ReadBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-
-    error_flags.general_error               = 0;
-    error_flags.currentsensorresponding     = 0;
-    error_flags.main_plus                   = 0;
-    error_flags.main_minus                  = 0;
-    error_flags.precharge                   = 0;
-    error_flags.charge_main_plus            = 0;
-    error_flags.charge_main_minus           = 0;
-    error_flags.charge_precharge            = 0;
-    error_flags.interlock                   = 0;
-    error_flags.crc_error                   = 0;
-    error_flags.mux_error                   = 0;
-    error_flags.spi_error                   = 0;
-    error_flags.can_timing                  = 0;
-    error_flags.can_timing_cc               = 0;
-    error_flags.can_cc_used                 = 0;
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-
-    mol_flags.general_MOL = 0;
-    mol_flags.over_current_charge = 0;
-    mol_flags.over_current_discharge = 0;
-    mol_flags.over_temperature_charge = 0;
-    mol_flags.over_temperature_discharge = 0;
-    mol_flags.over_voltage = 0;
-    mol_flags.under_voltage = 0;
-    mol_flags.pcb_over_temperature = 0;
-    mol_flags.pcb_under_temperature = 0;
-    mol_flags.under_temperature_charge = 0;
-    mol_flags.under_temperature_discharge = 0;
-    DB_WriteBlock(&mol_flags, DATA_BLOCK_ID_MOL);
-
-    rsl_flags.general_RSL = 0;
-    rsl_flags.over_current_charge = 0;
-    rsl_flags.over_current_discharge = 0;
-    rsl_flags.over_temperature_charge = 0;
-    rsl_flags.over_temperature_discharge = 0;
-    rsl_flags.over_voltage = 0;
-    rsl_flags.under_voltage = 0;
-    rsl_flags.pcb_over_temperature = 0;
-    rsl_flags.pcb_under_temperature = 0;
-    rsl_flags.under_temperature_charge = 0;
-    rsl_flags.under_temperature_discharge = 0;
-    DB_WriteBlock(&rsl_flags, DATA_BLOCK_ID_RSL);
-
-    msl_flags.general_MSL = 0;
-    msl_flags.over_current_charge = 0;
-    msl_flags.over_current_discharge = 0;
-    msl_flags.over_temperature_charge = 0;
-    msl_flags.over_temperature_discharge = 0;
-    msl_flags.over_voltage = 0;
-    msl_flags.under_voltage = 0;
-    msl_flags.pcb_over_temperature = 0;
-    msl_flags.pcb_under_temperature = 0;
-    msl_flags.under_temperature_charge = 0;
-    msl_flags.under_temperature_discharge = 0;
-    DB_WriteBlock(&msl_flags, DATA_BLOCK_ID_MSL);
+    SYS_RETURN_TYPE_e sys_retVal = SYS_ILLEGAL_REQUEST;
 
     /*  Init Sys */
     sys_retVal = SYS_SetStateRequest(SYS_STATE_INIT_REQUEST);
+
+    /* This function operates under the assumption that it is called when
+     * the operating system is not yet running.
+     * In this state the return value of SYS_SetStateRequest() should
+     * always be #SYS_OK. Therefore we trap otherwise.
+     */
+    if (sys_retVal != SYS_OK) {
+        configASSERT(0);
+    }
 
     NVRAM_dataHandlerInit();
 }

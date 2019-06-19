@@ -62,8 +62,8 @@
 /*================== Macros and Definitions ===============================*/
 
 typedef enum {
-    VIC_IRQ_ENABLE = 0,
-    VIC_IRQ_DISABLE = 1,
+    VIC_IRQ_DISABLE = 0,
+    VIC_IRQ_ENABLE = 1,
 } VIC_IRQ_STATE_e;
 
 typedef enum {

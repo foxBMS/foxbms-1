@@ -47,7 +47,10 @@ def build(bld):
     """Directories listed in dir_build_list are built, when the waf function
     "build" is called.
     """
-    hal_path = os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-hal')
-    common_path = os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common)
-    dir_build_list = [hal_path, common_path, 'driver', 'os', 'module', 'engine', 'application', 'general']
+    hal_path = os.path.join(bld.top_dir, bld.env.es_dir, 'mcu-hal')
+    common_path = os.path.join(bld.top_dir, bld.env.es_dir, bld.env.common_dir)
+    if bld.variant == 'primary_bare':
+        dir_build_list = [hal_path, common_path, 'driver', 'test']
+    else:
+        dir_build_list = [hal_path, common_path, 'driver', 'os', 'module', 'engine', 'application', 'general']
     bld.recurse(dir_build_list)

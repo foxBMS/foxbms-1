@@ -111,10 +111,10 @@
  * \par Default:
  * 0.4
 */
-#define TIM4_CLOCK_FREQUENCY              0.4            /* in [MHz] */
-#define TIM4_CLOCK_TICK_DURATION_IN_US    2.5            /* according to TIM4_CLOCK_FREQUENCY */
-#define TIM4_CLOCK_TICK_DURATION_IN_MS    0.0025
-#define TIM4_CLOCK_TICK_DURATION_IN_S     0.0000025
+#define TIM4_CLOCK_FREQUENCY              0.4f           /* in [MHz] */
+#define TIM4_CLOCK_TICK_DURATION_IN_US    2.5f           /* according to TIM4_CLOCK_FREQUENCY */
+#define TIM4_CLOCK_TICK_DURATION_IN_MS    0.0025f
+#define TIM4_CLOCK_TICK_DURATION_IN_S     0.0000025f
 
 /**
  * @ingroup CONFIG_TIMER

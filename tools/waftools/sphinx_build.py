@@ -19,21 +19,29 @@ class sphinx_build(Task.Task):
                                    self.env['BUILDERNAME'], src_str, sep, tgt_str)
 
     def run(self):
-        cmd = '${SPHINX_BUILD} -c ${CONFDIR} -D ${VERSION} ' \
-              '-D ${RELEASE} -D graphviz_dot=${dot} -q -b ' \
-              '${BUILDERNAME} -d ${DOCTREEDIR} ${SRCDIR} ${OUTDIR}'
+        verbosity = ''
+        if Logs.verbose:
+            verbosity = '-' + Logs.verbose * 'v'
+        cmd = ' '.join(['${SPHINX_BUILD}', verbosity, '-c ${CONFDIR}',
+                        '-D ${VERSION}', '-D ${RELEASE}',
+                        '-D graphviz_dot=${dot}', '-b ${BUILDERNAME}',
+                        '-d ${DOCTREEDIR}', '${SRCDIR}', '${OUTDIR}'])
+        cmd = ' '.join(cmd.split())
         cmd = Utils.subst_vars(cmd, self.env)
+        Logs.info(cmd)
         env = self.env.env or None #: warning:
         proc = Utils.subprocess.Popen(cmd,
                                       stdin=Utils.subprocess.PIPE,
+                                      stdout=Utils.subprocess.PIPE,
                                       stderr=Utils.subprocess.PIPE,
                                       env=env,
                                       cwd=self.generator.bld.path.abspath())
 
-        s, std_err = proc.communicate()
-        std_err = std_err.decode()
-        if s:
-            print(s.decode())
+        std_out, std_err = proc.communicate()
+        std_out = std_out.decode(errors='ignore')
+        std_err = std_err.decode(errors='ignore')
+        if std_out:
+            print(std_out)
         if std_err:
             Logs.error('\nErrors/Warnings:\n' + std_err)
             self.generator.bld.fatal('There are sphinx errors.')

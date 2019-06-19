@@ -60,6 +60,31 @@
 
 /*================== Macros and Definitions ===============================*/
 
+/**
+ * @brief Stack size of 1ms task
+ */
+#define ENG_TSK_C_1MS_STACKSIZE        (1024u/4u)
+
+/**
+ * @brief Stack size of 10ms task
+ */
+#define ENG_TSK_C_10MS_STACKSIZE       (1024u/4u)
+
+/**
+ * @brief Stack size of 100ms task
+ */
+#define ENG_TSK_C_100MS_STACKSIZE      (1024u/4u)
+
+/**
+ * @brief Stack size of eventhandler task
+ */
+#define ENG_TSK_EVENTHANDLER_STACKSIZE (1024u/4u)
+
+/**
+ * @brief Stack size of diagnosis task
+ */
+#define ENG_TSK_DIAGNOSIS_STACKSIZE    (1024u/4u)
+
 /*================== Constant and Variable Definitions ====================*/
 
 /**

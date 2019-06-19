@@ -72,15 +72,40 @@
  *  - callback function if system monitoring notices an error if wished, otherwise dummyfu2
  */
 
-/*================== Includes =============================================*/
+/*================== Includes ===============================================*/
 #include "diag_cfg.h"
 
 #include "database.h"
 
-/*================== Macros and Definitions ===============================*/
+/*================== Macros and Definitions =================================*/
 
-/*================== Constant and Variable Definitions ====================*/
+/*================== Static Constant and Variable Definitions ===============*/
+static DATA_BLOCK_ERRORSTATE_s error_flags = { 0 };
+static DATA_BLOCK_MSL_FLAG_s msl_flags = { 0 };
 
+/*================== Static Function Prototypes =============================*/
+/* dummy functions */
+static void dummyfu(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
+static void dummyfu2(DIAG_SYSMON_MODULE_ID_e ch_id);
+
+/* functions for SOA related events */
+static void DIAG_overvoltage(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
+static void DIAG_undervoltage(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
+static void DIAG_overtemperature_charge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
+static void DIAG_overtemperature_discharge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
+static void DIAG_undertemperature_charge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
+static void DIAG_undertemperature_discharge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
+
+/* functions for system related events */
+static void DIAG_error_ltc(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
+static void DIAG_error_interlock(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
+static void DIAG_error_MCUdieTemperature(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
+static void DIAG_error_coinCellVoltage(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
+
+/* functions for plausibility related events */
+static void DIAG_error_plausibility_check(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
+
+/*================== Extern Constant and Variable Definitions ===============*/
 /**
  * Enable and Disable of Error Checks for Testing Purposes
  *
@@ -95,450 +120,74 @@ DIAG_CODE_s diag_mask = {
         .ADCmsk = 0xFFFFFFFF,
 };
 
-/**
- * Callback function of diagnosis error events
- *
-*/
-
-static void dummyfu(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void DIAG_MSL_overvoltage(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void DIAG_MSL_undervoltage(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void DIAG_MSL_overtemperaturecharge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void DIAG_MSL_overtemperaturedischarge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void DIAG_MSL_undertemperaturecharge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void DIAG_MSL_undertemperaturedischarge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void DIAG_MSL_overcurrentcharge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void DIAG_MSL_overcurrentdischarge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void DIAG_error_cantiming(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-static void DIAG_error_cantiming_cc(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void DIAG_error_cancurrentsensor(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void DIAG_error_ltcpec(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-static void DIAG_error_ltcmux(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-static void DIAG_error_ltcspi(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void DIAG_error_contactormainplus(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-static void DIAG_error_contactormainminus(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void DIAG_error_contactorprecharge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-static void DIAG_error_contactorchargemainplus(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void DIAG_error_contactorchargemainminus(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-static void DIAG_error_contactorchargeprecharge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-static void DIAG_error_interlock(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void DIAG_error_MCUdieTemperature(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-static void DIAG_error_coinCellVoltage(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event);
-
-static void dummyfu2(DIAG_SYSMON_MODULE_ID_e ch_id);
-
-void dummyfu(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    /* Dummy function -> empty */
-}
-
-void DIAG_MSL_overvoltage(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_MSL_FLAG_s msl_flags;
-    DB_ReadBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-    if (event == DIAG_EVENT_RESET) {
-        msl_flags.over_voltage = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        msl_flags.over_voltage = 1;
-    }
-    DB_WriteBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-}
-
-void DIAG_MSL_undervoltage(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_MSL_FLAG_s msl_flags;
-    DB_ReadBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-    if (event == DIAG_EVENT_RESET) {
-        msl_flags.under_voltage = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        msl_flags.under_voltage = 1;
-    }
-    DB_WriteBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-}
-
-void DIAG_MSL_overtemperaturecharge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_MSL_FLAG_s msl_flags;
-    DB_ReadBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-    if (event == DIAG_EVENT_RESET) {
-        msl_flags.over_temperature_charge = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        msl_flags.over_temperature_charge = 1;
-    }
-    DB_WriteBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-}
-void DIAG_MSL_overtemperaturedischarge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_MSL_FLAG_s msl_flags;
-    DB_ReadBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-    if (event == DIAG_EVENT_RESET) {
-        msl_flags.over_temperature_discharge = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        msl_flags.over_temperature_discharge = 1;
-    }
-    DB_WriteBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-}
-void DIAG_MSL_undertemperaturecharge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_MSL_FLAG_s msl_flags;
-    DB_ReadBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-    if (event == DIAG_EVENT_RESET) {
-        msl_flags.under_temperature_charge = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        msl_flags.under_temperature_charge = 1;
-    }
-    DB_WriteBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-}
-void DIAG_MSL_undertemperaturedischarge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_MSL_FLAG_s msl_flags;
-    DB_ReadBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-    if (event == DIAG_EVENT_RESET) {
-        msl_flags.under_temperature_discharge = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        msl_flags.under_temperature_discharge = 1;
-    }
-    DB_WriteBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-}
-void DIAG_MSL_overcurrentcharge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_MSL_FLAG_s msl_flags;
-    DB_ReadBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-    if (event == DIAG_EVENT_RESET) {
-        msl_flags.over_current_charge = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        msl_flags.over_current_charge = 1;
-    }
-    DB_WriteBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-}
-void DIAG_MSL_overcurrentdischarge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_MSL_FLAG_s msl_flags;
-    DB_ReadBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-    if (event == DIAG_EVENT_RESET) {
-        msl_flags.over_current_discharge = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        msl_flags.over_current_discharge = 1;
-    }
-    DB_WriteBlock(&msl_flags, DATA_BLOCK_ID_MSL);
-}
-void DIAG_error_cantiming(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    if (event == DIAG_EVENT_RESET) {
-        error_flags.can_timing = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        error_flags.can_timing = 1;
-    }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-}
-
-void DIAG_error_cantiming_cc(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    if (event == DIAG_EVENT_RESET) {
-        error_flags.can_timing_cc = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        error_flags.can_timing_cc = 1;
-    }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-}
-
-void DIAG_error_cancurrentsensor(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    if (event == DIAG_EVENT_RESET) {
-        error_flags.currentsensorresponding = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        error_flags.currentsensorresponding = 1;
-    }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-}
-
-void DIAG_error_ltcpec(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    if (event == DIAG_EVENT_RESET) {
-        error_flags.crc_error = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        error_flags.crc_error = 1;
-    }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-}
-
-void DIAG_error_ltcmux(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    if (event == DIAG_EVENT_RESET) {
-        error_flags.mux_error = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        error_flags.mux_error = 1;
-    }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-}
-
-void DIAG_error_ltcspi(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    if (event == DIAG_EVENT_RESET) {
-        error_flags.spi_error = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        error_flags.spi_error = 1;
-    }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-}
-
-void DIAG_error_contactormainplus(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    if (event == DIAG_EVENT_RESET) {
-        error_flags.main_plus = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        error_flags.main_plus = 1;
-    }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-}
-
-void DIAG_error_contactormainminus(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    if (event == DIAG_EVENT_RESET) {
-        error_flags.main_minus = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        error_flags.main_minus = 1;
-    }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-}
-
-void DIAG_error_contactorprecharge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    if (event == DIAG_EVENT_RESET) {
-        error_flags.precharge = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        error_flags.precharge = 1;
-    }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-}
-
-void DIAG_error_contactorchargemainplus(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    if (event == DIAG_EVENT_RESET) {
-        error_flags.charge_main_plus = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        error_flags.charge_main_plus = 1;
-    }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-}
-
-void DIAG_error_contactorchargemainminus(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    if (event == DIAG_EVENT_RESET) {
-        error_flags.charge_main_minus = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        error_flags.charge_main_minus = 1;
-    }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-}
-
-void DIAG_error_contactorchargeprecharge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    if (event == DIAG_EVENT_RESET) {
-        error_flags.charge_precharge = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        error_flags.charge_precharge = 1;
-    }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-}
-
-void DIAG_error_interlock(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    if (event  ==  DIAG_EVENT_RESET) {
-        error_flags.interlock = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        error_flags.interlock = 1;
-    }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-}
-
-void DIAG_error_MCUdieTemperature(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    if (event  ==  DIAG_EVENT_RESET) {
-        error_flags.mcuDieTemperature = 0;
-    }
-    if (event == DIAG_EVENT_NOK) {
-        error_flags.mcuDieTemperature = 1;
-    }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-}
-
-
-void DIAG_error_coinCellVoltage(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-    if (ch_id == DIAG_CH_LOW_COIN_CELL_VOLTAGE) {
-        if (event  ==  DIAG_EVENT_RESET) {
-            error_flags.coinCellVoltage &= 0xFE;
-        }
-        if (event == DIAG_EVENT_NOK) {
-            error_flags.coinCellVoltage |= 0x01;
-        }
-    } else if (ch_id == DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE) {
-        if (event  ==  DIAG_EVENT_RESET) {
-            error_flags.coinCellVoltage &= 0xFD;
-        }
-        if (event == DIAG_EVENT_NOK) {
-            error_flags.coinCellVoltage |= 0x02;
-        }
-    }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-}
-/**
- * Callback function of system monitoring error events
- *
-*/
-void dummyfu2(DIAG_SYSMON_MODULE_ID_e ch_id) {
-    /* Dummy function -> empty */
-}
-
-
 DIAG_CH_CFG_s  diag_ch_cfg[] = {
     /* OS-Framework and startup events */
-    {DIAG_CH_FLASHCHECKSUM,                             "FLASHCHECKSUM",                        DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_BKPDIAG_FAILURE,                           "BKPDIAG",                              DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_WATCHDOGRESET_FAILURE,                     "WATCHDOGRESET",                        DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_POSTOSINIT_FAILURE,                        "POSTOSINIT",                           DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_CALIB_EEPR_FAILURE,                        "CALIB_EEPR",                           DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_CAN_INIT_FAILURE,                          "CAN_INIT",                             DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_VIC_INIT_FAILURE,                          "VIC_INIT",                             DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_FLASHCHECKSUM,                             "FLASHCHECKSUM",                        DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_BKPDIAG_FAILURE,                           "BKPDIAG",                              DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_WATCHDOGRESET_FAILURE,                     "WATCHDOGRESET",                        DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_POSTOSINIT_FAILURE,                        "POSTOSINIT",                           DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_CALIB_EEPR_FAILURE,                        "CALIB_EEPR",                           DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_CAN_INIT_FAILURE,                          "CAN_INIT",                             DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_VIC_INIT_FAILURE,                          "VIC_INIT",                             DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
 
     /* HW-/SW-Runtime events */
-    {DIAG_CH_DIV_BY_ZERO_FAILURE,                       "DIV_BY_ZERO",                          DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_UNDEF_INSTRUCTION_FAILURE,                 "UNDEF_INSTRUCTION",                    DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_DATA_BUS_FAILURE,                          "DATA_BUS_FAILURE",                     DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_INSTRUCTION_BUS_FAILURE,                   "INSTRUCTION_BUS",                      DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_HARDFAULT_NOTHANDLED,                      "HARDFAULT_NOTHANDLED",                 DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_DIV_BY_ZERO_FAILURE,                       "DIV_BY_ZERO",                          DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_UNDEF_INSTRUCTION_FAILURE,                 "UNDEF_INSTRUCTION",                    DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_DATA_BUS_FAILURE,                          "DATA_BUS_FAILURE",                     DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_INSTRUCTION_BUS_FAILURE,                   "INSTRUCTION_BUS",                      DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_HARDFAULT_NOTHANDLED,                      "HARDFAULT_NOTHANDLED",                 DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
 
-    {DIAG_CH_CONFIGASSERT,                              "CONFIGASSERT",                         DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_SYSTEMMONITORING_TIMEOUT,                  "SYSTEMMONITORING_TIMEOUT",             DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_CONFIGASSERT,                              "CONFIGASSERT",                         DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_SYSTEMMONITORING_TIMEOUT,                  "SYSTEMMONITORING_TIMEOUT",             DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
 
 
     /* Measurement events */
-    {DIAG_CH_CANS_MAX_VALUE_VIOLATE,                    "CANS_MAX_VALUE_VIOLATE",               DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_CANS_MIN_VALUE_VIOLATE,                    "CANS_MIN_VALUE_VIOLATE",               DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_CANS_CAN_MOD_FAILURE,                      "CANS_CAN_MOD_FAILURE",                 DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_CANS_MAX_VALUE_VIOLATE,                    "CANS_MAX_VALUE_VIOLATE",               DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_CANS_MIN_VALUE_VIOLATE,                    "CANS_MIN_VALUE_VIOLATE",               DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_CANS_CAN_MOD_FAILURE,                      "CANS_CAN_MOD_FAILURE",                 DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
 
 #if BUILD_MODULE_ENABLE_ISOGUARD == 1
-    {DIAG_CH_ISOMETER_TIM_ERROR,                        "ISOMETER_TIM_ERROR",                   DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_MID,               DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_ISOMETER_GROUNDERROR,                      "ISOMETER_GROUNDERROR",                 DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_ISOMETER_ERROR,                            "ISOMETER_ERROR",                       DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_MID,               DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_ISOMETER_MEAS_INVALID,                     "ISOMETER_MEAS_INVALID",                DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_ISOMETER_TIM_ERROR,                        "ISOMETER_TIM_ERROR",                   DIAG_ERROR_SENSITIVITY_MID,               DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_ISOMETER_GROUNDERROR,                      "ISOMETER_GROUNDERROR",                 DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_ISOMETER_ERROR,                            "ISOMETER_ERROR",                       DIAG_ERROR_SENSITIVITY_MID,               DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_ISOMETER_MEAS_INVALID,                     "ISOMETER_MEAS_INVALID",                DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
 #else
-    {DIAG_CH_ISOMETER_TIM_ERROR,                        "ISOMETER_TIM_ERROR",                   DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_MID,               DIAG_RECORDING_DISABLED, DIAG_DISABLED, dummyfu},
-    {DIAG_CH_ISOMETER_GROUNDERROR,                      "ISOMETER_GROUNDERROR",                 DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_DISABLED, DIAG_DISABLED, dummyfu},
-    {DIAG_CH_ISOMETER_ERROR,                            "ISOMETER_ERROR",                       DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_MID,               DIAG_RECORDING_DISABLED, DIAG_DISABLED, dummyfu},
-    {DIAG_CH_ISOMETER_MEAS_INVALID,                     "ISOMETER_MEAS_INVALID",                DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_DISABLED, DIAG_DISABLED, dummyfu},
+    {DIAG_CH_ISOMETER_TIM_ERROR,                        "ISOMETER_TIM_ERROR",                   DIAG_ERROR_SENSITIVITY_MID,               DIAG_RECORDING_DISABLED, DIAG_DISABLED, dummyfu},
+    {DIAG_CH_ISOMETER_GROUNDERROR,                      "ISOMETER_GROUNDERROR",                 DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_DISABLED, DIAG_DISABLED, dummyfu},
+    {DIAG_CH_ISOMETER_ERROR,                            "ISOMETER_ERROR",                       DIAG_ERROR_SENSITIVITY_MID,               DIAG_RECORDING_DISABLED, DIAG_DISABLED, dummyfu},
+    {DIAG_CH_ISOMETER_MEAS_INVALID,                     "ISOMETER_MEAS_INVALID",                DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_DISABLED, DIAG_DISABLED, dummyfu},
 #endif
 
     /* Under and over temperature, voltage and current at cell level */
-    {DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MSL,             "CELLVOLTAGE_OVERVOLTAGE_MSL",            DIAG_GENERAL_TYPE, DIAG_ERROR_VOLTAGE_SENSITIVITY_MSL,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_MSL_overvoltage},
+    {DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MSL,             "CELLVOLT_OVERVOLT_MSL",            DIAG_ERROR_VOLTAGE_SENSITIVITY_MSL,          DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_overvoltage},
+    {DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MSL,            "CELLVOLT_UNDERVOLT_MSL",           DIAG_ERROR_VOLTAGE_SENSITIVITY_MSL,          DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_undervoltage},
+    {DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL,         "OVERTEMP_CHARGE_MSL",             DIAG_ERROR_TEMPERATURE_SENSITIVITY_MSL,       DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_overtemperature_charge},
+    {DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL,      "OVERTEMP_DISCHARGE_MSL",          DIAG_ERROR_TEMPERATURE_SENSITIVITY_MSL,       DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_overtemperature_discharge},
+    {DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL,        "UNDERTEMP_CHARGE_MSL",            DIAG_ERROR_TEMPERATURE_SENSITIVITY_MSL,       DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_undertemperature_charge},
+    {DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL,     "UNDERTEMP_DISCHARGE_MSL",         DIAG_ERROR_TEMPERATURE_SENSITIVITY_MSL,       DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_undertemperature_discharge},
 
-    {DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MSL,            "CELLVOLTAGE_UNDERVOLTAGE_MSL",           DIAG_GENERAL_TYPE, DIAG_ERROR_VOLTAGE_SENSITIVITY_MSL,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_MSL_undervoltage},
-
-    {DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL,         "OVERTEMPERATURE_CHARGE_MSL",             DIAG_GENERAL_TYPE, DIAG_ERROR_TEMPERATURE_SENSITIVITY_MSL,       DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_MSL_overtemperaturecharge},
-    {DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL,      "OVERTEMPERATURE_DISCHARGE_MSL",          DIAG_GENERAL_TYPE, DIAG_ERROR_TEMPERATURE_SENSITIVITY_MSL,       DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_MSL_overtemperaturedischarge},
-
-    {DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL,        "UNDERTEMPERATURE_CHARGE_MSL",            DIAG_GENERAL_TYPE, DIAG_ERROR_TEMPERATURE_SENSITIVITY_MSL,       DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_MSL_undertemperaturecharge},
-
-    {DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL,     "UNDERTEMPERATURE_DISCHARGE_MSL",         DIAG_GENERAL_TYPE, DIAG_ERROR_TEMPERATURE_SENSITIVITY_MSL,       DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_MSL_undertemperaturedischarge},
-
-    {DIAG_CH_OVERCURRENT_CHARGE_MSL,                  "OVERCURRENT_CHARGE_MSL",                 DIAG_GENERAL_TYPE, DIAG_ERROR_CURRENT_SENSITIVITY_MSL,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_MSL_overcurrentcharge},
-
-    {DIAG_CH_OVERCURRENT_DISCHARGE_MSL,               "OVERCURRENT_DISCHARGE_MSL",              DIAG_GENERAL_TYPE, DIAG_ERROR_CURRENT_SENSITIVITY_MSL,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_MSL_overcurrentdischarge},
-
-    {DIAG_CH_LTC_SPI,                                   "LTC_SPI",                              DIAG_GENERAL_TYPE, DIAG_ERROR_LTC_SPI_SENSITIVITY,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_ltcspi},
-    {DIAG_CH_LTC_PEC,                                   "LTC_PEC",                              DIAG_GENERAL_TYPE, DIAG_ERROR_LTC_PEC_SENSITIVITY,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_ltcpec},
-    {DIAG_CH_LTC_MUX,                                   "LTC_MUX",                              DIAG_GENERAL_TYPE, DIAG_ERROR_LTC_MUX_SENSITIVITY,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_ltcmux},
-
-    /* Communication events */
-    {DIAG_CH_CAN_TIMING,                                "CAN_TIMING",                           DIAG_GENERAL_TYPE, DIAG_ERROR_CAN_TIMING_SENSITIVITY,        DIAG_RECORDING_ENABLED, DIAG_CAN_TIMING, DIAG_error_cantiming},
-    {DIAG_CH_CAN_CC_RESPONDING,                         "CAN_CC_RESPONDING",                    DIAG_GENERAL_TYPE, DIAG_ERROR_CAN_TIMING_CC_SENSITIVITY,     DIAG_RECORDING_ENABLED, DIAG_CAN_SENSOR_PRESENT, DIAG_error_cantiming_cc},
-    {DIAG_CH_CURRENT_SENSOR_RESPONDING,                 "CURRENT_SENSOR_RESPONDING",            DIAG_GENERAL_TYPE, DIAG_ERROR_CAN_SENSOR_SENSITIVITY,        DIAG_RECORDING_ENABLED, DIAG_CAN_SENSOR_PRESENT, DIAG_error_cancurrentsensor},
-
-#if BUILD_MODULE_ENABLE_CONTACTOR == 1
-    /* Contactor Damage Error */
-    {DIAG_CH_CONTACTOR_DAMAGED,                         "CONTACTOR_DAMAGED",                    DIAG_CONT_TYPE,     DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_CONTACTOR_OPENING,                         "CONTACTOR_OPENING",                    DIAG_CONT_TYPE,     DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_CONTACTOR_CLOSING,                         "CONTACTOR_CLOSING",                    DIAG_CONT_TYPE,     DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-
-    /* Contactor Feedback Error */
-    {DIAG_CH_CONTACTOR_MAIN_PLUS_FEEDBACK,              "CONT_MAIN_PLUS_FEED",         DIAG_GENERAL_TYPE,  DIAG_ERROR_MAIN_PLUS_SENSITIVITY,      DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_contactormainplus},
-    {DIAG_CH_CONTACTOR_MAIN_MINUS_FEEDBACK,             "CONT_MAIN_MINUS_FEED",        DIAG_GENERAL_TYPE,  DIAG_ERROR_MAIN_MINUS_SENSITIVITY,     DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_contactormainminus},
-    {DIAG_CH_CONTACTOR_PRECHARGE_FEEDBACK,              "CONT_PRECHARGE_FEED",         DIAG_GENERAL_TYPE,  DIAG_ERROR_PRECHARGE_SENSITIVITY,      DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_contactorprecharge},
-    {DIAG_CH_CONTACTOR_CHARGE_MAIN_PLUS_FEEDBACK,       "CONT_CHRGE_MAIN_PLUS_FEED",  DIAG_GENERAL_TYPE,  DIAG_ERROR_MAIN_PLUS_SENSITIVITY,      DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_contactorchargemainplus},
-    {DIAG_CH_CONTACTOR_CHARGE_MAIN_MINUS_FEEDBACK,      "CONT_CHRGE_MAIN_MINUS_FEED", DIAG_GENERAL_TYPE,  DIAG_ERROR_MAIN_MINUS_SENSITIVITY,     DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_contactorchargemainminus},
-    {DIAG_CH_CONTACTOR_CHARGE_PRECHARGE_FEEDBACK,       "CONT_CHRGE_PRECHARGE_FEED",  DIAG_GENERAL_TYPE,  DIAG_ERROR_PRECHARGE_SENSITIVITY,      DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_contactorchargeprecharge},
-#else
-    /* Contactor Damage Error */
-    {DIAG_CH_CONTACTOR_DAMAGED,                         "CONTACTOR_DAMAGED",                    DIAG_CONT_TYPE,     DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_DISABLED, DIAG_DISABLED, dummyfu},
-    {DIAG_CH_CONTACTOR_OPENING,                         "CONTACTOR_OPENING",                    DIAG_CONT_TYPE,     DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_DISABLED, DIAG_DISABLED, dummyfu},
-    {DIAG_CH_CONTACTOR_CLOSING,                         "CONTACTOR_CLOSING",                    DIAG_CONT_TYPE,     DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_DISABLED, DIAG_DISABLED, dummyfu},
-
-    /* Contactor Feedback Error */
-    {DIAG_CH_CONTACTOR_MAIN_PLUS_FEEDBACK,              "CONT_MAIN_PLUS_FEED",         DIAG_GENERAL_TYPE,  DIAG_ERROR_MAIN_PLUS_SENSITIVITY,      DIAG_RECORDING_DISABLED, DIAG_DISABLED, DIAG_error_contactormainplus},
-    {DIAG_CH_CONTACTOR_MAIN_MINUS_FEEDBACK,             "CONT_MAIN_MINUS_FEED",        DIAG_GENERAL_TYPE,  DIAG_ERROR_MAIN_MINUS_SENSITIVITY,     DIAG_RECORDING_DISABLED, DIAG_DISABLED, DIAG_error_contactormainminus},
-    {DIAG_CH_CONTACTOR_PRECHARGE_FEEDBACK,              "CONT_PRECHARGE_FEED",         DIAG_GENERAL_TYPE,  DIAG_ERROR_PRECHARGE_SENSITIVITY,      DIAG_RECORDING_DISABLED, DIAG_DISABLED, DIAG_error_contactorprecharge},
-    {DIAG_CH_CONTACTOR_CHARGE_MAIN_PLUS_FEEDBACK,       "CONT_CHRGE_MAIN_PLUS_FEED",  DIAG_GENERAL_TYPE,  DIAG_ERROR_MAIN_PLUS_SENSITIVITY,      DIAG_RECORDING_DISABLED, DIAG_DISABLED, DIAG_error_contactorchargemainplus},
-    {DIAG_CH_CONTACTOR_CHARGE_MAIN_MINUS_FEEDBACK,      "CONT_CHRGE_MAIN_MINUS_FEED", DIAG_GENERAL_TYPE,  DIAG_ERROR_MAIN_MINUS_SENSITIVITY,     DIAG_RECORDING_DISABLED, DIAG_DISABLED, DIAG_error_contactorchargemainminus},
-    {DIAG_CH_CONTACTOR_CHARGE_PRECHARGE_FEEDBACK,       "CONT_CHRGE_PRECHARGE_FEED",  DIAG_GENERAL_TYPE,  DIAG_ERROR_PRECHARGE_SENSITIVITY,      DIAG_RECORDING_DISABLED, DIAG_DISABLED, DIAG_error_contactorchargeprecharge},
-#endif
+    {DIAG_CH_LTC_SPI,                                   "LTC_SPI",                              DIAG_ERROR_LTC_SPI_SENSITIVITY,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_ltc},
+    {DIAG_CH_LTC_PEC,                                   "LTC_PEC",                              DIAG_ERROR_LTC_PEC_SENSITIVITY,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_ltc},
+    {DIAG_CH_LTC_MUX,                                   "LTC_MUX",                              DIAG_ERROR_LTC_MUX_SENSITIVITY,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_ltc},
 
 #if BUILD_MODULE_ENABLE_ILCK == 1
     /* Interlock Feedback Error */
-    {DIAG_CH_INTERLOCK_FEEDBACK,                        "INTERLOCK_FEEDBACK",                   DIAG_GENERAL_TYPE,  DIAG_ERROR_INTERLOCK_SENSITIVITY,       DIAG_RECORDING_DISABLED, DIAG_DISABLED, DIAG_error_interlock},
+    {DIAG_CH_INTERLOCK_FEEDBACK,                        "INTERLOCK_FEEDBACK",                    DIAG_ERROR_INTERLOCK_SENSITIVITY,       DIAG_RECORDING_DISABLED, DIAG_DISABLED, DIAG_error_interlock},
 #else
-    {DIAG_CH_INTERLOCK_FEEDBACK,                        "INTERLOCK_FEEDBACK",                   DIAG_GENERAL_TYPE,  DIAG_ERROR_INTERLOCK_SENSITIVITY,       DIAG_RECORDING_DISABLED, DIAG_DISABLED, DIAG_error_interlock},
+    {DIAG_CH_INTERLOCK_FEEDBACK,                        "INTERLOCK_FEEDBACK",                    DIAG_ERROR_INTERLOCK_SENSITIVITY,       DIAG_RECORDING_DISABLED, DIAG_DISABLED, DIAG_error_interlock},
 #endif
 
     /* Slave PCB temperature errors for under and over temperature */
-    {DIAG_CH_SLAVE_PCB_UNDERTEMPERATURE_MSL,          "SLAVE_PCB_UNDERTEMPERATURE_MSL",     DIAG_GENERAL_TYPE,    DIAG_ERROR_SLAVE_TEMP_SENSITIVITY_MSL,   DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_SLAVE_PCB_UNDERTEMPERATURE_MSL,          "SLAVE_PCB_UNDERTEMP_MSL",        DIAG_ERROR_SLAVE_TEMP_SENSITIVITY_MSL,   DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
 
-    {DIAG_CH_SLAVE_PCB_OVERTEMPERATURE_MSL,           "SLAVE_PCB_OVERTEMPERATURE_MSL",      DIAG_GENERAL_TYPE,    DIAG_ERROR_SLAVE_TEMP_SENSITIVITY_MSL,   DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_ERROR_MCU_DIE_TEMPERATURE,     "MCU_DIE_TEMPERATURE",     DIAG_GENERAL_TYPE,  DIAG_ERROR_SENSITIVITY_LOW, DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_MCUdieTemperature},
-    {DIAG_CH_LOW_COIN_CELL_VOLTAGE,         "COIN_CELL_VOLT_LOW",      DIAG_GENERAL_TYPE,  DIAG_ERROR_SENSITIVITY_LOW, DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
-    {DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE,    "COIN_CELL_VOLT_CRITICAL", DIAG_GENERAL_TYPE,  DIAG_ERROR_SENSITIVITY_LOW, DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_SLAVE_PCB_OVERTEMPERATURE_MSL,           "SLAVE_PCB_OVERTEMP_MSL",         DIAG_ERROR_SLAVE_TEMP_SENSITIVITY_MSL,   DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+    {DIAG_CH_ERROR_MCU_DIE_TEMPERATURE,     "MCU_DIE_TEMPERATURE",      DIAG_ERROR_SENSITIVITY_LOW, DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_MCUdieTemperature},
+    {DIAG_CH_LOW_COIN_CELL_VOLTAGE,         "COIN_CELL_VOLT_LOW",       DIAG_ERROR_SENSITIVITY_LOW, DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_coinCellVoltage},
+    {DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE,    "COIN_CELL_VOLT_CRITICAL",  DIAG_ERROR_SENSITIVITY_LOW, DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_coinCellVoltage},
+
+    /* Plausibility checks */
+    {DIAG_CH_PLAUSIBILITY_CELL_VOLTAGE,    "PL_CELL_VOLT",    DIAG_ERROR_SENSITIVITY_HIGH, DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_plausibility_check},
+    {DIAG_CH_PLAUSIBILITY_CELL_TEMP,       "PL_CELL_TEMP",    DIAG_ERROR_SENSITIVITY_HIGH, DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_plausibility_check},
 };
 
 
@@ -567,6 +216,204 @@ DIAG_DEV_s  diag_dev = {
     .ch_cfg     = &diag_ch_cfg[0],
 };
 
-/*================== Function Prototypes ==================================*/
+/*================== Static Function Implementations ========================*/
+/**
+ * @brief  dummy callback function of diagnosis events
+ */
+void dummyfu(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
+    /* Dummy function -> empty */
+}
 
-/*================== Function Implementations =============================*/
+/**
+ * @brief  dummy callback function of system monitoring error events
+ */
+void dummyfu2(DIAG_SYSMON_MODULE_ID_e ch_id) {
+    /* Dummy function -> empty */
+}
+
+/**
+ * @brief  diagnosis callback function for overvoltage events
+ */
+static void DIAG_overvoltage(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
+    if (ch_id == DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MSL) {
+        if (event == DIAG_EVENT_RESET) {
+            msl_flags.over_voltage = 0;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            msl_flags.over_voltage = 1;
+        }
+    }
+}
+
+/**
+ * @brief  diagnosis callback function for undervoltage events
+ */
+static void DIAG_undervoltage(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
+    if (ch_id == DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MSL) {
+        if (event == DIAG_EVENT_RESET) {
+            msl_flags.under_voltage = 0;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            msl_flags.under_voltage = 1;
+        }
+    }
+}
+
+/**
+ * @brief  diagnosis callback function for overtemperature charge events
+ */
+static void DIAG_overtemperature_charge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
+    if (ch_id == DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL) {
+        if (event == DIAG_EVENT_RESET) {
+            msl_flags.over_temperature_charge = 0;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            msl_flags.over_temperature_charge = 1;
+        }
+    }
+}
+
+/**
+ * @brief  diagnosis callback function for overtemperature discharge events
+ */
+static void DIAG_overtemperature_discharge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
+    if (ch_id == DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL) {
+        if (event == DIAG_EVENT_RESET) {
+            msl_flags.over_temperature_discharge = 0;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            msl_flags.over_temperature_discharge = 1;
+        }
+    }
+}
+
+/**
+ * @brief  diagnosis callback function for undertemperature charge events
+ */
+static void DIAG_undertemperature_charge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
+    if (ch_id == DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL) {
+        if (event == DIAG_EVENT_RESET) {
+            msl_flags.under_temperature_charge = 0;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            msl_flags.under_temperature_charge = 1;
+        }
+    }
+}
+
+/**
+ * @brief  diagnosis callback function for undertemperature discharge events
+ */
+static void DIAG_undertemperature_discharge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
+    if (ch_id == DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL) {
+        if (event == DIAG_EVENT_RESET) {
+            msl_flags.under_temperature_discharge = 0;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            msl_flags.under_temperature_discharge = 1;
+        }
+    }
+}
+
+/**
+ * @brief  diagnosis callback function for LTC module related events
+ */
+static void DIAG_error_ltc(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
+    if (ch_id == DIAG_CH_LTC_SPI) {
+        if (event == DIAG_EVENT_RESET) {
+            error_flags.spi_error = 0;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            error_flags.spi_error = 1;
+        }
+    } else if (ch_id == DIAG_CH_LTC_PEC) {
+        if (event == DIAG_EVENT_RESET) {
+            error_flags.crc_error = 0;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            error_flags.crc_error = 1;
+        }
+    } else if (ch_id == DIAG_CH_LTC_MUX) {
+        if (event == DIAG_EVENT_RESET) {
+            error_flags.mux_error = 0;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            error_flags.mux_error = 1;
+        }
+    }
+}
+
+/**
+ * @brief  diagnosis callback function for interlock events
+ */
+void DIAG_error_interlock(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
+    if (ch_id == DIAG_CH_INTERLOCK_FEEDBACK) {
+        if (event == DIAG_EVENT_RESET) {
+            error_flags.interlock = 0;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            error_flags.interlock = 1;
+        }
+    }
+}
+
+/**
+ * @brief  diagnosis callback function for MCU die temperature events
+ */
+void DIAG_error_MCUdieTemperature(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
+    if (ch_id == DIAG_CH_ERROR_MCU_DIE_TEMPERATURE) {
+        if (event == DIAG_EVENT_RESET) {
+            error_flags.mcuDieTemperature = 0;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            error_flags.mcuDieTemperature = 1;
+        }
+    }
+}
+
+/**
+ * @brief  diagnosis callback function for coin cell voltage events
+ */
+void DIAG_error_coinCellVoltage(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
+    if (ch_id == DIAG_CH_LOW_COIN_CELL_VOLTAGE) {
+        if (event  ==  DIAG_EVENT_RESET) {
+            error_flags.coinCellVoltage &= 0xFE;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            error_flags.coinCellVoltage |= 0x01;
+        }
+    } else if (ch_id == DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE) {
+        if (event  ==  DIAG_EVENT_RESET) {
+            error_flags.coinCellVoltage &= 0xFD;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            error_flags.coinCellVoltage |= 0x02;
+        }
+    }
+}
+
+/**
+ * @brief  diagnosis callback function for plausibility events
+ */
+void DIAG_error_plausibility_check(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
+    if (ch_id == DIAG_CH_PLAUSIBILITY_CELL_VOLTAGE) {
+        if (event  ==  DIAG_EVENT_RESET) {
+            error_flags.plausibilityCheck &= 0xFE;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            error_flags.plausibilityCheck |= 0x01;
+        }
+    } else if (ch_id == DIAG_CH_PLAUSIBILITY_CELL_TEMP) {
+        if (event  ==  DIAG_EVENT_RESET) {
+            error_flags.plausibilityCheck &= 0xFD;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            error_flags.plausibilityCheck |= 0x02;
+        }
+    }
+}
+/*================== Extern Function Implementations ========================*/
+void DIAG_updateFlags(void) {
+    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
+    DB_WriteBlock(&msl_flags, DATA_BLOCK_ID_MSL);
+}

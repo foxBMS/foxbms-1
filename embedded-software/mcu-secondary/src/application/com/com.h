@@ -83,9 +83,9 @@
 #error ERROR: wrong combination of module enable keys in general.h !
 #error BUILD_MODULE_DEBUGPRINTF could only be used when UART module BUILD_MODULE_ENABLE_UART is activated
 #endif
-    #define DEBUG_PRINTF(x)             printf x
 #else
-    #define DEBUG_PRINTF(x)             (void)0
+    #define fprintf(...)
+    #define printf(...)
 #endif
 
 

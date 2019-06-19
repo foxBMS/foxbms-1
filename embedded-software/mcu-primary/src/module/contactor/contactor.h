@@ -198,6 +198,17 @@ typedef enum {
 } CONT_RETURN_TYPE_e;
 
 /**
+ * @brief Names for connected powerlines.
+ */
+typedef enum CONT_POWER_LINE_e {
+    CONT_POWER_LINE_NONE,    /*!< no power line is connected, contactors are open            */
+    CONT_POWER_LINE_0,       /*!< power line 0, e.g. used for the power train                */
+#if BS_SEPARATE_POWERLINES == 1
+    CONT_POWER_LINE_1,       /*!< power line 1, e.g. used for charging                       */
+#endif
+} CONT_POWER_LINE_e;
+
+/**
  * This structure contains all the variables relevant for the CONT state machine.
  * The user can get the current state of the CONT state machine with this variable
  */
@@ -208,19 +219,68 @@ typedef struct {
     CONT_STATEMACH_SUB_e substate;           /*!< current substate of the state machine                                                  */
     CONT_STATEMACH_e laststate;              /*!< previous state of the state machine                                                    */
     CONT_STATEMACH_SUB_e lastsubstate;       /*!< previous substate of the state machine                                                 */
-    uint32_t ErrRequestCounter;              /*!< counts the number of illegal requests to the LTC state machine    */
-    uint16_t OscillationCounter;             /*!< timeout to prevent oscillation of contactors */
-    uint8_t PrechargeTryCounter;             /*!< timeout to prevent oscillation of contactors */
-    uint16_t PrechargeTimeOut;               /*!< time to wait when precharge has been closed for voltages to settle */
-    uint8_t triggerentry;                    /*!< counter for re-entrance protection (function running flag) */
-    uint8_t counter;                         /*!< general purpose counter */
+    uint32_t ErrRequestCounter;              /*!< counts the number of illegal requests to the LTC state machine                         */
+    STD_RETURN_TYPE_e initFinished;          /*!< #E_OK if the initialization has passed, #E_NOT_OK otherwise                            */
+    uint16_t OscillationCounter;             /*!< timeout to prevent oscillation of contactors                                           */
+    uint8_t PrechargeTryCounter;             /*!< timeout to prevent oscillation of contactors                                           */
+    uint16_t PrechargeTimeOut;               /*!< time to wait when precharge has been closed for voltages to settle                     */
+    uint8_t triggerentry;                    /*!< counter for re-entrance protection (function running flag)                             */
+    uint8_t counter;                         /*!< general purpose counter                                                                */
+    CONT_POWER_LINE_e activePowerLine;       /*!< tracks the currently connected power line                                              */
 } CONT_STATE_s;
 
 
 /*================== Function Prototypes ==================================*/
 
+/**
+ * @brief   Sets the current state request of the state variable cont_state.
+ *
+ * @details This function is used to make a state request to the state machine,e.g, start voltage
+ *          measurement, read result of voltage measurement, re-initialization.
+ *          It calls CONT_CheckStateRequest() to check if the request is valid. The state request
+ *          is rejected if is not valid. The result of the check is returned immediately, so that
+ *          the requester can act in case it made a non-valid state request.
+ *
+ * @param   state request to set
+ *
+ * @return  #CONT_OK if a state request was made, #CONT_STATE_NO_REQUEST if no state request was made
+ */
 extern CONT_RETURN_TYPE_e CONT_SetStateRequest(CONT_STATE_REQUEST_e statereq);
+
+/**
+ * @brief   Gets the current state.
+ *
+ * @details This function is used in the functioning of the CONT state machine.
+ *
+ * @return  current state, taken from #CONT_STATEMACH_e
+ */
 extern  CONT_STATEMACH_e CONT_GetState(void);
+
+/**
+ * @brief   Gets the initialization state.
+ *
+ * This function is used for getting the CONT initialization state.
+ *
+ * @return  #E_OK if initialized, otherwise #E_NOT_OK
+ */
+STD_RETURN_TYPE_e CONT_GetInitializationState(void);
+
+/**
+ * @brief Returns the active power line.
+ *
+ * This function returns the value of #cont_state.activePowerLine
+ *
+ * @return value of #cont_state.activePowerLine
+ */
+extern CONT_POWER_LINE_e CONT_GetActivePowerLine(void);
+
+/**
+ * @brief   Trigger function for the CONT driver state machine.
+ *
+ * @details This function contains the sequence of events in the CONT state machine. It must be
+ *          called time-triggered, every 1ms. It exits without effect, if the function call is
+ *          a reentrance.
+ */
 extern void CONT_Trigger(void);
 
 #endif /* CONTACTOR_H_ */

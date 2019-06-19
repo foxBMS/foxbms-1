@@ -51,11 +51,13 @@ def build(bld):
 
     includes = os.path.join(bld.bldnode.abspath()) + ' '
     includes += ' '.join([
-                '.',
+                bld.path.get_src().abspath(),
 
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general', 'config'),
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general', 'includes')])
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'general', 'config'),
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'general', 'includes')])
 
     bld.stlib(target='foxbms-common-util',
               source=srcs,
-              includes=includes)
+              includes=includes,
+              cflags=bld.env.CFLAGS_foxbms,
+              features=['size', 'check_includes'])

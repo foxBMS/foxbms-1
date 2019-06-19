@@ -18,14 +18,14 @@ Module Files
 ~~~~~~~~~~~~
 
 Driver:
- - ``embedded-software\mcu-primary\src\module\isoguard\isoguard.h``
- - ``embedded-software\mcu-primary\src\module\isoguard\isoguard.c``
- - ``embedded-software\mcu-primary\src\module\isoguard\ir155.h``
- - ``embedded-software\mcu-primary\src\module\isoguard\ir155.c``
+ - ``embedded-software\mcu-primary\src\module\isoguard\isoguard.h`` (:ref:`isoguardh`)
+ - ``embedded-software\mcu-primary\src\module\isoguard\isoguard.c`` (:ref:`isoguardc`)
+ - ``embedded-software\mcu-primary\src\module\isoguard\ir155.h`` (:ref:`ir155h`)
+ - ``embedded-software\mcu-primary\src\module\isoguard\ir155.c`` (:ref:`ir155c`)
 
 Driver Configuration:
- - ``embedded-software\mcu-primary\src\module\config\isoguard_cfg.h``
- - ``embedded-software\mcu-primary\src\module\config\isoguard_cfg.c``
+ - ``embedded-software\mcu-primary\src\module\config\isoguard_cfg.h`` (:ref:`isoguardcfgh`)
+ - ``embedded-software\mcu-primary\src\module\config\isoguard_cfg.c`` (:ref:`isoguardcfgc`)
 
 Detailed Description
 ~~~~~~~~~~~~~~~~~~~~
@@ -68,19 +68,26 @@ The configuration is done in the ``isoguard_cfg.h`` file and consists of two def
 
    #define ISO_CYCLE_TIME                    200
 
-``ISO_CYCLE_TIME`` is the periodic calling time of the ``ISO_MeasureInsulation(void)`` function and must not be chosen lower than 150ms due to the lowest possible frequency of the Bender of 10Hz. The default value is 200ms.
+``ISO_CYCLE_TIME`` is the periodic calling time of the
+``ISO_MeasureInsulation(void)`` function and must not be chosen lower than
+150ms due to the lowest possible frequency of the Bender of 10Hz. The default
+value is 200ms.
 
 .. code-block:: C
 
    #define ISO_RESISTANCE_THRESHOLD          400
 
-``ISO_RESISTANCE_THRESHOLD`` specifies the resistance threshold to differentiate between good and bad insulation. This value has no impact if
-the threshold is set lower than the intern resistance threshold of the Bender insulation monitor. The default value is 400kOhm.
+``ISO_RESISTANCE_THRESHOLD`` specifies the resistance threshold to
+differentiate between good and bad insulation. This value has no impact if the
+threshold is set lower than the intern resistance threshold of the Bender
+insulation monitor. The default value is 400kOhm.
 
 
 Initialization
 --------------
-The initialization is done via the interface function ``ISO_Init(void)``, which is forwarded to the Bender insulation monitor specific initialization functions, as shown in :numref:`fig. %s <isoguard_figure2>`.
+The initialization is done via the interface function ``ISO_Init(void)``,
+which is forwarded to the Bender insulation monitor specific initialization
+functions, as shown in :numref:`fig. %s <isoguard_figure2>`.
 
 .. _isoguard_figure2:
 .. figure:: iso_init.png
@@ -92,16 +99,23 @@ The most important steps in the initialization process are:
 
  - Enabling of PWM input measurement
  - Reading of ``BKP_SRAM`` variable for previous Ground Error
- - Set start-up time before measurement results are trustworthy (dependent on the previous state)
+ - Set start-up time before measurement results are trustworthy (dependent on
+   the previous state)
  - Enabling of Bender hardware module
 
-The function ``ISO_ReInit(void)`` resets the whole |mod_isoguard| and the initialization process is done again, including the waiting time until the measurement values are declared as trustworthy.
+The function ``ISO_ReInit(void)`` resets the whole |mod_isoguard| and the
+initialization process is done again, including the waiting time until the
+measurement values are declared as trustworthy.
 
 
 Usage
 ~~~~~
 
-After initializing the |mod_isoguard|, the ``ISO_MeasureInsulation(void)`` function needs to be called periodically according to the set cycle time. The Bender insulation monitor measurement values are evaluated and then written into the database where further modules can operate on this data. Following measurement values are saved:
+After initializing the |mod_isoguard|, the ``ISO_MeasureInsulation(void)``
+function needs to be called periodically according to the set cycle time. The
+Bender insulation monitor measurement values are evaluated and then written
+into the database where further modules can operate on this data. Following
+measurement values are saved:
 
 .. code-block:: C
 
@@ -113,13 +127,18 @@ After initializing the |mod_isoguard|, the ``ISO_MeasureInsulation(void)`` funct
        uint32_t previous_timestamp;
    }DATA_BLOCK_ISOMETER_s;
 
-The measured insulation is split into intervals according to the array ``uint16 const static ir155_ResistanceInterval[7]``. For more detailed information see source code.
+The measured insulation is split into intervals according to the array ``uint16
+const static ir155_ResistanceInterval[7]``. For more detailed information see
+source code.
 
 
 Observable SW-Behavior
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``data_block_isometer.timestamp``-variable must be always running, otherwise the measured values are not written into the database (Check if the define ``ISO_ISOGUARD_ENABLE`` is defined, otherwise the |mod_isoguard| is not activated). Depending on the used resistor, the following behavior can be observed:
+The ``data_block_isometer.timestamp``-variable must be always running, otherwise
+the measured values are not written into the database (Check if the define
+``ISO_ISOGUARD_ENABLE`` is defined, otherwise the |mod_isoguard| is not
+activated). Depending on the used resistor, the following behavior can be observed:
 
 ==============================     ==========================================================================================
 Variable                           Behavior

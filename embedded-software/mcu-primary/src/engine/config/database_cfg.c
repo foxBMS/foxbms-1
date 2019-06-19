@@ -117,7 +117,7 @@ DATA_BLOCK_ISOMETER_s data_block_isometer[SINGLE_BUFFERING];
 /**
  * data block: error flags
  */
-DATA_BLOCK_ERRORSTATE_s data_block_errors[DOUBLE_BUFFERING];
+DATA_BLOCK_ERRORSTATE_s data_block_errors[SINGLE_BUFFERING];
 
 /**
  * data block: maximum safety limit violations
@@ -265,7 +265,7 @@ DATA_BASE_HEADER_s  data_base_header[] = {
     {
             (void*)(&data_block_errors[0]),
             sizeof(DATA_BLOCK_ERRORSTATE_s),
-            DOUBLE_BUFFERING,
+            SINGLE_BUFFERING,
     },
     {
             (void*)(&data_block_MSL[0]),

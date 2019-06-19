@@ -3,15 +3,15 @@
 .. -----------------------------------------------
 .. General Documentation Macros
 .. -----------------------------------------------
-.. |version| replace:: ``1.5.5``
-.. |version-hal| replace:: ``V1.5.0``
-.. |version-cmsis| replace:: ``V2.5.6``
-.. |version-freertos| replace:: ``V9.0.0``
+.. |version| replace:: ``1.6.0``
+.. |version-hal| replace:: ``V1.7.4``
+.. |version-cmsis| replace:: ``V2.6.2``
+.. |version-freertos| replace:: ``V10.1.1``
 .. |hw-version-master| replace:: ``1.0.6``
 .. |hw-version-extension| replace:: ``1.0.5``
-.. |hw-version-interface| replace:: ``1.9.3``
-.. |hw-version-12-slave| replace:: ``2.1.5``
-.. |hw-version-18-slave| replace:: ``1.1.3``
+.. |hw-version-interface| replace:: ``1.9.4``
+.. |hw-version-12-slave| replace:: ``2.1.7``
+.. |hw-version-18-slave| replace:: ``1.1.5``
 .. |timestamp| date:: %Y-%m-%d %H:%M:%S
 .. |foxbms| replace:: foxBMS
 .. |foxconda3| replace:: foxconda3

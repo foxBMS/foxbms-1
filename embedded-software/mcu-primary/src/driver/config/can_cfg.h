@@ -64,8 +64,8 @@
 
 /*================== Macros and Definitions ===============================*/
 
-#define CAN_0_TRANS_STANDBY_CONTROL    IO_PIN_MCU_0_CAN_0_TRANS_STANDBY_CONTROL
-#define CAN_1_TRANS_STANDBY_CONTROL    IO_PIN_MCU_0_CAN_1_TRANS_STANDBY_CONTROL
+#define CAN_0_TRANS_STANDBY_CONTROL    IO_PIN_CAN_0_TRANS_STANDBY_CONTROL
+#define CAN_1_TRANS_STANDBY_CONTROL    IO_PIN_CAN_1_TRANS_STANDBY_CONTROL
 
 /* **************************************************************************************
  *  CAN BUFFER OPTIONS
@@ -84,10 +84,10 @@
 /**
  * defines the BAUD rate of the CAN0
  */
-/* #define CAN0_BAUDRATE 1000000 */
-#define CAN0_BAUDRATE 500000
-/* #define CAN0_BAUDRATE 250000 */
-/* #define CAN0_BAUDRATE 125000 */
+/* #define CAN0_BAUDRATE (1000000U) */
+#define CAN0_BAUDRATE (500000U)
+/* #define CAN0_BAUDRATE (250000U) */
+/* #define CAN0_BAUDRATE (125000U) */
 
 /**
  * @ingroup CONFIG_CAN
@@ -103,10 +103,10 @@
 /**
  * defines the BAUD rate of the CAN1
  */
-/* #define CAN1_BAUDRATE 1000000 */
-#define CAN1_BAUDRATE 500000
-/* #define CAN1_BAUDRATE 250000 */
-/* #define CAN1_BAUDRATE 125000 */
+/* #define CAN1_BAUDRATE (1000000U) */
+#define CAN1_BAUDRATE (500000U)
+/* #define CAN1_BAUDRATE (250000U) */
+/* #define CAN1_BAUDRATE (125000U) */
 
 
 
@@ -121,7 +121,7 @@
  * \par Default:
  * 1
 */
-#define CAN_USE_CAN_NODE0                1
+#define CAN_USE_CAN_NODE0                (1U)
 
 /**
  * @ingroup CONFIG_CAN
@@ -133,7 +133,7 @@
  * \par Default:
  * 1
 */
-#define CAN_USE_CAN_NODE1                1
+#define CAN_USE_CAN_NODE1                (1U)
 
 /**
  * @ingroup CONFIG_CAN
@@ -145,7 +145,7 @@
  * \par Default:
  * 1
 */
-#define CAN_USE_STANDBY_CONTROL          1
+#define CAN_USE_STANDBY_CONTROL          (1U)
 
 /* transmit buffer */
 /**
@@ -158,7 +158,7 @@
  * \par Default:
  * 1
 */
-#define CAN0_USE_TRANSMIT_BUFFER         1
+#define CAN0_USE_TRANSMIT_BUFFER         (1U)
 /**
  * @ingroup CONFIG_CAN
  * Defines CAN0 transmit buffer length
@@ -169,7 +169,7 @@
  * \par Default:
  * 16
 */
-#define CAN0_TRANSMIT_BUFFER_LENGTH      24
+#define CAN0_TRANSMIT_BUFFER_LENGTH      (24U)
 
 /**
  * @ingroup CONFIG_CAN
@@ -181,7 +181,7 @@
  * \par Default:
  * 1
 */
-#define CAN1_USE_TRANSMIT_BUFFER         1
+#define CAN1_USE_TRANSMIT_BUFFER         (1U)
 /**
  * @ingroup CONFIG_CAN
  * Defines CAN1 transmit buffer length
@@ -192,7 +192,7 @@
  * \par Default:
  * 16
 */
-#define CAN1_TRANSMIT_BUFFER_LENGTH      16
+#define CAN1_TRANSMIT_BUFFER_LENGTH      (16U)
 
 /* receive buffer */
 /**
@@ -205,7 +205,7 @@
  * \par Default:
  * 1
 */
-#define CAN0_USE_RECEIVE_BUFFER          1
+#define CAN0_USE_RECEIVE_BUFFER          (1U)
 /**
  * @ingroup CONFIG_CAN
  * Defines CAN0 receive buffer length
@@ -216,7 +216,7 @@
  * \par Default:
  * 16
 */
-#define CAN0_RECEIVE_BUFFER_LENGTH       16
+#define CAN0_RECEIVE_BUFFER_LENGTH       (16U)
 
 /**
  * @ingroup CONFIG_CAN
@@ -228,7 +228,7 @@
  * \par Default:
  * 1
 */
-#define CAN1_USE_RECEIVE_BUFFER          1
+#define CAN1_USE_RECEIVE_BUFFER          (1U)
 /**
  * @ingroup CONFIG_CAN
  * Defines CAN1 receive buffer length
@@ -239,7 +239,7 @@
  * \par Default:
  * 16
 */
-#define CAN1_RECEIVE_BUFFER_LENGTH       16
+#define CAN1_RECEIVE_BUFFER_LENGTH       (16U)
 
 
 /* Number of messages that will bypass the receive buffer and will be interpreted right on reception.
@@ -257,7 +257,7 @@
  * \par Default:
  * 0
 */
-#define CAN0_BUFFER_BYPASS_NUMBER_OF_IDs 1
+#define CAN0_BUFFER_BYPASS_NUMBER_OF_IDs (1U)
 
 /**
  * @ingroup CONFIG_CAN
@@ -269,14 +269,7 @@
  * \par Default:
  * 0
 */
-#define CAN1_BUFFER_BYPASS_NUMBER_OF_IDs 0
-
-/**
- * @ingroup CONFIG_CAN
- * defines if the Isabellenhuette current sensor is used in cyclic or triggered mode
-*/
-#define CAN_ISABELLENHUETTE_CYCLIC
-/* #define CAN_ISABELLENHUETTE_TRIGGERED */
+#define CAN1_BUFFER_BYPASS_NUMBER_OF_IDs (0U)
 
 /**
  * @ingroup CONFIG_CAN
@@ -286,7 +279,7 @@
  * \par Default:
  * 351
 */
-#define CAN_ID_SOFTWARE_RESET_MSG                     0x95
+#define CAN_ID_SOFTWARE_RESET_MSG                     (0x95U)
 
 /**
  * @ingroup CONFIG_CAN
@@ -298,28 +291,16 @@
  * \par Default:
  * 0
 */
-/* #define CAN_SW_RESET_WITH_DEVICE_ID        1 */
-#define CAN_SW_RESET_WITH_DEVICE_ID        0
-
-
-/* Hardware settings*/
-/**
- * @ingroup CONFIG_CAN
- * Number of hardware filterbanks
- * \par Type:
- * int
- * \par Default:
- * 28
-*/
-#define CAN_NUMBER_OF_FILTERBANKS       28  /* dependable on the MCU (STM32F4 -> 28) */
+/* #define CAN_SW_RESET_WITH_DEVICE_ID        (01) */
+#define CAN_SW_RESET_WITH_DEVICE_ID        (0U)
 
 typedef struct CAN_MSG_RX_TYPE {
-    uint32_t ID;    /*!< message ID*/
-    uint32_t mask;  /*!< mask or 0x0000 to select list mode*/
-    uint8_t DLC;    /*!< data length*/
-    uint8_t RTR;    /*!< rtr bit*/
-    uint8_t fifo;   /*!< selected CAN hardware (CAN_FIFO0 or CAN_FIFO1)*/
-    STD_RETURN_TYPE_e (*func)(uint32_t ID, uint8_t*, uint8_t, uint8_t);    /*!< callback function*/
+    uint32_t ID;    /*!< message ID */
+    uint32_t mask;  /*!< mask or 0x0000 to select list mode */
+    uint8_t DLC;    /*!< data length */
+    uint8_t RTR;    /*!< rtr bit */
+    uint32_t fifo;  /*!< selected CAN hardware (CAN_FILTER_FIFO0 or CAN_FILTER_FIFO1) */
+    STD_RETURN_TYPE_e (*func)(uint32_t ID, uint8_t*, uint8_t, uint8_t);  /*!< callback function */
 } CAN_MSG_RX_TYPE_s;
 
 

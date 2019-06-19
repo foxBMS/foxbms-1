@@ -1,6 +1,10 @@
-.. include:: ../../../macros.rst
-
 :orphan:
+
+.. _COM_PRIMARY_SRC:
+
+==================
+COM Module Sources
+==================
 
 .. contents:: :local:
 

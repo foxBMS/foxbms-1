@@ -1,6 +1,10 @@
-.. include:: ../../../macros.rst
-
 :orphan:
+
+.. _ADC_SRC:
+
+==================
+ADC Module Sources
+==================
 
 .. contents:: :local:
 

@@ -152,12 +152,8 @@ static STD_RETURN_TYPE_e CANS_PeriodicTransmit(void) {
             PduToSend.id = can_CAN0_messages_tx[i].ID;
 
             result = CANS_AddMessage(CAN_NODE0, PduToSend.id, PduToSend.sdu, PduToSend.dlc, 0);
+            DIAG_checkEvent(result, DIAG_CH_CANS_CAN_MOD_FAILURE, 1);
 
-            if (result == E_NOT_OK) {
-                DIAG_Handler(DIAG_CH_CANS_CAN_MOD_FAILURE, DIAG_EVENT_NOK, 1, NULL_PTR);
-            } else {
-                DIAG_Handler(DIAG_CH_CANS_CAN_MOD_FAILURE, DIAG_EVENT_OK, 1, NULL_PTR);
-            }
             if (can_CAN0_messages_tx[i].cbk_func != NULL_PTR && result == E_OK) {
                 can_CAN0_messages_tx[i].cbk_func(i, NULL_PTR);
             }
@@ -173,12 +169,8 @@ static STD_RETURN_TYPE_e CANS_PeriodicTransmit(void) {
             PduToSend.id = can_CAN1_messages_tx[i].ID;
 
             result = CANS_AddMessage(CAN_NODE1, PduToSend.id, PduToSend.sdu, PduToSend.dlc, 0);
+            DIAG_checkEvent(result, DIAG_CH_CANS_CAN_MOD_FAILURE, 0);
 
-            if (result == E_NOT_OK) {
-                DIAG_Handler(DIAG_CH_CANS_CAN_MOD_FAILURE, DIAG_EVENT_NOK, 0, NULL_PTR);
-            } else {
-                DIAG_Handler(DIAG_CH_CANS_CAN_MOD_FAILURE, DIAG_EVENT_OK, 0, NULL_PTR);
-            }
             if (can_CAN1_messages_tx[i].cbk_func != NULL_PTR && result == E_OK) {
                 can_CAN1_messages_tx[i].cbk_func(i, NULL_PTR);
             }
@@ -225,7 +217,7 @@ static STD_RETURN_TYPE_e CANS_PeriodicReceive(void) {
     while (CAN_ReceiveBuffer(CAN_NODE1, &msg) == E_OK) {
         for (i = 0; i < can_CAN1_rx_length; i++) {
             if (msg.id == can1_RxMsgs[i].ID) {
-                CANS_ParseMessage(CAN_NODE1, (CANS_messagesRx_e)i + can_CAN0_rx_length, msg.sdu);
+                CANS_ParseMessage(CAN_NODE1, (CANS_messagesRx_e)i + can_CAN0_rx_length - CAN0_BUFFER_BYPASS_NUMBER_OF_IDs, msg.sdu);
                 result_node1 = E_OK;
             }
         }
@@ -323,6 +315,7 @@ static void CANS_ComposeMessage(CAN_NodeTypeDef_e canNode, CANS_messagesTx_e msg
         }
     }
 }
+
 /**
  * @brief   parses signal data from message associated with this msgIdx
  *
@@ -354,7 +347,7 @@ static void CANS_ParseMessage(CAN_NodeTypeDef_e canNode, CANS_messagesRx_e msgId
                 uint64_t value = 0;
                 CANS_GetSignalData(&value, cans_CAN1_signals_rx[i], dataptr);
                 if (cans_CAN1_signals_rx[i].setter != NULL_PTR) {
-                    cans_CAN1_signals_rx[i].setter(cans_CAN0_signals_rx_length + i, &value);
+                    cans_CAN1_signals_rx[i].setter(i, &value);
                 }
             }
         }
@@ -388,39 +381,41 @@ static uint8_t CANS_CheckCanTiming(void) {
         if (((canstatereq_tab.timestamp - canstatereq_tab.previous_timestamp) >= 95) && \
                 ((canstatereq_tab.timestamp - canstatereq_tab.previous_timestamp) <= 105)) {
             retVal = TRUE;
-            DIAG_Handler(DIAG_CH_CAN_TIMING, DIAG_EVENT_OK, 0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_CAN_TIMING, DIAG_EVENT_OK, 0);
         } else {
             retVal = FALSE;
-            DIAG_Handler(DIAG_CH_CAN_TIMING, DIAG_EVENT_NOK, 0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_CAN_TIMING, DIAG_EVENT_NOK, 0);
         }
     } else {
         retVal = FALSE;
-        DIAG_Handler(DIAG_CH_CAN_TIMING, DIAG_EVENT_NOK, 0, NULL_PTR);
+        DIAG_Handler(DIAG_CH_CAN_TIMING, DIAG_EVENT_NOK, 0);
     }
 
+#if CURRENT_SENSOR_PRESENT == TRUE
     /* check time stamps of current measurements */
     DB_ReadBlock(&current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
-    if (current_time-current_tab.timestamp > CANS_SENSOR_RESPONSE_TIMEOUT_MS) {
-        DIAG_Handler(DIAG_CH_CURRENT_SENSOR_RESPONDING, DIAG_EVENT_NOK, 0, NULL_PTR);
+    if (current_time-current_tab.timestamp > CURRENT_SENSOR_RESPONSE_TIMEOUT_MS) {
+        DIAG_Handler(DIAG_CH_CURRENT_SENSOR_RESPONDING, DIAG_EVENT_NOK, 0);
     } else {
-        DIAG_Handler(DIAG_CH_CURRENT_SENSOR_RESPONDING, DIAG_EVENT_OK, 0, NULL_PTR);
+        DIAG_Handler(DIAG_CH_CURRENT_SENSOR_RESPONDING, DIAG_EVENT_OK, 0);
         if (cans_state.current_sensor_present == FALSE) {
             CANS_SetCurrentSensorPresent(TRUE);
         }
     }
 
     /* check time stamps of CC measurements */
-    if (error_flags.can_cc_used == 1) {
-        if (current_time-current_tab.timestamp_cc > CANS_SENSOR_RESPONSE_TIMEOUT_MS) {
-            DIAG_Handler(DIAG_CH_CAN_CC_RESPONDING, DIAG_EVENT_NOK, 0, NULL_PTR);
+    /* if timestamp_cc != 0, this means current sensor cc message has been received at least once */
+    if (current_tab.timestamp_cc != 0) {
+        if (current_time-current_tab.timestamp_cc > CURRENT_SENSOR_RESPONSE_TIMEOUT_MS) {
+            DIAG_Handler(DIAG_CH_CAN_CC_RESPONDING, DIAG_EVENT_NOK, 0);
         } else {
-            DIAG_Handler(DIAG_CH_CAN_CC_RESPONDING, DIAG_EVENT_OK, 0, NULL_PTR);
+            DIAG_Handler(DIAG_CH_CAN_CC_RESPONDING, DIAG_EVENT_OK, 0);
             if (cans_state.current_sensor_cc_present == FALSE) {
                 CANS_SetCurrentSensorCCPresent(TRUE);
             }
         }
     }
-    /* DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORFLAGS); */
+#endif /* CURRENT_SENSOR_PRESENT == TRUE */
 
     return retVal;
 }

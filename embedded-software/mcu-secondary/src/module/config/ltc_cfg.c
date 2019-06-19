@@ -53,6 +53,8 @@
 /*================== Includes =============================================*/
 #include "ltc_cfg.h"
 
+#include "epcos_b57861s0103f045.h"
+
 /*================== Macros and Definitions ===============================*/
 
 /*================== Constant and Variable Definitions ====================*/
@@ -237,15 +239,9 @@ const uint8_t ltc_voltage_input_used[BS_MAX_SUPPORTED_CELLS] = {
 
 float LTC_Convert_MuxVoltages_to_Temperatures(float v_adc) {
     float temperature = 0.0;
-    /* float v_adc2 = v_adc*v_adc; */
-    /* float v_adc3 = v_adc2*v_adc; */
-    /* float v_adc4 = v_adc3*v_adc; */
-    /* float v_adc5 = v_adc4*v_adc; */
-    /* float v_adc6 = v_adc5*v_adc; */
 
     /* Example: 5th grade polynomial for EPCOS B57861S0103F045 NTC-Thermistor, 10 kOhm, Series B57861S, Vref = 3V, R in series 10k */
-    /* temperature = -6.2765*v_adc5 + 49.0397*v_adc4 - 151.3602*v_adc3 + 233.2521*v_adc2 - 213.4588*v_adc + 130.5822; */
-
+    /* temperature = B57861S0103F045_GetTempFromPolynom(v_adc*1000); */
 
     /* Dummy function, must be adapted to the application */
     temperature = 10 * v_adc;

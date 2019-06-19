@@ -69,4 +69,8 @@ extern "C" {
 
 /*================== Function Implementations =============================*/
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* MAIN_H_ */

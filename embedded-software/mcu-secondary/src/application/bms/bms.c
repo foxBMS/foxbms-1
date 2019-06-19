@@ -82,8 +82,11 @@ static BMS_STATE_s bms_state = {
     .lastsubstate           = 0,
     .triggerentry           = 0,
     .ErrRequestCounter      = 0,
+    .initFinished           = E_NOT_OK,
     .counter                = 0,
 };
+
+static DATA_BLOCK_MINMAX_s bms_tab_minmax;
 
 /*================== Function Prototypes ==================================*/
 
@@ -93,9 +96,9 @@ static BMS_STATE_REQUEST_e BMS_TransferStateRequest(void);
 static uint8_t BMS_CheckReEntrance(void);
 static uint8_t BMS_CheckCANRequests(void);
 static STD_RETURN_TYPE_e BMS_CheckAnyErrorFlagSet(void);
+static void BMS_GetMeasurementValues(void);
 static void BMS_CheckVoltages(void);
 static void BMS_CheckTemperatures(void);
-static void BMS_CheckCurrent(void);
 static void BMS_CheckSlaveTemperatures(void);
 /*================== Function Implementations =============================*/
 
@@ -142,6 +145,12 @@ static BMS_STATE_REQUEST_e BMS_GetStateRequest(void) {
 BMS_STATEMACH_e BMS_GetState(void) {
     return (bms_state.state);
 }
+
+
+STD_RETURN_TYPE_e BMS_GetInitializationState(void) {
+    return (bms_state.initFinished);
+}
+
 
 /**
  * @brief   transfers the current state request to the state machine.
@@ -214,9 +223,9 @@ void BMS_Trigger(void) {
     DIAG_SysMonNotify(DIAG_SYSMON_BMS_ID, 0);  /* task is running, state = ok */
 
     if (bms_state.state != BMS_STATEMACH_UNINITIALIZED) {
+        BMS_GetMeasurementValues();
         BMS_CheckVoltages();
         BMS_CheckTemperatures();
-        BMS_CheckCurrent();
     }
     /* Check re-entrance of function */
     if (BMS_CheckReEntrance()) {
@@ -252,7 +261,6 @@ void BMS_Trigger(void) {
         /****************************INITIALIZATION**********************************/
         case BMS_STATEMACH_INITIALIZATION:
             BMS_SAVELASTSTATES();
-            /* CONT_SetStateRequest(CONT_STATE_INIT_REQUEST); */
 
             bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
             bms_state.state = BMS_STATEMACH_INITIALIZED;
@@ -263,6 +271,7 @@ void BMS_Trigger(void) {
         /****************************INITIALIZED*************************************/
         case BMS_STATEMACH_INITIALIZED:
             BMS_SAVELASTSTATES();
+            bms_state.initFinished = E_OK;
             bms_state.timer = BMS_STATEMACH_SHORTTIME_MS;
             bms_state.state = BMS_STATEMACH_STANDBY;
             bms_state.substate = BMS_ENTRY;
@@ -337,6 +346,9 @@ void BMS_Trigger(void) {
 
 /*================== Static functions =====================================*/
 
+static void BMS_GetMeasurementValues(void) {
+    DB_ReadBlock(&bms_tab_minmax, DATA_BLOCK_ID_MINMAX);
+}
 
 static uint8_t BMS_CheckCANRequests(void) {
     uint8_t retVal = BMS_REQ_ID_NOREQ;
@@ -362,20 +374,17 @@ static uint8_t BMS_CheckCANRequests(void) {
  * @details verify for cell voltage measurements (U), if minimum and maximum values are out of range
  */
 static void BMS_CheckVoltages(void) {
-    DATA_BLOCK_MINMAX_s minmax;
-
-    DB_ReadBlock(&minmax, DATA_BLOCK_ID_MINMAX);
-
-    if (minmax.voltage_max > BC_VOLTMAX_MSL) {
-        DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+    /* Check over- and undervoltage limits */
+    if (bms_tab_minmax.voltage_max > BC_VOLTMAX_MSL) {
+        DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MSL, DIAG_EVENT_NOK, 0);
     } else {
-        DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
+        DIAG_Handler(DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MSL, DIAG_EVENT_OK, 0);
     }
 
-    if (minmax.voltage_min < BC_VOLTMIN_MSL) {
-        DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
+    if (bms_tab_minmax.voltage_min < BC_VOLTMIN_MSL) {
+        DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MSL, DIAG_EVENT_NOK, 0);
     } else {
-        DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
+        DIAG_Handler(DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MSL, DIAG_EVENT_OK, 0);
     }
 }
 
@@ -386,77 +395,38 @@ static void BMS_CheckVoltages(void) {
  * @details verify for cell temperature measurements (T), if minimum and maximum values are out of range
  */
 static void BMS_CheckTemperatures(void) {
-    DATA_BLOCK_MINMAX_s minmax;
-    DATA_BLOCK_CURRENT_SENSOR_s curr_tab;
-
-    DB_ReadBlock(&curr_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
-    DB_ReadBlock(&minmax, DATA_BLOCK_ID_MINMAX);
-
-    if (curr_tab.current >= 0.0) {
-        if (minmax.temperature_max > BC_TEMPMAX_DISCHARGE_MSL) {
-            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
-        } else {
-            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
-        }
+    /* Check over- and undertemperature. As no information about the current
+     * direction is available, only the maximum values of charge/discharge
+     * values are checked. This means if different charge and discharge
+     * temperature limits are used, only the maximum of the two values is
+     * monitored to prevent an unwanted opening of the contactors. */
+#if BC_TEMPMAX_DISCHARGE_MSL >= BC_TEMPMAX_CHARGE_MSL
+    if (bms_tab_minmax.temperature_max > BC_TEMPMAX_DISCHARGE_MSL) {
+        DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_NOK, 0);
     } else {
-        if (minmax.temperature_max > BC_TEMPMAX_CHARGE_MSL) {
-            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
-        } else {
-            DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
-        }
+        DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_OK, 0);
     }
-
-    if (curr_tab.current >= 0.0) {
-        if (minmax.temperature_min < BC_TEMPMIN_DISCHARGE_MSL) {
-            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
-        } else {
-            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
-        }
+#else /* BC_TEMPMAX_DISCHARGE_MSL < BC_TEMPMAX_CHARGE_MSL */
+    if (bms_tab_minmax.temperature_max > BC_TEMPMAX_CHARGE_MSL) {
+        DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_NOK, 0);
     } else {
-        if (minmax.temperature_min < BC_TEMPMIN_CHARGE_MSL) {
-            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
-        } else {
-            DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
-        }
+        DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK, 0);
     }
-}
+#endif /* BC_TEMPMAX_DISCHARGE_MSL >= BC_TEMPMAX_CHARGE_MSL */
 
-
-
-
-
-/**
- * @brief   checks the abidance by the safe operating area
- *
- * @details verify for cell current measurements (I), if minimum and maximum values are out of range
- */
-static void BMS_CheckCurrent(void) {
-    DATA_BLOCK_SOX_s sof_tab;
-    DATA_BLOCK_CURRENT_SENSOR_s curr_tab;
-
-    DB_ReadBlock(&sof_tab, DATA_BLOCK_ID_SOX);
-    DB_ReadBlock(&curr_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
-
-#if MEAS_TEST_CELL_SOF_LIMITS == TRUE
-    if (((curr_tab.current < (-1000*(sof_tab.sof_continuous_charge))) ||
-            (curr_tab.current > (1000*sof_tab.sof_continuous_discharge)))) {
-        retVal = FALSE;
-    }
-#endif
-
-    if (curr_tab.current < 0.0) {
-        if (-curr_tab.current > BC_CURRENTMAX_CHARGE_MSL) {
-            DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
-        } else {
-            DIAG_Handler(DIAG_CH_OVERCURRENT_CHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
-        }
+#if BC_TEMPMIN_DISCHARGE_MSL <= BC_TEMPMIN_CHARGE_MSL
+    if (bms_tab_minmax.temperature_min < BC_TEMPMIN_DISCHARGE_MSL) {
+        DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_NOK, 0);
     } else {
-        if (curr_tab.current > BC_CURRENTMAX_DISCHARGE_MSL) {
-            DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_MSL, DIAG_EVENT_NOK, 0, NULL_PTR);
-        } else {
-            DIAG_Handler(DIAG_CH_OVERCURRENT_DISCHARGE_MSL, DIAG_EVENT_OK, 0, NULL_PTR);
-        }
+        DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL, DIAG_EVENT_OK, 0);
     }
+#else /* BC_TEMPMIN_DISCHARGE_MSL > BC_TEMPMIN_CHARGE_MSL */
+    if (bms_tab_minmax.temperature_min < BC_TEMPMIN_CHARGE_MSL) {
+        DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_NOK, 0);
+    } else {
+        DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL, DIAG_EVENT_OK, 0);
+    }
+#endif /* BC_TEMPMIN_DISCHARGE_MSL <= BC_TEMPMIN_CHARGE_MSL */
 }
 
 /**

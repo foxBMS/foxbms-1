@@ -117,14 +117,14 @@ typedef enum {
  * Possible return values when state requests are made to the BAL statemachine
  */
 typedef enum {
-    BAL_OK                                 = 0,    /*!< CONT --> ok                             */
-    BAL_BUSY_OK                            = 1,    /*!< CONT under load --> ok                  */
+    BAL_OK                                 = 0,    /*!< BAL --> ok                             */
+    BAL_BUSY_OK                            = 1,    /*!< BAL busy                               */
     BAL_REQUEST_PENDING                    = 2,    /*!< requested to be executed               */
     BAL_ILLEGAL_REQUEST                    = 3,    /*!< Request can not be executed            */
     BAL_INIT_ERROR                         = 7,    /*!< Error state: Source: Initialization    */
     BAL_OK_FROM_ERROR                      = 8,    /*!< Return from error --> ok               */
     BAL_ERROR                              = 20,   /*!< General error state                    */
-    BAL_ALREADY_INITIALIZED                = 30,   /*!< Initialization of LTC already finished */
+    BAL_ALREADY_INITIALIZED                = 30,   /*!< Initialization of BAL already finished */
     BAL_ILLEGAL_TASK_TYPE                  = 99,   /*!< Illegal                                */
 } BAL_RETURN_TYPE_e;
 
@@ -136,18 +136,19 @@ typedef enum {
  * The user can get the current state of the BAL state machine with this variable
  */
 typedef struct {
-    uint16_t timer;                         /*!< time in ms before the state machine processes the next state, e.g. in counts of 1ms    */
-    BAL_STATE_REQUEST_e statereq;           /*!< current state request made to the state machine                                        */
-    BAL_STATEMACH_e state;                  /*!< state of Driver State Machine                                                          */
-    BAL_STATEMACH_SUB_e substate;                       /*!< current substate of the state machine                                                  */
-    BAL_STATEMACH_e laststate;              /*!< previous state of the state machine                                                    */
-    uint8_t lastsubstate;                   /*!< previous substate of the state machine                                                 */
+    uint16_t timer;                         /*!< time in ms before the state machine processes the next state, e.g. in counts of 1ms */
+    BAL_STATE_REQUEST_e statereq;           /*!< current state request made to the state machine                                     */
+    BAL_STATEMACH_e state;                  /*!< state of Driver State Machine                                                       */
+    BAL_STATEMACH_SUB_e substate;           /*!< current substate of the state machine                                               */
+    BAL_STATEMACH_e laststate;              /*!< previous state of the state machine                                                 */
+    uint8_t lastsubstate;                   /*!< previous substate of the state machine                                              */
     uint8_t triggerentry;                   /*!< counter for re-entrance protection (function running flag) */
     uint32_t ErrRequestCounter;             /*!< counts the number of illegal requests to the BAL state machine */
+    STD_RETURN_TYPE_e initFinished;         /*!< E_OK if statemachine initialized, otherwise E_NOT_OK */
     uint8_t active;                         /*!< indicate if balancing active or not */
     uint8_t resting;                        /*!< indicate if current flowing through battery or not */
     uint32_t rest_timer;                    /*!< counter since last timestamp with no current flowing */
-    uint32_t balancing_threshold;           /*!< effective balancing threshod */
+    uint32_t balancing_threshold;           /*!< effective balancing threshold */
     uint8_t balancing_allowed;              /*!< flag to disable balancing */
     uint8_t balancing_global_allowed;       /*!< flag to globally disable balancing */
 } BAL_STATE_s;
@@ -155,8 +156,46 @@ typedef struct {
 
 /*================== Function Prototypes ==================================*/
 
+/**
+ * @brief   sets the current state request of the state variable bal_state.
+ *
+ * This function is used to make a state request to the state machine,e.g, start voltage measurement,
+ * read result of voltage measurement, re-initialization
+ * It calls BAL_CheckStateRequest() to check if the request is valid.
+ * The state request is rejected if is not valid.
+ * The result of the check is returned immediately, so that the requester can act in case
+ * it made a non-valid state request.
+ *
+ * @param   statereq                state request to set
+ *
+ * @return  retVal                  current state request, taken from BAL_STATE_REQUEST_e
+ */
 extern BAL_RETURN_TYPE_e BAL_SetStateRequest(BAL_STATE_REQUEST_e statereq);
+
+/**
+ * @brief   gets the current state.
+ *
+ * This function is used in the functioning of the BAL state machine.
+ *
+ * @return  current state, taken from BAL_STATEMACH_e
+ */
 extern  BAL_STATEMACH_e BAL_GetState(void);
+
+/**
+ * @brief   gets the initialization state.
+ *
+ * This function is used for getting the balancing initialization state
+ *
+ * @return  E_OK if initialized, otherwise E_NOT_OK
+ */
+extern  STD_RETURN_TYPE_e BAL_GetInitializationState(void);
+
+/**
+ * @brief   trigger function for the BAL driver state machine.
+ *
+ * This function contains the sequence of events in the BAL state machine.
+ * It must be called time-triggered, every 1ms.
+ */
 extern void BAL_Trigger(void);
 
 #endif /* BAL_H_ */

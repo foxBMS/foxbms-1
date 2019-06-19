@@ -1,6 +1,10 @@
-.. include:: ../../../macros.rst
-
 :orphan:
+
+.. _BMS_SRC:
+
+==================
+BMS Module Sources
+==================
 
 .. contents:: :local:
 

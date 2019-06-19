@@ -96,6 +96,11 @@ extern void APPL_TSK_Cyclic_10ms(void);
  */
 extern void APPL_TSK_Cyclic_100ms(void);
 
+/**
+ * @brief   100ms application task
+ */
+extern void APPL_TSK_Aperiodic(void);
+
 /*================== Function Implementations =============================*/
 
 #endif /* APPLTASK_H_ */

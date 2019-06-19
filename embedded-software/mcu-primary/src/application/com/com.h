@@ -54,6 +54,7 @@
  * teston                     -- Enables testmode
  * printcontactorinfo         -- prints the contactor info (number of switches and the contactor hard switch entries
  * printdiaginfo              -- prints the diagnosis info
+ * printstats                 -- get the FreeRTOS runtime statistics
  * gettime                    -- prints mcu time and date
  * getruntime                 -- get runtime since last reset
  * getoperatingtime           -- get total operating time
@@ -83,9 +84,9 @@
 #error ERROR: wrong combination of module enable keys in general.h !
 #error BUILD_MODULE_DEBUGPRINTF could only be used when UART module BUILD_MODULE_ENABLE_UART is activated
 #endif
-    #define DEBUG_PRINTF(x)             printf x
 #else
-    #define DEBUG_PRINTF(x)             (void)0
+    #define fprintf(...)
+    #define printf(...)
 #endif
 
 
@@ -149,6 +150,8 @@ extern void COM_uartWrite(const uint8_t *source);
  * @return (type: uint8_t)
  */
 extern void UART_uartWrite_intbuf(const uint8_t *source, uint16_t length);
+
+void SYSCALL_Init(void);
 
 /*================== Function Implementations =============================*/
 

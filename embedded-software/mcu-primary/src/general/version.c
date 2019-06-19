@@ -124,6 +124,8 @@ const VER_ValidStruct_s __attribute__((section(".FLASH_HEADERSection"))) ver_sw_
     /* 9 Byte time format "hh:mm:ss", reserved format 12 Byte*/
     __TIME__,                                             /*!< address 0xAC*/
                                                           /*!< address 0xB8, end*/
+    /* TODO what is the last entry of this struct? */
+    (uint64_t)(0),
 };
 
 

@@ -46,6 +46,11 @@ import sys
 # import time
 
 import yaml
+# try to use FullLoader (PyYAML5.1+ and fall back to normale Loader)
+try:
+    from yaml import FullLoader as YAMLLoader
+except ImportError:
+    from yaml import Loader as YAMLLoader
 
 import detect
 
@@ -119,7 +124,7 @@ This program has been released under the conditions of the BSD 3-Clause License.
         raise RuntimeError('The mcu must be specified by --mcu [0,1]')
 
     with open(args.flashconf, 'r') as stream:
-        yaml_data = yaml.load(stream)
+        yaml_data = yaml.load(stream, Loader=YAMLLoader)
 
     port = None
     selected_mcu = MCU_CHOICE[args.mcu]

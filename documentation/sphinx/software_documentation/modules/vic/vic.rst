@@ -14,14 +14,14 @@ Module Files
 ~~~~~~~~~~~~
 
 Driver:
- - ``embedded-software\mcu-common\src\driver\vic\vic.c``
- - ``embedded-software\mcu-common\src\driver\vic\vic.h``
+ - ``embedded-software\mcu-common\src\driver\vic\vic.c`` (:ref:`vicc`)
+ - ``embedded-software\mcu-common\src\driver\vic\vic.h`` (:ref:`vich`)
 
 Driver Configuration:
- - ``embedded-software\mcu-primary\src\module\config\vic_cfg.c``
- - ``embedded-software\mcu-primary\src\module\config\vic_cfg.h``
- - ``embedded-software\mcu-secondary\src\module\config\vic_cfg.c``
- - ``embedded-software\mcu-secondary\src\module\config\vic_cfg.h``
+ - ``embedded-software\mcu-primary\src\driver\config\vic_cfg.c`` (:ref:`primaryviccfgc`)
+ - ``embedded-software\mcu-primary\src\driver\config\vic_cfg.h`` (:ref:`primaryviccfgh`)
+ - ``embedded-software\mcu-secondary\src\driver\config\vic_cfg.c`` (:ref:`secondaryviccfgc`)
+ - ``embedded-software\mcu-secondary\src\driver\config\vic_cfg.h`` (:ref:`secondaryviccfgh`)
 
 Structure
 ~~~~~~~~~

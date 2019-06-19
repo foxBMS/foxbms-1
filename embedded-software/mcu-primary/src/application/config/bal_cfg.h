@@ -106,9 +106,9 @@
 #define BAL_UPPER_TEMPERATURE_LIMIT_DEG     70
 
 /**
- * If set to TRUE, SOC-history based balancing is used.
- * An OC-SOC look-up table is needed.
- * If set to FALSE, voltage-based balancing is used.
+ * If set to FALSE, SOC-history based balancing is used.
+ * An open-circuit-voltage/SOC look-up table is needed.
+ * If set to TRUE, voltage-based balancing is used.
  *
 */
 #define BALANCING_VOLTAGE_BASED           TRUE

@@ -102,6 +102,7 @@ class parameter_list():
         self.number_of_modules = 1
         self.number_of_cells = 12
         self.number_of_temperatures = 4
+        self.logdata = True
 
 
 def Initialize_with_HWID(hwid, baudrate):
@@ -247,6 +248,10 @@ class AdapterSelectionFrame(wx.Frame):
             pos=(855, 590),
             size=(png.GetWidth(), png.GetHeight()))
 
+        self.logging_choice = wx.CheckBox(self, label='Log data', pos=(
+            self.ref_x + 860, self.ref_y + 350))
+        self.logging_choice.SetValue(True)
+
         self.refreshButton = wx.Button(self, size=(240, 20), pos=(
             self.ref_x + 860, self.ref_y + 5), label="REFRESH")
         self.Bind(wx.EVT_BUTTON, self.refreshButtonClick, self.refreshButton)
@@ -298,7 +303,7 @@ class AdapterSelectionFrame(wx.Frame):
 
         for i in range(len(baudrate_list)):
             self.listBoxBaudrate.Append(
-                str(self.counter) + ' Baudrate ' + str(baudrate_list[i]) + 'kbit/s')
+                str(self.counter) + ' Baudrate ' + str(baudrate_list[i]) + 'bit/s')
             self.counter += 1
 
         self.listBoxBaudrate.SetSelection(
@@ -411,6 +416,11 @@ class AdapterSelectionFrame(wx.Frame):
         i = int(m.group(1))
         global baudrate_list
         self.parameters.baudrate = baudrate_list[i]
+
+        if self.logging_choice.GetValue() is True:
+            self.parameters.logdata = True
+        else:
+            self.parameters.logdata = False
 
         if self.checkConfiguredNumbers() is True:
             self.parameters.number_of_modules = int(
@@ -534,12 +544,13 @@ class MainFrame(wx.Frame):
 
         self.logfilename = "logfile_can_foxbms"
         self.full_logfilename = "logfile_can_foxbms"
-        self.logfile = open('start.txt', "w")
         system_date = str(time.strftime("%Y-%m-%d"))
         system_time = str(time.strftime("%H-%M-%S"))
-        self.logfile.write(
-            'Started on ' + str(system_date) + "_" + str(system_time))
-        self.logfile.close()
+        if parameters.logdata is True:
+            self.logfile = open('start.txt', "w")
+            self.logfile.write(
+                'Started on ' + str(system_date) + "_" + str(system_time))
+            self.logfile.close()
 
         self.curve_0_x = []
         self.curve_0_y = []
@@ -1060,7 +1071,8 @@ class MainFrame(wx.Frame):
         self.quitButton.Disable()
         self.stopButton.Enable()
         self.startButton.Disable()
-        self.logfile = open(self.get_logfile_name(), "w")
+        if parameters.logdata is True:
+            self.logfile = open(self.get_logfile_name(), "w")
         time.sleep(0.1)
         self.time_initial = datetime.datetime.now()
         self.q_display.put('RUN')
@@ -1101,7 +1113,8 @@ class MainFrame(wx.Frame):
         self.q_display.put('WAIT')
         queue_can_action.put('WAIT')
         time.sleep(0.5)
-        self.logfile.close()
+        if parameters.logdata is True:
+            self.logfile.close()
 
     def quitButtonClick(self, event):
         self.plotting = 0
@@ -1109,8 +1122,9 @@ class MainFrame(wx.Frame):
         self.q_periodicsend_action.put('EXIT')
         queue_can_action.put('EXIT')
         time.sleep(0.1)
-        if not self.logfile.closed:
-            self.logfile.close()
+        if parameters.logdata is True:
+            if not self.logfile.closed:
+                self.logfile.close()
         self.t_display.join()
         self.t_send.join()
         self.Destroy()
@@ -1349,15 +1363,16 @@ class MainFrame(wx.Frame):
                     time_now = datetime.datetime.now()
                     actual_time = (
                         time_now - self.time_initial).total_seconds()
-                    self.logfile.write(str(actual_time))
-                    self.logfile.write(" ")
-                    self.logfile.write(str(can_data.id))
-                    self.logfile.write(" ")
-                    self.logfile.write(str(can_data.dlc))
-                    for i in can_data.data:
+                    if parameters.logdata is True:
+                        self.logfile.write(str(actual_time))
                         self.logfile.write(" ")
-                        self.logfile.write(str(i))
-                    self.logfile.write("\n")
+                        self.logfile.write(str(can_data.id))
+                        self.logfile.write(" ")
+                        self.logfile.write(str(can_data.dlc))
+                        for i in can_data.data:
+                            self.logfile.write(" ")
+                            self.logfile.write(str(i))
+                        self.logfile.write("\n")
 
                     decoded_can_data = self.decode_can_data(
                         can_data, number_of_modules, number_of_cells, number_of_temperatures)
@@ -1726,15 +1741,19 @@ class MainFrame(wx.Frame):
 
         global CAN_MATRIX
 
-        if os.path.getsize(self.full_logfilename) / \
-                1000000 > logfile_size_limit:
-            self.logfile.close()
-            self.logfile = open(self.get_logfile_name(), "w")
+        if parameters.logdata is True:
+            if os.path.getsize(self.full_logfilename) / \
+                    1000000 > logfile_size_limit:
+                self.logfile.close()
+                self.logfile = open(self.get_logfile_name(), "w")
 
         # CAN matrix foxBMS
         # voltages
         if (can_data.id >= 0x200) and ((can_data.id - 0x200) % 0x20 == 0 or (can_data.id - 0x201) %
-                                       0x20 == 0 or (can_data.id - 0x202) % 0x20 == 0 or (can_data.id - 0x203) % 0x20 == 0):
+                                       0x20 == 0 or (can_data.id - 0x202) %
+                                       0x20 == 0 or (can_data.id - 0x203) %
+                                       0x20 == 0 or (can_data.id - 0x204) %
+                                       0x20 == 0 or (can_data.id - 0x205) % 0x20 == 0):
             if can_data.id >= 0x200 and can_data.id <= 0x2f3:
                 module_number = -1
                 if (can_data.id - 0x200) % 0x20 == 0:
@@ -1749,6 +1768,12 @@ class MainFrame(wx.Frame):
                 if (can_data.id - 0x203) % 0x20 == 0:
                     module_number = (can_data.id - 0x203) / 0x20
                     voltage_bank = 3
+                if (can_data.id - 0x204) % 0x20 == 0:
+                    module_number = (can_data.id - 0x204) / 0x20
+                    voltage_bank = 4
+                if (can_data.id - 0x205) % 0x20 == 0:
+                    module_number = (can_data.id - 0x205) / 0x20
+                    voltage_bank = 5
 
                 if module_number < number_of_modules:
                     voltage = [0] * 3

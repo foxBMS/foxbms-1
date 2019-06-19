@@ -65,11 +65,11 @@
 #endif
 
 typedef struct {
-    uint8_t LTC;  /*!<    */
-    uint8_t mux0;                               /*!<    */
-    uint8_t mux1;                               /*!<    */
-    uint8_t mux2;                               /*!<    */
-    uint8_t mux3;                               /*!<    */
+    uint8_t PEC_valid;  /*!<    */
+    uint8_t mux0;       /*!<    */
+    uint8_t mux1;       /*!<    */
+    uint8_t mux2;       /*!<    */
+    uint8_t mux3;       /*!<    */
 } LTC_ERRORTABLE_s;
 
 /*================== Constant and Variable Definitions ====================*/

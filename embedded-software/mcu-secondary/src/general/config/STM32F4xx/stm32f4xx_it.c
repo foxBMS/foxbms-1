@@ -52,6 +52,7 @@
 #include "os.h"
 #include "dma.h"
 #include "spi.h"
+#include "uart.h"
 #include "diag.h"
 #include "mcu.h"
 #include "io.h"
@@ -119,7 +120,7 @@ void HardFault_Handler(void)
         caller_addr_at_stack = sp_register + 0x18;
 
         diag_fc.Val1 = *(uint32_t*)caller_addr_at_stack;  /* report instruction address where division has occured */
-        DIAG_Handler(DIAG_CH_DIV_BY_ZERO_FAILURE,DIAG_EVENT_NOK,0, NULL);
+        DIAG_Handler(DIAG_CH_DIV_BY_ZERO_FAILURE,DIAG_EVENT_NOK,0);
 
     }
 
@@ -128,7 +129,7 @@ void HardFault_Handler(void)
         caller_addr_at_stack = sp_register+0x18;
 
         diag_fc.Val1 = *(uint32_t*)caller_addr_at_stack;  /* report instruction address with undefined instruction */
-        DIAG_Handler(DIAG_CH_UNDEF_INSTRUCTION_FAILURE,DIAG_EVENT_NOK,0, NULL);
+        DIAG_Handler(DIAG_CH_UNDEF_INSTRUCTION_FAILURE,DIAG_EVENT_NOK,0);
     }
 
 
@@ -144,7 +145,7 @@ void HardFault_Handler(void)
         {
             diag_fc.Val2 = faultaddress;                    /* report bus address being accessed */
         }
-        DIAG_Handler(DIAG_CH_DATA_BUS_FAILURE,DIAG_EVENT_NOK,0, NULL);
+        DIAG_Handler(DIAG_CH_DATA_BUS_FAILURE,DIAG_EVENT_NOK,0);
 
     }
 
@@ -160,13 +161,13 @@ void HardFault_Handler(void)
         {
             diag_fc.Val2 = faultaddress;                        /* report bus address being accessed */
         }
-        DIAG_Handler(DIAG_CH_INSTRUCTION_BUS_FAILURE,DIAG_EVENT_NOK, 0, NULL);
+        DIAG_Handler(DIAG_CH_INSTRUCTION_BUS_FAILURE,DIAG_EVENT_NOK, 0);
 
     }
 
     else
     {
-        DIAG_Handler(DIAG_CH_HARDFAULT_NOTHANDLED, DIAG_EVENT_NOK, 0, NULL);
+        DIAG_Handler(DIAG_CH_HARDFAULT_NOTHANDLED, DIAG_EVENT_NOK, 0);
     }
 #endif
 
@@ -361,7 +362,10 @@ void DMA2_Stream3_IRQHandler(void)
  */
 void USART3_IRQHandler(void)
 {
+#if BUILD_MODULE_ENABLE_UART
+    HAL_UART_IRQHandler(&uart_cfg[0]);
 
+#endif
 }
 
 /**

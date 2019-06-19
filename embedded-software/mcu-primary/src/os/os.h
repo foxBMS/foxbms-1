@@ -82,16 +82,16 @@
  * typedef for thread priority
  */
 typedef enum  {
-  OS_PRIORITY_IDLE           = 0,    /*!< priority: idle (lowest)        */
-  OS_PRIORITY_LOW            = 1,    /*!< priority: low                  */
-  OS_PRIORITY_BELOW_NORMAL   = 2,    /*!< priority: below normal         */
-  OS_PRIORITY_NORMAL         = 3,     /*!< priority: normal (default)     */
-  OS_PRIORITY_ABOVE_NORMAL   = 4,    /*!< priority: above normal         */
-  OS_PRIORITY_HIGH           = 5,    /*!< priority: high                 */
-  OS_PRIORITY_ABOVE_HIGH     = 6,    /*!< priority: above high           */
-  OS_PRIORITY_VERY_HIGH      = 7,    /*!< priority: very high          */
-  OS_PRIORITY_BELOW_REALTIME = 8,    /*!< priority: below realtime     */
-  OS_PRIORITY_REALTIME       = 9,    /*!< priority: realtime (highest) */
+  OS_PRIORITY_IDLE           = 0,    /*!< priority: idle (lowest)       */
+  OS_PRIORITY_LOW            = 1,    /*!< priority: low                 */
+  OS_PRIORITY_BELOW_NORMAL   = 2,    /*!< priority: below normal        */
+  OS_PRIORITY_NORMAL         = 3,    /*!< priority: normal (default)    */
+  OS_PRIORITY_ABOVE_NORMAL   = 4,    /*!< priority: above normal        */
+  OS_PRIORITY_HIGH           = 5,    /*!< priority: high                */
+  OS_PRIORITY_ABOVE_HIGH     = 6,    /*!< priority: above high          */
+  OS_PRIORITY_VERY_HIGH      = 7,    /*!< priority: very high           */
+  OS_PRIORITY_BELOW_REALTIME = 8,    /*!< priority: below realtime      */
+  OS_PRIORITY_REALTIME       = 9,    /*!< priority: realtime (highest)  */
 } OS_PRIORITY_e;
 
 /**
@@ -165,11 +165,32 @@ extern uint8_t eng_init;
  */
 extern void OS_TaskInit();
 
+/**
+ * @brief Supplies the memory for the idle task.
+ *
+ * This is needed due to the usage of #configSUPPORT_STATIC_ALLOCATION.
+ */
+extern void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize);
+
+/**
+ * @brief Supplies the memory for the timer task.
+ *
+ * This is necessary for the combination of #configSUPPORT_STATIC_ALLOCATION and #configUSE_TIMERS.
+ */
+extern void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize);
 
 /**
  * @brief   Hook function for the idle task
  */
 extern void vApplicationIdleHook(void);
+
+/**
+ * @brief Hook function for StackOverflowHandling.
+ *
+ * This handler is used when the operation system encounters a
+ * stackoverflow in a task.
+ */
+extern void vApplicationStackOverflowHook(TaskHandle_t xTask, signed char *pcTaskName);
 
 
 /**

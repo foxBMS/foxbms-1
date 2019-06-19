@@ -61,13 +61,36 @@
 /**
  * Maximum queue timeout time in milliseconds
  */
-#define DATA_QUEUE_TIMEOUT_MS   10
+#define DATA_QUEUE_TIMEOUT_MS   10u
+
+/**
+ * @brief Length of data Queue
+ */
+#define DATA_QUEUE_LENGTH       1u
+
+/**
+ * @brief Size of data Queue item
+ */
+#define DATA_QUEUE_ITEM_SIZE    sizeof(DATA_QUEUE_MESSAGE_s)
 
 /*================== Constant and Variable Definitions ====================*/
 /* FIXME Some uninitialized variables */
 static DATA_BLOCK_ACCESS_s data_block_access[DATA_MAX_BLOCK_NR];
-static SemaphoreHandle_t data_base_mutex[DATA_MAX_BLOCK_NR];
 QueueHandle_t data_queue;
+
+
+/**
+ * @brief size of Queue storage
+ *
+ * The array to use as the queue's storage area.
+ * This must be at least #DATA_QUEUE_LENGTH * #DATA_QUEUE_ITEM_SIZE
+ */
+uint8_t dataQueueStorageArea[ DATA_QUEUE_LENGTH * DATA_QUEUE_ITEM_SIZE ];
+
+/**
+ * @brief structure for static data queue
+ */
+static StaticQueue_t dataQueueStructure;
 
 /*================== Function Prototypes ==================================*/
 
@@ -126,16 +149,13 @@ void DATA_Init(void) {
             *startDatabaseEntryRD = 0;
             startDatabaseEntryRD++;
         }
-
-        /* Create a mutex for each database entry */
-        data_base_mutex[i] = xSemaphoreCreateMutex();
     }
 
     /* Create queue to transfer data to/from database */
 
     /* Create a queue capable of containing a pointer of type DATA_QUEUE_MESSAGE_s
     Data of Messages are passed by pointer as they contain a lot of data. */
-    data_queue = xQueueCreate(1, sizeof(DATA_QUEUE_MESSAGE_s));
+    data_queue = xQueueCreateStatic(DATA_QUEUE_LENGTH, DATA_QUEUE_ITEM_SIZE, dataQueueStorageArea, &dataQueueStructure);
 
     if (data_queue == NULL_PTR) {
         /* Failed to create the queue */
@@ -154,10 +174,6 @@ void DB_WriteBlock(void *dataptrfromSender, DATA_BLOCK_ID_TYPE_e  blockID) {
        note: xQueueSend() always takes message variable by value */
     DATA_QUEUE_MESSAGE_s data_send_msg;
     TickType_t queuetimeout;
-
-    if (vPortCheckCriticalSection()) {
-        configASSERT(0);
-    }
 
     queuetimeout = DATA_QUEUE_TIMEOUT_MS / portTICK_RATE_MS;
     if (queuetimeout == 0) {
@@ -197,8 +213,6 @@ void DATA_Task(void) {
                     buffertype = (data_base_dev.blockheaderptr + blockID)->buffertype;
                     dstdataptr = data_block_access[blockID].WRptr;
 
-                    /* Check if there any read accesses taking place (in tasks with lower priorities)*/
-                    if (xSemaphoreTake(data_base_mutex[blockID], 0)  ==  TRUE) {
                         uint32_t *previousTimestampptr = NULL_PTR;
                         uint32_t *timestampptr = NULL_PTR;
 
@@ -214,7 +228,7 @@ void DATA_Task(void) {
                         *(uint32_t *)srcdataptr = OS_getOSSysTick();
 
                         memcpy(dstdataptr, srcdataptr, datalength);
-                        xSemaphoreGive(data_base_mutex[blockID]);
+
                         if (buffertype  ==  DOUBLE_BUFFERING) {
                             /* swap the WR and RD pointers:
                                WRptr always points to buffer to be written next time and changed afterwards
@@ -222,9 +236,6 @@ void DATA_Task(void) {
                             data_block_access[blockID].WRptr = data_block_access[blockID].RDptr;
                             data_block_access[blockID].RDptr = dstdataptr;
                         }
-                    } else {
-                        dstdataptr = data_block_access[blockID].WRptr;
-                    }
                 } else if (accesstype == READ_ACCESS) {
                     /* Read access to data blocks */
                     datalength = (data_base_dev.blockheaderptr + blockID)->datalength;
@@ -232,13 +243,10 @@ void DATA_Task(void) {
                     dstdataptr = srcdataptr;
 
                     if (buffertype  ==  DOUBLE_BUFFERING) {
-                        if (xSemaphoreTake(data_base_mutex[blockID], 0)  ==  TRUE) {
                             srcdataptr = data_block_access[blockID].RDptr;
                             if (srcdataptr != NULL_PTR) {
                                 memcpy(dstdataptr, srcdataptr, datalength);
-                                xSemaphoreGive(data_base_mutex[blockID]);
                             }
-                        }
                     } else if (buffertype  ==  SINGLE_BUFFERING) {
                             srcdataptr = data_block_access[blockID].RDptr;
                             if (srcdataptr != NULL_PTR) {
@@ -258,10 +266,6 @@ void DATA_Task(void) {
 STD_RETURN_TYPE_e DB_ReadBlock(void *dataptrtoReceiver, DATA_BLOCK_ID_TYPE_e  blockID) {
     DATA_QUEUE_MESSAGE_s data_send_msg;
     TickType_t queuetimeout;
-
-    if (vPortCheckCriticalSection()) {
-        configASSERT(0);
-    }
 
     queuetimeout = DATA_QUEUE_TIMEOUT_MS / portTICK_RATE_MS;
     if (queuetimeout  ==  0) {

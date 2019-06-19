@@ -54,15 +54,17 @@
 #include "appltask_cfg.h"
 
 #include "bms.h"
+#include "com.h"
 #include "diag.h"
 #include "led.h"
 
 /*================== Macros and Definitions ===============================*/
 
 /*================== Constant and Variable Definitions ====================*/
-OS_Task_Definition_s appl_tskdef_cyclic_1ms   = { 0,      1,  OS_PRIORITY_NORMAL,        1024/4};
-OS_Task_Definition_s appl_tskdef_cyclic_10ms  = { 4,     10,  OS_PRIORITY_BELOW_NORMAL,  2560/4};
-OS_Task_Definition_s appl_tskdef_cyclic_100ms = { 58,    100,  OS_PRIORITY_LOW,           512/4};
+OS_Task_Definition_s appl_tskdef_cyclic_1ms   = { 0,      1,  OS_PRIORITY_NORMAL,       APPL_TSK_C_1MS_STACKSIZE};
+OS_Task_Definition_s appl_tskdef_cyclic_10ms  = { 4,     10,  OS_PRIORITY_BELOW_NORMAL, APPL_TSK_C_10MS_STACKSIZE};
+OS_Task_Definition_s appl_tskdef_cyclic_100ms = { 58,   100,  OS_PRIORITY_LOW,          APPL_TSK_C_100MS_STACKSIZE};
+OS_Task_Definition_s appl_tskdef_aperiodic =    { 0,     10,  OS_PRIORITY_IDLE,         APPL_TSK_APERIODIC_STACKSIZE};
 
 /*================== Function Prototypes ==================================*/
 
@@ -91,4 +93,9 @@ void APPL_Cyclic_100ms(void) {
     /* User specific implementations:   */
     /*   ...                            */
     /*   ...                            */
+}
+
+void APPL_Aperiodic(void) {
+    COM_Decoder();
+    COM_printHelpCommand();
 }

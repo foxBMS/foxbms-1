@@ -112,7 +112,7 @@
  * \par Default:
  * 20000.0
 */
-#define SOX_CELL_CAPACITY               20000.0
+#define SOX_CELL_CAPACITY               20000.0f
 
 /**
  * @ingroup CONFIG_SOX
@@ -125,14 +125,14 @@
  * \par Default:
  * 120.0
 */
-#define SOX_CURRENT_MAX_CONTINUOUS_CHARGE           120.00
+#define SOX_CURRENT_MAX_CONTINUOUS_CHARGE           120.00f
 
 /**
  * Different alarm levels for the maximum continuous charge current.
  */
-#define SOX_MOL_CURRENT_MAX_CONTINUOUS_CHARGE       100.00
-#define SOX_RSL_CURRENT_MAX_CONTINUOUS_CHARGE       115.00
-#define SOX_MSL_CURRENT_MAX_CONTINUOUS_CHARGE       122.00
+#define SOX_MOL_CURRENT_MAX_CONTINUOUS_CHARGE       100.00f
+#define SOX_RSL_CURRENT_MAX_CONTINUOUS_CHARGE       115.00f
+#define SOX_MSL_CURRENT_MAX_CONTINUOUS_CHARGE       122.00f
 
 /**
  * @ingroup CONFIG_SOX
@@ -146,14 +146,14 @@
  * \par Default:
  * 120.0
 */
-#define SOX_CURRENT_MAX_CONTINUOUS_DISCHARGE 120.00
+#define SOX_CURRENT_MAX_CONTINUOUS_DISCHARGE 120.00f
 
 /**
  * Different alarm levels for the maximum continuous discharge current.
  */
-#define SOX_MOL_CURRENT_MAX_CONTINUOUS_DISCHARGE       100.00
-#define SOX_RSL_CURRENT_MAX_CONTINUOUS_DISCHARGE       115.00
-#define SOX_MSL_CURRENT_MAX_CONTINUOUS_DISCHARGE       122.00
+#define SOX_MOL_CURRENT_MAX_CONTINUOUS_DISCHARGE       100.00f
+#define SOX_RSL_CURRENT_MAX_CONTINUOUS_DISCHARGE       115.00f
+#define SOX_MSL_CURRENT_MAX_CONTINUOUS_DISCHARGE       122.00f
 
 /**
  * @ingroup CONFIG_SOX
@@ -170,14 +170,14 @@
  * \par Default:
  * 20.0
 */
-#define SOX_CURRENT_LIMP_HOME 20.00
+#define SOX_CURRENT_LIMP_HOME 20.00f
 
 /**
  * Different alarm levels for the limp home current
  */
-#define SOX_MOL_CURRENT_LIMP_HOME           20.00
-#define SOX_RSL_CURRENT_LIMP_HOME           20.00
-#define SOX_MSL_CURRENT_LIMP_HOME           20.00
+#define SOX_MOL_CURRENT_LIMP_HOME           20.00f
+#define SOX_RSL_CURRENT_LIMP_HOME           20.00f
+#define SOX_MSL_CURRENT_LIMP_HOME           20.00f
 
 /**
  * @ingroup CONFIG_SOX
@@ -192,16 +192,16 @@
  * \par Default:
  * 0.0
 */
-#define SOX_TEMP_LOW_CUTOFF_DISCHARGE 0.0
+#define SOX_TEMP_LOW_CUTOFF_DISCHARGE 0.0f
 
 /**
  * Different alarm levels for the cold temperature where the derating of
  * maximum discharge current starts, i.e., below this temperature battery pack
  * should not deliver full discharge current
  */
-#define SOX_MOL_TEMP_LOW_CUTOFF_DISCHARGE       0.0
-#define SOX_RSL_TEMP_LOW_CUTOFF_DISCHARGE       0.0
-#define SOX_MSL_TEMP_LOW_CUTOFF_DISCHARGE       0.0
+#define SOX_MOL_TEMP_LOW_CUTOFF_DISCHARGE       0.0f
+#define SOX_RSL_TEMP_LOW_CUTOFF_DISCHARGE       0.0f
+#define SOX_MSL_TEMP_LOW_CUTOFF_DISCHARGE       0.0f
 
 /**
  * @ingroup CONFIG_SOX
@@ -216,7 +216,7 @@
  * \par Default:
  * -10.0
 */
-#define SOX_TEMP_LOW_LIMIT_DISCHARGE -10.0
+#define SOX_TEMP_LOW_LIMIT_DISCHARGE -10.0f
 
 /**
  * Different alarm levels for the cold temperature where the derating of
@@ -240,16 +240,16 @@
  * \par Default:
  * 0.0
 */
-#define SOX_TEMP_LOW_CUTOFF_CHARGE 0.0
+#define SOX_TEMP_LOW_CUTOFF_CHARGE 0.0f
 
 /**
  * Different alarm levels for the cold temperature where the derating of
  * maximum charge current starts, i.e., below this temperature battery pack
  * should not deliver full charge current
  */
-#define SOX_MOL_TEMP_LOW_CUTOFF_CHARGE       0.0
-#define SOX_RSL_TEMP_LOW_CUTOFF_CHARGE       0.0
-#define SOX_MSL_TEMP_LOW_CUTOFF_CHARGE       0.0
+#define SOX_MOL_TEMP_LOW_CUTOFF_CHARGE       0.0f
+#define SOX_RSL_TEMP_LOW_CUTOFF_CHARGE       0.0f
+#define SOX_MSL_TEMP_LOW_CUTOFF_CHARGE       0.0f
 
 /**
  * @ingroup CONFIG_SOX
@@ -264,16 +264,16 @@
  * \par Default:
  * -10.0
 */
-#define SOX_TEMP_LOW_LIMIT_CHARGE -10.0
+#define SOX_TEMP_LOW_LIMIT_CHARGE -10.0f
 
 /**
  * Different alarm levels for the cold temperature where the derating of
  * maximum charge current is fully applied. Below this temperature the
  * battery pack should not deliver any current in charge direction.
  */
-#define SOX_MOL_TEMP_LOW_LIMIT_CHARGE          -10.0
-#define SOX_RSL_TEMP_LOW_LIMIT_CHARGE          -10.0
-#define SOX_MSL_TEMP_LOW_LIMIT_CHARGE          -10.0
+#define SOX_MOL_TEMP_LOW_LIMIT_CHARGE          -10.0f
+#define SOX_RSL_TEMP_LOW_LIMIT_CHARGE          -10.0f
+#define SOX_MSL_TEMP_LOW_LIMIT_CHARGE          -10.0f
 
 
 
@@ -290,16 +290,16 @@
  * \par Default:
  * 45.0
 */
-#define SOX_TEMP_HIGH_CUTOFF_DISCHARGE 45.0
+#define SOX_TEMP_HIGH_CUTOFF_DISCHARGE 45.0f
 
 /**
  * Different alarm levels for the high temperature where the derating of
  * maximum discharge current starts, i.e., above this temperature battery pack
  * should not deliver full discharge current
  */
-#define SOX_MOL_TEMP_HIGH_CUTOFF_DISCHARGE       45.0
-#define SOX_RSL_TEMP_HIGH_CUTOFF_DISCHARGE       45.0
-#define SOX_MSL_TEMP_HIGH_CUTOFF_DISCHARGE       45.0
+#define SOX_MOL_TEMP_HIGH_CUTOFF_DISCHARGE       45.0f
+#define SOX_RSL_TEMP_HIGH_CUTOFF_DISCHARGE       45.0f
+#define SOX_MSL_TEMP_HIGH_CUTOFF_DISCHARGE       45.0f
 
 /**
  * @ingroup CONFIG_SOX
@@ -314,16 +314,16 @@
  * \par Default:
  * 55.0
 */
-#define SOX_TEMP_HIGH_LIMIT_DISCHARGE 55.0
+#define SOX_TEMP_HIGH_LIMIT_DISCHARGE 55.0f
 
 /**
  * Different alarm levels for the high temperature where the derating of
  * maximum discharge current is fully applied. Above this temperature the
  * battery pack should not deliver any current in discharge direction.
  */
-#define SOX_MOL_TEMP_HIGH_LIMIT_DISCHARGE          55.0
-#define SOX_RSL_TEMP_HIGH_LIMIT_DISCHARGE          55.0
-#define SOX_MSL_TEMP_HIGH_LIMIT_DISCHARGE          55.0
+#define SOX_MOL_TEMP_HIGH_LIMIT_DISCHARGE          55.0f
+#define SOX_RSL_TEMP_HIGH_LIMIT_DISCHARGE          55.0f
+#define SOX_MSL_TEMP_HIGH_LIMIT_DISCHARGE          55.0f
 
 
 /**
@@ -339,16 +339,16 @@
  * \par Default:
  * 45.0
 */
-#define SOX_TEMP_HIGH_CUTOFF_CHARGE 45.0
+#define SOX_TEMP_HIGH_CUTOFF_CHARGE 45.0f
 
 /**
  * Different alarm levels for the high temperature where the derating of
  * maximum charge current starts, i.e., above this temperature battery pack
  * should not deliver full charge current
  */
-#define SOX_MOL_TEMP_HIGH_CUTOFF_CHARGE          45.0
-#define SOX_RSL_TEMP_HIGH_CUTOFF_CHARGE          45.0
-#define SOX_MSL_TEMP_HIGH_CUTOFF_CHARGE          45.0
+#define SOX_MOL_TEMP_HIGH_CUTOFF_CHARGE          45.0f
+#define SOX_RSL_TEMP_HIGH_CUTOFF_CHARGE          45.0f
+#define SOX_MSL_TEMP_HIGH_CUTOFF_CHARGE          45.0f
 
 /**
  * @ingroup CONFIG_SOX
@@ -363,16 +363,16 @@
  * \par Default:
  * 55.0
 */
-#define SOX_TEMP_HIGH_LIMIT_CHARGE 55.0
+#define SOX_TEMP_HIGH_LIMIT_CHARGE 55.0f
 
 /**
  * Different alarm levels for the high temperature where the derating of
  * maximum charge current is fully applied. Above this temperature the
  * battery pack should not deliver any current in charge direction.
  */
-#define SOX_MOL_TEMP_HIGH_LIMIT_CHARGE             55.0
-#define SOX_RSL_TEMP_HIGH_LIMIT_CHARGE             55.0
-#define SOX_MSL_TEMP_HIGH_LIMIT_CHARGE             55.0
+#define SOX_MOL_TEMP_HIGH_LIMIT_CHARGE             55.0f
+#define SOX_RSL_TEMP_HIGH_LIMIT_CHARGE             55.0f
+#define SOX_MSL_TEMP_HIGH_LIMIT_CHARGE             55.0f
 
 /**
  * @ingroup CONFIG_SOX

@@ -12,8 +12,8 @@ Module Files
 ~~~~~~~~~~~~
 
 Driver:
- - ``embedded-software\mcu-common\src\driver\watchdog\wdg.c``
- - ``embedded-software\mcu-common\src\driver\watchdog\wdg.h``
+ - ``embedded-software\mcu-common\src\driver\watchdog\wdg.c`` (:ref:`wdgc`)
+ - ``embedded-software\mcu-common\src\driver\watchdog\wdg.h`` (:ref:`wdgh`)
 
 Structure
 ~~~~~~~~~

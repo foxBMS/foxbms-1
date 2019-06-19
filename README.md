@@ -4,14 +4,14 @@ foxBMS is a free, open and flexible development environment to design battery
 management systems. It is the first modular open source BMS development
 platform.
 
-The foxconda environment. This environment provides all the tools necessary
+The foxconda environment: This environment provides all the tools necessary
 to generate the documentation, compile the code for the MCUs and flash the
-generated binaries on the MCUs (e.g., Python, git, GCC). foxconda can be
-downloaded [here](https://iisb-foxbms.iisb.fraunhofer.de/foxbms/).
+generated binaries on the MCUs (e.g., ``Python``, ``git``, ``GCC``). foxconda
+can be downloaded [here](https://iisb-foxbms.iisb.fraunhofer.de/foxbms/).
 
-The starting point to get foxBMS is the foxBMS repository
-[github.com/foxBMS/foxbms](https://github.com/foxBMS/foxbms), which contains
-all files for the foxBMS project.
+The starting point to get foxBMS is the foxBMS repository at
+[https://github.com/foxBMS/foxbms](https://github.com/foxBMS/foxbms), which
+contains all files for the foxBMS project.
 
 ## foxBMS Repository
 
@@ -32,8 +32,8 @@ foxconda to compile and flash the sources.
 
 ## Building the Sources
 
-For building the software, open a shell and type `python tools\waf --help`. All
-available build options will be displayed. The top build directory is
-`foxbms\build`.
+For building the software, open a shell and type ``python tools\waf --help``.
+All available build options will be displayed. The top build directory is
+``foxbms\build``.
 
 [foxbms.org/](https://foxbms.org/)

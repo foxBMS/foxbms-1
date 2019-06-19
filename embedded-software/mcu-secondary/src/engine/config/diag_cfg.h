@@ -57,13 +57,13 @@
 #ifndef DIAG_CFG_H_
 #define DIAG_CFG_H_
 
-/*================== Includes =============================================*/
+/*================== Includes ===============================================*/
 #include "general.h"
 
 #include "batterysystem_cfg.h"
 #include "diag_id_cfg.h"
 
-/*================== Macros and Definitions ===============================*/
+/*================== Macros and Definitions =================================*/
 #define DIAG_ERROR_SENSITIVITY_HIGH         (0)    /* logging at first event */
 #define DIAG_ERROR_SENSITIVITY_MID          (5)    /* logging at fifth event */
 #define DIAG_ERROR_SENSITIVITY_LOW          (10)   /* logging at tenth event */
@@ -82,11 +82,11 @@
 #define DIAG_ERROR_CAN_TIMING_CC_SENSITIVITY    (100)
 #define DIAG_ERROR_CAN_SENSOR_SENSITIVITY       (100)
 
-#define DIAG_ERROR_MAIN_PLUS_SENSITIVITY        (500)
-#define DIAG_ERROR_MAIN_MINUS_SENSITIVITY       (500)
-#define DIAG_ERROR_PRECHARGE_SENSITIVITY        (500)
+#define DIAG_ERROR_MAIN_PLUS_SENSITIVITY        (50)
+#define DIAG_ERROR_MAIN_MINUS_SENSITIVITY       (50)
+#define DIAG_ERROR_PRECHARGE_SENSITIVITY        (50)
 
-#define DIAG_ERROR_INTERLOCK_SENSITIVITY        (0)
+#define DIAG_ERROR_INTERLOCK_SENSITIVITY        (10)
 
 /**
  * Number of errors that can be logged
@@ -94,7 +94,7 @@
 #define DIAG_FAIL_ENTRY_LENGTH              (50)
 
 /**
- * Maximum number of the same error that are logged
+ * Maximum number of the same errors that are logged
  */
 #define DIAG_MAX_ENTRIES_OF_ERROR           (5)
 
@@ -156,29 +156,15 @@
  * Cell voltage limits violated
  */
 #define DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MSL                DIAG_ID_39
-
 #define DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MSL               DIAG_ID_42
 
 /**
  *  Temperature limits violated
  */
 #define DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL            DIAG_ID_45
-
 #define DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL         DIAG_ID_48
-
 #define DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL           DIAG_ID_51
-
-
 #define DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL        DIAG_ID_54
-
-/**
- * Overcurrent
- */
-#define DIAG_CH_OVERCURRENT_CHARGE_MSL                     DIAG_ID_57
-#define DIAG_CH_OVERCURRENT_DISCHARGE_MSL                  DIAG_ID_60
-
-
-
 
 /**
  * LTC
@@ -187,23 +173,7 @@
 #define DIAG_CH_LTC_PEC                                    DIAG_ID_64
 #define DIAG_CH_LTC_MUX                                    DIAG_ID_65
 
-
-/* Communication events: 50-63*/
-/**
- *  CAN timing not coming
- */
-#define DIAG_CH_CAN_TIMING                                 DIAG_ID_66
-/**
- *  CAN C-C not coming
- */
-#define DIAG_CH_CAN_CC_RESPONDING                          DIAG_ID_67
-/**
- *  Current sensor not responding anymore
- */
-#define DIAG_CH_CURRENT_SENSOR_RESPONDING                  DIAG_ID_68
-
-
-/* Contactor events: 64-79*/
+/* Contactor events: 64-79 */
 /**
  * @brief   Opening contactor at over current
  */
@@ -220,25 +190,13 @@
 #define DIAG_CH_CONTACTOR_CLOSING                           DIAG_ID_71
 
 /**
- * @brief   Contactor feedback error
- */
-#define DIAG_CH_CONTACTOR_MAIN_PLUS_FEEDBACK                DIAG_ID_72
-#define DIAG_CH_CONTACTOR_MAIN_MINUS_FEEDBACK               DIAG_ID_73
-#define DIAG_CH_CONTACTOR_PRECHARGE_FEEDBACK                DIAG_ID_74
-#define DIAG_CH_CONTACTOR_CHARGE_MAIN_PLUS_FEEDBACK         DIAG_ID_75
-#define DIAG_CH_CONTACTOR_CHARGE_MAIN_MINUS_FEEDBACK        DIAG_ID_76
-#define DIAG_CH_CONTACTOR_CHARGE_PRECHARGE_FEEDBACK         DIAG_ID_77
-
-/**
  * @brief   Interlock feedback error
  */
 #define DIAG_CH_INTERLOCK_FEEDBACK                          DIAG_ID_78
 
-
-
 #define DIAG_CH_SLAVE_PCB_UNDERTEMPERATURE_MSL              DIAG_ID_79
-
 #define DIAG_CH_SLAVE_PCB_OVERTEMPERATURE_MSL               DIAG_ID_82
+
 /**
  * @brief   MCU die temperature
  */
@@ -249,6 +207,11 @@
  */
 #define DIAG_CH_LOW_COIN_CELL_VOLTAGE                       DIAG_ID_90
 #define DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE                  DIAG_ID_91
+/**
+ * @brief   plausibility checks
+ */
+#define DIAG_CH_PLAUSIBILITY_CELL_VOLTAGE                   DIAG_ID_95
+#define DIAG_CH_PLAUSIBILITY_CELL_TEMP                      DIAG_ID_97
 
 /**
  * enable state of diagnosis entry
@@ -259,32 +222,6 @@ typedef enum {
 } DIAG_ENABLE_STATE_e;
 
 
-#if CHECK_CAN_TIMING == TRUE
-    #define DIAG_CAN_TIMING DIAG_ENABLED
-#else
-    #define DIAG_CAN_TIMING DIAG_DISABLED
-#endif
-
-#if CURRENT_SENSOR_PRESENT == TRUE
-    #define DIAG_CAN_SENSOR_PRESENT DIAG_ENABLED
-#else
-    #define DIAG_CAN_SENSOR_PRESENT DIAG_DISABLED
-#endif
-
-/* FIXME is it better to name it DIAG_GROUP_xxx instead of DIAG_xxx_TYPE and */
-/**
- * diagnosis groups
- * failure codes FC
- */
-typedef enum {
-    DIAG_GENERAL_TYPE   = 0x00,     /*!< FC 0x00 - 0x1F */
-    DIAG_CELLMON_TYPE   = 0x01,     /*!< FC 0x20 - 0x3F */
-    DIAG_COM_TYPE       = 0x02,     /*!< FC 0x40 - 0x5F */
-    DIAG_ADC_TYPE       = 0x04,     /*!< FC 0x60 - 0x7F */
-    /* FIXME which failure codes for following group? */
-    DIAG_CONT_TYPE      = 0x08      /*!< FC             */
-} DIAG_TYPE_e;
-
 /**
  * diagnosis recording activation
  */
@@ -293,8 +230,7 @@ typedef enum {
     DIAG_RECORDING_DISABLED  = 0x01,    /*!< disable diagnosis event recording  */
 } DIAG_TYPE_RECORDING_e;
 
-/* FIXME duplicate comment with enum DIAG_TYPE_e */
-/* FIXME some enums are typedefed with DIAG...TYPE_e, some with DIAG_TYPE..._e! Reconsider this */
+/*  FIXME some enums are typedefed with DIAG...TYPE_e, some with DIAG_TYPE..._e! Reconsider this */
 /**
  * diagnosis types for system monitoring
  */
@@ -341,8 +277,8 @@ typedef enum {
     DIAG_SYSMON_MODULE_ID_MAX       = 9     /*!< end marker do not delete               */
 } DIAG_SYSMON_MODULE_ID_e;
 
-/* FIXME doxygen comment */
-/* FIXME is DIAG_CODE_s an appropriate name for this? */
+/*  FIXME doxygen comment */
+/*  FIXME is DIAG_CODE_s an appropriate name for this? */
 typedef struct {
     uint32_t GENERALmsk;
     uint32_t CELLMONmsk;
@@ -357,7 +293,6 @@ typedef struct {
 typedef struct {
     DIAG_CH_ID_e id;                        /*!< diagnosis event id diag_id */
     uint8_t description[40];
-    DIAG_TYPE_e type;                       /*!< diagnosis group of diag event */
     uint16_t thresholds;                     /*!< threshold for number of events which will be tolerated before generating a notification in both direction (OK or NOT OK)
                                              *   threshold = 0: reports the value at first occurence, threshold = 1:reports the value at second occurence*/
     DIAG_TYPE_RECORDING_e enablerecording;  /*!< if enabled recording in diag_memory will be activated */
@@ -396,8 +331,7 @@ typedef struct {
     void (*callbackfunc)(DIAG_SYSMON_MODULE_ID_e);  /*!< */
 } DIAG_SYSMON_CH_CFG_s;
 
-/*================== Constant and Variable Definitions ====================*/
-
+/*================== Extern Constant and Variable Declarations ==============*/
 /**
  * diag device configuration struct
  */
@@ -411,8 +345,11 @@ extern DIAG_CH_CFG_s  diag_ch_cfg[];
 
 /*  FIXME why is it in header at all? and why is it in code at all? not used */
 extern DIAG_CODE_s diag_mask;
-/*================== Function Prototypes ==================================*/
 
-/*================== Function Implementations =============================*/
+/*================== Extern Function Prototypes =============================*/
+/**
+ * @brief update function for diagnosis flags (errors, MOL/RSL/MSL violations)
+ */
+extern void DIAG_updateFlags(void);
 
 #endif /* DIAG_CFG_H_ */

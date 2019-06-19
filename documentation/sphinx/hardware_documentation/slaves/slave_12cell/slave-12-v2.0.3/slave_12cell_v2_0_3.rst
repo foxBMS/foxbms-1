@@ -1,14 +1,14 @@
 .. include:: ../../../../macros.rst
 
-##################################
-Slave 12-Cell ``v2.0.3 to v2.1.1``
-##################################
-
 .. _HW_SLAVE_12CELL_V2_0_3:
 
-========
+==================================
+Slave 12-Cell ``v2.0.3 to v2.1.1``
+==================================
+
+--------
 Overview
-========
+--------
 
 .. note::
 
@@ -18,9 +18,9 @@ Overview
 
    All connector pinouts described below follow the :ref:`sec-connector-convention`.
 
--------------
+^^^^^^^^^^^^^
 Block Diagram
--------------
+^^^^^^^^^^^^^
 
 
 .. _BMS-Slave_12cell_block:
@@ -31,29 +31,29 @@ Block Diagram
 ..
 
 
---------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 Schematic and Board Layout
---------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 More information about the board schematic and layout files can be found in section :ref:`hardware_design_resources`.
 
 
----------------------
+^^^^^^^^^^^^^^^^^^^^^
 Mechanical Dimensions
----------------------
+^^^^^^^^^^^^^^^^^^^^^
 
 The size of the foxBMS Slave PCB is 160x100mm. A mechanical drawing of the PCB can be found in section :ref:`hardware_design_resources`.
 
 
-=========
+---------
 Functions
-=========
+---------
 
 The following general description applies to both, the primary and the secondary of the |BMS-Slave|. If there are any differences in hardware between the primary and the secondary they will be marked as such.
 
-------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^
 Cell Voltage Measurement
-------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 The cell voltage sense lines are input on the connector X1503. The pinout is described in the table below.
 
@@ -93,21 +93,21 @@ Each of these lines is protected by a 250mA fast fuse surface mount device (F402
 
 The cell input lines are filtered by a grounded or differential capacitor filter: both possibilities are provided on the PCB of the |BMS-Slave|. More information on the corner frequency of this filtering can be found in the schematic. The grounded capacitor filter should be used in environments affected with a high noise as it offers a high level of battery voltage ripple rejection. The differential capacitor filter can be used when noise is less occurrent or the design is subjected to cost optimization.
 
-----------------------
+^^^^^^^^^^^^^^^^^^^^^^
 Passive Cell Balancing
-----------------------
+^^^^^^^^^^^^^^^^^^^^^^
 
 The passive balancing circuit is realized by a parallel connection of two 68Ω discharge resistors that can be connected to each single cell in parallel. The MOSFET switches (T701 - T712) that control the connection to the cells are controlled by the primary |LTC| monitoring IC. The secondary |LTC| does not support balancing. The resistor value of 2x 68Ω results in a balancing current of about 100mA at a cell voltage of 3.6V. This current results in a power dissipation of about 0.36W per balancing channel (at 3.6V).
 
-------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Global Cell Balancing Feedback
-------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In order to check the proper function of the balancing process or to detect a malfunction in the balancing circuit, a global balancing feedback signal is connected to the |LTC|. This allows the |BMS-Master| to check wheather any balancing action is currently taking place. The feedback signal is connected to the GPIO3 of the |LTC|. The signal remains in a logic zero state until any balancing action on at least one cell in the module starts.
 
-------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Temperature Sensor Measurement
-------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The cell temperature sensors are connected to the connectors X1506 (primary) and X1507 (secondary). The pinout is identical for the primary and secondary and is described in the table below.
 
@@ -139,9 +139,9 @@ Standard 10kΩ NTC resistors (e.g., Farnell-Nr. 1299926) are recommended for use
 
 Each of the 8 temperture sensors are connected to an analog multiplexer. The analog multiplexer can be controlled via I²C by the |LTC| (7-bit address: 0x4C). In order to ensure fast settling times after swiching the multiplexer input, the output signal of the multiplexer is buffered by an operational amplifier. Finally the analog voltage of the selected sensor is measured on the GPIO1 pin of the |LTC|.
 
----------------
+^^^^^^^^^^^^^^^
 On-board EEPROM
----------------
+^^^^^^^^^^^^^^^
 
 .. note::
 
@@ -149,15 +149,15 @@ On-board EEPROM
 
 The primary as well as the secondary unit of the |BMS-Slave| board is equipped with an EEPROM (IC1301 / IC1401). The EEPROM for example can be used for storing data such as calibration values or minimum and maximum temperatures seens by the module during its lifetime. Similar to the analog multiplexers, the EEPROM device is connected to the I²C bus of the |LTC| (7-bit address: 0x50).
 
------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 On-board Ambient Temperature Sensor
------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For an additional monitoring of the ambient temperature an on-board temperature sensor is used. This temperature sensor can be read by the |LTC| viathe I²C bus (7-bit address: 0x48). It is possible to program an alert temperature level. Once the measured temperature reaches this alert temperature level, the alert pin of the IC is set to a logic low level. Currently, this signal is not used on the |BMS-Slave| board, but it is accessible on the connector X1508.
 
------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Additional Inputs and Outputs
------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Several additional analog and digital inputs and outputs are provided on the |BMS-Slave| board via pin headers. Each 16 analog inputs are provided on connector X1501 (primary) and X1502 (secondary). The pinout for the connectors for the primary and secondary unit is identical and is described in the table below.
 
@@ -204,9 +204,9 @@ Pin    Signal           Direction       Description
 
 Each 8 digital inputs/outputs are connected to an I²C controlled port expander (7-bit address: 0x20). The direction of the inputs/outputs as well as the logiclevels on the pins can be selected by register settings. Each of the 8 digital inputs/outputs has a discrete pull up resistor that for example can be used for directly connecting a tactile switch.
 
------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 isoSPI Daisy Chain Connection
------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The data transmission between the slaves and between the slaves and the basic board takes place using the isoSPI interface. The isoSPI signals are input onthe connectors X1509 (primary) and X1511 (secondary). The isoSPI signals for daisy-chaining are output on the connectors X1510 (primary) and X1512 (secondary). The isoSPI connections are isolated galvanically using pulse transformers (TR201 / TR301). The voltage amplitude of the differential signal can be adjusted by setting resistors (see section :ref:`hw_slave_daisy_current_12cell`).
 
@@ -237,29 +237,29 @@ The pinout of the isoSPI connectors is described in :numref:`table %s <daisy_inp
    2              OUT- (Primary/Secondary |LTC|)
    =============  ==============================
 
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Hardware Settings / Options
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Software Timer
---------------
+""""""""""""""
 
 The internal software timer of the |LTC| can be enabled/disabled by a dedicated external pin (SWTEN, pin 36). In order to support all features, the |BMS-Slave| board offers a possibility to switch the software timer. The software timer is disabled in the standard configuration, which means pin 36 is pulled to GND via a zero-ohm resistor (R219/R319). The timer can be enabled by removing the resistor R219/R319 and placing a zero-ohm resistor to R220/R320.
 
 .. _hw_slave_daisy_current_12:
 
 Daisy Chain Communication Current
----------------------------------
+"""""""""""""""""""""""""""""""""
 
 The daisy chain communication current can be set by the resisitors R205/R305 and R207/R307. The default value is 820Ω for R205/R305 and 1.21kΩ for R207/R307. This values result in a bias current of approximately 1mA and a differential signal amplitude of 1.18V. Theses values are suitable for high noise environments with cable lengths of over 50m. More information can be found in the |LTC| datasheet.
 
 Status LED
-----------
+""""""""""
 
 The status LEDs LD201 and LD301 show the current mode of each, the primary and secondary |LTC|. The LED is on in STANDBY, REFUP or MEASURE mode, whereas the LED is off in SLEEP mode. The LED can be disabled by removing the resistor R205 (primary) or R305 (secondary).
 
 GPIO Extension Connector
-------------------------
+""""""""""""""""""""""""
 
 The internal GPIO lines of the primary or secondary |LTC| can be connected to the GPIO extension pin header X1508 via optional zero-ohm resistors. In the standard configuration these resistors are not placed. Of course it is possible to place each both resistors for a parallel connection of the internal signals to the GPIO extension connector. For more information see page 2/3 of the schematic file. The placement of the resistors and the resulting connection is shown in the table below.
 
@@ -300,9 +300,9 @@ Pin    Signal                 Direction       Description
 20     FUSED_VBAT-            Output          GND
 ====   ====================   ============    =========================================
 
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 External Isolated DC-Supply
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. note::
 

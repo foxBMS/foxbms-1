@@ -62,6 +62,26 @@
 
 /*================== Macros and Definitions ===============================*/
 
+/**
+ * @brief Stack size of 1ms task
+ */
+#define APPL_TSK_C_1MS_STACKSIZE       (1024u/4u)
+
+/**
+ * @brief Stack size of 10ms task
+ */
+#define APPL_TSK_C_10MS_STACKSIZE      (1024u/4u)
+
+/**
+ * @brief Stack size of 100ms task
+ */
+#define APPL_TSK_C_100MS_STACKSIZE     (1024u/4u)
+
+/**
+ * @brief Stack size of aperiodic task
+ */
+#define APPL_TSK_APERIODIC_STACKSIZE   (1024u/4u)
+
 /*================== Constant and Variable Definitions ====================*/
 
 /**
@@ -91,6 +111,15 @@ extern OS_Task_Definition_s appl_tskdef_cyclic_10ms;
  */
 extern OS_Task_Definition_s appl_tskdef_cyclic_100ms;
 
+/**
+ * @brief   Task configuration of the aperiodic application task
+ *
+ * @details Predefined aperiodic task for user code
+ *
+ * @ingroup API_OS
+ */
+extern OS_Task_Definition_s appl_tskdef_aperiodic;
+
 /*================== Function Prototypes ==================================*/
 
 /**
@@ -113,6 +142,13 @@ extern void APPL_Cyclic_10ms(void);
  * @ingroup API_OS
  */
 extern void APPL_Cyclic_100ms(void);
+
+/**
+ * @brief   user application task aperiodic
+ *
+ * @ingroup API_OS
+ */
+extern void APPL_Aperiodic(void);
 
 /*================== Function Implementations =============================*/
 

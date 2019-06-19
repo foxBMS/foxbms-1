@@ -59,8 +59,8 @@
 #include "io_mcu_cfg.h"
 
 /*================== Macros and Definitions =================================*/
-#define LED_DEBUG_LED_0 IO_PIN_MCU_1_DEBUG_LED_0
-#define LED_DEBUG_LED_1 IO_PIN_MCU_1_DEBUG_LED_1
+#define LED_DEBUG_LED_0 IO_PIN_DEBUG_LED_0
+#define LED_DEBUG_LED_1 IO_PIN_DEBUG_LED_1
 
 /**
  * Blinking time in milliseconds

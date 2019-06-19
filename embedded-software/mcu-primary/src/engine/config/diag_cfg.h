@@ -57,13 +57,13 @@
 #ifndef DIAG_CFG_H_
 #define DIAG_CFG_H_
 
-/*================== Includes =============================================*/
+/*================== Includes ===============================================*/
 #include "general.h"
 
 #include "batterysystem_cfg.h"
 #include "diag_id_cfg.h"
 
-/*================== Macros and Definitions ===============================*/
+/*================== Macros and Definitions =================================*/
 #define DIAG_ERROR_SENSITIVITY_HIGH         (0)    /* logging at first event */
 #define DIAG_ERROR_SENSITIVITY_MID          (5)    /* logging at fifth event */
 #define DIAG_ERROR_SENSITIVITY_LOW          (10)   /* logging at tenth event */
@@ -197,14 +197,31 @@
 /**
  * Overcurrent
  */
-#define DIAG_CH_OVERCURRENT_CHARGE_MSL                     DIAG_ID_57
-#define DIAG_CH_OVERCURRENT_CHARGE_RSL                     DIAG_ID_58
-#define DIAG_CH_OVERCURRENT_CHARGE_MOL                     DIAG_ID_59
+#define DIAG_CH_OVERCURRENT_CHARGE_CELL_MSL                DIAG_ID_57
+#define DIAG_CH_OVERCURRENT_CHARGE_CELL_RSL                DIAG_ID_58
+#define DIAG_CH_OVERCURRENT_CHARGE_CELL_MOL                DIAG_ID_59
 
-#define DIAG_CH_OVERCURRENT_DISCHARGE_MSL                  DIAG_ID_60
-#define DIAG_CH_OVERCURRENT_DISCHARGE_RSL                  DIAG_ID_61
-#define DIAG_CH_OVERCURRENT_DISCHARGE_MOL                  DIAG_ID_62
+#define DIAG_CH_OVERCURRENT_DISCHARGE_CELL_MSL             DIAG_ID_60
+#define DIAG_CH_OVERCURRENT_DISCHARGE_CELL_RSL             DIAG_ID_61
+#define DIAG_CH_OVERCURRENT_DISCHARGE_CELL_MOL             DIAG_ID_62
 
+#define DIAG_CH_OVERCURRENT_CHARGE_PL0_MSL                 DIAG_ID_99
+#define DIAG_CH_OVERCURRENT_CHARGE_PL0_RSL                 DIAG_ID_100
+#define DIAG_CH_OVERCURRENT_CHARGE_PL0_MOL                 DIAG_ID_101
+
+#define DIAG_CH_OVERCURRENT_CHARGE_PL1_MSL                 DIAG_ID_102
+#define DIAG_CH_OVERCURRENT_CHARGE_PL1_RSL                 DIAG_ID_103
+#define DIAG_CH_OVERCURRENT_CHARGE_PL1_MOL                 DIAG_ID_104
+
+#define DIAG_CH_OVERCURRENT_DISCHARGE_PL0_MSL              DIAG_ID_105
+#define DIAG_CH_OVERCURRENT_DISCHARGE_PL0_RSL              DIAG_ID_106
+#define DIAG_CH_OVERCURRENT_DISCHARGE_PL0_MOL              DIAG_ID_107
+
+#define DIAG_CH_OVERCURRENT_DISCHARGE_PL1_MSL              DIAG_ID_108
+#define DIAG_CH_OVERCURRENT_DISCHARGE_PL1_RSL              DIAG_ID_109
+#define DIAG_CH_OVERCURRENT_DISCHARGE_PL1_MOL              DIAG_ID_110
+
+#define DIAG_CH_OVERCURRENT_PL_NONE                        DIAG_ID_111
 
 /**
  * LTC
@@ -229,7 +246,7 @@
 #define DIAG_CH_CURRENT_SENSOR_RESPONDING                  DIAG_ID_68
 
 
-/* Contactor events: 64-79*/
+/* Contactor events: 69-77*/
 /**
  * @brief   Opening contactor at over current
  */
@@ -296,6 +313,19 @@
  */
 #define DIAG_CH_OPEN_WIRE                                   DIAG_ID_92
 
+
+/**
+ * @brief   plausibility checks
+ */
+#define DIAG_CH_PLAUSIBILITY_CELL_VOLTAGE                   DIAG_ID_95
+#define DIAG_CH_PLAUSIBILITY_CELL_TEMP                      DIAG_ID_97
+#define DIAG_CH_PLAUSIBILITY_PACK_VOLTAGE                   DIAG_ID_98
+
+/**
+ * @brief   DoD was detected
+ */
+#define DIAG_CH_DEEP_DISCHARGE_DETECTED                     DIAG_ID_93
+
 /**
  * enable state of diagnosis entry
  */
@@ -317,20 +347,6 @@ typedef enum {
     #define DIAG_CAN_SENSOR_PRESENT DIAG_DISABLED
 #endif
 
-/*  FIXME is it better to name it DIAG_GROUP_xxx instead of DIAG_xxx_TYPE and */
-/**
- * diagnosis groups
- * failure codes FC
- */
-typedef enum {
-    DIAG_GENERAL_TYPE   = 0x00,     /*!< FC 0x00 - 0x1F */
-    DIAG_CELLMON_TYPE   = 0x01,     /*!< FC 0x20 - 0x3F */
-    DIAG_COM_TYPE       = 0x02,     /*!< FC 0x40 - 0x5F */
-    DIAG_ADC_TYPE       = 0x04,     /*!< FC 0x60 - 0x7F */
-    /*  FIXME which failure codes for following group? */
-    DIAG_CONT_TYPE      = 0x08      /*!< FC             */
-} DIAG_TYPE_e;
-
 /**
  * diagnosis recording activation
  */
@@ -339,7 +355,6 @@ typedef enum {
     DIAG_RECORDING_DISABLED  = 0x01,    /*!< disable diagnosis event recording  */
 } DIAG_TYPE_RECORDING_e;
 
-/*  FIXME duplicate comment with enum DIAG_TYPE_e */
 /*  FIXME some enums are typedefed with DIAG...TYPE_e, some with DIAG_TYPE..._e! Reconsider this */
 /**
  * diagnosis types for system monitoring
@@ -374,18 +389,18 @@ typedef enum {
  * diag_sysmon_ch_cfg[]=
  */
 typedef enum {
-    DIAG_SYSMON_DATABASE_ID         = 0,    /*!< diag entry for database                */
-    DIAG_SYSMON_SYS_ID              = 1,    /*!< diag entry for sys              */
-    DIAG_SYSMON_BMS_ID              = 2,    /*!< diag entry for bms              */
-    DIAG_SYSMON_CONT_ID             = 3,    /*!< diag entry for contactors              */
-    DIAG_SYSMON_ILCK_ID             = 4,    /*!< diag entry for contactors              */
-    DIAG_SYSMON_LTC_ID              = 5,    /*!< diag entry for ltc                     */
-    DIAG_SYSMON_ISOGUARD_ID         = 6,    /*!< diag entry for ioguard                 */
-    DIAG_SYSMON_CANS_ID             = 7,    /*!< diag entry for can                     */
-    DIAG_SYSMON_APPL_CYCLIC_1ms     = 8,    /*!< diag entry for application 10ms task   */
-    DIAG_SYSMON_APPL_CYCLIC_10ms    = 9,    /*!< diag entry for application 10ms task   */
-    DIAG_SYSMON_APPL_CYCLIC_100ms   = 10,    /*!< diag entry for application 100ms task  */
-    DIAG_SYSMON_MODULE_ID_MAX       = 11     /*!< end marker do not delete               */
+    DIAG_SYSMON_DATABASE_ID         = 0,   /*!< diag entry for database               */
+    DIAG_SYSMON_SYS_ID              = 1,   /*!< diag entry for sys                    */
+    DIAG_SYSMON_BMS_ID              = 2,   /*!< diag entry for bms                    */
+    DIAG_SYSMON_CONT_ID             = 3,   /*!< diag entry for contactors             */
+    DIAG_SYSMON_ILCK_ID             = 4,   /*!< diag entry for contactors             */
+    DIAG_SYSMON_LTC_ID              = 5,   /*!< diag entry for ltc                    */
+    DIAG_SYSMON_ISOGUARD_ID         = 6,   /*!< diag entry for ioguard                */
+    DIAG_SYSMON_CANS_ID             = 7,   /*!< diag entry for can                    */
+    DIAG_SYSMON_APPL_CYCLIC_1ms     = 8,   /*!< diag entry for application 10ms task  */
+    DIAG_SYSMON_APPL_CYCLIC_10ms    = 9,   /*!< diag entry for application 10ms task  */
+    DIAG_SYSMON_APPL_CYCLIC_100ms   = 10,  /*!< diag entry for application 100ms task */
+    DIAG_SYSMON_MODULE_ID_MAX       = 11   /*!< end marker do not delete              */
 } DIAG_SYSMON_MODULE_ID_e;
 
 /*  FIXME doxygen comment */
@@ -404,7 +419,6 @@ typedef struct {
 typedef struct {
     DIAG_CH_ID_e id;                        /*!< diagnosis event id diag_id */
     uint8_t description[40];
-    DIAG_TYPE_e type;                       /*!< diagnosis group of diag event */
     uint16_t thresholds;                     /*!< threshold for number of events which will be tolerated before generating a notification in both direction (OK or NOT OK)
                                              *   threshold = 0: reports the value at first occurence, threshold = 1:reports the value at second occurence*/
     DIAG_TYPE_RECORDING_e enablerecording;  /*!< if enabled recording in diag_memory will be activated */
@@ -443,8 +457,7 @@ typedef struct {
     void (*callbackfunc)(DIAG_SYSMON_MODULE_ID_e);  /*!< */
 } DIAG_SYSMON_CH_CFG_s;
 
-/*================== Constant and Variable Definitions ====================*/
-
+/*================== Extern Constant and Variable Declarations ==============*/
 /**
  * diag device configuration struct
  */
@@ -458,8 +471,11 @@ extern DIAG_CH_CFG_s  diag_ch_cfg[];
 
 /*  FIXME why is it in header at all? and why is it in code at all? not used */
 extern DIAG_CODE_s diag_mask;
-/*================== Function Prototypes ==================================*/
 
-/*================== Function Implementations =============================*/
+/*================== Extern Function Prototypes =============================*/
+/**
+ * @brief update function for diagnosis flags (errors, MOL/RSL/MSL violations)
+ */
+extern void DIAG_updateFlags(void);
 
 #endif /* DIAG_CFG_H_ */

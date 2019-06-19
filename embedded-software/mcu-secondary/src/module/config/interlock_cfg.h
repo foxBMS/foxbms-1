@@ -69,11 +69,11 @@
  *      #define ILCK_INTERLOCK_CONTROL       PIN_MCU_0_INTERLOCK_CONTROL
  *      #define ILCK_INTERLOCK_FEEDBACK      PIN_MCU_0_INTERLOCK_FEEDBACK
  */
-#define ILCK_INTERLOCK_CONTROL                  IO_PIN_MCU_1_INTERLOCK_CONTROL
+#define ILCK_INTERLOCK_CONTROL                  IO_PIN_INTERLOCK_CONTROL
 /**
  * Defines the pin where interlock feedback pin is connected to the mcu
  */
-#define ILCK_INTERLOCK_FEEDBACK                 IO_PIN_MCU_1_INTERLOCK_FEEDBACK
+#define ILCK_INTERLOCK_FEEDBACK                 IO_PIN_INTERLOCK_FEEDBACK
 
 
 /**

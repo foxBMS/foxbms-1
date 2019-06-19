@@ -105,35 +105,31 @@ static float SOC_GetFromVoltage(float voltage);
 /*================== Function Implementations =============================*/
 
 void SOC_Init(uint8_t cc_present) {
-    SOX_SOC_s soc = {50.0, 50.0, 50.0};
-    DATA_BLOCK_ERRORSTATE_s error_flags;
+    SOX_SOC_s soc = {50.0, 50.0, 50.0, 0, 0, 0, 0};
 
-
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
     DB_ReadBlock(&sox_current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
     NVM_getSOC(&soc);
 
     if (cc_present == TRUE) {
         soc_previous_current_timestamp_cc = sox_current_tab.timestamp_cc;
-        error_flags.can_cc_used = 1;
         sox_state.sensor_cc_used = TRUE;
 
         if (POSITIVE_DISCHARGE_CURRENT == TRUE) {
-            sox_state.cc_scaling = soc.mean + 100.0*sox_current_tab.current_counter/(3600.0*(SOX_CELL_CAPACITY/1000.0));
+            sox_state.cc_scaling = soc.mean + 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
         } else {
-            sox_state.cc_scaling = soc.mean - 100.0*sox_current_tab.current_counter/(3600.0*(SOX_CELL_CAPACITY/1000.0));
+            sox_state.cc_scaling = soc.mean - 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
         }
 
 
         sox.soc_mean = soc.mean;
         sox.soc_min = soc.min;
         sox.soc_max = soc.max;
-        if (sox.soc_mean > 100.0) { sox.soc_mean = 100.0; }
-        if (sox.soc_mean < 0.0)   { sox.soc_mean = 0.0;   }
-        if (sox.soc_min > 100.0)  { sox.soc_min = 100.0;  }
-        if (sox.soc_min < 0.0)    { sox.soc_min = 0.0;    }
-        if (sox.soc_max > 100.0)  { sox.soc_max = 100.0;  }
-        if (sox.soc_max < 0.0)    { sox.soc_max = 0.0;    }
+        if (sox.soc_mean > 100.0f) { sox.soc_mean = 100.0; }
+        if (sox.soc_mean < 0.0f)   { sox.soc_mean = 0.0;   }
+        if (sox.soc_min > 100.0f)  { sox.soc_min = 100.0;  }
+        if (sox.soc_min < 0.0f)    { sox.soc_min = 0.0;    }
+        if (sox.soc_max > 100.0f)  { sox.soc_max = 100.0;  }
+        if (sox.soc_max < 0.0f)    { sox.soc_max = 0.0;    }
         /* Alternatively, SOC can be initialized with {V,SOC} lookup table if available */
         /* with the function SOC_Init_Lookup_Table() */
         sox.state = 0;
@@ -141,34 +137,32 @@ void SOC_Init(uint8_t cc_present) {
         sox.previous_timestamp = 0;
     } else {
         soc_previous_current_timestamp = sox_current_tab.timestamp_cur;
-        error_flags.can_cc_used = 0;
         sox_state.sensor_cc_used = FALSE;
     }
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
     DB_WriteBlock(&sox, DATA_BLOCK_ID_SOX);
 }
 
 void SOC_SetValue(float soc_value_min, float soc_value_max, float soc_value_mean) {
-    SOX_SOC_s soc = {50.0, 50.0, 50.0};
+    SOX_SOC_s soc = {50.0, 50.0, 50.0, 0, 0, 0, 0};
 
-    if (soc_value_min < 0.0) {
+    if (soc_value_min < 0.0f) {
         soc_value_min = 0.0;
     }
-    if (soc_value_min > 100.0) {
+    if (soc_value_min > 100.0f) {
         soc_value_min = 100.0;
     }
 
-    if (soc_value_max < 0.0) {
+    if (soc_value_max < 0.0f) {
         soc_value_max = 0.0;
     }
-    if (soc_value_max > 100.0) {
+    if (soc_value_max > 100.0f) {
         soc_value_max = 100.0;
     }
 
-    if (soc_value_mean < 0.0) {
+    if (soc_value_mean < 0.0f) {
         soc_value_mean = 0.0;
     }
-    if (soc_value_mean > 100.0) {
+    if (soc_value_mean > 100.0f) {
         soc_value_mean = 100.0;
     }
 
@@ -194,20 +188,20 @@ void SOC_SetValue(float soc_value_min, float soc_value_max, float soc_value_mean
         soc.max = soc_value_max;
 
         if (POSITIVE_DISCHARGE_CURRENT == TRUE) {
-            sox_state.cc_scaling = soc.mean + 100.0*sox_current_tab.current_counter/(3600.0*(SOX_CELL_CAPACITY/1000.0));
+            sox_state.cc_scaling = soc.mean + 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
         } else {
-            sox_state.cc_scaling = soc.mean - 100.0*sox_current_tab.current_counter/(3600.0*(SOX_CELL_CAPACITY/1000.0));
+            sox_state.cc_scaling = soc.mean - 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
         }
 
         sox.soc_mean = soc.mean;
         sox.soc_min = sox.soc_mean;
         sox.soc_max = sox.soc_mean;
-        if (sox.soc_mean > 100.0) { sox.soc_mean = 100.0; }
-        if (sox.soc_mean < 0.0)   { sox.soc_mean = 0.0;   }
-        if (sox.soc_min > 100.0)  { sox.soc_min = 100.0;  }
-        if (sox.soc_min < 0.0)    { sox.soc_min = 0.0;    }
-        if (sox.soc_max > 100.0)  { sox.soc_max = 100.0;  }
-        if (sox.soc_max < 0.0)    { sox.soc_max = 0.0;    }
+        if (sox.soc_mean > 100.0f) { sox.soc_mean = 100.0; }
+        if (sox.soc_mean < 0.0f)   { sox.soc_mean = 0.0;   }
+        if (sox.soc_min > 100.0f)  { sox.soc_min = 100.0;  }
+        if (sox.soc_min < 0.0f)    { sox.soc_min = 0.0;    }
+        if (sox.soc_max > 100.0f)  { sox.soc_max = 100.0;  }
+        if (sox.soc_max < 0.0f)    { sox.soc_max = 0.0;    }
         NVM_setSOC(&soc);
         DB_WriteBlock(&sox, DATA_BLOCK_ID_SOX);
     }
@@ -215,9 +209,9 @@ void SOC_SetValue(float soc_value_min, float soc_value_max, float soc_value_mean
 
 
 void SOC_Set_Lookup_Table(void) {
-    float soc_min = 50.0;
-    float soc_max = 50.0;
-    float soc_mean = 50.0;
+    float soc_min = 50.0f;
+    float soc_max = 50.0f;
+    float soc_mean = 50.0f;
 
     DB_ReadBlock(&cellminmax, DATA_BLOCK_ID_MINMAX);
     DB_ReadBlock(&sox_current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
@@ -240,7 +234,7 @@ void SOC_Calculation(void) {
     uint32_t timestep = 0;
 
     DATA_BLOCK_CURRENT_SENSOR_s cans_current_tab;
-    SOX_SOC_s soc = {50.0, 50.0, 50.0};
+    SOX_SOC_s soc = {50.0, 50.0, 50.0, 0, 0, 0, 0};
     float deltaSOC = 0.0;
 
     if (sox_state.sensor_cc_used == FALSE) {
@@ -257,19 +251,19 @@ void SOC_Calculation(void) {
                 /* soc_mean = soc_mean - (sox_current_tab.current *mA* /(float)SOX_CELL_CAPACITY (*mAh*)) * (float)(timestep) * (10.0/3600.0); */ /*milliseconds*/
 
                 if (POSITIVE_DISCHARGE_CURRENT == TRUE) {
-                    deltaSOC = (((sox_current_tab.current)*(float)(timestep)/10))/(3600.0*SOX_CELL_CAPACITY); /* ((mA *ms *(1s/1000ms)) / (3600(s/h) *mAh)) *100% */
+                    deltaSOC = (((sox_current_tab.current)*(float)(timestep)/10))/(3600.0f * SOX_CELL_CAPACITY); /* ((mA *ms *(1s/1000ms)) / (3600(s/h) *mAh)) *100% */
                 } else {
-                    deltaSOC = -(((sox_current_tab.current)*(float)(timestep)/10))/(3600.0*SOX_CELL_CAPACITY); /* ((mA *ms *(1s/1000ms)) / (3600(s/h) *mAh)) *100% */
+                    deltaSOC = -(((sox_current_tab.current)*(float)(timestep)/10))/(3600.0f * SOX_CELL_CAPACITY); /* ((mA *ms *(1s/1000ms)) / (3600(s/h) *mAh)) *100% */
                 }
                 soc.mean = soc.mean - deltaSOC;
                 soc.min = soc.min - deltaSOC;
                 soc.max = soc.max - deltaSOC;
-                if (soc.mean > 100.0) { soc.mean = 100.0; }
-                if (soc.mean < 0.0)   { soc.mean = 0.0;   }
-                if (soc.min > 100.0)  { soc.min = 100.0;  }
-                if (soc.min < 0.0)    { soc.min = 0.0;    }
-                if (soc.max > 100.0)  { soc.max = 100.0;  }
-                if (soc.max < 0.0)    { soc.max = 0.0;    }
+                if (soc.mean > 100.0f) { soc.mean = 100.0; }
+                if (soc.mean < 0.0f)   { soc.mean = 0.0;   }
+                if (soc.min > 100.0f)  { soc.min = 100.0;  }
+                if (soc.min < 0.0f)    { soc.min = 0.0;    }
+                if (soc.max > 100.0f)  { soc.max = 100.0;  }
+                if (soc.max < 0.0f)    { soc.max = 0.0;    }
 
                 sox.soc_mean = soc.mean;
                 sox.soc_min = soc.min;
@@ -293,9 +287,9 @@ void SOC_Calculation(void) {
             DB_ReadBlock(&cans_current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
 
             if (POSITIVE_DISCHARGE_CURRENT == TRUE) {
-                sox.soc_mean = sox_state.cc_scaling - 100.0*cans_current_tab.current_counter/(3600.0*(SOX_CELL_CAPACITY/1000.0));
+                sox.soc_mean = sox_state.cc_scaling - 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
             } else {
-                sox.soc_mean = sox_state.cc_scaling + 100.0*cans_current_tab.current_counter/(3600.0*(SOX_CELL_CAPACITY/1000.0));
+                sox.soc_mean = sox_state.cc_scaling + 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
             }
 
             sox.soc_min = sox.soc_mean;
@@ -303,12 +297,12 @@ void SOC_Calculation(void) {
             soc.mean = sox.soc_mean;
             soc.min = sox.soc_min;
             soc.max = sox.soc_max;
-            if (sox.soc_mean > 100.0) { sox.soc_mean = 100.0; }
-            if (sox.soc_mean < 0.0)   { sox.soc_mean = 0.0;   }
-            if (sox.soc_min > 100.0)  { sox.soc_min = 100.0;  }
-            if (sox.soc_min < 0.0)    { sox.soc_min = 0.0;    }
-            if (sox.soc_max > 100.0)  { sox.soc_max = 100.0;  }
-            if (sox.soc_max < 0.0)    { sox.soc_max = 0.0;    }
+            if (sox.soc_mean > 100.0f) { sox.soc_mean = 100.0; }
+            if (sox.soc_mean < 0.0f)   { sox.soc_mean = 0.0;   }
+            if (sox.soc_min > 100.0f)  { sox.soc_min = 100.0;  }
+            if (sox.soc_min < 0.0f)    { sox.soc_min = 0.0;    }
+            if (sox.soc_max > 100.0f)  { sox.soc_max = 100.0;  }
+            if (sox.soc_max < 0.0f)    { sox.soc_max = 0.0;    }
             NVM_setSOC(&soc);
             sox.state++;
             DB_WriteBlock(&sox, DATA_BLOCK_ID_SOX);
@@ -350,7 +344,7 @@ static void SOF_CalculateCurves(const SOX_SOF_CONFIG_s *configLimitValues, SOF_c
     calcCurveValues->Slope_SocDischa = (configLimitValues->I_DischaMax_Cont - configLimitValues->I_Limphome) / (configLimitValues->Cutoff_Soc_Discha - configLimitValues->Limit_Soc_Discha);
     calcCurveValues->Offset_SocDischa = configLimitValues->I_Limphome - (calcCurveValues->Slope_SocDischa * configLimitValues->Limit_Soc_Discha);
 
-    calcCurveValues->Slope_SocCharge = (configLimitValues->I_ChargeMax_Cont - 0.0) / (configLimitValues->Cutoff_Soc_Charge - configLimitValues->Limit_Soc_Charge);
+    calcCurveValues->Slope_SocCharge = (configLimitValues->I_ChargeMax_Cont - 0.0f) / (configLimitValues->Cutoff_Soc_Charge - configLimitValues->Limit_Soc_Charge);
     calcCurveValues->Offset_SocCharge = 0 - calcCurveValues->Slope_SocCharge * configLimitValues->Limit_Soc_Charge;
 
     calcCurveValues->Slope_VoltageDischa = (configLimitValues->I_DischaMax_Cont - 0) / (configLimitValues->Cutoff_Voltage_Discha - configLimitValues->Limit_Voltage_Discha);
@@ -368,7 +362,7 @@ void SOF_Calculation(void) {
     DB_ReadBlock(&contfeedbacktab, DATA_BLOCK_ID_CONTFEEDBACK);
 
     /* Calculate SOF limits */
-    SOF_Calculate(cellminmax.temperature_max, cellminmax.temperature_min, cellminmax.voltage_max, cellminmax.voltage_min, (uint16_t)(100.0*sox.soc_max), (uint16_t)(100.0*sox.soc_min));
+    SOF_Calculate(cellminmax.temperature_max, cellminmax.temperature_min, cellminmax.voltage_max, cellminmax.voltage_min, (uint16_t)(100.0f*sox.soc_max), (uint16_t)(100.0f*sox.soc_min));
 
     /* Write MOL level */
     sof.continuous_charge_MOL = sof_mol_Level.current_Charge_cont_max;
@@ -425,9 +419,9 @@ float SOC_GetFromVoltage(float voltage) {
  * @param   minsoc        minimum soc in system with resolution 0.01% (0..10000)
  */
 static void SOF_Calculate(int16_t maxtemp, int16_t mintemp, uint16_t maxvolt, uint16_t minvolt, uint16_t maxsoc, uint16_t minsoc) {
-    SOX_SOF_s UbasedSof = {0.0, 0.0, 0.0};
-    SOX_SOF_s SbasedSof = {0.0, 0.0, 0.0};
-    SOX_SOF_s TbasedSof = {0.0, 0.0, 0.0};
+    SOX_SOF_s UbasedSof = {0.0, 0.0, 0.0, 0.0};
+    SOX_SOF_s SbasedSof = {0.0, 0.0, 0.0, 0.0};
+    SOX_SOF_s TbasedSof = {0.0, 0.0, 0.0, 0.0};
 
     /* Calculate maximum allowed current depending on current values */
     SOF_CalculateVoltageBased((float)minvolt, (float)maxvolt, &UbasedSof, &sox_sof_config_maxAllowedCurrent, &sofCurveRecOperatingCurrent);
@@ -544,7 +538,7 @@ static void SOF_CalculateSocBased(float MinSoc, float MaxSoc, SOX_SOF_s *ResultV
  * @param   ResultValues pointer where to store the results
  */
 static void  SOF_CalculateTemperatureBased(float MinTemp, float MaxTemp, SOX_SOF_s *ResultValues, const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues) {
-    SOX_SOF_s dummyResultValues = {0.0, 0.0, 0.0};
+    SOX_SOF_s dummyResultValues = {0.0, 0.0, 0.0, 0.0};
     /* Temperature low Discharge */
     if (MinTemp <= configLimitValues->Limit_TLow_Discha) {
         ResultValues->current_Discha_cont_max = configLimitValues->I_Limphome;

@@ -12,14 +12,14 @@ Module Files
 ~~~~~~~~~~~~
 
 Driver:
- - ``embedded-software\mcu-common\src\driver\dma\dma.c``
- - ``embedded-software\mcu-common\src\module\dma\dma.h``
+ - ``embedded-software\mcu-common\src\driver\dma\dma.c`` (:ref:`dmac`)
+ - ``embedded-software\mcu-common\src\driver\dma\dma.h`` (:ref:`dmah`)
 
 Driver Configuration:
- - ``embedded-software\mcu-primary\src\driver\config\dma_cfg.c``
- - ``embedded-software\mcu-primary\src\driver\config\dma_cfg.h``
- - ``embedded-software\mcu-secondary\src\driver\config\dma_cfg.c``
- - ``embedded-software\mcu-secondary\src\driver\config\dma_cfg.h``
+ - ``embedded-software\mcu-primary\src\driver\config\dma_cfg.c`` (:ref:`primarydmacfgc`)
+ - ``embedded-software\mcu-primary\src\driver\config\dma_cfg.h`` (:ref:`primarydmacfgc`)
+ - ``embedded-software\mcu-secondary\src\driver\config\dma_cfg.c`` (:ref:`secondarydmacfgc`)
+ - ``embedded-software\mcu-secondary\src\driver\config\dma_cfg.h`` (:ref:`secondarydmacfgc`)
 
 Structure
 ~~~~~~~~~

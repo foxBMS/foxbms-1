@@ -64,33 +64,33 @@
 /*
  *Trace
  */
-#define IO_PIN_MCU_1_TRACECLK                        IO_PE_2
-#define IO_PIN_MCU_1_TRACED0                         IO_PE_3
-#define IO_PIN_MCU_1_TRACED1                         IO_PE_4
-#define IO_PIN_MCU_1_TRACED2                         IO_PE_5
-#define IO_PIN_MCU_1_TRACED3                         IO_PE_6
+#define IO_PIN_TRACECLK                        IO_PE_2
+#define IO_PIN_TRACED0                         IO_PE_3
+#define IO_PIN_TRACED1                         IO_PE_4
+#define IO_PIN_TRACED2                         IO_PE_5
+#define IO_PIN_TRACED3                         IO_PE_6
 
 /*
  *Debug LEDs
  */
-#define IO_PIN_MCU_1_DEBUG_LED_1                     IO_PC_2
-#define IO_PIN_MCU_1_DEBUG_LED_0                     IO_PC_3
+#define IO_PIN_DEBUG_LED_1                     IO_PC_2
+#define IO_PIN_DEBUG_LED_0                     IO_PC_3
 
 /*
  *Interfaces
  */
-#define IO_PIN_MCU_1_BMS_INTERFACE_SPI_NSS           IO_PA_4
-#define IO_PIN_MCU_1_BMS_INTERFACE_SPI_SCK           IO_PA_5
-#define IO_PIN_MCU_1_BMS_INTERFACE_SPI_MISO          IO_PA_6
-#define IO_PIN_MCU_1_BMS_INTERFACE_SPI_MOSI          IO_PA_7
+#define IO_PIN_BMS_INTERFACE_SPI_NSS           IO_PA_4
+#define IO_PIN_BMS_INTERFACE_SPI_SCK           IO_PA_5
+#define IO_PIN_BMS_INTERFACE_SPI_MISO          IO_PA_6
+#define IO_PIN_BMS_INTERFACE_SPI_MOSI          IO_PA_7
 
-#define IO_PIN_MCU_1_USART_TX                        IO_PB10
-#define IO_PIN_MCU_1_USART_RX                        IO_PB11
+#define IO_PIN_FTDI_TX                         IO_PB_10
+#define IO_PIN_FTDI_RX                         IO_PB_11
 
-#define IO_PIN_MCU_1_TO_MCU_0_INTERFACE_SPI_NSS      IO_PB_12
-#define IO_PIN_MCU_1_TO_MCU_0_INTERFACE_SPI_SCK      IO_PD_3
-#define IO_PIN_MCU_1_TO_MCU_0_INTERFACE_SPI_MOSI     IO_PB_14
-#define IO_PIN_MCU_1_TO_MCU_0_INTERFACE_SPI_MISO     IO_PB_15
+#define IO_PIN_TO_OTHER_MCU_INTERFACE_SPI_NSS      IO_PB_12
+#define IO_PIN_TO_OTHER_MCU_INTERFACE_SPI_SCK      IO_PD_3
+#define IO_PIN_TO_OTHER_MCU_INTERFACE_SPI_MOSI     IO_PB_14
+#define IO_PIN_TO_OTHER_MCU_INTERFACE_SPI_MISO     IO_PB_15
 
 
 
@@ -98,31 +98,28 @@
 /*
  *Interlock and Feedback Pins
  */
-#define IO_PIN_MCU_1_INTERLOCK_CONTROL               IO_PD_4
-#define IO_PIN_MCU_1_INTERLOCK_FEEDBACK              IO_PD_5
+#define IO_PIN_INTERLOCK_CONTROL               IO_PD_4
+#define IO_PIN_INTERLOCK_FEEDBACK              IO_PD_5
 
 /*
  *Interfaces
  */
 
-#define IO_PIN_MCU_1_CAN_0_TRANS_STANDBY_CONTROL     IO_PC_12
-#define IO_PIN_MCU_1_CAN_0_TX                        IO_PB_13
-#define IO_PIN_MCU_1_CAN_0_RX                        IO_PB_5
+#define IO_PIN_CAN_0_TRANS_STANDBY_CONTROL     IO_PC_12
+#define IO_PIN_CAN_0_TX                        IO_PB_13
+#define IO_PIN_CAN_0_RX                        IO_PB_5
 
-#define IO_PIN_MCU_1_FTDI_TX                         IO_PA_11
-#define IO_PIN_MCU_1_FTDI_RX                         IO_PA_12
+#define IO_PIN_BMS_INTERFACE_0_GPIO_0          IO_PA_10
+#define IO_PIN_BMS_INTERFACE_0_GPIO_1          IO_PA_11
+#define IO_PIN_BMS_INTERFACE_0_GPIO_2          IO_PA_12
+#define IO_PIN_BMS_INTERFACE_ISOSPI_DIRECTION  IO_PB_4
 
-#define IO_PIN_MCU_1_BMS_INTERFACE_0_GPIO_0          IO_PA_10
-#define IO_PIN_MCU_1_BMS_INTERFACE_0_GPIO_1          IO_PA_11
-#define IO_PIN_MCU_1_BMS_INTERFACE_0_GPIO_2          IO_PA_12
-#define IO_PIN_MCU_1_BMS_INTERFACE_ISOSPI_DIRECTION  IO_PB_4
-
-#define IO_PIN_MCU_1_GPIO_0                          IO_PD_2
-#define IO_PIN_MCU_1_GPIO_1                          IO_PD_1
-#define IO_PIN_MCU_1_GPIO_2                          IO_PD_0
-#define IO_PIN_MCU_1_GPIO_3                          IO_PC_12
-#define IO_PIN_MCU_1_GPIO_4                          IO_PC_11
-#define IO_PIN_MCU_1_GPIO_5                          IO_PC_10
+#define IO_PIN_GPIO_0                          IO_PD_2
+#define IO_PIN_GPIO_1                          IO_PD_1
+#define IO_PIN_GPIO_2                          IO_PD_0
+#define IO_PIN_GPIO_3                          IO_PC_12
+#define IO_PIN_GPIO_4                          IO_PC_11
+#define IO_PIN_GPIO_5                          IO_PC_10
 
 
 

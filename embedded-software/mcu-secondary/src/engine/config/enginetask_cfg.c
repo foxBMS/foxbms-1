@@ -66,11 +66,11 @@
 /*================== Macros and Definitions ===============================*/
 
 /*================== Constant and Variable Definitions ====================*/
-OS_Task_Definition_s eng_tskdef_cyclic_1ms   = { 0,      1,  OS_PRIORITY_ABOVE_HIGH,        1024/4};
-OS_Task_Definition_s eng_tskdef_cyclic_10ms  = { 2,     10,  OS_PRIORITY_HIGH,              1024/4};
-OS_Task_Definition_s eng_tskdef_cyclic_100ms = { 56,    100,  OS_PRIORITY_ABOVE_NORMAL,     1024/4};
-OS_Task_Definition_s eng_tskdef_eventhandler = { 0,      1,  OS_PRIORITY_VERY_HIGH,         1024/4};
-OS_Task_Definition_s eng_tskdef_diagnosis    = { 0,      1,  OS_PRIORITY_BELOW_REALTIME,    1024/4};
+OS_Task_Definition_s eng_tskdef_cyclic_1ms   = { 0,      1,  OS_PRIORITY_ABOVE_HIGH,        ENG_TSK_C_1MS_STACKSIZE };
+OS_Task_Definition_s eng_tskdef_cyclic_10ms  = { 2,     10,  OS_PRIORITY_HIGH,              ENG_TSK_C_10MS_STACKSIZE };
+OS_Task_Definition_s eng_tskdef_cyclic_100ms = { 56,    100,  OS_PRIORITY_ABOVE_NORMAL,     ENG_TSK_C_100MS_STACKSIZE };
+OS_Task_Definition_s eng_tskdef_eventhandler = { 0,      1,  OS_PRIORITY_VERY_HIGH,         ENG_TSK_EVENTHANDLER_STACKSIZE };
+OS_Task_Definition_s eng_tskdef_diagnosis    = { 0,      1,  OS_PRIORITY_BELOW_REALTIME,    ENG_TSK_DIAGNOSIS_STACKSIZE };
 
 /*================== Function Prototypes ==================================*/
 
@@ -83,7 +83,7 @@ void ENG_PostOSInit(void) {
 
     retErrorCode = VIC_PostOsInterruptInit();
     if (retErrorCode != 0) {
-        DIAG_Handler(DIAG_CH_VIC_INIT_FAILURE, DIAG_EVENT_NOK, retErrorCode, NULL);  /* error event in vic init */
+        DIAG_Handler(DIAG_CH_VIC_INIT_FAILURE, DIAG_EVENT_NOK, retErrorCode);  /* error event in vic init */
     }
     retErrorCode = 0;
 
@@ -92,38 +92,19 @@ void ENG_PostOSInit(void) {
 
 
 void ENG_Init(void) {
-    SYS_RETURN_TYPE_e sys_retVal = SYS_ILLEGAL_TASK_TYPE;
+    SYS_RETURN_TYPE_e sys_retVal = SYS_ILLEGAL_REQUEST;
 
-    DATA_BLOCK_ERRORSTATE_s error_flags;
-
-    DB_ReadBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-
-    error_flags.general_error               = 0;
-
-    error_flags.currentsensorresponding     = 0;
-
-    error_flags.main_plus                   = 0;
-    error_flags.main_minus                  = 0;
-    error_flags.precharge                   = 0;
-    error_flags.charge_main_plus            = 0;
-    error_flags.charge_main_minus           = 0;
-    error_flags.charge_precharge            = 0;
-
-    error_flags.interlock                   = 0;
-
-    error_flags.crc_error                   = 0;
-    error_flags.mux_error                   = 0;
-    error_flags.spi_error                   = 0;
-
-    error_flags.can_timing                  = 0;
-    error_flags.can_timing_cc               = 0;
-
-    error_flags.can_cc_used                 = 1;
-
-    DB_WriteBlock(&error_flags, DATA_BLOCK_ID_ERRORSTATE);
-
-    /* Init Sys */
+    /*  Init Sys */
     sys_retVal = SYS_SetStateRequest(SYS_STATE_INIT_REQUEST);
+
+    /* This function operates under the assumption that it is called when
+     * the operating system is not yet running.
+     * In this state the return value of SYS_SetStateRequest() should
+     * always be #SYS_OK. Therefore we trap otherwise.
+     */
+    if (sys_retVal != SYS_OK) {
+        configASSERT(0);
+    }
 }
 
 void ENG_Cyclic_1ms(void) {

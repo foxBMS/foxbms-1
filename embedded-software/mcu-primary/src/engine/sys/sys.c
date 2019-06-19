@@ -61,6 +61,7 @@
 #include "interlock.h"
 #include "isoguard.h"
 #include "meas.h"
+#include "rtc.h"
 #include "sox.h"
 #include "FreeRTOS.h"
 #include "task.h"
@@ -154,10 +155,10 @@ SYS_STATEMACH_e SYS_GetState(void) {
 /**
  * @brief   transfers the current state request to the state machine.
  *
- * This function takes the current state request from cont_state and transfers it to the state machine.
- * It resets the value from cont_state to SYS_STATE_NO_REQUEST
+ * This function takes the current state request from #sys_state and transfers it to the state machine.
+ * It resets the value from #sys_state to #SYS_STATE_NO_REQUEST
  *
- * @return  retVal          current state request, taken from SYS_STATE_REQUEST_e
+ * @return  retVal          current state request, taken from #SYS_STATE_REQUEST_e
  *
  */
 static SYS_STATE_REQUEST_e SYS_TransferStateRequest(void) {
@@ -174,7 +175,7 @@ static SYS_STATE_REQUEST_e SYS_TransferStateRequest(void) {
 
 
 SYS_RETURN_TYPE_e SYS_SetStateRequest(SYS_STATE_REQUEST_e statereq) {
-    SYS_RETURN_TYPE_e retVal = SYS_STATE_NO_REQUEST;
+    SYS_RETURN_TYPE_e retVal = SYS_ILLEGAL_REQUEST;
 
     taskENTER_CRITICAL();
     retVal = SYS_CheckStateRequest(statereq);
@@ -200,24 +201,26 @@ SYS_RETURN_TYPE_e SYS_SetStateRequest(SYS_STATE_REQUEST_e statereq) {
  * @return              result of the state request that was made, taken from SYS_RETURN_TYPE_e
  */
 static SYS_RETURN_TYPE_e SYS_CheckStateRequest(SYS_STATE_REQUEST_e statereq) {
+    SYS_RETURN_TYPE_e retval = SYS_ILLEGAL_REQUEST;
     if (statereq == SYS_STATE_ERROR_REQUEST) {
-        return SYS_OK;
-    }
-
-    if (sys_state.statereq == SYS_STATE_NO_REQUEST) {
-        /* init only allowed from the uninitialized state */
-        if (statereq == SYS_STATE_INIT_REQUEST) {
-            if (sys_state.state == SYS_STATEMACH_UNINITIALIZED) {
-                return SYS_OK;
+        retval = SYS_OK;
+    } else {
+        if (sys_state.statereq == SYS_STATE_NO_REQUEST) {
+            /* init only allowed from the uninitialized state */
+            if (statereq == SYS_STATE_INIT_REQUEST) {
+                if (sys_state.state == SYS_STATEMACH_UNINITIALIZED) {
+                    retval = SYS_OK;
+                } else {
+                    retval = SYS_ALREADY_INITIALIZED;
+                }
             } else {
-                return SYS_ALREADY_INITIALIZED;
+                retval = SYS_ILLEGAL_REQUEST;
             }
         } else {
-            return SYS_ILLEGAL_REQUEST;
+            retval = SYS_REQUEST_PENDING;
         }
-    } else {
-        return SYS_REQUEST_PENDING;
     }
+    return retval;
 }
 
 
@@ -225,9 +228,9 @@ void SYS_Trigger(void) {
     /* STD_RETURN_TYPE_e retVal=E_OK; */
     SYS_STATE_REQUEST_e statereq = SYS_STATE_NO_REQUEST;
     ILCK_STATEMACH_e ilckstate = ILCK_STATEMACH_UNDEFINED;
-    CONT_STATEMACH_e contstate = CONT_STATEMACH_UNDEFINED;
-    BAL_STATEMACH_e balstate = BAL_STATEMACH_UNDEFINED;
-    BMS_STATEMACH_e bmsstate = BMS_STATEMACH_UNDEFINED;
+    STD_RETURN_TYPE_e contstate = E_NOT_OK;
+    STD_RETURN_TYPE_e balInitState = E_NOT_OK;
+    STD_RETURN_TYPE_e bmsstate = E_NOT_OK;
 
 
     DIAG_SysMonNotify(DIAG_SYSMON_SYS_ID, 0);  /*  task is running, state = ok */
@@ -270,6 +273,14 @@ void SYS_Trigger(void) {
 
             /* Send CAN boot message directly on CAN */
             SYS_SendBootMessage(1);
+
+            /* Check if undervoltage MSL violation was detected before reset */
+            if (RTC_DEEP_DISCHARGE_DETECTED == 1) {
+                /* Error detected */
+                DIAG_Handler(DIAG_CH_DEEP_DISCHARGE_DETECTED, DIAG_EVENT_NOK, 0);
+            } else {
+                DIAG_Handler(DIAG_CH_DEEP_DISCHARGE_DETECTED, DIAG_EVENT_OK, 0);
+            }
 
             sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
             sys_state.state = SYS_STATEMACH_INITIALIZED;
@@ -342,8 +353,8 @@ void SYS_Trigger(void) {
                 sys_state.InitCounter = 0;
                 break;
             } else if (sys_state.substate == SYS_WAIT_INITIALIZATION_CONT) {
-                contstate = CONT_GetState();
-                if (contstate == CONT_STATEMACH_STANDBY) {
+                contstate = CONT_GetInitializationState();
+                if (contstate == E_OK) {
                     sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
                     sys_state.state = SYS_STATEMACH_INITIALIZE_BALANCING;
                     sys_state.substate = SYS_ENTRY;
@@ -373,13 +384,13 @@ void SYS_Trigger(void) {
                     sys_state.InitCounter = 0;
                     break;
                 } else if (sys_state.substate == SYS_WAIT_INITIALIZATION_BAL) {
-                    balstate = BAL_GetState();
+                    balInitState = BAL_GetInitializationState();
                     if (BALANCING_DEFAULT_INACTIVE == TRUE) {
                         BAL_SetStateRequest(BAL_STATE_GLOBAL_DISABLE_REQUEST);
                     } else {
                         BAL_SetStateRequest(BAL_STATE_GLOBAL_ENABLE_REQUEST);
                     }
-                    if (balstate == BAL_STATEMACH_INITIALIZED) {
+                    if (balInitState == E_OK) {
                         sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
                         sys_state.state = SYS_STATEMACH_INITIALIZE_ISOGUARD;
                         sys_state.substate = SYS_ENTRY;
@@ -501,8 +512,8 @@ void SYS_Trigger(void) {
                     sys_state.InitCounter = 0;
                     break;
                 } else if (sys_state.substate == SYS_WAIT_INITIALIZATION_BMS) {
-                    bmsstate = BMS_GetState();
-                    if (bmsstate == BMS_STATEMACH_IDLE || bmsstate == BMS_STATEMACH_STANDBY) {
+                    bmsstate = BMS_GetInitializationState();
+                    if (bmsstate == E_OK) {
                         sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
                         sys_state.state = SYS_STATEMACH_RUNNING;
                         sys_state.substate = SYS_ENTRY;
@@ -532,6 +543,15 @@ void SYS_Trigger(void) {
             SYS_SAVELASTSTATES();
             CANS_Enable_Periodic(TRUE);
             sys_state.timer = SYS_STATEMACH_LONGTIME_MS;
+            break;
+        /***************************DEFAULT CASE*************************************/
+        default:
+            /* This default case should never be entered.
+             * If we actually enter this case, it means that an
+             * unrecoverable error has occurred. Therefore the program
+             * will trap.
+             */
+            configASSERT(0);
             break;
     }  /* end switch (sys_state.state) */
     sys_state.triggerentry--;

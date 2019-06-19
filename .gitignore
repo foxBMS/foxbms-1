@@ -1,14 +1,15 @@
 # eclipse generated directories
-*[wW]orkspace*
-*[pP]ackages*
-.ws/
-*eclipse*
+/*[wW]orkspace*
+/*[pP]ackages*
+/.ws/
+/*eclipse*
+/qa-chain/
 
 # ignore complete build directory
-build/
+/build/
 
 # ignore distdirectory
-foxbms/
+/foxbms/
 
 # compiled python files
 *.pyc

@@ -151,9 +151,10 @@ typedef struct {
     BMS_STATEMACH_SUB_e substate;           /*!< current substate of the state machine                                                  */
     BMS_STATEMACH_e laststate;              /*!< previous state of the state machine                                                    */
     BMS_STATEMACH_SUB_e lastsubstate;       /*!< previous substate of the state machine                                                 */
-    uint32_t ErrRequestCounter;             /*!< counts the number of illegal requests to the LTC state machine */
-    uint8_t triggerentry;                   /*!< counter for re-entrance protection (function running flag) */
-    uint8_t counter;                        /*!< general purpose counter*/
+    uint32_t ErrRequestCounter;             /*!< counts the number of illegal requests to the LTC state machine                         */
+    STD_RETURN_TYPE_e initFinished;         /*!< #E_OK if the initialization has passed, #E_NOT_OK otherwise                            */
+    uint8_t triggerentry;                   /*!< counter for re-entrance protection (function running flag)                             */
+    uint8_t counter;                        /*!< general purpose counter                                                                */
 } BMS_STATE_s;
 
 
@@ -181,6 +182,15 @@ extern BMS_RETURN_TYPE_e BMS_SetStateRequest(BMS_STATE_REQUEST_e statereq);
  * @return  current state, taken from BMS_STATEMACH_e
  */
 extern  BMS_STATEMACH_e BMS_GetState(void);
+
+/**
+ * @brief   Gets the initialization state.
+ *
+ * This function is used for getting the BMS initialization state.
+ *
+ * @return  #E_OK if initialized, otherwise #E_NOT_OK
+ */
+STD_RETURN_TYPE_e BMS_GetInitializationState(void);
 
 /**
  * @brief   trigger function for the SYS driver state machine.

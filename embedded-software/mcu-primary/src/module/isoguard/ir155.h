@@ -132,16 +132,16 @@
 #define IR155_RESISTANCE_RESPONSE_VALUE 100
 
 /* Enable/Disable Bender Hardware */
-#define IR155_ENABLE_BENDER_HW()        IO_WritePin(IO_PIN_MCU_0_BENDER_SUPPLY_ENABLE, IO_PIN_SET)
-#define IR155_DISABLE_BENDER_HW()       IO_WritePin(IO_PIN_MCU_0_BENDER_SUPPLY_ENABLE, IO_PIN_RESET)
+#define IR155_ENABLE_BENDER_HW()        IO_WritePin(IO_PIN_BENDER_SUPPLY_ENABLE, IO_PIN_SET)
+#define IR155_DISABLE_BENDER_HW()       IO_WritePin(IO_PIN_BENDER_SUPPLY_ENABLE, IO_PIN_RESET)
 
 /* Timer-modul interface functions */
 #define IR155_START_PWM_MEASUREMENT(x)  TIM_Start_PWM_IC_Measurement(x)
 #define IR155_GET_DUTYCYCLE(x)          TIM_GetDutycycle(&IR155_BENDER_IC_HANDLE, x)
 
 /* Read pin state of MHS and OKHS Pin */
-#define IR155_GET_MHS()                 IO_ReadPin(IO_PIN_MCU_0_BENDER_PWM)
-#define IR155_GET_OKHS()                IO_ReadPin(IO_PIN_MCU_0_BENDER_OK)
+#define IR155_GET_MHS()                 IO_ReadPin(IO_PIN_BENDER_PWM)
+#define IR155_GET_OKHS()                IO_ReadPin(IO_PIN_BENDER_OK)
 
 /* Clear TIM update flag */
 #define IR155_RESET_TIM()               __HAL_TIM_CLEAR_FLAG(&IR155_BENDER_IC_HANDLE, TIM_FLAG_UPDATE)

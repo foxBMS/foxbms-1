@@ -18,18 +18,18 @@ Module Files
 ~~~~~~~~~~~~
 
 Driver:
- - ``embedded-software\mcu-common\src\module\io\io.c``
- - ``embedded-software\mcu-common\src\module\io\io.h``
+ - ``embedded-software\mcu-common\src\driver\io\io.c`` (:ref:`ioc`)
+ - ``embedded-software\mcu-common\src\driver\io\io.h`` (:ref:`ioc`)
 
 Driver Configuration:
- - ``embedded-software\mcu-primary\src\module\config\io_cfg.c``
- - ``embedded-software\mcu-primary\src\module\config\io_cfg.h``
- - ``embedded-software\mcu-primary\src\module\config\io_mcu_cfg.h``
- - ``embedded-software\mcu-primary\src\module\config\io_package_cfg.h``
- - ``embedded-software\mcu-secondary\src\module\config\io_cfg.c``
- - ``embedded-software\mcu-secondary\src\module\config\io_cfg.h``
- - ``embedded-software\mcu-secondary\src\module\config\io_mcu_cfg.h``
- - ``embedded-software\mcu-secondary\src\module\config\io_package_cfg.h``
+ - ``embedded-software\mcu-primary\src\driver\config\io_cfg.c`` (:ref:`primaryiocfgc`)
+ - ``embedded-software\mcu-primary\src\driver\config\io_cfg.h`` (:ref:`primaryiocfgh`)
+ - ``embedded-software\mcu-primary\src\driver\config\io_mcu_cfg.h`` (:ref:`primaryio_mcu_cfgh`)
+ - ``embedded-software\mcu-primary\src\driver\config\io_package_cfg.h`` (:ref:`primaryio_package_cfgh`)
+ - ``embedded-software\mcu-secondary\src\driver\config\io_cfg.c`` (:ref:`secondaryiocfgc`)
+ - ``embedded-software\mcu-secondary\src\driver\config\io_cfg.h`` (:ref:`secondaryiocfgh`)
+ - ``embedded-software\mcu-secondary\src\driver\config\io_mcu_cfg.h`` (:ref:`secondaryio_mcu_cfgh`)
+ - ``embedded-software\mcu-secondary\src\driver\config\io_package_cfg.h`` (:ref:`secondaryio_package_cfgh`)
 
 Configuration of the GPIOs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,7 +64,9 @@ To define a signal, a ``#define`` has to be set in ``io_cfg_foxbms.h`` describin
    #define PIN_MCU0_ISO_GPIO_OUT0             IO_PG9
    ...
 
-The initialization of this configuration on the hardware is executed through the |mod_io| function ``IO_Init(*io_cfg)``. The ``const IO_PIN_CFG_s io_cfg[]`` has to be configured in ``io_cfg.h``. In the given example, this looks like:
+The initialization of this configuration on the hardware is executed through
+the |mod_io| function ``IO_Init(*io_cfg)``. The ``const IO_PIN_CFG_s io_cfg[]``
+has to be configured in ``io_cfg.h``. In the given example, this looks like:
 
 .. code-block:: C
 
@@ -77,7 +79,15 @@ The initialization of this configuration on the hardware is executed through the
    }
 
 
-The configuration options of each pin are documented in [1]_. The naming conventions of |foxbms| for setting the pin (alternate) function is found in ``io_cfg.h`` at ``IO_PIN_ALTERNATE_e``. The clocks of the ports are enabled automatically when the pins are initialized through ``IO_Init(&io_cfg)`` as this function calls ``IO_ClkInit(void)``. In order to prevent other modules and functions to change the configuration of the pins, the macro ``IO_PIN_LOCKING`` in ``io_cfg.h`` has to be defined. This macro automatically calls ``IO_LockPin(pin)`` for every pin which has defined ``IO_PIN_LOCK_ENABLE`` in ``io_cfg[]`` and locks the configuration registers of the corresponding pin.
+The configuration options of each pin are documented in [1]_. The naming
+conventions of |foxbms| for setting the pin (alternate) function is found in
+``io_cfg.h`` at ``IO_PIN_ALTERNATE_e``. The clocks of the ports are enabled
+automatically when the pins are initialized through ``IO_Init(&io_cfg)`` as
+this function calls ``IO_ClkInit(void)``. In order to prevent other modules
+and functions to change the configuration of the pins, the macro
+``IO_PIN_LOCKING`` in ``io_cfg.h`` has to be defined. This macro automatically
+calls ``IO_LockPin(pin)`` for every pin which has defined ``IO_PIN_LOCK_ENABLE``
+in ``io_cfg[]`` and locks the configuration registers of the corresponding pin.
 
 Reading and Writing the Pins
 ----------------------------

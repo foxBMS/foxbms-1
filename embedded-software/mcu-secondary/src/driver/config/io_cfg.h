@@ -217,8 +217,9 @@ typedef enum {
  * symbolic names for pin state, where reset means low, and set means high
  */
 typedef enum {
-  IO_PIN_RESET  = GPIO_PIN_RESET,   /*!< Pin is set to low/0    */
-  IO_PIN_SET    = GPIO_PIN_SET      /*!< Pin is set to high/1   */
+  IO_PIN_RESET  = GPIO_PIN_RESET,   /*!< Pin is set to low/0                */
+  IO_PIN_SET    = GPIO_PIN_SET,     /*!< Pin is set to high/1               */
+  IO_PIN_DC     = GPIO_PIN_RESET,   /*!< default value for Pin (don't care) */
 } IO_PIN_STATE_e;
 
 /**

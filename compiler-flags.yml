@@ -36,6 +36,7 @@
 
 CFLAGS:
   - "-mcpu=cortex-m4"
+  - "-DSTM32F429xx"
   - "-mthumb"
   - "-mlittle-endian"
   - "-mfloat-abi=softfp"
@@ -48,6 +49,27 @@ CFLAGS:
   - "-ffreestanding"
   - "-fno-move-loop-invariants"
   - "-Wall"
+  - "-Wextra"
+  # warn about duplicated conditions in if-else-chains
+  # - "-Wduplicated-cond"
+  # warn about duplicated branches in if-else-chains
+  # - "-Wduplicated-branches"
+  # warn when a float is converted to another datatype (possibly many false-positives)
+  # - "-Wfloat-conversion"
+  # warn about use of logical operations where bitwise was probably intended
+  - "-Wlogical-op"
+  # warn when argument passed to restrict qualified parameter alias with another one
+  # - "-Wrestrict"
+  # warn when the compiler detects paths that dereference a null pointer
+  # - "-Wnull-dereference"
+  # warn if a goto or switch jumps over variable initialization
+  - "-Wjump-misses-init"
+  # warn when float is implicitly promoted to double
+  - "-Wdouble-promotion"
+  # warn when a local variable or type declaration shadows another variable
+  - "-Wshadow"
+  # make check for wrong format strings more aggressive
+  - "-Wformat=2"
   - "-std=c99"
   - "-DDEBUG"
   - "-DUSE_FULL_ASSERT"
@@ -57,7 +79,21 @@ CFLAGS:
   - "-DHSE_VALUE=8000000"
   - "-Werror=implicit-function-declaration"
   - "-Werror=comment"
+  - "-Werror=return-type"
   - "-DNOECLIPSE"
+  # additional flags that are ONLY applied to foxBMS sources
+  - foxbms:
+    - "-Werror=double-promotion"
+    - "-Werror=sign-compare"
+    - "-Werror=type-limits"
+    - "-Werror=switch"
+    #- "-Werror=switch-enum"
+  # additional flags that are ONLY applied to FreeRTOS sources
+  - freertos:
+    - "-Werror=switch"
+    - "-Werror=switch-enum"
+  # additional flags that are ONLY applied to hal sources
+  - hal:
 
 ASMFLAGS:
   - "-mcpu=cortex-m4"

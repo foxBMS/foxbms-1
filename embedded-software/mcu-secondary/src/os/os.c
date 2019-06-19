@@ -64,6 +64,31 @@ volatile OS_TIMER_s os_timer;
 uint8_t eng_init = FALSE;
 
 /**
+ * @brief Buffer for the Idle Task's structure
+ */
+static StaticTask_t xIdleTaskTCBBuffer;
+
+/**
+ * @brief stack size of the idle task
+ */
+#define IDLE_TASK_SIZE  configMINIMAL_STACK_SIZE
+
+/**
+ * @brief Stack for the Idle task
+ */
+static StackType_t xIdleStack[IDLE_TASK_SIZE];
+
+/**
+ * @brief Buffer for the Timer Task's structure
+ */
+static StaticTask_t xTimerTaskTCBBuffer;
+
+/**
+ * @brief Stack for the Timer Task
+ */
+static StackType_t xTimerStack[configTIMER_TASK_STACK_DEPTH];
+
+/**
  * Scheduler "zero" time for task phase control
  */
 uint32_t os_schedulerstarttime;
@@ -102,8 +127,25 @@ void OS_TaskInit(void) {
     APPL_CreateTask();
 }
 
+void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize) {
+  *ppxIdleTaskTCBBuffer = &xIdleTaskTCBBuffer;
+  *ppxIdleTaskStackBuffer = &xIdleStack[0];
+  *pulIdleTaskStackSize = IDLE_TASK_SIZE;
+}
+
+void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize) {
+  *ppxTimerTaskTCBBuffer = &xTimerTaskTCBBuffer;
+  *ppxTimerTaskStackBuffer = &xTimerStack[0];
+  *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
+}
+
 void vApplicationIdleHook(void) {
     ENG_IdleTask();
+}
+
+void vApplicationStackOverflowHook(TaskHandle_t xTask, signed char *pcTaskName) {
+    /* TODO add a better handler */
+    DIAG_configASSERT();
 }
 
 

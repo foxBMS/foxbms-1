@@ -195,6 +195,65 @@ typedef enum {
 */
 #define CURRENT_SENSOR_PRESENT               TRUE
 
+#if CURRENT_SENSOR_PRESENT == TRUE
+/**
+ * defines if the Isabellenhuette current sensor is used in cyclic or triggered mode
+*/
+#define CURRENT_SENSOR_ISABELLENHUETTE_CYCLIC
+/* #define CURRENT_SENSOR_ISABELLENHUETTE_TRIGGERED */
+
+/**
+ * Delay in ms after which it is considered the current sensor is not responding anymore.
+ */
+#define CURRENT_SENSOR_RESPONSE_TIMEOUT_MS         100
+
+#endif /* CURRENT_SENSOR_PRESENT == TRUE */
+
+/**
+ * @brief Maximum safety limit of current on powerline 0 in charge
+ * direction in mA. When maximum safety limit (MSL) is violated, error state
+ * is requested and contactors will open. When recommended safety limit (RSL)
+ * or maximum operating limit (MOL) is violated, the respective flag will be
+ * set.
+ */
+#define BS_CURRENTMAX_CHARGE_PL0_MSL_mA        (180000u)
+#define BS_CURRENTMAX_CHARGE_PL0_RSL_mA        (170000u)
+#define BS_CURRENTMAX_CHARGE_PL0_MOL_mA        (160000u)
+
+/**
+ * @brief Maximum operation limit of current on the powerline 0 in
+ * discharge direction in mA. When maximum safety limit (MSL) is violated, error state
+ * is requested and contactors will open. When recommended safety limit (RSL)
+ * or maximum operating limit (MOL) is violated, the respective flag will be
+ * set.
+ */
+#define BS_CURRENTMAX_DISCHARGE_PL0_MSL_mA     (BS_CURRENTMAX_CHARGE_PL0_MSL_mA)
+#define BS_CURRENTMAX_DISCHARGE_PL0_RSL_mA     (BS_CURRENTMAX_CHARGE_PL0_RSL_mA)
+#define BS_CURRENTMAX_DISCHARGE_PL0_MOL_mA     (BS_CURRENTMAX_CHARGE_PL0_MOL_mA)
+
+/**
+ * @brief Maximum operation limit of current of powerline 1 in
+ * charge direction in mA. When maximum safety limit (MSL) is violated, error state
+ * is requested and contactors will open. When recommended safety limit (RSL)
+ * or maximum operating limit (MOL) is violated, the respective flag will be
+ * set.
+ */
+#define BS_CURRENTMAX_CHARGE_PL1_MSL_mA        (180000u)
+#define BS_CURRENTMAX_CHARGE_PL1_RSL_mA        (170000u)
+#define BS_CURRENTMAX_CHARGE_PL1_MOL_mA        (160000u)
+
+/**
+ * @brief Maximum operation limit of current of powerline 1 in
+ * discharge direction in mA. When maximum safety limit (MSL) is violated, error state
+ * is requested and contactors will open. When recommended safety limit (RSL)
+ * or maximum operating limit (MOL) is violated, the respective flag will be
+ * set.
+ */
+#define BS_CURRENTMAX_DISCHARGE_PL1_MSL_mA     (BS_CURRENTMAX_CHARGE_PL1_MSL_mA)
+#define BS_CURRENTMAX_DISCHARGE_PL1_RSL_mA     (BS_CURRENTMAX_CHARGE_PL1_RSL_mA)
+#define BS_CURRENTMAX_DISCHARGE_PL1_MOL_mA     (BS_CURRENTMAX_CHARGE_PL1_MOL_mA)
+
+
 /**
  * If set to FALSE, foxBMS does not check CAN timing.
  * If set to TRUE, foxBMS checks CAN timing. A valid request must come every 100ms, within the 95-150ms window.
@@ -286,7 +345,11 @@ typedef enum {
 #define BS_SEPARATE_POWERLINES 1
 
 #if BS_NR_OF_CONTACTORS > 3 && BS_SEPARATE_POWERLINES == 0
-#error "Configuration mismatch: Can't use BS_SEPARATE_POWERLINES with only 3 contactors"
+#error "Configuration mismatch: Can't use only one powerline with more than 3 contactors"
+#endif  /*  */
+
+#if BS_NR_OF_CONTACTORS < 4 && BS_SEPARATE_POWERLINES == 1
+#error "Configuration mismatch: Can't use seperate powerlines with less than 4 contactors"
 #endif  /*  */
 
 /**
@@ -294,6 +357,11 @@ typedef enum {
  * this limit value the battery is resting.
  */
 #define BS_REST_CURRENT_mA                          200
+
+/**
+ * current sensor threshold for 0 current in mA as the sensor has a jitter.
+ */
+#define BS_CS_THRESHOLD_NO_CURRENT_mA               (200u)
 
 /**
  * maximum voltage drop over fuse. If the measured voltage difference
@@ -349,7 +417,7 @@ extern BS_CURRENT_DIRECTION_e BS_CheckCurrent_Direction(void);
   * @return  BS_CURRENT_DISCHARGE or BS_CURRENT_CHARGE depending
   *          on current direction ((type: BS_CURRENT_DIRECTION_e)
   */
-extern BS_CURRENT_DIRECTION_e BS_CheckCurrentValue_Direction(float current);
+extern BS_CURRENT_DIRECTION_e BS_CheckCurrentValue_Direction(int32_t current);
 
 /*================== Function Implementations =============================*/
 

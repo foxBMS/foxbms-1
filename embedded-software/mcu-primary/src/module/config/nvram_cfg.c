@@ -69,7 +69,7 @@ const NVRAM_CH_NVSOC_s default_nvsoc = {
 const NVRRAM_CH_CONT_COUNT_s default_contactors_count = {
     .data.cont_switch_closed = {0, 0, 0},
     .data.cont_switch_opened = {0, 0, 0},
-    .data.cont_switch_opened = {0, 0, 0}
+    .data.cont_switch_opened_hard_at_current = {0, 0, 0}
 };
 
 const NVRAM_CH_OP_HOURS_s default_operating_hours = {
