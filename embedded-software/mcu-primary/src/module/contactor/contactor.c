@@ -110,10 +110,12 @@ static CONT_STATE_s cont_state = {
     .lastsubstate           = 0,
     .triggerentry           = 0,
     .ErrRequestCounter      = 0,
+    .initFinished           = E_NOT_OK,
     .OscillationCounter     = 0,
     .PrechargeTryCounter    = 0,
     .PrechargeTimeOut       = 0,
     .counter                = 0,
+    .activePowerLine        = CONT_POWER_LINE_NONE,
 };
 
 static DATA_BLOCK_CONTFEEDBACK_s contfeedback_tab = {
@@ -197,7 +199,7 @@ STD_RETURN_TYPE_e CONT_SetContactorState(CONT_NAMES_e contactor, CONT_ELECTRICAL
     if (requestedContactorState  ==  CONT_SWITCH_ON) {
         cont_contactor_states[contactor].set = CONT_SWITCH_ON;
         IO_WritePin(cont_contactors_config[contactor].control_pin, IO_PIN_SET);
-        if (DIAG_HANDLER_RETURN_OK != DIAG_Handler(DIAG_CH_CONTACTOR_CLOSING, DIAG_EVENT_OK, (uint8_t) contactor, NULL)) {
+        if (DIAG_HANDLER_RETURN_OK != DIAG_ContHandler(DIAG_EVENT_OK, (uint8_t) contactor, NULL)) {
             /* TODO: explain why empty if */
         }
     } else if (requestedContactorState  ==  CONT_SWITCH_OFF) {
@@ -205,11 +207,11 @@ STD_RETURN_TYPE_e CONT_SetContactorState(CONT_NAMES_e contactor, CONT_ELECTRICAL
         float currentAtSwitchOff = cont_current_tab.current;
         if (((BAD_SWITCHOFF_CURRENT_POS < currentAtSwitchOff) && (0 < currentAtSwitchOff)) ||
              ((BAD_SWITCHOFF_CURRENT_NEG > currentAtSwitchOff) && (0 > currentAtSwitchOff))) {
-            if (DIAG_HANDLER_RETURN_OK != DIAG_Handler(DIAG_CH_CONTACTOR_DAMAGED, DIAG_EVENT_NOK, (uint8_t) contactor, &currentAtSwitchOff)) {
+            if (DIAG_HANDLER_RETURN_OK != DIAG_ContHandler(DIAG_EVENT_NOK, (uint8_t) contactor, &currentAtSwitchOff)) {
                 /* currently no error handling, just logging */
             }
         } else {
-            if (DIAG_HANDLER_RETURN_OK != DIAG_Handler(DIAG_CH_CONTACTOR_OPENING, DIAG_EVENT_OK, (uint8_t) contactor, NULL)) {
+            if (DIAG_HANDLER_RETURN_OK != DIAG_ContHandler(DIAG_EVENT_OK, (uint8_t) contactor, NULL)) {
                 /* TODO: explain why empty if */
             }
        }
@@ -292,17 +294,17 @@ static CONT_STATE_REQUEST_e CONT_GetStateRequest(void) {
 }
 
 
-/**
- * @brief   gets the current state.
- *
- * @details This function is used in the functioning of the CONT state machine.
- *
- * @return  current state, taken from CONT_STATEMACH_e
- */
 CONT_STATEMACH_e CONT_GetState(void) {
     return (cont_state.state);
 }
 
+STD_RETURN_TYPE_e CONT_GetInitializationState(void) {
+    return (cont_state.initFinished);
+}
+
+CONT_POWER_LINE_e CONT_GetActivePowerLine() {
+    return (cont_state.activePowerLine);
+}
 
 
 /**
@@ -326,19 +328,6 @@ static CONT_STATE_REQUEST_e CONT_TransferStateRequest(void) {
 }
 
 
-/**
- * @brief   sets the current state request of the state variable cont_state.
- *
- * @details This function is used to make a state request to the state machine,e.g, start voltage
- *          measurement, read result of voltage measurement, re-initialization.
- *          It calls CONT_CheckStateRequest() to check if the request is valid. The state request
- *          is rejected if is not valid. The result of the check is returned immediately, so that
- *          the requester can act in case it made a non-valid state request.
- *
- * @param   state request to set
- *
- * @return  CONT_OK if a state request was made, CONT_STATE_NO_REQUEST if no state request was made
- */
 CONT_RETURN_TYPE_e CONT_SetStateRequest(CONT_STATE_REQUEST_e statereq) {
     CONT_RETURN_TYPE_e retVal = CONT_STATE_NO_REQUEST;
 
@@ -402,14 +391,6 @@ static CONT_RETURN_TYPE_e CONT_CheckStateRequest(CONT_STATE_REQUEST_e statereq) 
     }
 }
 
-
-/**
- * @brief   trigger function for the CONT driver state machine.
- *
- * @details This function contains the sequence of events in the CONT state machine. It must be
- *          called time-triggered, every 1ms. It exits without effect, if the function call is
- *          a reentrance.
- */
 void CONT_Trigger(void) {
     STD_RETURN_TYPE_e retVal = E_OK;
     CONT_STATE_REQUEST_e statereq = CONT_STATE_NO_REQUEST;
@@ -490,6 +471,7 @@ void CONT_Trigger(void) {
         /****************************IDLE*************************************/
         case CONT_STATEMACH_IDLE:
             CONT_SAVELASTSTATES();
+            cont_state.initFinished = E_OK;
             cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
             cont_state.state = CONT_STATEMACH_STANDBY;
             cont_state.substate = CONT_ENTRY;
@@ -506,6 +488,7 @@ void CONT_Trigger(void) {
                 #if BS_SEPARATE_POWERLINES == 1
                     CONT_OPENCHARGEPRECHARGE();
                 #endif
+                cont_state.activePowerLine = CONT_POWER_LINE_NONE;
                 cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
                 cont_state.substate = CONT_OPEN_FIRST_CONTACTOR;
                 break;
@@ -573,33 +556,7 @@ void CONT_Trigger(void) {
                 }
 
                 /* check fuse state */
-#if BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH == TRUE
-                retVal = CONT_CheckFuse(CONT_POWERLINE_NORMAL);
-                if (retVal == E_OK) {
-                    /* Fuse state ok -> check precharging */
-                    DIAG_Handler(DIAG_CH_FUSE_STATE_NORMAL, DIAG_EVENT_OK, 0, NULL_PTR);
-                } else {
-                    /* Fuse tripped -> switch to error state */
-                    DIAG_Handler(DIAG_CH_FUSE_STATE_NORMAL, DIAG_EVENT_NOK, 0, NULL_PTR);
-                    cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
-                    cont_state.state = CONT_STATEMACH_ERROR;
-                    cont_state.substate = CONT_ENTRY;
-                }
-#endif  /* BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH == TRUE */
-#if BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH == TRUE
-                retVal = CONT_CheckFuse(CONT_POWERLINE_CHARGE);
-                if (retVal == E_OK) {
-                    /* Fuse state ok -> check precharging */
-                    DIAG_Handler(DIAG_CH_FUSE_STATE_CHARGE, DIAG_EVENT_OK, 0, NULL_PTR);
-                } else {
-                    /* Fuse tripped -> switch to error state */
-                    DIAG_Handler(DIAG_CH_FUSE_STATE_CHARGE, DIAG_EVENT_NOK, 0, NULL_PTR);
-                    cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
-                    cont_state.state = CONT_STATEMACH_ERROR;
-                    cont_state.substate = CONT_ENTRY;
-                }
-#endif  /* BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH == TRUE */
-
+                CONT_CheckFuse(CONT_POWERLINE_NORMAL);
                 break;
             }
             break;
@@ -624,7 +581,7 @@ void CONT_Trigger(void) {
                 break;
             }
 
-            /* precharge process, can be interrupted anytimeby the requests above */
+            /* precharge process, can be interrupted anytime by the requests above */
             if (cont_state.substate == CONT_ENTRY) {
                 if (cont_state.OscillationCounter > 0) {
                     cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
@@ -674,6 +631,7 @@ void CONT_Trigger(void) {
                 cont_state.timer = CONT_STATEMACH_WAIT_AFTER_OPENING_PRECHARGE_MS;
                 cont_state.state = CONT_STATEMACH_NORMAL;
                 cont_state.substate = CONT_ENTRY;
+                cont_state.activePowerLine = CONT_POWER_LINE_0;
                 break;
             }
 
@@ -698,31 +656,8 @@ void CONT_Trigger(void) {
                 break;
             }
 
-#if BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH == TRUE
-            /* Check if fuse is tripped */
-            retVal = CONT_CheckFuse(CONT_POWERLINE_NORMAL);
-            if (retVal == E_OK) {
-                DIAG_Handler(DIAG_CH_FUSE_STATE_NORMAL, DIAG_EVENT_OK, 0, NULL_PTR);
-            } else {
-                /* Fuse tripped -> switch to error state */
-                DIAG_Handler(DIAG_CH_FUSE_STATE_NORMAL, DIAG_EVENT_NOK, 0, NULL_PTR);
-                cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
-                cont_state.state = CONT_STATEMACH_ERROR;
-                cont_state.substate = CONT_ENTRY;
-            }
-#else  /* BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH == FALSE */
-            /* Check if fuse is tripped */
-            retVal = CONT_CheckFuse(CONT_POWERLINE_NORMAL);
-            if (retVal == E_OK) {
-                DIAG_Handler(DIAG_CH_FUSE_STATE_NORMAL, DIAG_EVENT_OK, 0, NULL_PTR);
-            } else {
-                /* Fuse tripped -> switch to error state */
-                DIAG_Handler(DIAG_CH_FUSE_STATE_NORMAL, DIAG_EVENT_NOK, 0, NULL_PTR);
-                cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
-                cont_state.state = CONT_STATEMACH_ERROR;
-                cont_state.substate = CONT_ENTRY;
-            }
-#endif /* BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH == TRUE */
+            /* check fuse state */
+            CONT_CheckFuse(CONT_POWERLINE_NORMAL);
             break;
 
 #if BS_SEPARATE_POWERLINES == 1
@@ -797,6 +732,7 @@ void CONT_Trigger(void) {
                 cont_state.timer = CONT_STATEMACH_WAIT_AFTER_OPENING_PRECHARGE_MS;
                 cont_state.state = CONT_STATEMACH_CHARGE;
                 cont_state.substate = CONT_ENTRY;
+                cont_state.activePowerLine = CONT_POWER_LINE_1;
                 break;
             }
 
@@ -821,32 +757,6 @@ void CONT_Trigger(void) {
                 cont_state.substate = CONT_ENTRY;
                 break;
             }
-
-#if BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH == TRUE
-            /* Check if fuse is tripped */
-            retVal = CONT_CheckFuse(CONT_POWERLINE_CHARGE);
-            if (retVal == E_OK) {
-                DIAG_Handler(DIAG_CH_FUSE_STATE_CHARGE, DIAG_EVENT_OK, 0, NULL_PTR);
-            } else {
-                /* Fuse tripped -> switch to error state */
-                DIAG_Handler(DIAG_CH_FUSE_STATE_CHARGE, DIAG_EVENT_NOK, 0, NULL_PTR);
-                cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
-                cont_state.state = CONT_STATEMACH_ERROR;
-                cont_state.substate = CONT_ENTRY;
-            }
-#else /* BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH == FALSE */
-            /* Check if fuse is tripped */
-            retVal = CONT_CheckFuse(CONT_POWERLINE_CHARGE);
-            if (retVal == E_OK) {
-                DIAG_Handler(DIAG_CH_FUSE_STATE_CHARGE, DIAG_EVENT_OK, 0, NULL_PTR);
-            } else {
-                /* Fuse tripped -> switch to error state */
-                DIAG_Handler(DIAG_CH_FUSE_STATE_CHARGE, DIAG_EVENT_NOK, 0, NULL_PTR);
-                cont_state.timer = CONT_STATEMACH_SHORTTIME_MS;
-                cont_state.state = CONT_STATEMACH_ERROR;
-                cont_state.substate = CONT_ENTRY;
-            }
-#endif /* BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH == TRUE */
 
 #endif /* BS_SEPARATE_POWERLINES == 1 */
             break;
@@ -882,6 +792,8 @@ void CONT_Trigger(void) {
                     cont_state.timer = CONT_DELAY_BETWEEN_OPENING_CONTACTORS_MS;
                     cont_state.substate = CONT_OPEN_SECOND_CONTACTOR_PLUS;
                 }
+                /* mark no powerline as connected */
+                cont_state.activePowerLine = CONT_POWER_LINE_NONE;
                 break;
 
             } else if (cont_state.substate == CONT_OPEN_SECOND_CONTACTOR_MINUS) {
@@ -903,25 +815,9 @@ void CONT_Trigger(void) {
                 break;
 
             } else if (cont_state.substate == CONT_ERROR) {
+                /* Check if fuse is tripped */
+                CONT_CheckFuse(CONT_POWERLINE_NORMAL);
                 /* when process done, look for requests */
-#if BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH == TRUE
-                /* Check if fuse is tripped */
-                retVal = CONT_CheckFuse(CONT_POWERLINE_NORMAL);
-                if (retVal == E_OK) {
-                    DIAG_Handler(DIAG_CH_FUSE_STATE_NORMAL, DIAG_EVENT_OK, 0, NULL_PTR);
-                } else {
-                    DIAG_Handler(DIAG_CH_FUSE_STATE_NORMAL, DIAG_EVENT_NOK, 0, NULL_PTR);
-                }
-#endif /* BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH == TRUE */
-#if BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH == TRUE
-                /* Check if fuse is tripped */
-                retVal = CONT_CheckFuse(CONT_POWERLINE_CHARGE);
-                if (retVal == E_OK) {
-                    DIAG_Handler(DIAG_CH_FUSE_STATE_CHARGE, DIAG_EVENT_OK, 0, NULL_PTR);
-                } else {
-                    DIAG_Handler(DIAG_CH_FUSE_STATE_CHARGE, DIAG_EVENT_NOK, 0, NULL_PTR);
-                }
-#endif /* BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH == TRUE */
                 statereq = CONT_TransferStateRequest();
                 if (statereq == CONT_STATE_ERROR_REQUEST) {
                     /* we stay already in requested state, nothing to do */
@@ -990,23 +886,23 @@ void CONT_CheckFeedback(void) {
         if (feedback != CONT_GetContactorSetValue(i)) {
             switch (i) {
                 case CONT_MAIN_PLUS:
-                    DIAG_Handler(DIAG_CH_CONTACTOR_MAIN_PLUS_FEEDBACK, DIAG_EVENT_NOK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_CONTACTOR_MAIN_PLUS_FEEDBACK, DIAG_EVENT_NOK, 0);
                     break;
                 case CONT_MAIN_MINUS:
-                    DIAG_Handler(DIAG_CH_CONTACTOR_MAIN_MINUS_FEEDBACK, DIAG_EVENT_NOK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_CONTACTOR_MAIN_MINUS_FEEDBACK, DIAG_EVENT_NOK, 0);
                     break;
                 case CONT_PRECHARGE_PLUS:
-                    DIAG_Handler(DIAG_CH_CONTACTOR_PRECHARGE_FEEDBACK, DIAG_EVENT_NOK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_CONTACTOR_PRECHARGE_FEEDBACK, DIAG_EVENT_NOK, 0);
                     break;
 #if BS_SEPARATE_POWERLINES == 1
                 case CONT_CHARGE_MAIN_PLUS:
-                    DIAG_Handler(DIAG_CH_CONTACTOR_CHARGE_MAIN_PLUS_FEEDBACK, DIAG_EVENT_NOK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_CONTACTOR_CHARGE_MAIN_PLUS_FEEDBACK, DIAG_EVENT_NOK, 0);
                     break;
                 case CONT_CHARGE_MAIN_MINUS:
-                    DIAG_Handler(DIAG_CH_CONTACTOR_CHARGE_MAIN_MINUS_FEEDBACK, DIAG_EVENT_NOK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_CONTACTOR_CHARGE_MAIN_MINUS_FEEDBACK, DIAG_EVENT_NOK, 0);
                     break;
                 case CONT_CHARGE_PRECHARGE_PLUS:
-                    DIAG_Handler(DIAG_CH_CONTACTOR_CHARGE_PRECHARGE_FEEDBACK, DIAG_EVENT_NOK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_CONTACTOR_CHARGE_PRECHARGE_FEEDBACK, DIAG_EVENT_NOK, 0);
                     break;
 #endif /* BS_SEPARATE_POWERLINES == 1 */
                 default:
@@ -1015,23 +911,23 @@ void CONT_CheckFeedback(void) {
         } else {
             switch (i) {
                 case CONT_MAIN_PLUS:
-                    DIAG_Handler(DIAG_CH_CONTACTOR_MAIN_PLUS_FEEDBACK, DIAG_EVENT_OK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_CONTACTOR_MAIN_PLUS_FEEDBACK, DIAG_EVENT_OK, 0);
                     break;
                 case CONT_MAIN_MINUS:
-                    DIAG_Handler(DIAG_CH_CONTACTOR_MAIN_MINUS_FEEDBACK, DIAG_EVENT_OK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_CONTACTOR_MAIN_MINUS_FEEDBACK, DIAG_EVENT_OK, 0);
                     break;
                 case CONT_PRECHARGE_PLUS:
-                    DIAG_Handler(DIAG_CH_CONTACTOR_PRECHARGE_FEEDBACK, DIAG_EVENT_OK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_CONTACTOR_PRECHARGE_FEEDBACK, DIAG_EVENT_OK, 0);
                     break;
 #if BS_SEPARATE_POWERLINES == 1
                 case CONT_CHARGE_MAIN_PLUS:
-                    DIAG_Handler(DIAG_CH_CONTACTOR_CHARGE_MAIN_PLUS_FEEDBACK, DIAG_EVENT_OK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_CONTACTOR_CHARGE_MAIN_PLUS_FEEDBACK, DIAG_EVENT_OK, 0);
                     break;
                 case CONT_CHARGE_MAIN_MINUS:
-                    DIAG_Handler(DIAG_CH_CONTACTOR_CHARGE_MAIN_MINUS_FEEDBACK, DIAG_EVENT_OK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_CONTACTOR_CHARGE_MAIN_MINUS_FEEDBACK, DIAG_EVENT_OK, 0);
                     break;
                 case CONT_CHARGE_PRECHARGE_PLUS:
-                    DIAG_Handler(DIAG_CH_CONTACTOR_CHARGE_PRECHARGE_FEEDBACK, DIAG_EVENT_OK, 0, NULL_PTR);
+                    DIAG_Handler(DIAG_CH_CONTACTOR_CHARGE_PRECHARGE_FEEDBACK, DIAG_EVENT_OK, 0);
                     break;
 #endif /* BS_SEPARATE_POWERLINES == 1 */
                 default:

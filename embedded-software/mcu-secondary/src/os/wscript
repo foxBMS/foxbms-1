@@ -53,6 +53,6 @@ def build(bld):
     """Directories listed in dir_build_list are built, when the waf function
     "build" is called.
     """
-    freertos_path = os.path.join(bld.top_dir, bld.env.__sw_dir, 'mcu-freertos')
+    freertos_path = os.path.join(bld.top_dir, bld.env.es_dir, 'mcu-freertos')
     dir_build_list = [freertos_path]
     bld.recurse(dir_build_list)

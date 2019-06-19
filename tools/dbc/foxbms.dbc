@@ -1,4 +1,4 @@
-VERSION "foxBMS-1.5.3"
+VERSION "foxBMS-1.6.0"
 
 
 NS_ :
@@ -47,6 +47,7 @@ SG_ CAN_SIG_Overvoltage_RSL : 1|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_Overvoltage_MOL : 2|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_Undervoltage_RSL : 9|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_Undervoltage_MOL : 10|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Deep_discharge : 11|1@1+ (1,0) [0|1] "" Vector__XXX
 
 
 BO_ 274 CAN_MSG_SystemState_2: 8 Vector__XXX
@@ -57,8 +58,8 @@ SG_ CAN_SIG_Status_ctrs_plus_charge : 3|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_Status_ctrs_pchrg_charge : 4|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_Status_ctrs_minus_charge : 5|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_Status_ctrs_interlock : 9|1@1+ (1,0) [0|1] "" Vector__XXX
-SG_ CAN_SIG_Reserved : 56|8@1+ (1,0) [0|255] "" Vector__XXX
-SG_ CAN_SIG_error_insulation : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+SG_ CAN_SIG_GS2_plausCheck_CellVolt : 56|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_error_insulation : 16|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_Status_fuse_normal : 24|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_Status_fuse_cont_normal : 25|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_Status_fuse_charge : 26|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -68,6 +69,8 @@ SG_ CAN_SIG_Open_Wire : 40|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_daisyChain_PEC : 49|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_daisyChain_SPI : 48|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_daisyChain_Multiplexer : 50|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_GS2_plausCheck_TempSens : 57|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_GS2_plausCheck_PackVolt : 58|1@1+ (1,0) [0|1] "" Vector__XXX
 
 
 BO_ 277 CAN_MSG_SlaveState_0: 8 Vector__XXX
@@ -206,6 +209,24 @@ SG_ CAN_SIG_Module_0_cell_voltage_10 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 SG_ CAN_SIG_Module_0_cell_voltage_11 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 
 
+BO_ 516 CAN_Cell_voltage_M0_4: 8 Vector__XXX
+SG_ CAN_SIG_0_40_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_0_41_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_0_42_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_0_cell_voltage_12 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_0_cell_voltage_13 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_0_cell_voltage_14 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
+BO_ 517 CAN_Cell_voltage_M0_5: 8 Vector__XXX
+SG_ CAN_SIG_0_50_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_0_51_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_0_52_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_0_cell_voltage_15 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_0_cell_voltage_16 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_0_cell_voltage_17 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
 BO_ 528 CAN_Cell_temperature_M0_0: 8 Vector__XXX
 SG_ CAN_SIG_0_00_Cell_temp_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_0_01_Cell_temp_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -278,6 +299,24 @@ SG_ CAN_SIG_Module_1_cell_voltage_10 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 SG_ CAN_SIG_Module_1_cell_voltage_11 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 
 
+BO_ 548 CAN_Cell_voltage_M1_4: 8 Vector__XXX
+SG_ CAN_SIG_1_40_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_41_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_42_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_1_cell_voltage_12 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_1_cell_voltage_13 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_1_cell_voltage_14 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
+BO_ 549 CAN_Cell_voltage_M1_5: 8 Vector__XXX
+SG_ CAN_SIG_1_50_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_51_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_52_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_1_cell_voltage_15 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_1_cell_voltage_16 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_1_cell_voltage_17 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
 BO_ 560 CAN_Cell_temperature_M1_0: 8 Vector__XXX
 SG_ CAN_SIG_1_00_Cell_temp_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_1_01_Cell_temp_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -315,9 +354,9 @@ SG_ CAN_SIG_Module_1_cell_temp_11 : 40|16@1+ (0.01,-128) [-128|527.35] "°C" Vec
 
 
 BO_ 576 CAN_Cell_voltage_M2_0: 8 Vector__XXX
-SG_ CAN_SIG_2_00_Cell_voltages_valid : 0|8@1+ (1,0) [0|255] "" Vector__XXX
-SG_ CAN_SIG_2_01_Cell_voltages_valid : 1|8@1+ (1,0) [0|255] "" Vector__XXX
-SG_ CAN_SIG_2_02_Cell_voltages_valid : 2|8@1+ (1,0) [0|255] "" Vector__XXX
+SG_ CAN_SIG_2_00_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_2_01_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_2_02_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_Module_2_cell_voltage_0 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 SG_ CAN_SIG_Module_2_cell_voltage_1 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 SG_ CAN_SIG_Module_2_cell_voltage_2 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
@@ -348,6 +387,24 @@ SG_ CAN_SIG_2_32_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_Module_2_cell_voltage_9 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 SG_ CAN_SIG_Module_2_cell_voltage_10 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 SG_ CAN_SIG_Module_2_cell_voltage_11 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
+BO_ 580 CAN_Cell_voltage_M2_4: 8 Vector__XXX
+SG_ CAN_SIG_1_40_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_41_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_42_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_2_cell_voltage_12 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_2_cell_voltage_13 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_2_cell_voltage_14 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
+BO_ 581 CAN_Cell_voltage_M2_5: 8 Vector__XXX
+SG_ CAN_SIG_1_50_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_51_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_52_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_2_cell_voltage_15 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_2_cell_voltage_16 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_2_cell_voltage_17 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 
 
 BO_ 592 CAN_Cell_temperature_M2_0: 8 Vector__XXX
@@ -422,6 +479,24 @@ SG_ CAN_SIG_Module_3_cell_voltage_10 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 SG_ CAN_SIG_Module_3_cell_voltage_11 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 
 
+BO_ 612 CAN_Cell_voltage_M3_4: 8 Vector__XXX
+SG_ CAN_SIG_1_40_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_41_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_42_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_3_cell_voltage_12 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_3_cell_voltage_13 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_3_cell_voltage_14 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
+BO_ 613 CAN_Cell_voltage_M3_5: 8 Vector__XXX
+SG_ CAN_SIG_1_50_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_51_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_52_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_3_cell_voltage_15 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_3_cell_voltage_16 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_3_cell_voltage_17 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
 BO_ 624 CAN_Cell_temperature_M3_0: 8 Vector__XXX
 SG_ CAN_SIG_3_00_Cell_temp_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_3_01_Cell_temp_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -492,6 +567,24 @@ SG_ CAN_SIG_4_32_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_Module_4_cell_voltage_9 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 SG_ CAN_SIG_Module_4_cell_voltage_10 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 SG_ CAN_SIG_Module_4_cell_voltage_11 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
+BO_ 644 CAN_Cell_voltage_M4_4: 8 Vector__XXX
+SG_ CAN_SIG_1_40_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_41_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_42_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_4_cell_voltage_12 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_4_cell_voltage_13 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_4_cell_voltage_14 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
+BO_ 645 CAN_Cell_voltage_M4_5: 8 Vector__XXX
+SG_ CAN_SIG_1_50_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_51_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_52_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_4_cell_voltage_15 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_4_cell_voltage_16 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_4_cell_voltage_17 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 
 
 BO_ 656 CAN_Cell_temperature_M4_0: 8 Vector__XXX
@@ -566,6 +659,24 @@ SG_ CAN_SIG_Module_5_cell_voltage_10 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 SG_ CAN_SIG_Module_5_cell_voltage_11 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 
 
+BO_ 676 CAN_Cell_voltage_M5_4: 8 Vector__XXX
+SG_ CAN_SIG_1_40_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_41_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_42_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_5_cell_voltage_12 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_5_cell_voltage_13 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_5_cell_voltage_14 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
+BO_ 677 CAN_Cell_voltage_M5_5: 8 Vector__XXX
+SG_ CAN_SIG_1_50_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_51_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_52_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_5_cell_voltage_15 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_5_cell_voltage_16 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_5_cell_voltage_17 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
 BO_ 688 CAN_Cell_temperature_M5_0: 8 Vector__XXX
 SG_ CAN_SIG_5_00_Cell_temp_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_5_01_Cell_temp_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -638,6 +749,24 @@ SG_ CAN_SIG_Module_6_cell_voltage_10 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 SG_ CAN_SIG_Module_6_cell_voltage_11 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 
 
+BO_ 708 CAN_Cell_voltage_M6_4: 8 Vector__XXX
+SG_ CAN_SIG_1_40_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_41_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_42_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_6_cell_voltage_12 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_6_cell_voltage_13 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_6_cell_voltage_14 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
+BO_ 709 CAN_Cell_voltage_M6_5: 8 Vector__XXX
+SG_ CAN_SIG_1_50_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_51_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_52_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_6_cell_voltage_15 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_6_cell_voltage_16 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_6_cell_voltage_17 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
 BO_ 720 CAN_Cell_temperature_M6_0: 8 Vector__XXX
 SG_ CAN_SIG_6_00_Cell_temp_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_6_01_Cell_temp_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -708,6 +837,24 @@ SG_ CAN_SIG_7_32_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_Module_7_cell_voltage_9 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 SG_ CAN_SIG_Module_7_cell_voltage_10 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 SG_ CAN_SIG_Module_7_cell_voltage_11 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
+BO_ 740 CAN_Cell_voltage_M7_4: 8 Vector__XXX
+SG_ CAN_SIG_1_40_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_41_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_42_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_7_cell_voltage_12 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_7_cell_voltage_13 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_7_cell_voltage_14 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+
+BO_ 741 CAN_Cell_voltage_M7_5: 8 Vector__XXX
+SG_ CAN_SIG_1_50_Cell_voltages_valid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_51_Cell_voltages_valid : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_1_52_Cell_voltages_valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_Module_7_cell_voltage_15 : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_7_cell_voltage_16 : 24|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+SG_ CAN_SIG_Module_7_cell_voltage_17 : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 
 
 BO_ 752 CAN_Cell_temperature_M7_0: 8 Vector__XXX
@@ -863,6 +1010,7 @@ BA_ "GenSigStartValue" SG_ 273 CAN_SIG_Overvoltage_RSL 0;
 BA_ "GenSigStartValue" SG_ 273 CAN_SIG_Overvoltage_MOL 0;
 BA_ "GenSigStartValue" SG_ 273 CAN_SIG_Undervoltage_RSL 0;
 BA_ "GenSigStartValue" SG_ 273 CAN_SIG_Undervoltage_MOL 0;
+BA_ "GenSigStartValue" SG_ 273 CAN_SIG_Deep_discharge 0;
 BA_ "GenSigStartValue" SG_ 274 CAN_SIG_Status_ctrs_plus_normal 0;
 BA_ "GenSigStartValue" SG_ 274 CAN_SIG_Status_ctrs_pchrg_normal 0;
 BA_ "GenSigStartValue" SG_ 274 CAN_SIG_Status_ctrs_minus_normal 0;
@@ -870,7 +1018,7 @@ BA_ "GenSigStartValue" SG_ 274 CAN_SIG_Status_ctrs_plus_charge 0;
 BA_ "GenSigStartValue" SG_ 274 CAN_SIG_Status_ctrs_pchrg_charge 0;
 BA_ "GenSigStartValue" SG_ 274 CAN_SIG_Status_ctrs_minus_charge 0;
 BA_ "GenSigStartValue" SG_ 274 CAN_SIG_Status_ctrs_interlock 0;
-BA_ "GenSigStartValue" SG_ 274 CAN_SIG_Reserved 0;
+BA_ "GenSigStartValue" SG_ 274 CAN_SIG_GS2_plausCheck_CellVolt 0;
 BA_ "GenSigStartValue" SG_ 274 CAN_SIG_error_insulation 0;
 BA_ "GenSigStartValue" SG_ 274 CAN_SIG_Status_fuse_normal 0;
 BA_ "GenSigStartValue" SG_ 274 CAN_SIG_Status_fuse_cont_normal 0;
@@ -881,6 +1029,8 @@ BA_ "GenSigStartValue" SG_ 274 CAN_SIG_Open_Wire 0;
 BA_ "GenSigStartValue" SG_ 274 CAN_SIG_daisyChain_PEC 0;
 BA_ "GenSigStartValue" SG_ 274 CAN_SIG_daisyChain_SPI 0;
 BA_ "GenSigStartValue" SG_ 274 CAN_SIG_daisyChain_Multiplexer 0;
+BA_ "GenSigStartValue" SG_ 274 CAN_SIG_GS2_plausCheck_TempSens 0;
+BA_ "GenSigStartValue" SG_ 274 CAN_SIG_GS2_plausCheck_PackVolt 0;
 BA_ "GenSigStartValue" SG_ 277 CAN_SIG_Slave_status_0 0;
 BA_ "GenSigStartValue" SG_ 278 CAN_SIG_Slave_status_1 0;
 BA_ "GenSigStartValue" SG_ 304 CAN_SIG_RecChargeCurrent 0;
@@ -951,6 +1101,18 @@ BA_ "GenSigStartValue" SG_ 515 CAN_SIG_0_32_Cell_voltages_valid 0;
 BA_ "GenSigStartValue" SG_ 515 CAN_SIG_Module_0_cell_voltage_9 0;
 BA_ "GenSigStartValue" SG_ 515 CAN_SIG_Module_0_cell_voltage_10 0;
 BA_ "GenSigStartValue" SG_ 515 CAN_SIG_Module_0_cell_voltage_11 0;
+BA_ "GenSigStartValue" SG_ 516 CAN_SIG_0_40_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 516 CAN_SIG_0_41_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 516 CAN_SIG_0_42_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 516 CAN_SIG_Module_0_cell_voltage_12 0;
+BA_ "GenSigStartValue" SG_ 516 CAN_SIG_Module_0_cell_voltage_13 0;
+BA_ "GenSigStartValue" SG_ 516 CAN_SIG_Module_0_cell_voltage_14 0;
+BA_ "GenSigStartValue" SG_ 517 CAN_SIG_0_50_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 517 CAN_SIG_0_51_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 517 CAN_SIG_0_52_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 517 CAN_SIG_Module_0_cell_voltage_15 0;
+BA_ "GenSigStartValue" SG_ 517 CAN_SIG_Module_0_cell_voltage_16 0;
+BA_ "GenSigStartValue" SG_ 517 CAN_SIG_Module_0_cell_voltage_17 0;
 BA_ "GenSigStartValue" SG_ 528 CAN_SIG_0_00_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 528 CAN_SIG_0_01_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 528 CAN_SIG_0_02_Cell_temp_valid 0;
@@ -999,6 +1161,18 @@ BA_ "GenSigStartValue" SG_ 547 CAN_SIG_1_32_Cell_voltages_valid 0;
 BA_ "GenSigStartValue" SG_ 547 CAN_SIG_Module_1_cell_voltage_9 0;
 BA_ "GenSigStartValue" SG_ 547 CAN_SIG_Module_1_cell_voltage_10 0;
 BA_ "GenSigStartValue" SG_ 547 CAN_SIG_Module_1_cell_voltage_11 0;
+BA_ "GenSigStartValue" SG_ 548 CAN_SIG_1_40_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 548 CAN_SIG_1_41_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 548 CAN_SIG_1_42_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 548 CAN_SIG_Module_1_cell_voltage_12 0;
+BA_ "GenSigStartValue" SG_ 548 CAN_SIG_Module_1_cell_voltage_13 0;
+BA_ "GenSigStartValue" SG_ 548 CAN_SIG_Module_1_cell_voltage_14 0;
+BA_ "GenSigStartValue" SG_ 549 CAN_SIG_1_50_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 549 CAN_SIG_1_51_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 549 CAN_SIG_1_52_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 549 CAN_SIG_Module_1_cell_voltage_15 0;
+BA_ "GenSigStartValue" SG_ 549 CAN_SIG_Module_1_cell_voltage_16 0;
+BA_ "GenSigStartValue" SG_ 549 CAN_SIG_Module_1_cell_voltage_17 0;
 BA_ "GenSigStartValue" SG_ 560 CAN_SIG_1_00_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 560 CAN_SIG_1_01_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 560 CAN_SIG_1_02_Cell_temp_valid 0;
@@ -1047,6 +1221,18 @@ BA_ "GenSigStartValue" SG_ 579 CAN_SIG_2_32_Cell_voltages_valid 0;
 BA_ "GenSigStartValue" SG_ 579 CAN_SIG_Module_2_cell_voltage_9 0;
 BA_ "GenSigStartValue" SG_ 579 CAN_SIG_Module_2_cell_voltage_10 0;
 BA_ "GenSigStartValue" SG_ 579 CAN_SIG_Module_2_cell_voltage_11 0;
+BA_ "GenSigStartValue" SG_ 580 CAN_SIG_1_40_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 580 CAN_SIG_1_41_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 580 CAN_SIG_1_42_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 580 CAN_SIG_Module_2_cell_voltage_12 0;
+BA_ "GenSigStartValue" SG_ 580 CAN_SIG_Module_2_cell_voltage_13 0;
+BA_ "GenSigStartValue" SG_ 580 CAN_SIG_Module_2_cell_voltage_14 0;
+BA_ "GenSigStartValue" SG_ 581 CAN_SIG_1_50_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 581 CAN_SIG_1_51_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 581 CAN_SIG_1_52_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 581 CAN_SIG_Module_2_cell_voltage_15 0;
+BA_ "GenSigStartValue" SG_ 581 CAN_SIG_Module_2_cell_voltage_16 0;
+BA_ "GenSigStartValue" SG_ 581 CAN_SIG_Module_2_cell_voltage_17 0;
 BA_ "GenSigStartValue" SG_ 592 CAN_SIG_2_00_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 592 CAN_SIG_2_01_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 592 CAN_SIG_2_02_Cell_temp_valid 0;
@@ -1095,6 +1281,18 @@ BA_ "GenSigStartValue" SG_ 611 CAN_SIG_3_32_Cell_voltages_valid 0;
 BA_ "GenSigStartValue" SG_ 611 CAN_SIG_Module_3_cell_voltage_9 0;
 BA_ "GenSigStartValue" SG_ 611 CAN_SIG_Module_3_cell_voltage_10 0;
 BA_ "GenSigStartValue" SG_ 611 CAN_SIG_Module_3_cell_voltage_11 0;
+BA_ "GenSigStartValue" SG_ 612 CAN_SIG_1_40_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 612 CAN_SIG_1_41_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 612 CAN_SIG_1_42_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 612 CAN_SIG_Module_3_cell_voltage_12 0;
+BA_ "GenSigStartValue" SG_ 612 CAN_SIG_Module_3_cell_voltage_13 0;
+BA_ "GenSigStartValue" SG_ 612 CAN_SIG_Module_3_cell_voltage_14 0;
+BA_ "GenSigStartValue" SG_ 613 CAN_SIG_1_50_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 613 CAN_SIG_1_51_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 613 CAN_SIG_1_52_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 613 CAN_SIG_Module_3_cell_voltage_15 0;
+BA_ "GenSigStartValue" SG_ 613 CAN_SIG_Module_3_cell_voltage_16 0;
+BA_ "GenSigStartValue" SG_ 613 CAN_SIG_Module_3_cell_voltage_17 0;
 BA_ "GenSigStartValue" SG_ 624 CAN_SIG_3_00_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 624 CAN_SIG_3_01_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 624 CAN_SIG_3_02_Cell_temp_valid 0;
@@ -1143,6 +1341,18 @@ BA_ "GenSigStartValue" SG_ 643 CAN_SIG_4_32_Cell_voltages_valid 0;
 BA_ "GenSigStartValue" SG_ 643 CAN_SIG_Module_4_cell_voltage_9 0;
 BA_ "GenSigStartValue" SG_ 643 CAN_SIG_Module_4_cell_voltage_10 0;
 BA_ "GenSigStartValue" SG_ 643 CAN_SIG_Module_4_cell_voltage_11 0;
+BA_ "GenSigStartValue" SG_ 644 CAN_SIG_1_40_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 644 CAN_SIG_1_41_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 644 CAN_SIG_1_42_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 644 CAN_SIG_Module_4_cell_voltage_12 0;
+BA_ "GenSigStartValue" SG_ 644 CAN_SIG_Module_4_cell_voltage_13 0;
+BA_ "GenSigStartValue" SG_ 644 CAN_SIG_Module_4_cell_voltage_14 0;
+BA_ "GenSigStartValue" SG_ 645 CAN_SIG_1_50_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 645 CAN_SIG_1_51_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 645 CAN_SIG_1_52_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 645 CAN_SIG_Module_4_cell_voltage_15 0;
+BA_ "GenSigStartValue" SG_ 645 CAN_SIG_Module_4_cell_voltage_16 0;
+BA_ "GenSigStartValue" SG_ 645 CAN_SIG_Module_4_cell_voltage_17 0;
 BA_ "GenSigStartValue" SG_ 656 CAN_SIG_4_00_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 656 CAN_SIG_4_01_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 656 CAN_SIG_4_02_Cell_temp_valid 0;
@@ -1191,6 +1401,18 @@ BA_ "GenSigStartValue" SG_ 675 CAN_SIG_5_32_Cell_voltages_valid 0;
 BA_ "GenSigStartValue" SG_ 675 CAN_SIG_Module_5_cell_voltage_9 0;
 BA_ "GenSigStartValue" SG_ 675 CAN_SIG_Module_5_cell_voltage_10 0;
 BA_ "GenSigStartValue" SG_ 675 CAN_SIG_Module_5_cell_voltage_11 0;
+BA_ "GenSigStartValue" SG_ 676 CAN_SIG_1_40_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 676 CAN_SIG_1_41_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 676 CAN_SIG_1_42_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 676 CAN_SIG_Module_5_cell_voltage_12 0;
+BA_ "GenSigStartValue" SG_ 676 CAN_SIG_Module_5_cell_voltage_13 0;
+BA_ "GenSigStartValue" SG_ 676 CAN_SIG_Module_5_cell_voltage_14 0;
+BA_ "GenSigStartValue" SG_ 677 CAN_SIG_1_50_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 677 CAN_SIG_1_51_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 677 CAN_SIG_1_52_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 677 CAN_SIG_Module_5_cell_voltage_15 0;
+BA_ "GenSigStartValue" SG_ 677 CAN_SIG_Module_5_cell_voltage_16 0;
+BA_ "GenSigStartValue" SG_ 677 CAN_SIG_Module_5_cell_voltage_17 0;
 BA_ "GenSigStartValue" SG_ 688 CAN_SIG_5_00_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 688 CAN_SIG_5_01_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 688 CAN_SIG_5_02_Cell_temp_valid 0;
@@ -1239,6 +1461,18 @@ BA_ "GenSigStartValue" SG_ 707 CAN_SIG_6_32_Cell_voltages_valid 0;
 BA_ "GenSigStartValue" SG_ 707 CAN_SIG_Module_6_cell_voltage_9 0;
 BA_ "GenSigStartValue" SG_ 707 CAN_SIG_Module_6_cell_voltage_10 0;
 BA_ "GenSigStartValue" SG_ 707 CAN_SIG_Module_6_cell_voltage_11 0;
+BA_ "GenSigStartValue" SG_ 708 CAN_SIG_1_40_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 708 CAN_SIG_1_41_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 708 CAN_SIG_1_42_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 708 CAN_SIG_Module_6_cell_voltage_12 0;
+BA_ "GenSigStartValue" SG_ 708 CAN_SIG_Module_6_cell_voltage_13 0;
+BA_ "GenSigStartValue" SG_ 708 CAN_SIG_Module_6_cell_voltage_14 0;
+BA_ "GenSigStartValue" SG_ 709 CAN_SIG_1_50_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 709 CAN_SIG_1_51_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 709 CAN_SIG_1_52_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 709 CAN_SIG_Module_6_cell_voltage_15 0;
+BA_ "GenSigStartValue" SG_ 709 CAN_SIG_Module_6_cell_voltage_16 0;
+BA_ "GenSigStartValue" SG_ 709 CAN_SIG_Module_6_cell_voltage_17 0;
 BA_ "GenSigStartValue" SG_ 720 CAN_SIG_6_00_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 720 CAN_SIG_6_01_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 720 CAN_SIG_6_02_Cell_temp_valid 0;
@@ -1287,6 +1521,18 @@ BA_ "GenSigStartValue" SG_ 739 CAN_SIG_7_32_Cell_voltages_valid 0;
 BA_ "GenSigStartValue" SG_ 739 CAN_SIG_Module_7_cell_voltage_9 0;
 BA_ "GenSigStartValue" SG_ 739 CAN_SIG_Module_7_cell_voltage_10 0;
 BA_ "GenSigStartValue" SG_ 739 CAN_SIG_Module_7_cell_voltage_11 0;
+BA_ "GenSigStartValue" SG_ 740 CAN_SIG_1_40_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 740 CAN_SIG_1_41_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 740 CAN_SIG_1_42_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 740 CAN_SIG_Module_7_cell_voltage_12 0;
+BA_ "GenSigStartValue" SG_ 740 CAN_SIG_Module_7_cell_voltage_13 0;
+BA_ "GenSigStartValue" SG_ 740 CAN_SIG_Module_7_cell_voltage_14 0;
+BA_ "GenSigStartValue" SG_ 741 CAN_SIG_1_50_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 741 CAN_SIG_1_51_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 741 CAN_SIG_1_52_Cell_voltages_valid 0;
+BA_ "GenSigStartValue" SG_ 741 CAN_SIG_Module_7_cell_voltage_15 0;
+BA_ "GenSigStartValue" SG_ 741 CAN_SIG_Module_7_cell_voltage_16 0;
+BA_ "GenSigStartValue" SG_ 741 CAN_SIG_Module_7_cell_voltage_17 0;
 BA_ "GenSigStartValue" SG_ 752 CAN_SIG_7_00_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 752 CAN_SIG_7_01_Cell_temp_valid 0;
 BA_ "GenSigStartValue" SG_ 752 CAN_SIG_7_02_Cell_temp_valid 0;

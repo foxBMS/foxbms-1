@@ -60,16 +60,15 @@ The struct ``ALGO_TASKS_s`` contains the definition of an algorithm.
 ``cycleTime_ms`` defines the periodic execution time of the algorithm.
 ``maxCalcDuration_ms`` specifies the maximum execution time of the algorithm.
 If an algorithm takes longer to execute than specified, it is set to the
-``ALGO_BLOCKED`` state and will not be executed again. An error will be set in
-the |mod_diag|. ``startTime`` is set when the execution of an algorithm starts.
-``void (*func)(uint32_t algoIdx)`` is the function pointer to the implementation
-of the algorithm.
+``ALGO_BLOCKED`` state and will not be executed again. An error will be set
+in the |mod_diag|. ``startTime`` is set when the execution of an algorithm
+starts. ``void (*func)(uint32_t algoIdx)`` is the function pointer to the
+implementation of the algorithm.
 
-
-``ALGO_MainFunction`` loops over the different algorithms and executes them one
-after another if the cycleTime_ms is elapsed. Before calling the algorithm, the
-algorithm state is set to ``ALGO_RUNNING`` and the start time for the execution
-time monitoring is set:
+``ALGO_MainFunction`` loops over the different algorithms and executes them
+one after another if the cycleTime_ms is elapsed. Before calling the
+algorithm, the algorithm state is set to ``ALGO_RUNNING`` and the start time
+for the execution time monitoring is set:
 
 .. code-block:: C
 
@@ -80,9 +79,9 @@ time monitoring is set:
 
 .. note::
 
-    After finishing the execution of the algorithm and before leaving the function,
-    the algorithm state needs to be set back to ``ALGO_READY``. Otherwise it will not
-    be executed again.
+    After finishing the execution of the algorithm and before leaving the
+    function, the algorithm state needs to be set back to ``ALGO_READY``.
+    Otherwise it will not be executed again.
 
 .. code-block:: C
 

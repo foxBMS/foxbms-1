@@ -64,9 +64,19 @@
  * @ingroup CONFIG_LTC
  * If set to 1 LTC driver is configured to use foxBMS slave boards version 1.x
  * If set to 2 LTC driver is configured to use foxBMS slave boards version 2.x
-*/
+ */
 #define SLAVE_BOARD_VERSION 2
 
+/**
+ * If set to 0 LTC driver is configured to use PCA8574 port expander
+ * If set to 1 LTC driver is configured to use TCA6408A port expander
+ */
+#define LTC_PORTEXPANDER_VERSION 1
+
+/**
+ * Address of TI port expander (0 or 1)
+ */
+#define LTC_PORTEXPANDER_ADR_TI 0
 
 
 /* #define LTC_DISCARD_PEC TRUE */
@@ -129,6 +139,12 @@
 #define LTC_OW_MEASUREMENT_MODE     LTC_ADCMODE_NORMAL_DCP0
 /* #define LTC_OW_MEASUREMENT_MODE     LTC_ADCMODE_FILTERED_DCP0 */
 
+
+/**
+ * Timeout added to the transmission time for interrupt-
+ * based SPI trnamission. TIme in ms.
+ */
+#define LTC_TRANSMISSION_TIMEOUT      10
 
 /**
  * SPI1 is used for communication with LTC
@@ -224,11 +240,6 @@
  * LTC statemachine CRC-transmission error timing in ms
  */
 #define LTC_STATEMACH_PECERRTIME    1
-
-/**
- * Callback for action after initialization of LTC daisy chain
- */
-#define LTC_IF_INITIALIZED_CALLBACK()
 
 /**
  * Maximum number of re-tries in case of CRC error during the communication with daisy chain

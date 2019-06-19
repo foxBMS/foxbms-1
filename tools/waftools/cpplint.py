@@ -35,11 +35,18 @@
 # &Prime;This product is derived from foxBMS&reg;&Prime;
 
 import os
-from waflib import Build
+from waflib import Build, Options
+
+
+def options(opt):
+    opt.add_option('--cpplint-conf-file', type='string', action='store',
+                   default='cpplint.yml', dest='CPPLINT_CONF',
+                   help='cpplint configuration file (default: cpplint.yml)')
 
 def configure(conf):
     print('C linting tool:')
     conf.find_program('cpplint', var='CPPLINT', mandatory=True)
+    conf.env.CPPLINT_CONF = Options.options.CPPLINT_CONF
 
 from waflib.Build import BuildContext
 class cpplint(BuildContext):

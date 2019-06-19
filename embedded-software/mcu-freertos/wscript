@@ -54,46 +54,50 @@ def build(bld):
            os.path.join('Source', 'croutine.c'),
            os.path.join('Source', 'list.c'),
            os.path.join('Source', 'portable', 'GCC', 'ARM_CM4F', 'port.c'),
-           os.path.join('Source', 'portable', 'MemMang', 'heap_4.c'),
            os.path.join('Source', 'queue.c'),
            os.path.join('Source', 'tasks.c'),
            os.path.join('Source', 'timers.c'),
 
-           os.path.join('..', bld.env.__bld_project, 'src', 'os', 'os.c')])
+           os.path.join('..', bld.env.mcu_dir, 'src', 'os', 'os.c'),
+           os.path.join('..', bld.env.mcu_dir, 'src', 'os', 'syscall.c')])
 
     includes = os.path.join(bld.bldnode.abspath()) + ' '
-    includes += bld.env.__inc_hal
+    includes += bld.env.hal_dirs + ' '
+    includes += bld.env.FreeRTOS_dirs + ' '
     includes += ' '.join([
-                '.',
-                os.path.join('Source'),
-                os.path.join('Source', 'include'),
-                os.path.join('Source', 'portable', 'GCC', 'ARM_CM4F'),
+                bld.path.get_src().abspath(),
 
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_common, 'src', 'engine', 'database'),
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.common_dir, 'src', 'driver', 'uart'),
 
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'application', 'config'),
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'application', 'task'),
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.common_dir, 'src', 'engine', 'database'),
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.common_dir, 'src', 'engine', 'diag'),
 
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'engine', 'config'),
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'engine', 'diag'),
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'engine', 'sys'),
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'engine', 'task'),
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'application', 'config'),
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'application', 'task'),
 
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general'),
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general', 'config'),
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general', 'config', bld.env.CPU_MAJOR),
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'general', 'includes'),
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'driver', 'config'),
 
-                os.path.join(bld.top_dir, bld.env.__sw_dir, bld.env.__bld_project, 'src', 'os')])
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'engine', 'config'),
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'engine', 'sys'),
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'engine', 'task'),
+
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'general'),
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'general', 'config'),
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'general', 'config', 'FreeRTOS'),
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'general', 'config', bld.env.CPU_MAJOR),
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'general', 'includes'),
+
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'os')])
+
     includes += ' '
 
     if bld.variant == 'primary':
-        includes += ' '.join([
-            '.'])
+        includes += ' '.join([])
     elif bld.variant == 'secondary':
-        includes += ' '.join([
-            '.'])
+        includes += ' '.join([])
 
     bld.stlib(target='foxbms-os',
               source=srcs,
-              includes=includes)
+              includes=includes,
+              cflags=bld.env.CFLAGS_freertos,
+              features=['size', 'check_includes'])

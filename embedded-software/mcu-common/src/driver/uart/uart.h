@@ -56,6 +56,7 @@
 /*================== Includes =============================================*/
 #include "uart_cfg.h"
 
+
 /*================== Macros and Definitions ===============================*/
 #define RXBUF_LENGTH    0x100    /* 256 Byte */
 #define TXBUF_LENGTH    0x300    /* 768 Byte */
@@ -127,6 +128,10 @@ extern void UART_vWrite(const uint8_t *source);
  * @return (type: uint8_t)
  */
 extern void UART_vWrite_intbuf(const uint8_t *source, uint16_t length);
+
+__attribute__((weak)) void UART_IntTx(UART_HandleTypeDef *huart);
+
+__attribute__((weak)) void UART_IntRx(UART_HandleTypeDef *huart);
 
 /*================== Function Implementations =============================*/
 

@@ -55,8 +55,10 @@
 
 /*================== Includes =============================================*/
 #include "can_cfg.h"
-#include "rcc_cfg.h"
+
+#include "batterysystem_cfg.h"
 #include "mcu.h"
+#include "rcc_cfg.h"
 
 /*================== Macros and Definitions ===============================*/
 
@@ -72,28 +74,27 @@
 
 CAN_HandleTypeDef hcan0 = {
         .Instance = CAN2,
-        .Lock = HAL_UNLOCKED,
         .State = HAL_CAN_STATE_RESET,
         .ErrorCode = HAL_CAN_ERROR_NONE,
 #if (CAN0_BAUDRATE == 1000000)
 #if (RCC_APB1_CLOCK  ==  45000000)
         .Init.Prescaler = 3,        /* CAN_CLOCK = APB1 = 45MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/3/15 = 1.0MHz */
-        .Init.BS2 = CAN_BS2_8TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/3/15 = 1.0MHz */
+        .Init.TimeSeg2 = CAN_BS2_8TQ,
 #elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 3,        /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/3/14 = 1.0MHz */
-        .Init.BS2 = CAN_BS2_7TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/3/14 = 1.0MHz */
+        .Init.TimeSeg2 = CAN_BS2_7TQ,
 #elif RCC_APB1_CLOCK  ==  32000000
         .Init.Prescaler = 4,        /* CAN_CLOCK = APB1 = 32MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_5TQ,    /* --> CAN = 32MHz/4/8 = 1.0MHz */
-        .Init.BS2 = CAN_BS2_2TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_5TQ,    /* --> CAN = 32MHz/4/8 = 1.0MHz */
+        .Init.TimeSeg2 = CAN_BS2_2TQ,
 #else
 #error "Please configure CAN Baudrate according to your clock configuration "
 #endif
@@ -101,21 +102,21 @@ CAN_HandleTypeDef hcan0 = {
 #if (RCC_APB1_CLOCK  ==  45000000)
         .Init.Prescaler = 6,        /* CAN_CLOCK = APB1 = 45MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/6/15 = 0.5MHz */
-        .Init.BS2 = CAN_BS2_8TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/6/15 = 0.5MHz */
+        .Init.TimeSeg2 = CAN_BS2_8TQ,
 #elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 6,        /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/6/14 = 0.5MHz */
-        .Init.BS2 = CAN_BS2_7TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/6/14 = 0.5MHz */
+        .Init.TimeSeg2 = CAN_BS2_7TQ,
 #elif RCC_APB1_CLOCK  ==  32000000
         .Init.Prescaler = 8,        /* CAN_CLOCK = APB1 = 32MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_5TQ,    /* --> CAN = 32MHz/8/8 = 0.5MHz */
-        .Init.BS2 = CAN_BS2_2TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_5TQ,    /* --> CAN = 32MHz/8/8 = 0.5MHz */
+        .Init.TimeSeg2 = CAN_BS2_2TQ,
 #else
 #error "Please configure CAN Baudrate according to your clock configuration "
 #endif
@@ -123,21 +124,21 @@ CAN_HandleTypeDef hcan0 = {
 #if (RCC_APB1_CLOCK  ==  45000000)
         .Init.Prescaler = 12,       /* CAN_CLOCK = APB1 = 45MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/12/15 = 0.25MHz */
-        .Init.BS2 = CAN_BS2_8TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/12/15 = 0.25MHz */
+        .Init.TimeSeg2 = CAN_BS2_8TQ,
 #elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 12,       /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/12/14 = 0.25MHz */
-        .Init.BS2 = CAN_BS2_7TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/12/14 = 0.25MHz */
+        .Init.TimeSeg2 = CAN_BS2_7TQ,
 #elif RCC_APB1_CLOCK  ==  32000000
         .Init.Prescaler = 16,       /* CAN_CLOCK = APB1 = 32MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_2TQ,    /* --> CAN = 32MHz/16/8 = 0.25MHz */
-        .Init.BS2 = CAN_BS2_5TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_2TQ,    /* --> CAN = 32MHz/16/8 = 0.25MHz */
+        .Init.TimeSeg2 = CAN_BS2_5TQ,
 #else
 #error "Please configure CAN Baudrate according to your clock configuration "
 #endif
@@ -145,43 +146,43 @@ CAN_HandleTypeDef hcan0 = {
 #if (RCC_APB1_CLOCK  ==  45000000)
         .Init.Prescaler = 24,       /* CAN_CLOCK = APB1 = 45MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/12/14 = 0.125MHz */
-        .Init.BS2 = CAN_BS2_8TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/12/14 = 0.125MHz */
+        .Init.TimeSeg2 = CAN_BS2_8TQ,
 #elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 24,       /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/12/14 = 0.125MHz */
-        .Init.BS2 = CAN_BS2_7TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/12/14 = 0.125MHz */
+        .Init.TimeSeg2 = CAN_BS2_7TQ,
 #elif RCC_APB1_CLOCK  ==  32000000
         .Init.Prescaler = 32,       /* CAN_CLOCK = APB1 = 32MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_2TQ,    /* --> CAN = 32MHz/16/8 = 0.125MHz */
-        .Init.BS2 = CAN_BS2_5TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_2TQ,    /* --> CAN = 32MHz/16/8 = 0.125MHz */
+        .Init.TimeSeg2 = CAN_BS2_5TQ,
 #else
 #error "Please configure CAN Baudrate according to your clock configuration "
 #endif
 #endif
         .Init.Mode = CAN_MODE_NORMAL,  /* for test purpose, without connected can-bus use LOOPBACK mode */
-        .Init.SJW = CAN_SJW_1TQ,
-        .Init.TTCM = DISABLE,   /* time triggerd communication mode */
+        .Init.SyncJumpWidth = CAN_SJW_1TQ,
+        .Init.TimeTriggeredMode = DISABLE,   /* time triggerd communication mode */
                             /* DISABLE: no influence */
                             /* ENABLE: saves timestamps for received and transmitted messages. See reference manual for more information. */
-        .Init.ABOM = ENABLE,    /* automatic bus-off management */
                             /* DISABLE: Manually re-initialize CAN and wait for 128 * 11 recessive bits */
+        .Init.AutoBusOff = ENABLE,    /* automatic bus-off management */
                             /* ENABLE: automatically leave bus-off mode after 128 * 11 recessive bits */
-        .Init.AWUM = ENABLE,    /* automatic wake-up mode */
+        .Init.AutoWakeUp = ENABLE,    /* automatic wake-up mode */
                             /* ENABLE: automatically leave sleep mode on message receiving */
                             /* DISABLE: SLEEP bit needs to be deleted by software */
-        .Init.NART = DISABLE,   /* automatic retransition mode; */
+        .Init.AutoRetransmission = DISABLE,   /* automatic retransition mode; */
                             /* DISABLE: retransmit the message until it has been successfully transmitted */
                             /* ENABLE: transmit only once, independently of transmission result */
-        .Init.RFLM = ENABLE,    /* Receive FIFO locked against overrun. */
+        .Init.ReceiveFifoLocked = ENABLE,    /* Receive FIFO locked against overrun. */
                             /* DISABLE: A new incoming message overwrites the last received message. */
                             /* ENABLE: Once a receive FIFO is full the next incoming message will be discarded. */
-        .Init.TXFP = DISABLE,   /* Transmit FIFO priority */
+        .Init.TransmitFifoPriority = ENABLE,   /* Transmit FIFO priority */
                             /* DISABLE: driven by identifier of message. Lower identifier equals higher priority */
                             /* ENABLE: driven chronologically */
 };
@@ -190,28 +191,27 @@ CAN_HandleTypeDef hcan0 = {
 
 CAN_HandleTypeDef hcan1 = {
         .Instance = CAN1,
-        .Lock = HAL_UNLOCKED,
         .State = HAL_CAN_STATE_RESET,
         .ErrorCode = HAL_CAN_ERROR_NONE,
 #if (CAN1_BAUDRATE == 1000000)
 #if (RCC_APB1_CLOCK  ==  45000000)
         .Init.Prescaler = 3,        /* CAN_CLOCK = APB1 = 45MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/3/15 = 1.0MHz */
-        .Init.BS2 = CAN_BS2_8TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/3/15 = 1.0MHz */
+        .Init.TimeSeg2 = CAN_BS2_8TQ,
 #elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 3,        /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/3/14 = 1.0MHz */
-        .Init.BS2 = CAN_BS2_7TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/3/14 = 1.0MHz */
+        .Init.TimeSeg2 = CAN_BS2_7TQ,
 #elif RCC_APB1_CLOCK  ==  32000000
         .Init.Prescaler = 4,        /* CAN_CLOCK = APB1 = 32MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_5TQ,    /* --> CAN = 32MHz/4/8 = 1.0MHz */
-        .Init.BS2 = CAN_BS2_2TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_5TQ,    /* --> CAN = 32MHz/4/8 = 1.0MHz */
+        .Init.TimeSeg2 = CAN_BS2_2TQ,
 #else
 #error "Please configure CAN Baudrate according to your clock configuration "
 #endif
@@ -219,21 +219,21 @@ CAN_HandleTypeDef hcan1 = {
 #if (RCC_APB1_CLOCK  ==  45000000)
         .Init.Prescaler = 6,        /* CAN_CLOCK = APB1 = 45MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/6/15 = 0.5MHz */
-        .Init.BS2 = CAN_BS2_8TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/6/15 = 0.5MHz */
+        .Init.TimeSeg2 = CAN_BS2_8TQ,
 #elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 6,        /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/6/14 = 0.5MHz */
-        .Init.BS2 = CAN_BS2_7TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/6/14 = 0.5MHz */
+        .Init.TimeSeg2 = CAN_BS2_7TQ,
 #elif RCC_APB1_CLOCK  ==  32000000
         .Init.Prescaler = 8,        /* CAN_CLOCK = APB1 = 32MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_5TQ,    /* --> CAN = 32MHz/8/8 = 0.5MHz */
-        .Init.BS2 = CAN_BS2_2TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_5TQ,    /* --> CAN = 32MHz/8/8 = 0.5MHz */
+        .Init.TimeSeg2 = CAN_BS2_2TQ,
 #else
 #error "Please configure CAN Baudrate according to your clock configuration "
 #endif
@@ -241,21 +241,21 @@ CAN_HandleTypeDef hcan1 = {
 #if (RCC_APB1_CLOCK  ==  45000000)
         .Init.Prescaler = 12,       /* CAN_CLOCK = APB1 = 45MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/12/15 = 0.25MHz */
-        .Init.BS2 = CAN_BS2_8TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/12/15 = 0.25MHz */
+        .Init.TimeSeg2 = CAN_BS2_8TQ,
 #elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 12,       /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/12/14 = 0.25MHz */
-        .Init.BS2 = CAN_BS2_7TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/12/14 = 0.25MHz */
+        .Init.TimeSeg2 = CAN_BS2_7TQ,
 #elif RCC_APB1_CLOCK  ==  32000000
         .Init.Prescaler = 16,       /* CAN_CLOCK = APB1 = 32MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_5TQ,    /* --> CAN = 32MHz/16/8 = 0.25MHz */
-        .Init.BS2 = CAN_BS2_2TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_5TQ,    /* --> CAN = 32MHz/16/8 = 0.25MHz */
+        .Init.TimeSeg2 = CAN_BS2_2TQ,
 #else
 #error "Please configure CAN Baudrate according to your clock configuration "
 #endif
@@ -263,43 +263,43 @@ CAN_HandleTypeDef hcan1 = {
 #if (RCC_APB1_CLOCK  ==  45000000)
         .Init.Prescaler = 24,       /* CAN_CLOCK = APB1 = 45MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/12/14 = 0.125MHz */
-        .Init.BS2 = CAN_BS2_8TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 45MHz/12/14 = 0.125MHz */
+        .Init.TimeSeg2 = CAN_BS2_8TQ,
 #elif(RCC_APB1_CLOCK  ==  42000000)
         .Init.Prescaler = 24,       /* CAN_CLOCK = APB1 = 42MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/12/14 = 0.125MHz */
-        .Init.BS2 = CAN_BS2_7TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_6TQ,    /* --> CAN = 42MHz/12/14 = 0.125MHz */
+        .Init.TimeSeg2 = CAN_BS2_7TQ,
 #elif RCC_APB1_CLOCK  ==  32000000
         .Init.Prescaler = 32,       /* CAN_CLOCK = APB1 = 32MHz */
                                     /* resulting CAN speed: APB1/prescaler/sumOfTimequants */
-                                    /* sum: 1tq for sync + BS1 + BS2 */
-        .Init.BS1 = CAN_BS1_5TQ,    /* --> CAN = 32MHz/16/8 = 0.125MHz */
-        .Init.BS2 = CAN_BS2_2TQ,
+                                    /* sum: 1tq for sync + TimeSeg1 + TimeSeg2 */
+        .Init.TimeSeg1 = CAN_BS1_5TQ,    /* --> CAN = 32MHz/16/8 = 0.125MHz */
+        .Init.TimeSeg2 = CAN_BS2_2TQ,
 #else
 #error "Please configure CAN Baudrate according to your clock configuration "
 #endif
 #endif
         .Init.Mode = CAN_MODE_NORMAL,    /* for test purpose, without connected can-bus use LOOPBACK mode */
-        .Init.SJW = CAN_SJW_1TQ,
-        .Init.TTCM = DISABLE,    /* time triggerd communication mode */
+        .Init.SyncJumpWidth = CAN_SJW_1TQ,
+        .Init.TimeTriggeredMode = DISABLE,    /* time triggerd communication mode */
                             /* DISABLE: no influence */
                             /* ENABLE: saves timestamps for received and transmitted messages. See reference manual for more information. */
-        .Init.ABOM = ENABLE,    /* automatic bus-off management */
+        .Init.AutoBusOff = ENABLE,    /* automatic bus-off management */
                             /* DISABLE: Manually re-initialize CAN and wait for 128 * 11 recessive bits */
                             /* ENABLE: automatically leave bus-off mode after 128 * 11 recessive bits */
-        .Init.AWUM = ENABLE,     /* automatic wake-up mode */
+        .Init.AutoWakeUp = ENABLE,     /* automatic wake-up mode */
                             /* ENABLE: automatically leave sleep mode on message receiving */
                             /* DISABLE: SLEEP bit needs to be deleted by software */
-        .Init.NART = DISABLE,     /* automatic retransition mode; */
+        .Init.AutoRetransmission = DISABLE,     /* automatic retransition mode; */
                             /* DISABLE: retransmit the message until it has been successfully transmitted */
                             /* ENABLE: transmit only once, independently of transmission result */
-        .Init.RFLM = ENABLE,    /* Receive FIFO locked against overrun. */
+        .Init.ReceiveFifoLocked = ENABLE,    /* Receive FIFO locked against overrun. */
                             /* DISABLE: A new incoming message overwrites the last received message. */
                             /* ENABLE: Once a receive FIFO is full the next incoming message will be discarded. */
-        .Init.TXFP = DISABLE,     /* Transmit FIFO priority */
+        .Init.TransmitFifoPriority = ENABLE,     /* Transmit FIFO priority */
                             /* DISABLE: driven by identifier of message. Lower identifier equals higher priority */
                             /* ENABLE: driven chronologically */
 };
@@ -342,6 +342,8 @@ const CAN_MSG_TX_TYPE_s can_CAN0_messages_tx[] = {
         { 0x201, 8, 200, 20, NULL_PTR },  /*!< Cell voltages module 0 cells 3 4 5 */
         { 0x202, 8, 200, 20, NULL_PTR },  /*!< Cell voltages module 0 cells 6 7 8 */
         { 0x203, 8, 200, 20, NULL_PTR },  /*!< Cell voltages module 0 cells 9 10 11 */
+        { 0x204, 8, 200, 20, NULL_PTR },  /*!< Cell voltages module 0 cells 12 13 14 */
+        { 0x205, 8, 200, 20, NULL_PTR },  /*!< Cell voltages module 0 cells 15 16 17 */
 
         { 0x210, 8, 200, 30, NULL_PTR },  /*!< Cell temperatures module 0 cells 0 1 2 */
         { 0x211, 8, 200, 30, NULL_PTR },  /*!< Cell temperatures module 0 cells 3 4 5 */
@@ -352,6 +354,8 @@ const CAN_MSG_TX_TYPE_s can_CAN0_messages_tx[] = {
         { 0x221, 8, 200, 40, NULL_PTR },  /*!< Cell voltages module 1 cells 3 4 5 */
         { 0x222, 8, 200, 40, NULL_PTR },  /*!< Cell voltages module 1 cells 6 7 8 */
         { 0x223, 8, 200, 40, NULL_PTR },  /*!< Cell voltages module 1 cells 9 10 11 */
+        { 0x224, 8, 200, 40, NULL_PTR },  /*!< Cell voltages module 1 cells 12 13 14 */
+        { 0x225, 8, 200, 40, NULL_PTR },  /*!< Cell voltages module 1 cells 15 16 17 */
 
         { 0x230, 8, 200, 50, NULL_PTR },  /*!< Cell temperatures module 1 cells 0 1 2 */
         { 0x231, 8, 200, 50, NULL_PTR },  /*!< Cell temperatures module 1 cells 3 4 5 */
@@ -362,6 +366,8 @@ const CAN_MSG_TX_TYPE_s can_CAN0_messages_tx[] = {
         { 0x241, 8, 200, 60, NULL_PTR },  /*!< Cell voltages module 2 cells 3 4 5 */
         { 0x242, 8, 200, 60, NULL_PTR },  /*!< Cell voltages module 2 cells 6 7 8 */
         { 0x243, 8, 200, 60, NULL_PTR },  /*!< Cell voltages module 2 cells 9 10 11 */
+        { 0x244, 8, 200, 60, NULL_PTR },  /*!< Cell voltages module 2 cells 12 13 14 */
+        { 0x245, 8, 200, 60, NULL_PTR },  /*!< Cell voltages module 2 cells 15 16 17 */
 
         { 0x250, 8, 200, 70, NULL_PTR },  /*!< Cell temperatures module 2 cells 0 1 2 */
         { 0x251, 8, 200, 70, NULL_PTR },  /*!< Cell temperatures module 2 cells 3 4 5 */
@@ -372,6 +378,8 @@ const CAN_MSG_TX_TYPE_s can_CAN0_messages_tx[] = {
         { 0x261, 8, 200, 80, NULL_PTR },  /*!< Cell voltages module 3 cells 3 4 5 */
         { 0x262, 8, 200, 80, NULL_PTR },  /*!< Cell voltages module 3 cells 6 7 8 */
         { 0x263, 8, 200, 80, NULL_PTR },  /*!< Cell voltages module 3 cells 9 10 11 */
+        { 0x264, 8, 200, 80, NULL_PTR },  /*!< Cell voltages module 3 cells 12 13 14 */
+        { 0x265, 8, 200, 80, NULL_PTR },  /*!< Cell voltages module 3 cells 15 16 17 */
 
         { 0x270, 8, 200, 90, NULL_PTR },  /*!< Cell temperatures module 3 cells 0 1 2 */
         { 0x271, 8, 200, 90, NULL_PTR },  /*!< Cell temperatures module 3 cells 3 4 5 */
@@ -382,6 +390,8 @@ const CAN_MSG_TX_TYPE_s can_CAN0_messages_tx[] = {
         { 0x281, 8, 200, 100, NULL_PTR },  /*!< Cell voltages module 4 cells 3 4 5 */
         { 0x282, 8, 200, 100, NULL_PTR },  /*!< Cell voltages module 4 cells 6 7 8 */
         { 0x283, 8, 200, 100, NULL_PTR },  /*!< Cell voltages module 4 cells 9 10 11 */
+        { 0x284, 8, 200, 100, NULL_PTR },  /*!< Cell voltages module 4 cells 12 13 14 */
+        { 0x285, 8, 200, 100, NULL_PTR },  /*!< Cell voltages module 4 cells 15 16 17 */
 
         { 0x290, 8, 200, 110, NULL_PTR },  /*!< Cell temperatures module 4 cells 0 1 2 */
         { 0x291, 8, 200, 110, NULL_PTR },  /*!< Cell temperatures module 4 cells 3 4 5 */
@@ -392,6 +402,8 @@ const CAN_MSG_TX_TYPE_s can_CAN0_messages_tx[] = {
         { 0x2A1, 8, 200, 120, NULL_PTR },  /*!< Cell voltages module 5 cells 3 4 5 */
         { 0x2A2, 8, 200, 120, NULL_PTR },  /*!< Cell voltages module 5 cells 6 7 8 */
         { 0x2A3, 8, 200, 120, NULL_PTR },  /*!< Cell voltages module 5 cells 9 10 11 */
+        { 0x2A4, 8, 200, 120, NULL_PTR },  /*!< Cell voltages module 5 cells 12 13 14 */
+        { 0x2A5, 8, 200, 120, NULL_PTR },  /*!< Cell voltages module 5 cells 15 16 17 */
 
         { 0x2B0, 8, 200, 130, NULL_PTR },  /*!< Cell temperatures module 5 cells 0 1 2 */
         { 0x2B1, 8, 200, 130, NULL_PTR },  /*!< Cell temperatures module 5 cells 3 4 5 */
@@ -402,6 +414,8 @@ const CAN_MSG_TX_TYPE_s can_CAN0_messages_tx[] = {
         { 0x2C1, 8, 200, 140, NULL_PTR },  /*!< Cell voltages module 6 cells 3 4 5 */
         { 0x2C2, 8, 200, 140, NULL_PTR },  /*!< Cell voltages module 6 cells 6 7 8 */
         { 0x2C3, 8, 200, 140, NULL_PTR },  /*!< Cell voltages module 6 cells 9 10 11 */
+        { 0x2C4, 8, 200, 140, NULL_PTR },  /*!< Cell voltages module 6 cells 12 13 14 */
+        { 0x2C5, 8, 200, 140, NULL_PTR },  /*!< Cell voltages module 6 cells 15 16 17 */
 
         { 0x2D0, 8, 200, 150, NULL_PTR },  /*!< Cell temperatures module 6 cells 0 1 2 */
         { 0x2D1, 8, 200, 150, NULL_PTR },  /*!< Cell temperatures module 6 cells 3 4 5 */
@@ -412,15 +426,17 @@ const CAN_MSG_TX_TYPE_s can_CAN0_messages_tx[] = {
         { 0x2E1, 8, 200, 160, NULL_PTR },  /*!< Cell voltages module 7 cells 3 4 5 */
         { 0x2E2, 8, 200, 160, NULL_PTR },  /*!< Cell voltages module 7 cells 6 7 8 */
         { 0x2E3, 8, 200, 160, NULL_PTR },  /*!< Cell voltages module 7 cells 9 10 11 */
+        { 0x2E4, 8, 200, 160, NULL_PTR },  /*!< Cell voltages module 7 cells 12 13 14 */
+        { 0x2E5, 8, 200, 160, NULL_PTR },  /*!< Cell voltages module 7 cells 15 16 17 */
 
         { 0x2F0, 8, 200, 170, NULL_PTR },  /*!< Cell temperatures module 7 cells 0 1 2 */
         { 0x2F1, 8, 200, 170, NULL_PTR },  /*!< Cell temperatures module 7 cells 3 4 5 */
         { 0x2F2, 8, 200, 170, NULL_PTR },  /*!< Cell temperatures module 7 cells 6 7 8 */
         { 0x2F3, 8, 200, 170, NULL_PTR },  /*!< Cell temperatures module 7 cells 9 10 11 */
 
-#ifdef CAN_ISABELLENHUETTE_TRIGGERED
+#ifdef CURRENT_SENSOR_ISABELLENHUETTE_TRIGGERED
         , { 0x35B, 8, 100, 20, NULL_PTR }  /*!< Current Sensor Trigger */
-#endif
+#endif /* CURRENT_SENSOR_ISABELLENHUETTE_TRIGGERED */
 };
 
 
@@ -436,31 +452,31 @@ const uint8_t can_CAN1_tx_length = sizeof(can_CAN1_messages_tx)/sizeof(can_CAN1_
 
 /* Bypassed messages are --- ALSO --- to be configured here. See further down for bypass ID setting!  */
 CAN_MSG_RX_TYPE_s can0_RxMsgs[] = {
-        { 0x120, 0xFFFF, 8, 0, CAN_FIFO0, NULL },   /*!< state request      */
+        { 0x120, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },   /*!< state request      */
 
-        { CAN_ID_SOFTWARE_RESET_MSG, 0xFFFF, 8, 0, CAN_FIFO0, NULL },   /*!< software reset     */
+        { CAN_ID_SOFTWARE_RESET_MSG, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },   /*!< software reset     */
 
-#ifdef CAN_ISABELLENHUETTE_TRIGGERED
-        { 0x35C, 0xFFFF, 8, 0, CAN_FIFO0, NULL },   /*!< current sensor I   */
-        { 0x35D, 0xFFFF, 8, 0, CAN_FIFO0, NULL },   /*!< current sensor U1  */
-        { 0x35E, 0xFFFF, 8, 0, CAN_FIFO0, NULL },   /*!< current sensor U2  */
-        { 0x35F, 0xFFFF, 8, 0, CAN_FIFO0, NULL },   /*!< current sensor U3  */
-        { 0x525, 0xFFFF, 8, 0, CAN_FIFO0, NULL },    /*!< current sensor T in cyclic mode  */
-        { 0x526, 0xFFFF, 8, 0, CAN_FIFO0, NULL },    /*!< current sensor Power in cyclic mode  */
-        { 0x527, 0xFFFF, 8, 0, CAN_FIFO0, NULL },    /*!< current sensor C-C in cyclic mode  */
-        { 0x528, 0xFFFF, 8, 0, CAN_FIFO0, NULL },    /*!< current sensor E-C in cyclic mode  */
-#else
-        { 0x521, 0xFFFF, 8, 0, CAN_FIFO0, NULL },    /*!< current sensor I in cyclic mode   */
-        { 0x522, 0xFFFF, 8, 0, CAN_FIFO0, NULL },    /*!< current sensor U1 in cyclic mode  */
-        { 0x523, 0xFFFF, 8, 0, CAN_FIFO0, NULL },    /*!< current sensor U2 in cyclic mode  */
-        { 0x524, 0xFFFF, 8, 0, CAN_FIFO0, NULL },    /*!< current sensor U3 in cyclic mode  */
-        { 0x525, 0xFFFF, 8, 0, CAN_FIFO0, NULL },    /*!< current sensor T in cyclic mode  */
-        { 0x526, 0xFFFF, 8, 0, CAN_FIFO0, NULL },    /*!< current sensor Power in cyclic mode  */
-        { 0x527, 0xFFFF, 8, 0, CAN_FIFO0, NULL },    /*!< current sensor C-C in cyclic mode  */
-        { 0x528, 0xFFFF, 8, 0, CAN_FIFO0, NULL },    /*!< current sensor E-C in cyclic mode  */
-#endif
-        { 0x100, 0xFFFF, 8, 0, CAN_FIFO0, NULL },    /*!< debug message      */
-        { 0x777, 0xFFFF, 8, 0, CAN_FIFO0, NULL },    /*!< request SW version */
+#ifdef CURRENT_SENSOR_ISABELLENHUETTE_TRIGGERED
+        { 0x35C, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },   /*!< current sensor I   */
+        { 0x35D, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },   /*!< current sensor U1  */
+        { 0x35E, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },   /*!< current sensor U2  */
+        { 0x35F, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },   /*!< current sensor U3  */
+        { 0x525, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },    /*!< current sensor T in cyclic mode  */
+        { 0x526, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },    /*!< current sensor Power in cyclic mode  */
+        { 0x527, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },    /*!< current sensor C-C in cyclic mode  */
+        { 0x528, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },    /*!< current sensor E-C in cyclic mode  */
+#else /* CURRENT_SENSOR_ISABELLENHUETTE_CYCLIC */
+        { 0x521, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },    /*!< current sensor I in cyclic mode   */
+        { 0x522, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },    /*!< current sensor U1 in cyclic mode  */
+        { 0x523, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },    /*!< current sensor U2 in cyclic mode  */
+        { 0x524, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },    /*!< current sensor U3 in cyclic mode  */
+        { 0x525, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },    /*!< current sensor T in cyclic mode  */
+        { 0x526, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },    /*!< current sensor Power in cyclic mode  */
+        { 0x527, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },    /*!< current sensor C-C in cyclic mode  */
+        { 0x528, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },    /*!< current sensor E-C in cyclic mode  */
+#endif /* CURRENT_SENSOR_ISABELLENHUETTE_TRIGGERED */
+        { 0x100, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },    /*!< debug message      */
+        { 0x777, 0xFFFF, 8, 0, CAN_FILTER_FIFO0, NULL },    /*!< request SW version */
 };
 
 

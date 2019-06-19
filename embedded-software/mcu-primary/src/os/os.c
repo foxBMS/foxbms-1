@@ -54,6 +54,7 @@
 #include "os.h"
 #include "enginetask.h"
 #include "appltask.h"
+#include "cpu_cfg.h"
 
 /*================== Macros and Definitions ===============================*/
 
@@ -62,6 +63,31 @@
 volatile OS_BOOT_STATE_e os_boot;
 volatile OS_TIMER_s os_timer;
 uint8_t eng_init = FALSE;
+
+/**
+ * @brief Buffer for the Idle Task's structure
+ */
+static StaticTask_t xIdleTaskTCBBuffer;
+
+/**
+ * @brief stack size of the idle task
+ */
+#define IDLE_TASK_SIZE  configMINIMAL_STACK_SIZE
+
+/**
+ * @brief Stack for the Idle task
+ */
+static StackType_t xIdleStack[IDLE_TASK_SIZE];
+
+/**
+ * @brief Buffer for the Timer Task's structure
+ */
+static StaticTask_t xTimerTaskTCBBuffer;
+
+/**
+ * @brief Stack for the Timer Task
+ */
+static StackType_t xTimerStack[configTIMER_TASK_STACK_DEPTH];
 
 /**
  * Scheduler "zero" time for task phase control
@@ -102,8 +128,25 @@ void OS_TaskInit(void) {
     APPL_CreateTask();
 }
 
+void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize) {
+  *ppxIdleTaskTCBBuffer = &xIdleTaskTCBBuffer;
+  *ppxIdleTaskStackBuffer = &xIdleStack[0];
+  *pulIdleTaskStackSize = IDLE_TASK_SIZE;
+}
+
+void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize) {
+  *ppxTimerTaskTCBBuffer = &xTimerTaskTCBBuffer;
+  *ppxTimerTaskStackBuffer = &xTimerStack[0];
+  *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
+}
+
 void vApplicationIdleHook(void) {
     ENG_IdleTask();
+}
+
+void vApplicationStackOverflowHook(TaskHandle_t xTask, signed char *pcTaskName) {
+    /* TODO add a better handler */
+    DIAG_configASSERT();
 }
 
 
@@ -217,3 +260,44 @@ void OS_SysTickHandler(void) {
     xPortSysTickHandler();
 #endif  /* INCLUDE_xTaskGetSchedulerState */
 }
+
+#if BUILD_MODULE_ENABLE_RUNTIMESTATS == 1
+/*
+ * Function to provide a way of initializing the runtime timer to the OS
+*/
+
+void OS_ConfigureTimerForRuntimeStats(void) {
+    TIM_HandleTypeDef htim5;
+    htim5.Instance = TIM5;
+    htim5.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+    htim5.Init.CounterMode = TIM_COUNTERMODE_UP;
+    htim5.Init.RepetitionCounter = 0;
+    htim5.Init.Period = 0xFFFFFFFF;
+    uint16_t prescaler = 0;
+
+    /* calculate timer peripheral clock */
+    uint32_t timPeriphClock = 2 * HAL_RCC_GetPCLK1Freq();  /* timer peripheral clock frequency is 2 * APB1 clock frequency */
+
+    /* calculate prescaler */
+    /* calculating value, so that the timer clock frequency equals 0.2 MHz */
+    /* prescaler = APB2 timer clock / 0.2MHz */
+    /* -> one counter value = 5us */
+    prescaler =  (uint16_t)(timPeriphClock / 100000);
+
+    /* set prescaler */
+    htim5.Init.Prescaler = prescaler;
+
+    __TIM5_CLK_ENABLE();
+
+    HAL_TIM_Base_Init(&htim5);
+    HAL_TIM_Base_Start(&htim5);
+}
+
+/*
+ * Function to provide the runtime timer value to the OS
+*/
+
+uint32_t OS_GetRuntimeCounterValue(void) {
+    return (uint32_t)(READ_REG(TIM5->CNT));
+}
+#endif

@@ -160,6 +160,7 @@
  * 2500
 */
 #define BC_VOLT_NOMINAL     2500
+
 /**
  * @ingroup CONFIG_BATTERYCELL
  * Minimum cell voltage limit.
@@ -176,6 +177,21 @@
 #define BC_VOLTMIN_MSL      1700
 #define BC_VOLTMIN_RSL      1750
 #define BC_VOLTMIN_MOL      1780
+
+/**
+ * @ingroup CONFIG_BATTERYCELL
+ * Deep-discharge cell voltage limit.
+ * If this voltage limit is violated, the cell is faulty. The BMS won't allow
+ * a closing of the contactors until this cell is replaced. a replacement of
+ * the cell is confirmed by sending the respective CAN debug message
+ * \par Type:
+ * int
+ * \par Unit:
+ * mV
+ * \par Default:
+ * BC_VOLTMIN_MSL
+*/
+#define BC_VOLT_DEEP_DISCHARGE          BC_VOLTMIN_MSL
 
 /**
  * @ingroup CONFIG_BATTERYCELL
@@ -219,6 +235,11 @@
  * @group
  */
 #define BC_CAPACITY 3500
+
+#if BC_VOLTMIN_MSL < BC_VOLT_DEEP_DISCHARGE
+#error "Configuration error! - Maximum safety limit for under voltage can't be lower than deep-discharge limit"
+#endif
+
 #endif
 
 #endif /* BATTERYCELL_CFG_H_ */

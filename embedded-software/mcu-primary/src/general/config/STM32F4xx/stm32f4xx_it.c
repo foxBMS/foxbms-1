@@ -3,7 +3,7 @@
  * @date    2016
  * @ingroup GENERAL_CONF
  * @brief HAL IT Module, definition of IRQ handlers for hardware units,
- *        based on project examples Templates\Src\stm32f4xx_it.c    
+ *        based on project examples Templates\Src\stm32f4xx_it.c
  *
  */
 
@@ -14,7 +14,7 @@
   * @version V1.0.3
   * @date    06-May-2016
   * @brief   Main Interrupt Service Routines.
-  *          This file provides template for all exceptions handler and 
+  *          This file provides template for all exceptions handler and
   *          peripherals interrupt service routine.
   ******************************************************************************
   * @attention
@@ -69,7 +69,7 @@
 /*================== Function Implementations =============================*/
 
 /******************************************************************************/
-/*            Cortex-M4 Processor Interruption and Exception Handlers         */ 
+/*            Cortex-M4 Processor Interruption and Exception Handlers         */
 /******************************************************************************/
 
 /**
@@ -122,7 +122,7 @@ void HardFault_Handler(void)
         caller_addr_at_stack = sp_register + 0x18;
 
         diag_fc.Val1 = *(uint32_t*)caller_addr_at_stack;  /* report instruction address where division has occured */
-        DIAG_Handler(DIAG_CH_DIV_BY_ZERO_FAILURE,DIAG_EVENT_NOK,0, NULL);
+        DIAG_Handler(DIAG_CH_DIV_BY_ZERO_FAILURE,DIAG_EVENT_NOK,0);
 
     }
 
@@ -131,7 +131,7 @@ void HardFault_Handler(void)
         caller_addr_at_stack = sp_register+0x18;
 
         diag_fc.Val1 = *(uint32_t*)caller_addr_at_stack;  /*  report instruction address with undefined instruction */
-        DIAG_Handler(DIAG_CH_UNDEF_INSTRUCTION_FAILURE,DIAG_EVENT_NOK,0, NULL);
+        DIAG_Handler(DIAG_CH_UNDEF_INSTRUCTION_FAILURE,DIAG_EVENT_NOK,0);
     }
 
 
@@ -147,7 +147,7 @@ void HardFault_Handler(void)
         {
             diag_fc.Val2 = faultaddress;                    /* report bus address being accessed */
         }
-        DIAG_Handler(DIAG_CH_DATA_BUS_FAILURE,DIAG_EVENT_NOK,0, NULL);
+        DIAG_Handler(DIAG_CH_DATA_BUS_FAILURE,DIAG_EVENT_NOK,0);
 
     }
 
@@ -163,13 +163,13 @@ void HardFault_Handler(void)
         {
             diag_fc.Val2 = faultaddress;                        /* report bus address being accessed */
         }
-        DIAG_Handler(DIAG_CH_INSTRUCTION_BUS_FAILURE,DIAG_EVENT_NOK, 0, NULL);
+        DIAG_Handler(DIAG_CH_INSTRUCTION_BUS_FAILURE,DIAG_EVENT_NOK, 0);
 
     }
 
     else
     {
-        DIAG_Handler(DIAG_CH_HARDFAULT_NOTHANDLED, DIAG_EVENT_NOK, 0, NULL);
+        DIAG_Handler(DIAG_CH_HARDFAULT_NOTHANDLED, DIAG_EVENT_NOK, 0);
     }
 #endif
 
@@ -223,7 +223,7 @@ void UsageFault_Handler(void)
 /* this function is implemented by FreeRTOS in port.c: macro vPortSVCHandler */
 /**
   * @brief  This function handles SVCall exception.
-  * 
+  *
   * @retval void
   */
 void SVC_Handler(void)
@@ -243,7 +243,7 @@ void DebugMon_Handler(void)
 /* this function is implemented by FreeRTOS in port.c: macro xPortPendSVHandler */
 /**
   * @brief  This function handles PendSVC exception.
-  * 
+  *
   * @retval void
   */
 void PendSV_Handler(void)
@@ -280,42 +280,42 @@ void SysTick_Handler(void) {
 
 void CAN1_TX_IRQHandler(void)
 {
-    CAN_TX_IRQHandler(&hcan1);
+    HAL_CAN_IRQHandler(&hcan1);
 }
 
 void CAN1_RX0_IRQHandler(void)
 {
-    CAN_RX_IRQHandler(CAN_NODE1, &hcan1);
+    HAL_CAN_IRQHandler(&hcan1);
 }
 
 void CAN1_RX1_IRQHandler(void)
 {
-    CAN_RX_IRQHandler(CAN_NODE1, &hcan1);
+    HAL_CAN_IRQHandler(&hcan1);
 }
 
 void CAN1_SCE_IRQHandler(void)
 {
-    CAN_Error_IRQHandler(CAN_NODE1, &hcan1);
+    HAL_CAN_IRQHandler(&hcan1);
 }
 
 void CAN0_TX_IRQHandler(void)
 {
-    CAN_TX_IRQHandler(&hcan0);
+    HAL_CAN_IRQHandler(&hcan0);
 }
 
 void CAN0_RX0_IRQHandler(void)
 {
-    CAN_RX_IRQHandler(CAN_NODE0, &hcan0);
+    HAL_CAN_IRQHandler(&hcan0);
 }
 
 void CAN0_RX1_IRQHandler(void)
 {
-    CAN_RX_IRQHandler(CAN_NODE0, &hcan0);
+    HAL_CAN_IRQHandler(&hcan0);
 }
 
 void CAN0_SCE_IRQHandler(void)
 {
-    CAN_Error_IRQHandler(CAN_NODE0, &hcan0);
+    HAL_CAN_IRQHandler(&hcan0);
 }
 
 #if 1   /* FIXME nötig? */
@@ -406,7 +406,7 @@ void DMA2_Stream3_IRQHandler(void)
 void USART3_IRQHandler(void)
 {
 #if BUILD_MODULE_ENABLE_UART
-    HAL_UART_CustomIRQHandler(&uart_cfg[0]);
+    HAL_UART_IRQHandler(&uart_cfg[0]);
 
 #endif
 }

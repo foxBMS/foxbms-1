@@ -90,7 +90,7 @@ void TIM_PWM_OUT_Init(void) {
     /* calculating value, so that the timer clock equals TIM4_CL0CK_FREQUENCY */
     /* prescaler = APB1 timer clock / TIM4_CLOCK_FREQUENCY */
     /* -> one counter value = TIM4_CLOCK_TICK_DURATION_IN_S */
-    prescaler =  (uint16_t)((timPeriphClock / TIM4_CLOCK_FREQUENCY) + 0.5);
+    prescaler =  (uint16_t)((timPeriphClock / TIM4_CLOCK_FREQUENCY) + 0.5f);
 
     /* set prescaler */
     htim4.Init.Prescaler = prescaler - 1;
@@ -103,7 +103,7 @@ void TIM_PWM_OUT_Init(void) {
     htim4.Init.Period = (uint32_t)period - 1;
 
     /* calculate dutycycle */
-    dutycycle = dutycycle / 100.0;  /* convert from percent to numerical value */
+    dutycycle = dutycycle / 100.0f;  /* convert from percent to numerical value */
     dutycycle = dutycycle * period;
 
     /* enable timer clock */

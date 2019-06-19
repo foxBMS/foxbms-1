@@ -1,6 +1,10 @@
-.. include:: ../../../macros.rst
-
 :orphan:
+
+.. _ALGORITHM_SRC:
+
+========================
+Algorithm Module Sources
+========================
 
 .. contents:: :local:
 

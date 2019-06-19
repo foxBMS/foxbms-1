@@ -112,16 +112,16 @@ EEPR_BOARD_INFO_s eepr_board_info;
 EEPR_CH_CFG_s eepr_ch_cfg[] = {
 /* Hardware Protected Channels (last quarter of address area)  */
         /*  EEPROM CHANNELS: HW/SW-SYSTEM */
-        {0x3000, sizeof(EEPR_HEADER_s),           EEPR_CH_HEADER,          0x3000 + sizeof(EEPR_HEADER_s) - 4,           EEPR_SW_WRITE_UNPROTECTED, (uint8_t*)&eepr_header},
+        {0x3000, sizeof(EEPR_HEADER_s),             EEPR_CH_HEADER,             0x3000 + sizeof(EEPR_HEADER_s) - 4,             EEPR_SW_WRITE_UNPROTECTED,  (uint8_t*)&eepr_header,                 EEPR_NO_ERROR,  EEPR_ACCESS_UNPROTECTED},
 /*       {0x3020, ...}, */
-        {0x3F00, sizeof(EEPR_BOARD_INFO_s),       EEPR_CH_BOARD_INFO,      0x3F80 + sizeof(EEPR_BOARD_INFO_s) - 4,       EEPR_SW_WRITE_UNPROTECTED, (uint8_t*)&eepr_board_info},
-        {0x3F80, 0x80,                            EEPR_CH_HARDWARE_INFO,      0x3F80 + 0x80 - 4,                         EEPR_SW_WRITE_PROTECTED,   (NULL_PTR)},
+        {0x3F00, sizeof(EEPR_BOARD_INFO_s),         EEPR_CH_BOARD_INFO,         0x3F80 + sizeof(EEPR_BOARD_INFO_s) - 4,         EEPR_SW_WRITE_UNPROTECTED,  (uint8_t*)&eepr_board_info,             EEPR_NO_ERROR,  EEPR_ACCESS_UNPROTECTED},
+        {0x3F80, 0x80,                              EEPR_CH_HARDWARE_INFO,      0x3F80 + 0x80 - 4,                              EEPR_SW_WRITE_PROTECTED,    (NULL_PTR),                             EEPR_NO_ERROR,  EEPR_ACCESS_UNPROTECTED},
 /* Channels placed in Hardware Protection disabled address area  */
         /*  EEPROM CHANNELS: APPLICATION */
 /*       {0x0000, 00x54,    reserved to maintain previous formatted data,   0x0080 + sizeof(BKPSRAM_CH_NVSOC_s) - 4,      EEPR_SW_WRITE_UNPROTECTED, (uint8_t*)&bkpsram_nvsoc }, */
-        {0x0080, sizeof(NVRAM_CH_OP_HOURS_s),   EEPR_CH_OPERATING_HOURS, 0x0080 + sizeof(NVRAM_CH_OP_HOURS_s) - 4,   EEPR_SW_WRITE_UNPROTECTED, (uint8_t*)&bkpsram_operating_hours},
-        {0x0098, sizeof(NVRAM_CH_NVSOC_s),      EEPR_CH_NVSOC,           0x0098 + sizeof(NVRAM_CH_NVSOC_s) - 4,      EEPR_SW_WRITE_UNPROTECTED, (uint8_t*)&bkpsram_nvsoc },
-        {0x00C0, sizeof(NVRRAM_CH_CONT_COUNT_s), EEPR_CH_CONTACTOR,       0x00C0 + sizeof(NVRRAM_CH_CONT_COUNT_s) - 4, EEPR_SW_WRITE_UNPROTECTED, (uint8_t*)&bkpsram_contactors_count},
+        {0x0080, sizeof(NVRAM_CH_OP_HOURS_s),       EEPR_CH_OPERATING_HOURS,    0x0080 + sizeof(NVRAM_CH_OP_HOURS_s) - 4,       EEPR_SW_WRITE_UNPROTECTED,  (uint8_t*)&bkpsram_operating_hours,     EEPR_NO_ERROR,  EEPR_ACCESS_UNPROTECTED},
+        {0x0098, sizeof(NVRAM_CH_NVSOC_s),          EEPR_CH_NVSOC,              0x0098 + sizeof(NVRAM_CH_NVSOC_s) - 4,          EEPR_SW_WRITE_UNPROTECTED,  (uint8_t*)&bkpsram_nvsoc,               EEPR_NO_ERROR,  EEPR_ACCESS_UNPROTECTED},
+        {0x00C0, sizeof(NVRRAM_CH_CONT_COUNT_s),    EEPR_CH_CONTACTOR,          0x00C0 + sizeof(NVRRAM_CH_CONT_COUNT_s) - 4,    EEPR_SW_WRITE_UNPROTECTED,  (uint8_t*)&bkpsram_contactors_count,    EEPR_NO_ERROR,  EEPR_ACCESS_UNPROTECTED},
 /*         {0x0110, sizeof(EEPR_CALIB_STATISTICS_s), EEPR_CH_STATISTICS,      0x0100 + sizeof(EEPR_CALIB_STATISTICS_s) - 4, EEPR_SW_WRITE_UNPROTECTED, (NULL_PTR)}, */
         /*  FREE EEPRROMS CHANNELS (for future use) */
 /*         {0x0130, 0x70,                            EEPR_CH_USER_DATA,       0x0120 + 0x70 - 4,                            EEPR_SW_WRITE_UNPROTECTED, (NULL_PTR)}, */
@@ -213,7 +213,7 @@ EEPR_RETURNTYPE_e SPI_SendData(uint8_t* data, uint16_t length, uint16_t receiveo
     EEPR_RETURNTYPE_e retVal = EEPR_ERROR;
     HAL_StatusTypeDef eepr_spi_halstate = HAL_ERROR;
 
-    IO_WritePin(IO_PIN_MCU_0_DATA_STORAGE_EEPROM_SPI_NSS, IO_PIN_RESET);  /* FIXME use chip select/unselect functions fromSPI module! */
+    IO_WritePin(IO_PIN_DATA_STORAGE_EEPROM_SPI_NSS, IO_PIN_RESET);  /* FIXME use chip select/unselect functions fromSPI module! */
 
     eepr_spi_halstate = HAL_SPI_TransmitReceive_IT(&spi_devices[1], data, eepr_spi_rxbuf, length);
     eepr_spi_rxoffset = receiveoffset;

@@ -45,7 +45,7 @@ def build(bld):
     """Directories listed in dir_build_list are built, when the waf function
     "build" is called.
     """
-    if bld.env.target == 'bare-metal':
+    if bld.variant.endswith('_bare'):
         dir_build_list = ['driver']
     else:
         dir_build_list = ['driver', 'module', 'engine', 'util']

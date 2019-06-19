@@ -128,7 +128,7 @@ void IR155_Init(uint8_t cycleTime) {
     measCycleTime = cycleTime;
 
     /* Set diagnosis message that measurement is not trustworthy */
-    DIAG_Handler(DIAG_CH_ISOMETER_MEAS_INVALID, DIAG_EVENT_NOK, 0, NULL);
+    DIAG_Handler(DIAG_CH_ISOMETER_MEAS_INVALID, DIAG_EVENT_NOK, 0);
 }
 
 
@@ -146,7 +146,7 @@ void IR155_DeInit(void) {
     sig_ir155_dutycycle.PeriodTime = 0;
 
     /* Set diagnosis message that measurement is not trustworthy */
-    DIAG_Handler(DIAG_CH_ISOMETER_MEAS_INVALID, DIAG_EVENT_NOK, 0, NULL);
+    DIAG_Handler(DIAG_CH_ISOMETER_MEAS_INVALID, DIAG_EVENT_NOK, 0);
 }
 
 /**
@@ -217,13 +217,13 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
         ir155_DC.sigICU.ActiveTime = sig_ir155_dutycycle.ActiveTime;            /* in units of  (1/75) us */
         ir155_DC.sigICU.PeriodTime = (sig_ir155_dutycycle.PeriodTime+500)/1000; /* in units of  (1/75) ms */
 
-        DIAG_Handler(DIAG_CH_ISOMETER_TIM_ERROR, DIAG_EVENT_OK, DIAG_TIMER_NO_VALUE, NULL);
+        DIAG_Handler(DIAG_CH_ISOMETER_TIM_ERROR, DIAG_EVENT_OK, DIAG_TIMER_NO_VALUE);
     } else {
         /* Error in call of ISOIR_GET_DUTYCYCLE or invalid values measured */
         if (retValTim == DIAG_TIM_OVERFLOW) {
-            retDiag = DIAG_Handler(DIAG_CH_ISOMETER_TIM_ERROR, DIAG_EVENT_NOK, DIAG_TIMER_OVERFLOW, NULL);
+            retDiag = DIAG_Handler(DIAG_CH_ISOMETER_TIM_ERROR, DIAG_EVENT_NOK, DIAG_TIMER_OVERFLOW);
         } else {
-            retDiag = DIAG_Handler(DIAG_CH_ISOMETER_TIM_ERROR, DIAG_EVENT_NOK, DIAG_TIMER_NO_VALUE, NULL);
+            retDiag = DIAG_Handler(DIAG_CH_ISOMETER_TIM_ERROR, DIAG_EVENT_NOK, DIAG_TIMER_NO_VALUE);
         }
         ir155_DC.sigICU.ActiveTime = 0;
         ir155_DC.sigICU.PeriodTime = 0;
@@ -255,7 +255,7 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
         else
             ir155_DC.dutycycle = 0;     /* min in units of % */
 
-        retDiag = DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_NOK, DIAG_ERR_MEAS_CORRUPT, NULL);
+        retDiag = DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_NOK, DIAG_ERR_MEAS_CORRUPT);
 
         if (retDiag != 0)
             retVal = E_NOT_OK;
@@ -335,7 +335,7 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
             /* insulation unknown, sensor working bad */
             ir155_DC.state = IR155_GROUND_ERROR;
 
-            if (DIAG_HANDLER_RETURN_OK != DIAG_Handler(DIAG_CH_ISOMETER_GROUNDERROR, DIAG_EVENT_NOK, 0, NULL)) {
+            if (DIAG_HANDLER_RETURN_OK != DIAG_Handler(DIAG_CH_ISOMETER_GROUNDERROR, DIAG_EVENT_NOK, 0)) {
                 /* Set grounderror flag */
                 isobender_grounderror = 1;
             }
@@ -358,15 +358,15 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
             ir155_DC.state = IR155_STATE_UNDEFINED;
         }
         ir155_DC.resistance = 0;          /* resistance unknown */
-        retDiag = DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_NOK, DIAG_ERR_DEVICE_ERROR, NULL);
+        retDiag = DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_NOK, DIAG_ERR_DEVICE_ERROR);
     } else if (ir155_DC.mode == IR155_SHORT_KL15) {
         ir155_DC.state = IR155_SIGNALSHORT_KL15;
         ir155_DC.resistance = 0;
-        retDiag = DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_NOK, DIAG_ERR_SHORT_KL_15, NULL);
+        retDiag = DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_NOK, DIAG_ERR_SHORT_KL_15);
     } else if (ir155_DC.mode == IR155_SHORT_KL31) {
         ir155_DC.state = IR155_SIGNALSHORT_KL31;
         ir155_DC.resistance = 0;
-        retDiag = DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_NOK, DIAG_ERR_SHORT_KL_31, NULL);
+        retDiag = DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_NOK, DIAG_ERR_SHORT_KL_31);
     } else if (ir155_DC.mode == IR155_UNDERVOLATGE_MODE ||
              ir155_DC.mode == IR155_UNDEFINED_FRQMAX  ||
              ir155_DC.mode == IR155_UNKNOWN           ||
@@ -375,9 +375,9 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
 ) {
         /* insulation unknown, sensor working unknown, DC measurement corrupt */
         if (ir155_DC.mode == IR155_UNDERVOLATGE_MODE) {
-            retDiag = DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_NOK, DIAG_ERR_UNDERVOLTAGE, NULL);
+            retDiag = DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_NOK, DIAG_ERR_UNDERVOLTAGE);
         } else {
-            retDiag = DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_NOK, DIAG_ERR_UNDEFINED, NULL);
+            retDiag = DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_NOK, DIAG_ERR_UNDEFINED);
         }
         ir155_DC.state = IR155_STATE_UNDEFINED;
         ir155_DC.resistance = 0;
@@ -400,8 +400,8 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
 
         if (hysteresisCounter == 0) {
             /* If hysteresis is over, reset diag flag and reset grounderror flag */
-            DIAG_Handler(DIAG_CH_ISOMETER_GROUNDERROR, DIAG_EVENT_OK, 0, NULL);
-            DIAG_Handler(DIAG_CH_ISOMETER_MEAS_INVALID, DIAG_EVENT_OK, 0, NULL);
+            DIAG_Handler(DIAG_CH_ISOMETER_GROUNDERROR, DIAG_EVENT_OK, 0);
+            DIAG_Handler(DIAG_CH_ISOMETER_MEAS_INVALID, DIAG_EVENT_OK, 0);
 
             isobender_grounderror = 0;
         }
@@ -416,7 +416,7 @@ STD_RETURN_TYPE_e IR155_MeasureResistance(IR155_STATE_e* state, uint32_t* resist
     /* Reduce diag-counter if no error occurred */
     if ((retDiag == DIAG_HANDLER_RETURN_OK) ||
             ((retDiag != DIAG_HANDLER_RETURN_OK) && (ir155_DC .mode == IR155_GROUNDERROR_MODE))) {
-        DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_OK, 0, 0);
+        DIAG_Handler(DIAG_CH_ISOMETER_ERROR, DIAG_EVENT_OK, 0);
     }
 
 #ifdef IR155_HISTORYENABLE

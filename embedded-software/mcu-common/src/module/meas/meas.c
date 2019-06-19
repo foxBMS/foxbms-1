@@ -71,9 +71,19 @@ void MEAS_Ctrl(void) {
 extern uint8_t MEAS_Request_IO_Write(void) {
     STD_RETURN_TYPE_e retval = E_NOT_OK;
 
+#if LTC_PORTEXPANDER_VERSION == 1
+
+    if (LTC_SetStateRequest(LTC_STATE_USER_IO_WRITE_REQUEST_TI) == LTC_OK) {
+        retval = E_OK;
+    }
+
+#else
+
     if (LTC_SetStateRequest(LTC_STATE_USER_IO_WRITE_REQUEST) == LTC_OK) {
         retval = E_OK;
     }
+
+#endif
 
     return (retval);
 }
@@ -81,9 +91,19 @@ extern uint8_t MEAS_Request_IO_Write(void) {
 extern uint8_t MEAS_Request_IO_Read(void) {
     STD_RETURN_TYPE_e retval = E_NOT_OK;
 
+#if LTC_PORTEXPANDER_VERSION == 1
+
+    if (LTC_SetStateRequest(LTC_STATE_USER_IO_READ_REQUEST_TI) == LTC_OK) {
+        retval = E_OK;
+    }
+
+#else
+
     if (LTC_SetStateRequest(LTC_STATE_USER_IO_READ_REQUEST) == LTC_OK) {
         retval = E_OK;
     }
+
+#endif
 
     return (retval);
 }

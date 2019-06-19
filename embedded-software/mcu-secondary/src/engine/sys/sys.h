@@ -57,7 +57,6 @@
 /*================== Includes =============================================*/
 #include "sys_cfg.h"
 
-
 /*================== Macros and Definitions ===============================*/
 
 /**
@@ -72,19 +71,14 @@ typedef enum {
 
 
 typedef enum {
-    SYS_MODE_STARTUP_EVENT    = 0,     /*!< system startup                     */
-/*    SYS_MODE_EVENT_INIT      = 1,  */  /*!< todo                               */
-    SYS_MODE_CYCLIC_EVENT     = 2,     /*!< for cyclic events                  */
-    SYS_MODE_TRIGGERED_EVENT  = 3,     /*!< for triggered events               */
-    SYS_MODE_ABNORMAL_EVENT   = 4,     /*!< for abnormal (error etc.) events   */
-    SYS_MODE_EVENT_RESERVED   = 0xFF,  /*!< do not use                         */
+  SYS_MODE_STARTUP_EVENT    = 0,    /*!< system startup                     */
+/* SYS_MODE_EVENT_INIT      = 1,    !< todo                               */
+  SYS_MODE_CYCLIC_EVENT     = 2,    /*!< for cyclic events                  */
+  SYS_MODE_TRIGGERED_EVENT  = 3,    /*!< for triggered events               */
+  SYS_MODE_ABNORMAL_EVENT   = 4,    /*!< for abnormal (error etc.) events   */
+  SYS_MODE_EVENT_RESERVED   = 0xFF, /*!< do not use                         */
 } SYS_TRIG_EVENT_e;
 
-/*================== Function Implementations =============================*/
-
-/*================== Includes =============================================*/
-
-/*================== Macros and Definitions ===============================*/
 
 /*================== Constant and Variable Definitions ====================*/
 
@@ -96,17 +90,15 @@ typedef enum {
     SYS_STATEMACH_UNINITIALIZED                             = 0,    /*!<    */
     SYS_STATEMACH_INITIALIZATION                            = 1,    /*!<    */
     SYS_STATEMACH_INITIALIZED                               = 2,    /*!<    */
-    SYS_STATEMACH_IDLE                                      = 3,    /*!<    */
     SYS_STATEMACH_INITIALIZE_INTERLOCK                      = 4,    /*!<    */
     SYS_STATEMACH_INITIALIZE_CONTACTORS                     = 5,    /*!<    */
     SYS_STATEMACH_INITIALIZE_BALANCING                      = 6,    /*!<    */
     SYS_STATEMACH_INITIALIZE_BMS                            = 7,    /*!<    */
     SYS_STATEMACH_RUNNING                                   = 8,    /*!<    */
-    SYS_STATEMACH_FIRST_MEASUREMENT_CYCLE                    = 9,   /*!<    */
+    SYS_STATEMACH_FIRST_MEASUREMENT_CYCLE                   = 9,    /*!<    */
     SYS_STATEMACH_INITIALIZE_MISC                           = 10,   /*!<    */
     SYS_STATEMACH_CHECK_CURRENT_SENSOR_PRESENCE             = 11,   /*!<    */
-    SYS_STATEMACH_UNDEFINED                                 = 20,   /*!< undefined state    */
-    SYS_STATEMACH_RESERVED1                                 = 0x80, /*!< reserved state     */
+    SYS_STATEMACH_INITIALIZE_ISOGUARD                       = 12,   /*!<    */
     SYS_STATEMACH_ERROR                                     = 0xF0, /*!< Error-State:       */
 } SYS_STATEMACH_e;
 
@@ -138,7 +130,7 @@ typedef enum {
 typedef enum {
     SYS_STATE_INIT_REQUEST                = SYS_STATEMACH_INITIALIZATION,           /*!<    */
     SYS_STATE_ERROR_REQUEST               = SYS_STATEMACH_ERROR,                    /*!<    */
-    SYS_STATE_NO_REQUEST                  = SYS_STATEMACH_RESERVED1,                /*!<    */
+    SYS_STATE_NO_REQUEST,                                                           /*!<    */
 } SYS_STATE_REQUEST_e;
 
 

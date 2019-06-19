@@ -79,20 +79,21 @@ DATA_BLOCK_STATEREQUEST_s bal_request;
  *
  */
 static BAL_STATE_s bal_state = {
-    .timer                         = 0,
-    .statereq                      = BAL_STATE_NO_REQUEST,
-    .state                         = BAL_STATEMACH_UNINITIALIZED,
-    .substate                      = BAL_ENTRY,
-    .laststate                     = BAL_STATEMACH_UNINITIALIZED,
-    .lastsubstate                  = 0,
-    .triggerentry                  = 0,
-    .ErrRequestCounter             = 0,
-    .active                        = FALSE,
-    .resting                       = TRUE,
-    .rest_timer                    = BAL_TIME_BEFORE_BALANCING_S*10,
-    .balancing_threshold           = BAL_THRESHOLD_MV + BAL_HYSTERESIS_MV,
-    .balancing_allowed             = TRUE,
-    .balancing_global_allowed      = FALSE,
+    .timer                    = 0,
+    .statereq                 = BAL_STATE_NO_REQUEST,
+    .state                    = BAL_STATEMACH_UNINITIALIZED,
+    .substate                 = BAL_ENTRY,
+    .laststate                = BAL_STATEMACH_UNINITIALIZED,
+    .lastsubstate             = 0,
+    .triggerentry             = 0,
+    .ErrRequestCounter        = 0,
+    .initFinished             = E_NOT_OK,
+    .active                   = FALSE,
+    .resting                  = TRUE,
+    .rest_timer               = BAL_TIME_BEFORE_BALANCING_S*10,
+    .balancing_threshold      = BAL_THRESHOLD_MV + BAL_HYSTERESIS_MV,
+    .balancing_allowed        = TRUE,
+    .balancing_global_allowed = FALSE,
 };
 
 
@@ -309,17 +310,14 @@ static BAL_STATE_REQUEST_e BAL_GetStateRequest(void) {
 }
 
 
-/**
- * @brief   gets the current state.
- *
- * This function is used in the functioning of the BAL state machine.
- *
- * @return  current state, taken from BAL_STATEMACH_e
- */
 BAL_STATEMACH_e BAL_GetState(void) {
     return (bal_state.state);
 }
 
+
+STD_RETURN_TYPE_e BAL_GetInitializationState(void) {
+    return (bal_state.initFinished);
+}
 
 
 /**
@@ -343,20 +341,6 @@ static BAL_STATE_REQUEST_e BAL_TransferStateRequest(void) {
 }
 
 
-/**
- * @brief   sets the current state request of the state variable bal_state.
- *
- * This function is used to make a state request to the state machine,e.g, start voltage measurement,
- * read result of voltage measurement, re-initialization
- * It calls BAL_CheckStateRequest() to check if the request is valid.
- * The state request is rejected if is not valid.
- * The result of the check is returned immediately, so that the requester can act in case
- * it made a non-valid state request.
- *
- * @param   statereq                state request to set
- *
- * @return  retVal                  current state request, taken from BAL_STATE_REQUEST_e
- */
 BAL_RETURN_TYPE_e BAL_SetStateRequest(BAL_STATE_REQUEST_e statereq) {
     BAL_RETURN_TYPE_e retVal = BAL_STATE_NO_REQUEST;
 
@@ -417,14 +401,6 @@ static BAL_RETURN_TYPE_e BAL_CheckStateRequest(BAL_STATE_REQUEST_e statereq) {
 }
 
 
-
-
-/**
- * @brief   trigger function for the BAL driver state machine.
- *
- * This function contains the sequence of events in the BAL state machine.
- * It must be called time-triggered, every 1ms.
- */
 void BAL_Trigger(void) {
     BAL_STATE_REQUEST_e statereq = BAL_STATE_NO_REQUEST;
     uint8_t finished = FALSE;
@@ -488,6 +464,7 @@ void BAL_Trigger(void) {
         /****************************INITIALIZED*************************************/
         case BAL_STATEMACH_INITIALIZED:
             BAL_SAVELASTSTATES();
+            bal_state.initFinished = E_OK;
             bal_state.timer = BAL_STATEMACH_SHORTTIME_100MS;
             bal_state.state = BAL_STATEMACH_CHECK_BALANCING;
             bal_state.substate = BAL_ENTRY;

@@ -92,13 +92,19 @@ extern void DATA_Init(void);
 
 /**
  * @brief   Stores a datablock in database
+ *
+ * Do not call this function from inside a critical section, as it is
+ * computationally complex.
  * @param   blockID (type: DATA_BLOCK_ID_TYPE_e)
  * @param   dataptrfromSender (type: void *)
  */
 extern void DB_WriteBlock(void *dataptrfromSender, DATA_BLOCK_ID_TYPE_e  blockID);
 
 /**
- * @brief   Reads a datablock in database by value
+ * @brief   Reads a datablock in database by value.
+ *
+ * Do not call this function from inside a critical section, as it is
+ * computationally complex.
  * @param   blockID (type: DATA_BLOCK_ID_TYPE_e)
  * @param   dataptrtoReceiver (type: void *)
  * @return  STD_RETURN_TYPE_e

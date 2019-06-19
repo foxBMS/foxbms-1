@@ -10,9 +10,9 @@ Checksum
 
 The |mod_chksum| is part of the ``foxBMS-Modules`` layer.
 
-This section describes the checksum feature in |foxbms|. For the
-toolchain/buildprocess of the checksum feature, see
-:ref:`software_documentation_checksum_tool`.
+This section describes the embedded part of the checksum feature in |foxbms|.
+For the buildprocess documentation on the checksum feature, see
+:ref:`SOFTWARE_DOCUMENTATION_BUILD_PROCESS`.
 
 The |mod_chksum| provides the capability to verify data integrity during
 runtime for multiple purposes (e.g., firmware validation and verification of
@@ -23,8 +23,8 @@ Module Files
 ~~~~~~~~~~~~
 
 Source:
- - ``embedded-software\mcu-common\src\module\chksum\chksum.h``
- - ``embedded-software\mcu-common\src\module\chksum\chksum.c``
+ - ``embedded-software\mcu-common\src\driver\chksum\chksum.h`` (:ref:`chksumh`)
+ - ``embedded-software\mcu-common\src\driver\chksum\chksum.c`` (:ref:`chksumc`)
 
 
 Detailed Description
@@ -37,9 +37,12 @@ implementation. The following short examples demonstrate the usage of the
 
 .. code-block:: c
 
-    uint32_t chksum = CHK_crc32((uint8_t*)0x08000000, 0x1000) -> hashes 4kB of code, starting at 0x08000000 using CRC32 algorithm
+    uint32_t chksum = CHK_crc32((uint8_t*)0x08000000, 0x1000) -> hashes 4kB of
+    code, starting at 0x08000000 using CRC32 algorithm
 
-    uint32_t chksum = CHK_modulo32addition((uint8_t*)0x08000000, 0x1000) -> hashes 4kB of code, starting at 0x08000000 using Modulo32BitAddition algorithm
+    uint32_t chksum = CHK_modulo32addition((uint8_t*)0x08000000, 0x1000) ->
+    hashes 4kB of code, starting at 0x08000000 using Modulo32BitAddition
+    algorithm
 
 
 During the startup, the ``CHK_crc32`` function is used to verify the integrity
@@ -71,9 +74,3 @@ Checksum Default Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The default value enables checksum verification at startup.
-
-
-Related Modules
-~~~~~~~~~~~~~~~
-The checksum tool is related on the ``Checksum Tool`` configuration (see
-:ref:`software_documentation_checksum_tool`).

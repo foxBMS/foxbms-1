@@ -48,11 +48,13 @@ def build(bld):
         os.path.join('myfoxbmsalgorithms.c')])
 
     includes = os.path.join(bld.bldnode.abspath()) + ' '
-    includes += ' '.join(['.'])
+    includes += ' '.join([bld.path.get_src().abspath()])
 
-    bld.stlib(target=os.path.join(bld.env.BUILD_DIR_LIBS, 'my-foxbms-library'),
+    bld.stlib(target='my-foxbms-library',
               source=srcs,
-              includes=includes)
+              includes=includes,
+              cflags=bld.env.CFLAGS_foxbms,
+              features=['size', 'copy_libs', 'check_includes'])
     bld(features='subst',
         source=header_files_src,
         target=header_files_tar,

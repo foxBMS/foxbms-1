@@ -12,8 +12,8 @@ Module Files
 ~~~~~~~~~~~~
 
 Driver:
- - ``embedded-software\mcu-common\src\util\foxmath.c``
- - ``embedded-software\mcu-common\src\util\foxmath.h``
+ - ``embedded-software\mcu-common\src\util\foxmath.c`` (:ref:`foxmathc`)
+ - ``embedded-software\mcu-common\src\util\foxmath.h`` (:ref:`foxmathh`)
 
 Structure
 ~~~~~~~~~

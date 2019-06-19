@@ -93,17 +93,21 @@ typedef enum {
 
 typedef struct CAN_ERROR {
     CAN_ErrorTypeDef_e canError;
-    uint16_t canErrorCounter[10 - 1];  /* One slot for every error from HAL_CAN_ErrorTypeDef; */
+    uint16_t canErrorCounter[23 - 1];  /* One slot for every error from CAN_Error_Code; */
                                        /* No space for NoError */
 } CAN_ERROR_s;
 
 typedef struct CAN_RX_BUFFERELEMENT {
-    uint32_t ID;
-    uint8_t DLC;
-    uint8_t RTR;
-    uint8_t Data[8];
+    CAN_RxHeaderTypeDef msg;
+    uint8_t data[8];
     uint8_t newMsg;
 } CAN_RX_BUFFERELEMENT_s;
+
+typedef struct CAN_TX_BUFFERELEMENT {
+    CAN_TxHeaderTypeDef msg;
+    uint8_t data[8];
+    uint8_t newMsg;
+} CAN_TX_BUFFERELEMENT_s;
 
 typedef struct CAN_RX_BUFFER {
     uint8_t ptrRead;
@@ -111,11 +115,6 @@ typedef struct CAN_RX_BUFFER {
     uint8_t length;
     CAN_RX_BUFFERELEMENT_s* buffer;
 } CAN_RX_BUFFER_s;
-
-typedef struct CAN_TX_BUFFERELEMENT {
-    CanTxMsgTypeDef msg;
-    uint8_t newMsg;
-} CAN_TX_BUFFERELEMENT_s;
 
 typedef struct CAN_TX_BUFFER {
     uint8_t ptrRead;

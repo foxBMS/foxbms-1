@@ -177,10 +177,10 @@ void ISO_MeasureInsulation(void) {
     if (ohksState == IO_PIN_RESET ||
             (ISO_measData.valid == 0 && ISO_measData.state == 1)) {
         /* Error if PIN set or invalid insulation detected */
-        DIAG_Handler(DIAG_CH_INSULATION_ERROR, DIAG_EVENT_NOK, 0, 0);
+        DIAG_Handler(DIAG_CH_INSULATION_ERROR, DIAG_EVENT_NOK, 0);
     } else if (ISO_measData.valid == 0 && ISO_measData.state == 0) {
         /* Measurement okay */
-        DIAG_Handler(DIAG_CH_INSULATION_ERROR, DIAG_EVENT_OK, 0, 0);
+        DIAG_Handler(DIAG_CH_INSULATION_ERROR, DIAG_EVENT_OK, 0);
     } else {
         /* Do nothing, Pin == okay, but measurement invalid */
     }

@@ -1,47 +1,31 @@
-.. include:: ../../../macros.rst
-
 :orphan:
+
+.. _DIAG_SRC:
+
+========================
+Diagnosis Module Sources
+========================
 
 .. contents:: :local:
 
 ------------------------------------------------------------------------------
 
-.. _diagprimaryc:
+.. _diagc:
 
-diag.c (primary)
-----------------
+diag.c
+------
 
-.. literalinclude:: ../../../../../embedded-software/mcu-primary/src/engine/diag/diag.c
+.. literalinclude:: ../../../../../embedded-software/mcu-common/src/engine/diag/diag.c
     :language: c
 
 ------------------------------------------------------------------------------
 
-.. _diagprimaryh:
+.. _diagh:
 
-diag.h (primary)
-----------------
+diag.h
+------
 
-.. literalinclude:: ../../../../../embedded-software/mcu-primary/src/engine/diag/diag.h
-    :language: c
-
-------------------------------------------------------------------------------
-
-.. _diagsecondaryc:
-
-diag.c (secondary)
-------------------
-
-.. literalinclude:: ../../../../../embedded-software/mcu-secondary/src/engine/diag/diag.c
-    :language: c
-
-------------------------------------------------------------------------------
-
-.. _diagsecondaryh:
-
-diag.h (secondary)
-------------------
-
-.. literalinclude:: ../../../../../embedded-software/mcu-secondary/src/engine/diag/diag.h
+.. literalinclude:: ../../../../../embedded-software/mcu-common/src/engine/diag/diag.h
     :language: c
 
 ------------------------------------------------------------------------------

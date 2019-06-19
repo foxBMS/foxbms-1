@@ -81,7 +81,7 @@ The following figures from :numref:`fig. %s <condainstaller1>` to
 
         Installation directory
 
-#.  Avanced options of the installation. **Unselect**
+#.  Advanced options of the installation. **Unselect**
     ``Register Anaconda as my default Python 3.6``
 
     .. _condainstaller5:
@@ -103,7 +103,7 @@ The following figures from :numref:`fig. %s <condainstaller1>` to
 
         Completed installation step
 
-#.  The finish of the installtion process. Click ``Finish``.
+#.  The finish of the installation process. Click ``Finish``.
 
     .. _condainstaller8:
     .. figure:: ./condainstaller8.png
@@ -117,14 +117,53 @@ executing the ``Anaconda Prompt``:
 - Type ``Anaconda Prompt``
 - Enter
 
-It will open a CMD window with a ``PATH`` environment ready to work with |foxbms|.
+It will open a CMD window with a ``PATH`` environment ready to work with
+|foxbms|.
 
-The prompt can be manualy be started by open a CMD window followed by following command:
+The prompt can also be started manually by opening a CMD window followed by
+following command:
 
 ``C:\foxconda3\Scripts\activate``
 
+-----
+Proxy
+-----
+
+Some ``conda`` commands (e.g., ``conda install``) will not work behind a proxy
+by default. The following steps configure ``conda`` to work behind a proxy:
+
+#.  The ``.condarc`` is created by running the following command in the
+    ``Anaconda Prompt``
+
+    ..  code-block::    console
+        :name: condaconfig
+        :caption: conda config command
+
+        conda config
+
+    The ``.condarc`` file is created in the user home
+    directory (e.g., ``C:\users\username\.condarc``)
+
+#. Open the ``.condarc`` with a text editor and add the proxy information:
+
+    ..  code-block::    console
+        :name: condaproxyconfig
+        :caption: conda proxy configuration
+
+        proxy_servers:
+          http: http://my-http-proxy-server:Port
+          https: https://my-https-proxy-server:Port
+
+Details on proxy configuration are found in the official ``conda``
+documentation at
+`Configure conda for use behind a proxy server (proxy_servers) <https://conda.io/projects/conda/en/latest/user-guide/configuration/use-condarc.html#configure-conda-for-use-behind-a-proxy-server-proxy-servers>`_.
+
+More detailed information on conda configuration is also found in the
+`conda configuration documentation <https://conda.io/projects/conda/en/latest/user-guide/configuration/index.html#>`_.
+
+-------------------------------------------
 Software Related Frequently Asked Questions
-===========================================
+-------------------------------------------
 
 Where are the Sources?
 ----------------------

@@ -523,7 +523,7 @@ File: ``module/config/cansignal_cfg.h``
 
 1. The message name must be added. For TX, i.e., transmit data, a message entry must be added in the enumeration ``CANS_messagesTx_e``: (RX, i.e., receive, ``CANS_messagesRx_e``)
 
-2. Then one or more signal names must be added in the enumeration ``CANS_signalsTx_e`` (``CANS_signalsRx_e``)
+2. Then one or more signal names must be added in the enumeration ``CANS_CANx_signalsTx_e`` (``CANS_CANx_signalsRx_e``)
 
 
 File: ``module/config/can_cfg.c``
@@ -576,10 +576,10 @@ File: ``module/config/cansignal_cfg.c``
 5. The callback functions must be declared and implemented in ``cansignal_cfg.c``.
 
 
-.. _faq_can_lessthan12cells:
+.. _faq_can_lessthan18cells:
 
-How to adapt the CAN module when less than 12 battery cells/temperature sensors per module are used?
-----------------------------------------------------------------------------------------------------
+How to adapt the CAN module when less than 18 battery cells or 12 temperature sensors per module are used?
+----------------------------------------------------------------------------------------------------------
 
 Five adaptions are necessary when removing unused battery cell voltages or temperatures This procedure is executed exemplarily
 for 9 cell voltages and 5 temperature sensors:
@@ -592,6 +592,8 @@ for 9 cell voltages and 5 temperature sensors:
     { 0x201, 8, 200, 20, NULL_PTR },  //!< Cell voltages module 0 cells 3 4 5
     { 0x202, 8, 200, 20, NULL_PTR },  //!< Cell voltages module 0 cells 6 7 8
     { 0x203, 8, 200, 20, NULL_PTR },  //!< Cell voltages module 0 cells 9 10 11
+    { 0x204, 8, 200, 20, NULL_PTR },  //!< Cell voltages module 0 cells 12 13 14
+    { 0x205, 8, 200, 20, NULL_PTR },  //!< Cell voltages module 0 cells 15 16 17
 
     { 0x210, 8, 200, 30, NULL_PTR },  //!< Cell temperatures module 0 cells 0 1 2
     { 0x211, 8, 200, 30, NULL_PTR },  //!< Cell temperatures module 0 cells 3 4 5
@@ -610,6 +612,8 @@ temperatures 0-4. Repeat this process for all modules.
     CAN0_MSG_Mod0_Cellvolt_1,  //!< Module 0 Cell voltages 3-5
     CAN0_MSG_Mod0_Cellvolt_2,  //!< Module 0 Cell voltages 6-8
     CAN0_MSG_Mod0_Cellvolt_3,  //!< Module 0 Cell voltages 9-11
+    CAN0_MSG_Mod0_Cellvolt_4,  //!< Module 0 Cell voltages 12-14
+    CAN0_MSG_Mod0_Cellvolt_5,  //!< Module 0 Cell voltages 15-17
 
     CAN0_MSG_Mod0_Celltemp_0,  //!< Module 0 Cell temperatures 0-2
     CAN0_MSG_Mod0_Celltemp_1,  //!< Module 0 Cell temperatures 3-5
@@ -641,6 +645,14 @@ because we transmit only cell voltages 0-8. Additionally remove cell temperature
     CAN0_SIG_Mod0_volt_9,
     CAN0_SIG_Mod0_volt_10,
     CAN0_SIG_Mod0_volt_11,
+    CAN0_SIG_Mod0_volt_valid_12_14,
+    CAN0_SIG_Mod0_volt_12,
+    CAN0_SIG_Mod0_volt_13,
+    CAN0_SIG_Mod0_volt_14,
+    CAN0_SIG_Mod0_volt_valid_15_17,
+    CAN0_SIG_Mod0_volt_15,
+    CAN0_SIG_Mod0_volt_16,
+    CAN0_SIG_Mod0_volt_17,
 
     CAN0_SIG_Mod0_temp_valid_0_2,
     CAN0_SIG_Mod0_temp_0,
@@ -667,41 +679,49 @@ to CAN0_SIG_Mod0_temp_11 because we only use temperatures 0-4. Repeat this proce
 
 .. code-block:: C
 
-        // Module 0 cell voltages
-        { {CAN0_MSG_Mod0_Cellvolt_0}, 0, 8, 0, 0xFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_valid_0_2
-        { {CAN0_MSG_Mod0_Cellvolt_0}, 8, 16, 0, 0xFFFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_0
-        { {CAN0_MSG_Mod0_Cellvolt_0}, 24, 16, 0, 0xFFFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_1
-        { {CAN0_MSG_Mod0_Cellvolt_0}, 40, 16, 0, 0xFFFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_2
-        { {CAN0_MSG_Mod0_Cellvolt_1}, 0, 8, 0, 0xFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_valid_3_5
-        { {CAN0_MSG_Mod0_Cellvolt_1}, 8, 16, 0, 0xFFFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_3
-        { {CAN0_MSG_Mod0_Cellvolt_1}, 24, 16, 0, 0xFFFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_4
-        { {CAN0_MSG_Mod0_Cellvolt_1}, 40, 16, 0, 0xFFFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_5
-        { {CAN0_MSG_Mod0_Cellvolt_2}, 0, 8, 0, 0xFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_valid_6_8
-        { {CAN0_MSG_Mod0_Cellvolt_2}, 8, 16, 0, 0xFFFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_6
-        { {CAN0_MSG_Mod0_Cellvolt_2}, 24, 16, 0, 0xFFFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_7
-        { {CAN0_MSG_Mod0_Cellvolt_2}, 40, 16, 0, 0xFFFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_8
-        { {CAN0_MSG_Mod0_Cellvolt_3}, 0, 8, 0, 0xFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_valid_9_11
-        { {CAN0_MSG_Mod0_Cellvolt_3}, 8, 16, 0, 0xFFFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_9
-        { {CAN0_MSG_Mod0_Cellvolt_3}, 24, 16, 0, 0xFFFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_10
-        { {CAN0_MSG_Mod0_Cellvolt_3}, 40, 16, 0, 0xFFFF, 1, 0, NULL_PTR, &cans_getvolt },  //!< CAN0_SIG_Mod0_volt_11
+    /* Module 0 cell voltages */
+    { {CAN0_MSG_Mod0_Cellvolt_0}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_0_2 */
+    { {CAN0_MSG_Mod0_Cellvolt_0}, 8, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_0 */
+    { {CAN0_MSG_Mod0_Cellvolt_0}, 24, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_1 */
+    { {CAN0_MSG_Mod0_Cellvolt_0}, 40, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_2 */
+    { {CAN0_MSG_Mod0_Cellvolt_1}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_3_5 */
+    { {CAN0_MSG_Mod0_Cellvolt_1}, 8, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_3 */
+    { {CAN0_MSG_Mod0_Cellvolt_1}, 24, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_4 */
+    { {CAN0_MSG_Mod0_Cellvolt_1}, 40, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_5 */
+    { {CAN0_MSG_Mod0_Cellvolt_2}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_6_8 */
+    { {CAN0_MSG_Mod0_Cellvolt_2}, 8, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_6 */
+    { {CAN0_MSG_Mod0_Cellvolt_2}, 24, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_7 */
+    { {CAN0_MSG_Mod0_Cellvolt_2}, 40, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_8 */
+    { {CAN0_MSG_Mod0_Cellvolt_3}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_9_11 */
+    { {CAN0_MSG_Mod0_Cellvolt_3}, 8, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_9 */
+    { {CAN0_MSG_Mod0_Cellvolt_3}, 24, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_10 */
+    { {CAN0_MSG_Mod0_Cellvolt_3}, 40, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_11 */
+    { {CAN0_MSG_Mod0_Cellvolt_4}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_12_14 */
+    { {CAN0_MSG_Mod0_Cellvolt_4}, 8, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_12 */
+    { {CAN0_MSG_Mod0_Cellvolt_4}, 24, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_13 */
+    { {CAN0_MSG_Mod0_Cellvolt_4}, 40, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_14 */
+    { {CAN0_MSG_Mod0_Cellvolt_5}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_15_17 */
+    { {CAN0_MSG_Mod0_Cellvolt_5}, 8, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_15 */
+    { {CAN0_MSG_Mod0_Cellvolt_5}, 24, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_16 */
+    { {CAN0_MSG_Mod0_Cellvolt_5}, 40, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_17 */
 
-        // Module 0 cell temperatures
-        { {CAN0_MSG_Mod0_Celltemp_0}, 0, 8, 0, 0xFF, 1, 0, NULL_PTR, &cans_gettemp },  //!< CAN0_SIG_Mod0_volt_valid_0_2
-        { {CAN0_MSG_Mod0_Celltemp_0}, 8, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  //!< CAN0_SIG_Mod0_temp_0
-        { {CAN0_MSG_Mod0_Celltemp_0}, 24, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  //!< CAN0_SIG_Mod0_temp_1
-        { {CAN0_MSG_Mod0_Celltemp_0}, 40, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  //!< CAN0_SIG_Mod0_temp_2
-        { {CAN0_MSG_Mod0_Celltemp_1}, 0, 8, 0, 0xFF, 1, 0, NULL_PTR, &cans_gettemp },  //!< CAN0_SIG_Mod0_volt_valid_3_5
-        { {CAN0_MSG_Mod0_Celltemp_1}, 8, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  //!< CAN0_SIG_Mod0_temp_3
-        { {CAN0_MSG_Mod0_Celltemp_1}, 24, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  //!< CAN0_SIG_Mod0_temp_4
-        { {CAN0_MSG_Mod0_Celltemp_1}, 40, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  //!< CAN0_SIG_Mod0_temp_5
-        { {CAN0_MSG_Mod0_Celltemp_2}, 0, 8, 0, 0xFF, 1, 0, &cans_gettemp },  //!< CAN0_SIG_Mod0_volt_valid_6_8
-        { {CAN0_MSG_Mod0_Celltemp_2}, 8, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  //!< CAN0_SIG_Mod0_temp_6
-        { {CAN0_MSG_Mod0_Celltemp_2}, 24, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  //!< CAN0_SIG_Mod0_temp_7
-        { {CAN0_MSG_Mod0_Celltemp_2}, 40, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  //!< CAN0_SIG_Mod0_temp_8
-        { {CAN0_MSG_Mod0_Celltemp_3}, 0, 8, 0, 0xFF, 1, 0, NULL_PTR, &cans_gettemp },  //!< CAN0_SIG_Mod0_volt_valid_9_11
-        { {CAN0_MSG_Mod0_Celltemp_3}, 8, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  //!< CAN0_SIG_Mod0_temp_9
-        { {CAN0_MSG_Mod0_Celltemp_3}, 24, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  //!< CAN0_SIG_Mod0_temp_10
-        { {CAN0_MSG_Mod0_Celltemp_3}, 40, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  //!< CAN0_SIG_Mod0_temp_11
+    /* Module 0 cell temperatures */
+    { {CAN0_MSG_Mod0_Celltemp_0}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_volt_valid_0_2 */
+    { {CAN0_MSG_Mod0_Celltemp_0}, 8, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_0 */
+    { {CAN0_MSG_Mod0_Celltemp_0}, 24, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_1 */
+    { {CAN0_MSG_Mod0_Celltemp_0}, 40, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_2 */
+    { {CAN0_MSG_Mod0_Celltemp_1}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_volt_valid_3_5 */
+    { {CAN0_MSG_Mod0_Celltemp_1}, 8, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_3 */
+    { {CAN0_MSG_Mod0_Celltemp_1}, 24, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_4 */
+    { {CAN0_MSG_Mod0_Celltemp_1}, 40, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_5 */
+    { {CAN0_MSG_Mod0_Celltemp_2}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_volt_valid_6_8 */
+    { {CAN0_MSG_Mod0_Celltemp_2}, 8, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_6 */
+    { {CAN0_MSG_Mod0_Celltemp_2}, 24, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_7 */
+    { {CAN0_MSG_Mod0_Celltemp_2}, 40, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_8 */
+    { {CAN0_MSG_Mod0_Celltemp_3}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_volt_valid_9_11 */
+    { {CAN0_MSG_Mod0_Celltemp_3}, 8, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_9 */
+    { {CAN0_MSG_Mod0_Celltemp_3}, 24, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_10 */
+    { {CAN0_MSG_Mod0_Celltemp_3}, 40, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_11 */
 
 Remove all unused struct entries depending on the number of used cells/sensors. Repeat this process for all modules.
 
@@ -831,7 +851,7 @@ The number of logged error events can be changed by modifying the value of the m
 
 
 .. note::
-    The diag module is a powerfull module for general error handling. The user has to be aware of timings when using custom diag entries. As example how to use this module correct syscontrol is choosen.
+    The diag module is a powerful module for general error handling. The user has to be aware of timings when using custom diag entries. As example how to use this module correct syscontrol is choosen.
     - The function ``SYSCTRL_Trigger()`` is called in the 10ms task (``ENG_TSK_Cyclic_10ms()``), meaning every 10ms this function must be executed.
     - In the diagnosis-module header ``diag_cfg.h`` there is the enum ``DIAG_SYSMON_MODULE_ID_e`` for the different error types that are handeled by the diagnosismodule. For syscontrol errors there is ``DIAG_SYSMON_SYSCTRL_ID``.
     - In the diagnosis-module source ``diag_cfg.c`` there is the ``diag_sysmon_ch_cfg[]`` array assigning timings to this error, in this case 20ms.
@@ -898,6 +918,20 @@ How to set the initial SOC value via CAN?
 -----------------------------------------
 
 This is done via the debug message with the first byte (byte0) equal to 11 (0x0B). The SOC is defined via the next two bytes (i.e., on 16bit: byte1 byte2). The SOC is given in 0.01% unit, which means that the 16bit number should be comprised between 0 and 10000. If a smaller value is given, the SOC will be set to 0%. If a greater value is given, SOC will be set to 100%.
+
+.. _faq_reset_deep_discharge:
+
+How to reset deep-discharge flag via CAN?
+-----------------------------------------
+
+.. note::
+
+    This message should only be sent after
+    replacing the affected cell as charging a deep-discharged cell is highly
+    dangerous.
+
+The deep-discharge flag can be reset by transmitting debug message with the
+first byte (byte0) equal to 170 (0xAA).
 
 .. _faq_voltage_input_configuration:
 

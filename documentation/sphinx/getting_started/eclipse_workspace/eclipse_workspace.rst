@@ -15,12 +15,12 @@ Setting an Eclipse Workspace
 
 ..  warning::
     Every part of this setup instruction must be read carefully and it must be
-    followed step by step, including details. If not the case, the Eclipse
-    Workspace will not work.
+    followed step by step, including details. If this is not the case, the
+    Eclipse Workspace will not work.
 
 ..  warning::
-    Only |foxconda3| is supported. The support for older versions has been
-    dropped.
+    Only |foxconda_name| (see :ref:`GETTING_STARTED_FOXCONDA`) is supported.
+    The support for older versions of |foxconda_old| has been dropped.
 
 
 In the following, it is described which requirements have to be fulfilled and
@@ -32,19 +32,24 @@ what steps have to be made to setup an Eclipse workspace for working with the
     to the user's settings. The example below shows how to adapt these two
     variables.
 
-    -   **Variable 1**: Project directory (|setup_path|)
+    -   **Variable 1**: Path to the project directory
 
-        The proejct directory is |setup_dir|, then the path has to be set to
-        ``C:\Users\username\Documents``.
-        The path ``C:\Users\username\Documents\foxbms`` has to be used instead
-        of |setup_path|. The path to the project directory must not contain spaces.
+        -   The project directory is |setup_dir|. The path to the project is
+            therefore |setup_path| (e.g., |setup_dir_example|,
+            |setup_dir_example2|, etc.). This means, during this setup
+            procedure where ever the variable |setup_path| occurs it needs to
+            be replaced with actual project directory on the machine (e.g.,
+            |setup_dir_example| or |setup_dir_example2|, etc.).
 
-    -   **Variable 2**: Path to |foxconda_name| installation (|foxconda_path|)
+        -   The path to the project directory must not contain spaces.
 
-            -   The prefered installation path of |foxconda_name| is
+
+    -   **Variable 2**: Path to |foxconda_name| installation
+
+            -   The preferred installation path of |foxconda_name| is
                 |foxconda_default_windows_path|. This path will be used during
                 the setup. If this is changed, it is up to the reader to change
-                it at time to the appropiate path. It is strongly recommended
+                it at time to the appropriate path. It is strongly recommended
                 to install foxconda to |foxconda_default_windows_path|.
 
             -   If |foxconda_name| is installed into
@@ -66,8 +71,8 @@ Workspace for working with the |foxbms| sources.
 -   `Eclipse CDT <https://www.eclipse.org/cdt/>`_ , in version Oxygen.1.Release
     (4.7.1a). Eclipse CDT Oxygen.1.Release (4.7.1a) can be downloaded form
     `eclipse.org <https://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygenr>`_.
-    After downloading the .zip file and extracting it, ``eclipse.exe`` must be
-    started to launch ``Eclipse CDT``.
+    After downloading the ``.zip file`` and extracting it, ``eclipse.exe`` must
+    be started to launch ``Eclipse CDT``.
 
 -   The following plugins must be installed into ``Eclipse CDT``. ``PyDev``
     (`PyDev project website <https://www.pydev.org/>`_) is mandatory, while
@@ -121,7 +126,7 @@ Creating the Workspace
 The Eclipse Workspace will be called ``.ws``.
 
 #.  Start ``Eclipse`` and click ``File`` -> ``Switch Workspace`` -> ``other``
-    and configure ``path/to/foxbms/.ws`` as workspace, see
+    and configure ``path\to\foxbms\.ws`` as workspace, see
     :numref:`Fig. %s <switch_workspace>`.
 
     .. _switch_workspace:
@@ -134,6 +139,23 @@ The Eclipse Workspace will be called ``.ws``.
 
 |OK| The |foxbms| Eclipse Workspace is now successfully created. |OK|
 
+
+.. _DEFAULT_ENCODING_AND_NEWLINE_DELIMITER:
+
+Configuring Default Encoding and Newline Delimiter
+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#.  Open ``Window`` -> ``Preferences`` -> ``General`` -> ``Workspace``
+
+#.  Set ``Text file encoding`` to ``Other: UTF-8`` and
+    ``New text file line delimiter`` and select ``Other: Windows``
+
+    ..  _SET_DEFAULT_ENCODING_AND_NEWLINE_DELIMITER:
+    ..  figure:: eclipse-default-file-encoding-and-newline-delimiter.png
+
+        Setting the default file encoding and the line delimiter
+
+#.  Click |ECLIPSEAPPLYANDCLOSE|
 
 .. _configuring_the_python_interpreter:
 
@@ -179,7 +201,7 @@ Configuring the Python Interpreter
 
         Configuration done
 
-|OK| |foxconda3| is now successfully selected as Python interpreter. |OK|
+|OK| |foxconda_name| is now successfully selected as Python interpreter. |OK|
 
 
 .. _importing_the_project:
@@ -205,7 +227,7 @@ Importing the Project
 #.  Click |ECLIPSENEXT|
 
 #.  Chose ``Select archive file:`` and use
-    ``path/to/foxbms/tools/foxbms-eclipse-project.zip``
+    ``path\to\foxbms\tools\eclipse\foxbms-eclipse-project.zip``
     This will list the |foxbms| projects.
 
     .. _setup-project-import-projects.png:
@@ -231,7 +253,7 @@ Configuring the Project PATHs
     (|foxconda_default_windows_path|), this section can be skipped.
 
 For this setup: Change the path |foxconda_default_windows_path| to the path
-where |foxconda3| was installed to.
+where |foxconda_name| was installed to.
 
 #.  Select the ``Primary`` project and click right and select ``Properties``.
 
@@ -305,13 +327,13 @@ Configuring the Project Includes
     (|foxconda_default_windows_path|), this section can be skipped.
 
 For this setup: Change the path |foxconda_default_windows_path| to the path
-where |foxconda3| was installed to.
+where |foxconda_name| was installed to.
 
 #.  Select the ``primary`` project and click right. Goto ``C/C++ General`` ->
     ``Paths and Symbols`` and switch to Tab ``Includes``.
 
-#.  Click |ECLIPSEADD| for ``Assembly``, ``GNU C`` and ``GNU C++`` and configure
-    the following two paths as ``Includes``
+#.  Click |ECLIPSEADD| for ``Assembly``, ``GNU C`` and ``GNU C++`` and
+    configure the following two paths as ``Includes``
 
     #. ``C:\foxconda3\Library\arm-none-eabi\include``
 
@@ -377,8 +399,8 @@ Testing the Project Setup
         |ECLIPSEHAMMER| button and select ``2 doxygen_primary`` to build the
         |foxbms| embedded documentation of the primary mcu.
 
-        The primary mcu dopxygen documentation generation was successful, if the
-        Eclipse console puts the following line at the bottom:
+        The primary mcu dopxygen documentation generation was successful, if
+        the Eclipse console puts the following line at the bottom:
 
         ..  code-block:: console
 
@@ -568,7 +590,7 @@ will install automatically.
       Before the connection is made between the |master| and the computer for
       the first time, the computer must be connected to the internet, because
       the operating system might look for drivers on the internet. It this
-      fails, administrators right are needed to install the driver.
+      fails, administrator rights are needed to install the driver.
 
 In case of problems by the installation of the drivers, administrator rights
 might be needed. Once the hardware is supplied with the appropriate voltage,
@@ -604,9 +626,9 @@ the dropdown menu of the |ECLIPSEHAMMER| button and selecting
 .. note::
 
     Make sure that CAN0 connector is either disconnected or that there is no
-    traffic on CAN0 bus while flashing ``primary`` MCU. If this is not the case,
-    the internal bootloader of the controller will select a wrong boot source
-    and the flashing fails.
+    traffic on CAN0 bus while flashing ``primary`` MCU. If this is not the
+    case, the internal bootloader of the controller will select a wrong boot
+    source and the flashing fails.
 
 The connection state can also be checked by watching the LEDs on the |master|
 hardware: for a running board, the green power LED is on, and the two indicator
@@ -661,7 +683,7 @@ The following two debuggers can be used for debugging and have been tested with
  *  `Segger J-Link Plus <https://www.segger.com/j-link-plus.html>`_, with the
     `19-Pin Cortex-M adapter <https://www.segger.com/jlink-adapters.html#CM_19pin>`_
     (needed to connect to foxBMS)
- *  `Lauterbach µTrace Debugger for Cortex-M <http://www.lauterbach.com>`_
+ *  `Lauterbach ÂµTrace Debugger for Cortex-M <http://www.lauterbach.com>`_
 
 
  .. |OK|                     image:: ok.png
@@ -680,6 +702,9 @@ The following two debuggers can be used for debugging and have been tested with
 
 .. |setup_dir|                      replace:: ``foxbms``
 .. |setup_path|                     replace:: ``path\to\foxbms``
+.. |setup_dir_example|              replace:: ``C:\Users\username\Documents\foxbms``
+.. |setup_dir_example2|              replace:: ``C:\projects\foxbms``
+.. |foxconda_old|                   replace:: ``foxconda``
 .. |foxconda_name|                  replace:: ``foxconda3``
 .. |foxconda_path|                  replace:: ``C:\foxconda3``
 .. |foxconda_pythonexe_path|        replace:: ``C:\foxconda3\python.exe``

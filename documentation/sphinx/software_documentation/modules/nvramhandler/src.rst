@@ -1,6 +1,10 @@
-.. include:: ../../../macros.rst
-
 :orphan:
+
+.. _NVRAMHANDLER_SRC:
+
+============================
+NVRAM Handler Module Sources
+============================
 
 .. contents:: :local:
 

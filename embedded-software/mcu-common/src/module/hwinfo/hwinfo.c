@@ -84,31 +84,30 @@ void HW_update(void) {
     hw_tab.state_temperature++;
 
     /* Check if MCU die temperature is inside operating range */
-    if (hw_tab.temperature > HW_MCU_MAXIMUM_DIE_TEMP_DEG_CELSIUS ||
-            hw_tab.temperature < HW_MCU_MINIMUM_DIE_TEMP_DEG_CELSIUS) {
-        DIAG_Handler(DIAG_CH_ERROR_MCU_DIE_TEMPERATURE, DIAG_EVENT_NOK, 0, NULL_PTR);
-    } else {
-        DIAG_Handler(DIAG_CH_ERROR_MCU_DIE_TEMPERATURE, DIAG_EVENT_OK, 0, NULL_PTR);
+    STD_RETURN_TYPE_e result = E_NOT_OK;
+    if (hw_tab.temperature < HW_MCU_MAXIMUM_DIE_TEMP_DEG_CELSIUS &&
+            hw_tab.temperature > HW_MCU_MINIMUM_DIE_TEMP_DEG_CELSIUS) {
+        result = E_OK;
     }
+    DIAG_checkEvent(result, DIAG_CH_ERROR_MCU_DIE_TEMPERATURE, 0);
 
     /* Get coin cell voltage */
     hw_tab.vbat_mV = ADC_GetVBAT_mV();
     hw_tab.state_vbat++;
 
     /* Check if MCU coin cell voltage is low and coin cell should be replaced */
-    if (hw_tab.vbat_mV < HW_ERROR_LOW_COIN_CELL_THRESHOLD_mV) {
-        /* Coin cell voltage critically low */
-        DIAG_Handler(DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE, DIAG_EVENT_NOK, 0, NULL_PTR);
-        DIAG_Handler(DIAG_CH_LOW_COIN_CELL_VOLTAGE, DIAG_EVENT_NOK, 0, NULL_PTR);
-    } else if (hw_tab.vbat_mV < HW_WARN_LOW_COIN_CELL_THRESHOLD_mV) {
-        /* Coin cell voltage low */
-        DIAG_Handler(DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE, DIAG_EVENT_OK, 0, NULL_PTR);
-        DIAG_Handler(DIAG_CH_LOW_COIN_CELL_VOLTAGE, DIAG_EVENT_NOK, 0, NULL_PTR);
-    } else {
-        /* Coin cell voltage okay */
-        DIAG_Handler(DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE, DIAG_EVENT_OK, 0, NULL_PTR);
-        DIAG_Handler(DIAG_CH_LOW_COIN_CELL_VOLTAGE, DIAG_EVENT_OK, 0, NULL_PTR);
+    result = E_NOT_OK;
+    /* check for coin cell voltage low */
+    if (hw_tab.vbat_mV > HW_WARN_LOW_COIN_CELL_THRESHOLD_mV) {
+        result = E_OK;
     }
+    DIAG_checkEvent(result, DIAG_CH_LOW_COIN_CELL_VOLTAGE, 0);
+    result = E_NOT_OK;
+    /* check for  coin cell voltage critically low */
+    if (hw_tab.vbat_mV > HW_ERROR_LOW_COIN_CELL_THRESHOLD_mV) {
+        result = E_OK;
+    }
+    DIAG_checkEvent(result, DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE, 0);
 
     /* Write data to database */
     DB_WriteBlock(&hw_tab, DATA_BLOCK_ID_HW_INFO);

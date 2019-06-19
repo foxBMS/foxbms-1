@@ -65,11 +65,11 @@
 #define ADC_STOREDATA           2
 
 /* Macros for converting voltage -> temperature */
-#define ADC_VBAT_VOLTAGE_DIVIDER    4.0
-#define ADC_FULL_RANGE              4095.0        /* 12bit adc converter --> range [0, ..., 4095] */
-#define ADC_VREF_EXT                2.5
+#define ADC_VBAT_VOLTAGE_DIVIDER    4.0f
+#define ADC_FULL_RANGE              4095.0f        /* 12bit adc converter --> range [0, ..., 4095] */
+#define ADC_VREF_EXT                2.5f
 #define ADC_V25                     760
-#define ADC_AVG_SLOPE               2.5
+#define ADC_AVG_SLOPE               2.5f
 
 /*================== Constant and Variable Definitions ====================*/
 static ADC_ChannelConfTypeDef adc_cfg = {
@@ -178,7 +178,7 @@ extern float ADC_GetVBAT_mV(void) {
  * @brief get MCU temperature
  */
 extern float ADC_GetMCUTemp_C(void) {
-    float scaled_temperature = (adc_mcuTemp - ADC_V25)/(ADC_AVG_SLOPE) + 25.0;
+    float scaled_temperature = (adc_mcuTemp - ADC_V25)/(ADC_AVG_SLOPE) + 25.0f;
     return scaled_temperature;
 }
 

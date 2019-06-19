@@ -54,6 +54,8 @@
 #include "contactor_cfg.h"
 
 #include "database.h"
+#include <float.h>
+#include <math.h>
 
 #if BUILD_MODULE_ENABLE_CONTACTOR == 1
 /*================== Macros and Definitions ===============================*/
@@ -95,7 +97,7 @@ STD_RETURN_TYPE_e CONT_CheckPrecharge(CONT_WHICH_POWERLINE_e caller) {
 
     DB_ReadBlock(&current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
     float cont_prechargeVoltDiff_mV = 0.0;
-    float current_mA = 0.0;
+    int32_t current_mA = 0;
 
     /* Only current not current direction is checked */
     if (current_tab.current > 0) {
@@ -207,6 +209,24 @@ STD_RETURN_TYPE_e CONT_CheckFuse(CONT_WHICH_POWERLINE_e caller) {
             fuseState = E_OK;
         }
     }
+#if BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH == TRUE
+    if (fuseState == E_OK) {
+        /* Fuse state ok -> check precharging */
+        DIAG_Handler(DIAG_CH_FUSE_STATE_NORMAL, DIAG_EVENT_OK, 0);
+    } else {
+        /* Fuse tripped -> switch to error state */
+        DIAG_Handler(DIAG_CH_FUSE_STATE_NORMAL, DIAG_EVENT_NOK, 0);
+    }
+#endif  /* BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH == TRUE */
+#if BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH == TRUE
+    if (fuseState == E_OK) {
+        /* Fuse state ok -> check precharging */
+        DIAG_Handler(DIAG_CH_FUSE_STATE_CHARGE, DIAG_EVENT_OK, 0);
+    } else {
+        /* Fuse tripped -> switch to error state */
+        DIAG_Handler(DIAG_CH_FUSE_STATE_CHARGE, DIAG_EVENT_NOK, 0);
+    }
+#endif  /* BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH == TRUE */
     return fuseState;
 #else /* BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH == FALSE && BS_CHECK_FUSE_PLACED_IN_CHARGE_PATH == FALSE */
     return E_OK;

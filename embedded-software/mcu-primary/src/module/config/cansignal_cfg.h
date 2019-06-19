@@ -54,10 +54,26 @@
 #define CANSIGNAL_CFG_H_
 
 /*================== Includes =============================================*/
+#include "batterysystem_cfg.h"
 #include "general.h"
 #include "can_cfg.h"
 
 /*================== Macros and Definitions ===============================*/
+
+/**
+ * Default value send when less voltages are configured than voltages values configured for CAN transmission
+ */
+#define CAN_DEFAULT_VOLTAGE 3000
+
+/**
+ * Default value send when less temperatures are configured than temperatures values configured for CAN transmission
+ */
+#define CAN_DEFAULT_TEMPERATURE 20
+
+/**
+ * Default value send when less valid flags are configured than valid flags values configured for CAN transmission
+ */
+#define CAN_DEFAULT_VALID_FLAG 0
 
 /**
  * @ingroup CONFIG_CANSIGNAL
@@ -70,11 +86,6 @@
 /* #define CANS_TICK_MS 1 */
 #define CANS_TICK_MS 10
 /* #define CANS_TICK_MS 100 */
-
-/**
- * Delay in ms after which it is considered the current sensor is not responding anymore.
- */
-#define CANS_SENSOR_RESPONSE_TIMEOUT_MS         100
 
 
 /**
@@ -110,6 +121,8 @@ typedef enum {
     CAN0_MSG_Mod0_Cellvolt_1,  /*!< Module 0 Cell voltages 3-5 */
     CAN0_MSG_Mod0_Cellvolt_2,  /*!< Module 0 Cell voltages 6-8 */
     CAN0_MSG_Mod0_Cellvolt_3,  /*!< Module 0 Cell voltages 9-11 */
+    CAN0_MSG_Mod0_Cellvolt_4,  /*!< Module 0 Cell voltages 12-14 */
+    CAN0_MSG_Mod0_Cellvolt_5,  /*!< Module 0 Cell voltages 15-17 */
     CAN0_MSG_Mod0_Celltemp_0,  /*!< Module 0 Cell temperatures 0-2 */
     CAN0_MSG_Mod0_Celltemp_1,  /*!< Module 0 Cell temperatures 3-5 */
     CAN0_MSG_Mod0_Celltemp_2,  /*!< Module 0 Cell temperatures 6-8 */
@@ -119,6 +132,8 @@ typedef enum {
     CAN0_MSG_Mod1_Cellvolt_1,  /*!< Module 1 Cell voltages 3-5 */
     CAN0_MSG_Mod1_Cellvolt_2,  /*!< Module 1 Cell voltages 6-8 */
     CAN0_MSG_Mod1_Cellvolt_3,  /*!< Module 1 Cell voltages 9-11 */
+    CAN0_MSG_Mod1_Cellvolt_4,  /*!< Module 1 Cell voltages 12-14 */
+    CAN0_MSG_Mod1_Cellvolt_5,  /*!< Module 1 Cell voltages 15-17 */
     CAN0_MSG_Mod1_Celltemp_0,  /*!< Module 1 Cell temperatures 0-2 */
     CAN0_MSG_Mod1_Celltemp_1,  /*!< Module 1 Cell temperatures 3-5 */
     CAN0_MSG_Mod1_Celltemp_2,  /*!< Module 1 Cell temperatures 6-8 */
@@ -128,6 +143,8 @@ typedef enum {
     CAN0_MSG_Mod2_Cellvolt_1,  /*!< Module 2 Cell voltages 3-5 */
     CAN0_MSG_Mod2_Cellvolt_2,  /*!< Module 2 Cell voltages 6-8 */
     CAN0_MSG_Mod2_Cellvolt_3,  /*!< Module 2 Cell voltages 9-11 */
+    CAN0_MSG_Mod2_Cellvolt_4,  /*!< Module 2 Cell voltages 12-14 */
+    CAN0_MSG_Mod2_Cellvolt_5,  /*!< Module 2 Cell voltages 15-17 */
     CAN0_MSG_Mod2_Celltemp_0,  /*!< Module 2 Cell temperatures 0-2 */
     CAN0_MSG_Mod2_Celltemp_1,  /*!< Module 2 Cell temperatures 3-5 */
     CAN0_MSG_Mod2_Celltemp_2,  /*!< Module 2 Cell temperatures 6-8 */
@@ -137,6 +154,8 @@ typedef enum {
     CAN0_MSG_Mod3_Cellvolt_1,  /*!< Module 3 Cell voltages 3-5 */
     CAN0_MSG_Mod3_Cellvolt_2,  /*!< Module 3 Cell voltages 6-8 */
     CAN0_MSG_Mod3_Cellvolt_3,  /*!< Module 3 Cell voltages 9-11 */
+    CAN0_MSG_Mod3_Cellvolt_4,  /*!< Module 3 Cell voltages 12-14 */
+    CAN0_MSG_Mod3_Cellvolt_5,  /*!< Module 3 Cell voltages 15-17 */
     CAN0_MSG_Mod3_Celltemp_0,  /*!< Module 3 Cell temperatures 0-2 */
     CAN0_MSG_Mod3_Celltemp_1,  /*!< Module 3 Cell temperatures 3-5 */
     CAN0_MSG_Mod3_Celltemp_2,  /*!< Module 3 Cell temperatures 6-8 */
@@ -146,6 +165,8 @@ typedef enum {
     CAN0_MSG_Mod4_Cellvolt_1,  /*!< Module 4 Cell voltages 3-5 */
     CAN0_MSG_Mod4_Cellvolt_2,  /*!< Module 4 Cell voltages 6-8 */
     CAN0_MSG_Mod4_Cellvolt_3,  /*!< Module 4 Cell voltages 9-11 */
+    CAN0_MSG_Mod4_Cellvolt_4,  /*!< Module 4 Cell voltages 12-14 */
+    CAN0_MSG_Mod4_Cellvolt_5,  /*!< Module 4 Cell voltages 15-17 */
     CAN0_MSG_Mod4_Celltemp_0,  /*!< Module 4 Cell temperatures 0-2 */
     CAN0_MSG_Mod4_Celltemp_1,  /*!< Module 4 Cell temperatures 3-5 */
     CAN0_MSG_Mod4_Celltemp_2,  /*!< Module 4 Cell temperatures 6-8 */
@@ -155,6 +176,8 @@ typedef enum {
     CAN0_MSG_Mod5_Cellvolt_1,  /*!< Module 5 Cell voltages 3-5 */
     CAN0_MSG_Mod5_Cellvolt_2,  /*!< Module 5 Cell voltages 6-8 */
     CAN0_MSG_Mod5_Cellvolt_3,  /*!< Module 5 Cell voltages 9-11 */
+    CAN0_MSG_Mod5_Cellvolt_4,  /*!< Module 5 Cell voltages 12-14 */
+    CAN0_MSG_Mod5_Cellvolt_5,  /*!< Module 5 Cell voltages 15-17 */
     CAN0_MSG_Mod5_Celltemp_0,  /*!< Module 5 Cell temperatures 0-2 */
     CAN0_MSG_Mod5_Celltemp_1,  /*!< Module 5 Cell temperatures 3-5 */
     CAN0_MSG_Mod5_Celltemp_2,  /*!< Module 5 Cell temperatures 6-8 */
@@ -164,6 +187,8 @@ typedef enum {
     CAN0_MSG_Mod6_Cellvolt_1,  /*!< Module 6 Cell voltages 3-5 */
     CAN0_MSG_Mod6_Cellvolt_2,  /*!< Module 6 Cell voltages 6-8 */
     CAN0_MSG_Mod6_Cellvolt_3,  /*!< Module 6 Cell voltages 9-11 */
+    CAN0_MSG_Mod6_Cellvolt_4,  /*!< Module 6 Cell voltages 12-14 */
+    CAN0_MSG_Mod6_Cellvolt_5,  /*!< Module 6 Cell voltages 15-17 */
     CAN0_MSG_Mod6_Celltemp_0,  /*!< Module 6 Cell temperatures 0-2 */
     CAN0_MSG_Mod6_Celltemp_1,  /*!< Module 6 Cell temperatures 3-5 */
     CAN0_MSG_Mod6_Celltemp_2,  /*!< Module 6 Cell temperatures 6-8 */
@@ -173,14 +198,16 @@ typedef enum {
     CAN0_MSG_Mod7_Cellvolt_1,  /*!< Module 7 Cell voltages 3-5 */
     CAN0_MSG_Mod7_Cellvolt_2,  /*!< Module 7 Cell voltages 6-8 */
     CAN0_MSG_Mod7_Cellvolt_3,  /*!< Module 7 Cell voltages 9-11 */
+    CAN0_MSG_Mod7_Cellvolt_4,  /*!< Module 7 Cell voltages 12-14 */
+    CAN0_MSG_Mod7_Cellvolt_5,  /*!< Module 7 Cell voltages 15-17 */
     CAN0_MSG_Mod7_Celltemp_0,  /*!< Module 7 Cell temperatures 0-2 */
     CAN0_MSG_Mod7_Celltemp_1,  /*!< Module 7 Cell temperatures 3-5 */
     CAN0_MSG_Mod7_Celltemp_2,  /*!< Module 7 Cell temperatures 6-8 */
     CAN0_MSG_Mod7_Celltemp_3,  /*!< Module 7 Cell temperatures 9-11 */
 
-#ifdef CAN_ISABELLENHUETTE_TRIGGERED
+#ifdef CURRENT_SENSOR_ISABELLENHUETTE_TRIGGERED
     CAN0_MSG_BMS_CurrentTrigger,    /*!< Cell Voltages Max Min Average */
-#endif
+#endif /* CURRENT_SENSOR_ISABELLENHUETTE_TRIGGERED */
 
 
     /* Insert here symbolic names for CAN1 messages */
@@ -222,6 +249,7 @@ typedef enum {
 
     CAN0_SIG_GS1_error_overvoltage,  /* 0:good, 1:error */
     CAN0_SIG_GS1_error_undervoltage,  /* 0:good, 1:error */
+    CAN0_SIG_GS1_error_deep_discharge,  /* 0:good, 1:error */
     CAN0_SIG_GS1_error_temperature_MCU0,  /* 0:good, 1:error */
     CAN0_SIG_GS1_error_contactor,  /* 0:good, 1:error */
     CAN0_SIG_GS1_error_selftest,  /* 0:good, 1:error */
@@ -235,6 +263,7 @@ typedef enum {
     CAN0_SIG_GS2_lowCoinCellVolt,  /* 0: okay, else: low voltage */
     CAN0_SIG_GS2_error_openWire,  /* 0: okay, 1: open wire detected */
     CAN0_SIG_GS2_daisyChain,  /* 0: okay, else: error */
+    CAN0_SIG_GS2_plausibilityCheck,  /* 0: okay, else: error */
 
     CAN0_SIG_SS0_states,  /* 0: good, 1: error */
     CAN0_SIG_SS1_states,  /* 0: good, 1: error */
@@ -314,6 +343,14 @@ typedef enum {
     CAN0_SIG_Mod0_volt_9,
     CAN0_SIG_Mod0_volt_10,
     CAN0_SIG_Mod0_volt_11,
+    CAN0_SIG_Mod0_volt_valid_12_14,
+    CAN0_SIG_Mod0_volt_12,
+    CAN0_SIG_Mod0_volt_13,
+    CAN0_SIG_Mod0_volt_14,
+    CAN0_SIG_Mod0_volt_valid_15_17,
+    CAN0_SIG_Mod0_volt_15,
+    CAN0_SIG_Mod0_volt_16,
+    CAN0_SIG_Mod0_volt_17,
 
     CAN0_SIG_Mod0_temp_valid_0_2,
     CAN0_SIG_Mod0_temp_0,
@@ -348,6 +385,14 @@ typedef enum {
     CAN0_SIG_Mod1_volt_9,
     CAN0_SIG_Mod1_volt_10,
     CAN0_SIG_Mod1_volt_11,
+    CAN0_SIG_Mod1_volt_valid_12_14,
+    CAN0_SIG_Mod1_volt_12,
+    CAN0_SIG_Mod1_volt_13,
+    CAN0_SIG_Mod1_volt_14,
+    CAN0_SIG_Mod1_volt_valid_15_17,
+    CAN0_SIG_Mod1_volt_15,
+    CAN0_SIG_Mod1_volt_16,
+    CAN0_SIG_Mod1_volt_17,
 
     CAN0_SIG_Mod1_temp_valid_0_2,
     CAN0_SIG_Mod1_temp_0,
@@ -382,6 +427,14 @@ typedef enum {
     CAN0_SIG_Mod2_volt_9,
     CAN0_SIG_Mod2_volt_10,
     CAN0_SIG_Mod2_volt_11,
+    CAN0_SIG_Mod2_volt_valid_12_14,
+    CAN0_SIG_Mod2_volt_12,
+    CAN0_SIG_Mod2_volt_13,
+    CAN0_SIG_Mod2_volt_14,
+    CAN0_SIG_Mod2_volt_valid_15_17,
+    CAN0_SIG_Mod2_volt_15,
+    CAN0_SIG_Mod2_volt_16,
+    CAN0_SIG_Mod2_volt_17,
 
     CAN0_SIG_Mod2_temp_valid_0_2,
     CAN0_SIG_Mod2_temp_0,
@@ -416,6 +469,14 @@ typedef enum {
     CAN0_SIG_Mod3_volt_9,
     CAN0_SIG_Mod3_volt_10,
     CAN0_SIG_Mod3_volt_11,
+    CAN0_SIG_Mod3_volt_valid_12_14,
+    CAN0_SIG_Mod3_volt_12,
+    CAN0_SIG_Mod3_volt_13,
+    CAN0_SIG_Mod3_volt_14,
+    CAN0_SIG_Mod3_volt_valid_15_17,
+    CAN0_SIG_Mod3_volt_15,
+    CAN0_SIG_Mod3_volt_16,
+    CAN0_SIG_Mod3_volt_17,
 
     CAN0_SIG_Mod3_temp_valid_0_2,
     CAN0_SIG_Mod3_temp_0,
@@ -450,6 +511,14 @@ typedef enum {
     CAN0_SIG_Mod4_volt_9,
     CAN0_SIG_Mod4_volt_10,
     CAN0_SIG_Mod4_volt_11,
+    CAN0_SIG_Mod4_volt_valid_12_14,
+    CAN0_SIG_Mod4_volt_12,
+    CAN0_SIG_Mod4_volt_13,
+    CAN0_SIG_Mod4_volt_14,
+    CAN0_SIG_Mod4_volt_valid_15_17,
+    CAN0_SIG_Mod4_volt_15,
+    CAN0_SIG_Mod4_volt_16,
+    CAN0_SIG_Mod4_volt_17,
 
     CAN0_SIG_Mod4_temp_valid_0_2,
     CAN0_SIG_Mod4_temp_0,
@@ -484,6 +553,14 @@ typedef enum {
     CAN0_SIG_Mod5_volt_9,
     CAN0_SIG_Mod5_volt_10,
     CAN0_SIG_Mod5_volt_11,
+    CAN0_SIG_Mod5_volt_valid_12_14,
+    CAN0_SIG_Mod5_volt_12,
+    CAN0_SIG_Mod5_volt_13,
+    CAN0_SIG_Mod5_volt_14,
+    CAN0_SIG_Mod5_volt_valid_15_17,
+    CAN0_SIG_Mod5_volt_15,
+    CAN0_SIG_Mod5_volt_16,
+    CAN0_SIG_Mod5_volt_17,
 
     CAN0_SIG_Mod5_temp_valid_0_2,
     CAN0_SIG_Mod5_temp_0,
@@ -518,6 +595,14 @@ typedef enum {
     CAN0_SIG_Mod6_volt_9,
     CAN0_SIG_Mod6_volt_10,
     CAN0_SIG_Mod6_volt_11,
+    CAN0_SIG_Mod6_volt_valid_12_14,
+    CAN0_SIG_Mod6_volt_12,
+    CAN0_SIG_Mod6_volt_13,
+    CAN0_SIG_Mod6_volt_14,
+    CAN0_SIG_Mod6_volt_valid_15_17,
+    CAN0_SIG_Mod6_volt_15,
+    CAN0_SIG_Mod6_volt_16,
+    CAN0_SIG_Mod6_volt_17,
 
     CAN0_SIG_Mod6_temp_valid_0_2,
     CAN0_SIG_Mod6_temp_0,
@@ -552,6 +637,14 @@ typedef enum {
     CAN0_SIG_Mod7_volt_9,
     CAN0_SIG_Mod7_volt_10,
     CAN0_SIG_Mod7_volt_11,
+    CAN0_SIG_Mod7_volt_valid_12_14,
+    CAN0_SIG_Mod7_volt_12,
+    CAN0_SIG_Mod7_volt_13,
+    CAN0_SIG_Mod7_volt_14,
+    CAN0_SIG_Mod7_volt_valid_15_17,
+    CAN0_SIG_Mod7_volt_15,
+    CAN0_SIG_Mod7_volt_16,
+    CAN0_SIG_Mod7_volt_17,
 
     CAN0_SIG_Mod7_temp_valid_0_2,
     CAN0_SIG_Mod7_temp_0,
@@ -570,9 +663,9 @@ typedef enum {
     CAN0_SIG_Mod7_temp_10,
     CAN0_SIG_Mod7_temp_11,
 
-#ifdef CAN_ISABELLENHUETTE_TRIGGERED
+#ifdef CURRENT_SENSOR_ISABELLENHUETTE_TRIGGERED
     CAN0_SIG_ISA_Trigger,
-#endif
+#endif /* CURRENT_SENSOR_ISABELLENHUETTE_TRIGGERED */
 
     CAN0_SIGNAL_NONE = 0xFFFF
 } CANS_CAN0_signalsTx_e;

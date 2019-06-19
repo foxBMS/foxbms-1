@@ -1,0 +1,2 @@
+# exclude user files (contains user-dependant view-port definitions and such)
+*.jdebug.user

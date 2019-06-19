@@ -1,6 +1,10 @@
-.. include:: ../../../macros.rst
-
 :orphan:
+
+.. _DATABASE_SRC:
+
+=======================
+Database Module Sources
+=======================
 
 .. contents:: :local:
 

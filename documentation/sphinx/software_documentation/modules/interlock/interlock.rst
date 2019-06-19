@@ -15,19 +15,20 @@ Module Files
 ~~~~~~~~~~~~
 
 Driver:
- - ``embedded-software\mcu-common\src\module\interlock\interlock.h``
- - ``embedded-software\mcu-common\src\module\interlock\interlock.c``
+ - ``embedded-software\mcu-common\src\module\interlock\interlock.h`` (:ref:`interlockh`)
+ - ``embedded-software\mcu-common\src\module\interlock\interlock.c`` (:ref:`interlockc`)
 
 Driver Configuration:
- - ``embedded-software\mcu-primary\src\module\config\interlock_cfg.h``
- - ``embedded-software\mcu-primary\src\module\config\interlock_cfg.c``
- - ``embedded-software\mcu-secondary\src\module\config\interlock_cfg.h``
- - ``embedded-software\mcu-secondary\src\module\config\interlock_cfg.c``
+ - ``embedded-software\mcu-primary\src\module\config\interlock_cfg.h`` (:ref:`primaryinterlockcfgh`)
+ - ``embedded-software\mcu-primary\src\module\config\interlock_cfg.c`` (:ref:`primaryinterlockcfgc`)
+ - ``embedded-software\mcu-secondary\src\module\config\interlock_cfg.h`` (:ref:`secondaryinterlockcfgh`)
+ - ``embedded-software\mcu-secondary\src\module\config\interlock_cfg.c`` (:ref:`secondaryinterlockcfgc`)
 
 Structure
 ~~~~~~~~~
 
-:numref:`Fig. %s <interlock_figure1>` shows the statemachine managing the interlock in |foxBMS|.
+:numref:`Fig. %s <interlock_figure1>` shows the statemachine managing the
+interlock in |foxBMS|.
 
 .. _interlock_figure1:
 .. figure:: interlock.png
@@ -39,9 +40,14 @@ Two states are implemented:
 - ``CLOSED``
 - ``OPEN``
 
-Requests are made to the interlock statemachine by ``BMS``. ``BMS`` closes the interlock when entering ``STANDBY`` and opens the interlock when entering the ``ERROR`` state.
+Requests are made to the interlock statemachine by ``BMS``. ``BMS`` closes the
+ interlock when entering ``STANDBY`` and opens the interlock when entering the
+ ``ERROR`` state.
 
-The interlock feedback is checked periodically. If the set value dose not match the measured feedback (e.g., the interlock was opened outside of |foxBMS|), the corresponding error flag will be set. The application implemented in ``BMS`` will then get the information and react accordingly.
+The interlock feedback is checked periodically. If the set value dose not
+match the measured feedback (e.g., the interlock was opened outside of
+|foxBMS|), the corresponding error flag will be set. The application
+implemented in ``BMS`` will then get the information and react accordingly.
 
 Interaction
 ~~~~~~~~~~~

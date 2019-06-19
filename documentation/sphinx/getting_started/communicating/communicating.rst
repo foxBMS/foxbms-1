@@ -19,14 +19,14 @@ To add or change a signal it must be refered to the software FAQ: :ref:`faq_can_
 
 .. note::
 
-    12 cell voltages, 12 cell temperatures and 8 modules are configured in the default CAN configuration of the |foxbms| Software.
+    18 cell voltages, 12 cell temperatures and 8 modules are configured in the default CAN configuration of the |foxbms| Software.
 
-If less then 8  modules, 12 cell voltages or 12 cell temperatures are configured in the software (e.g., in ``batterysystem_cfg.h``),
-random values are transmitted on these messages/signals. These values from the unused CAN messages must simply be ignored.
+If less then 8  modules, 18 cell voltages or 12 temperature sensors are configured in the software (e.g., in ``batterysystem_cfg.h``),
+default values are transmitted on these messages/signals. These values from the unused CAN messages must simply be ignored.
 
-In case it is really wanted not to transmit these values, the configuration of the CAN module must be changed as shown in the software FAQ in
-:ref:`faq_can_lessthan8modules` and in :ref:`faq_can_lessthan12cells`. The configuration must also be changed if more than 8 modules,
-12 cell voltages or 12 cell temperatures are used.
+In case it is really wanted to not transmit these values, the configuration of the CAN module must be changed as shown in the software FAQ in
+:ref:`faq_can_lessthan8modules` and in :ref:`faq_can_lessthan18cells`. The configuration must also be changed if more than 8 modules,
+18 cell voltages or 12 temperature sensors are used.
 
 .. _CANMsgs:
 
@@ -125,6 +125,10 @@ Message names in the DBC file can vary from the following tables in order to be 
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_voltage_M0_3      | 0x203          | 8       | TX            | Cell voltages module 0 cell 9 10 11    |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M0_4      | 0x204          | 8       | TX            | Cell voltages module 0 cell 12 13 14   |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M0_5      | 0x205          | 8       | TX            | Cell voltages module 0 cell 15 16 17   |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_temperature_M0_0  | 0x210          | 8       | TX            | Cell temperatures module 0 - 0 1 2     |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_temperature_M0_1  | 0x211          | 8       | TX            | Cell temperatures module 0 - 3 4 5     |
@@ -140,6 +144,10 @@ Message names in the DBC file can vary from the following tables in order to be 
 | CAN0_Cell_voltage_M1_2      | 0x222          | 8       | TX            | Cell voltages module 1 cell 6 7 8      |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_voltage_M1_3      | 0x223          | 8       | TX            | Cell voltages module 1 cell 9 10 11    |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M1_4      | 0x224          | 8       | TX            | Cell voltages module 1 cell 12 13 14   |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M1_5      | 0x225          | 8       | TX            | Cell voltages module 1 cell 15 16 17   |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_temperature_M1_0  | 0x230          | 8       | TX            | Cell temperatures module 1 - 0 1 2     |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
@@ -157,6 +165,10 @@ Message names in the DBC file can vary from the following tables in order to be 
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_voltage_M2_3      | 0x243          | 8       | TX            | Cell voltages module 2 cell 9 10 11    |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M2_4      | 0x244          | 8       | TX            | Cell voltages module 2 cell 12 13 14   |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M2_5      | 0x245          | 8       | TX            | Cell voltages module 2 cell 15 16 17   |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_temperature_M2_0  | 0x250          | 8       | TX            | Cell temperatures module 2 - 0 1 2     |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_temperature_M2_1  | 0x251          | 8       | TX            | Cell temperatures module 2 - 3 4 5     |
@@ -172,6 +184,10 @@ Message names in the DBC file can vary from the following tables in order to be 
 | CAN0_Cell_voltage_M3_2      | 0x262          | 8       | TX            | Cell voltages module 3 cell 6 7 8      |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_voltage_M3_3      | 0x263          | 8       | TX            | Cell voltages module 3 cell 9 10 11    |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M3_4      | 0x264          | 8       | TX            | Cell voltages module 3 cell 12 13 14   |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M3_5      | 0x265          | 8       | TX            | Cell voltages module 3 cell 15 16 17   |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_temperature_M3_0  | 0x270          | 8       | TX            | Cell temperatures module 3 - 0 1 2     |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
@@ -189,6 +205,10 @@ Message names in the DBC file can vary from the following tables in order to be 
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_voltage_M4_3      | 0x283          | 8       | TX            | Cell voltages module 4 cell 9 10 11    |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M4_4      | 0x284          | 8       | TX            | Cell voltages module 4 cell 12 13 14   |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M4_5      | 0x285          | 8       | TX            | Cell voltages module 4 cell 15 16 17   |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_temperature_M4_0  | 0x290          | 8       | TX            | Cell temperatures module 4 - 0 1 2     |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_temperature_M4_1  | 0x291          | 8       | TX            | Cell temperatures module 4 - 3 4 5     |
@@ -204,6 +224,10 @@ Message names in the DBC file can vary from the following tables in order to be 
 | CAN0_Cell_voltage_M5_2      | 0x2A2          | 8       | TX            | Cell voltages module 5 cell 6 7 8      |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_voltage_M5_3      | 0x2A3          | 8       | TX            | Cell voltages module 5 cell 9 10 11    |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M5_4      | 0x2A4          | 8       | TX            | Cell voltages module 5 cell 12 13 14   |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M5_5      | 0x2A5          | 8       | TX            | Cell voltages module 5 cell 15 16 17   |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_temperature_M5_0  | 0x2B0          | 8       | TX            | Cell temperatures module 5 - 0 1 2     |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
@@ -221,6 +245,10 @@ Message names in the DBC file can vary from the following tables in order to be 
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_voltage_M6_3      | 0x2C3          | 8       | TX            | Cell voltages module 6 cell 9 10 11    |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M6_4      | 0x2C4          | 8       | TX            | Cell voltages module 6 cell 12 13 14   |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M6_5      | 0x2C5          | 8       | TX            | Cell voltages module 6 cell 15 16 17   |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_temperature_M6_0  | 0x2D0          | 8       | TX            | Cell temperatures module 6 - 0 1 2     |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_temperature_M6_1  | 0x2D1          | 8       | TX            | Cell temperatures module 6 - 3 4 5     |
@@ -236,6 +264,10 @@ Message names in the DBC file can vary from the following tables in order to be 
 | CAN0_Cell_voltage_M7_2      | 0x2E2          | 8       | TX            | Cell voltages module 7 cell 6 7 8      |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_voltage_M7_3      | 0x2E3          | 8       | TX            | Cell voltages module 7 cell 9 10 11    |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M7_4      | 0x2E4          | 8       | TX            | Cell voltages module 7 cell 12 13 14   |
++-----------------------------+----------------+---------+---------------+----------------------------------------+
+| CAN0_Cell_voltage_M7_5      | 0x2E5          | 8       | TX            | Cell voltages module 7 cell 15 16 17   |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
 | CAN0_Cell_temperature_M7_0  | 0x2F0          | 8       | TX            | Cell temperatures module 7 - 0 1 2     |
 +-----------------------------+----------------+---------+---------------+----------------------------------------+
@@ -514,7 +546,9 @@ startup or can be requested via CAN.
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
 | CAN0_SIG_GS1_error_overvoltage           | 0                            | 8              | 0.0         | 255        | 1.0        | 0.0        | none     | Intel         |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
-| CAN0_SIG_GS1_error_undervoltage          | 8                            | 8              | 0.0         | 255        | 1.0        | 0.0        | none     | Intel         |
+| CAN0_SIG_GS1_error_undervoltage          | 8                            | 3              | 0.0         | 7          | 1.0        | 0.0        | none     | Intel         |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
+| CAN0_SIG_GS1_error_deep_discharge        | 11                           | 5              | 0.0         | 31         | 1.0        | 0.0        | none     | Intel         |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
 | CAN0_SIG_GS1_error_temperature_MCU0      | 16                           | 8              | 0.0         | 255        | 1.0        | 0.0        | none     | Intel         |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
@@ -546,7 +580,7 @@ startup or can be requested via CAN.
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+-------------+----------+---------------+
 | CAN0_SIG_GS2_daisyChain                  | 48                           | 8              | 0.0         | 255        | 1.0        | 0.0         | none     | Intel         |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+-------------+----------+---------------+
-| RESERVED_FOR_FUTURE_USE                  | 56                           | 8              | 0.0         | 255        | 1.0        | 0.0         | none     | Intel         |
+| CAN0_SIG_GS2_plausibilityCheck           | 56                           | 8              | 0.0         | 255        | 1.0        | 0.0         | none     | Intel         |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+-------------+----------+---------------+
 
 The signals of the messages ``CAN0_MSG_SystemState_0`` , ``CAN0_MSG_SystemState_1``
@@ -577,6 +611,13 @@ limit violations and internal errors. In general, the following bitfield is used
 * Bit[0]: maximum safety limit violated
 * Bit[1]: recommended safety limit violated
 * Bit[2]: maximum operating limit violated
+
+Flag ``CAN0_SIG_GS1_error_deep_discharge`` is a non-volatile flag saved in
+backup SRAM that indicates if a deep-discharge of a cell has been detected.
+This means that a power-cycle of the BMS won't reset the flag provided the coin
+cell is not empty. The affected cell has to be replaced and the BMS won't
+reset the flag until the corresponding CAN debug message was sent (see
+:ref:`faq_reset_deep_discharge`).
 
 ``CAN0_SIG_GS1_error_temperature_MCU0`` indicates if the operating range of
 the MCU0 junction temperature is violated. ``CAN0_SIG_GS1_error_cantiming``
@@ -626,6 +667,13 @@ A problem with the daisy-chain communication is indicated with bitfield
 * Bit[0]: spi error
 * Bit[1]: ltc PEC error
 * Bit[2]: multiplexer error
+
+Plausibility errors detected by on of the checks are indicated with bitfield
+``CAN0_SIG_GS2_plausibilityCheck`` (0: no error, 1: error)
+
+* Bit[0]: cell voltage plausibility error
+* Bit[1]: temperature sensor plausibility error
+* Bit[2]: pack voltage plausibility error
 
 ----------------
 
@@ -820,7 +868,7 @@ indicating the needed cooling/heating power.
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
 | CAN0_SIG_InsulationStatus                | 0                            | 8              | 0.0         | 255        | 1.0        | 0.0        | none     | Intel         |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
-| CAN0_SIG_InsulationValue                 | 8                            | 16             | 0.0         | 65535      | 1.0        | 0.0        | none     | Intel         |
+| CAN0_SIG_InsulationValue                 | 8                            | 16             | 0.0         | 65535      | 1.0        | 0.0        | kOhm     | Intel         |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
 
 
@@ -910,9 +958,9 @@ duration. The default configuration is 3 seconds.
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
 | **Signal name**                          | **Start bit**                | **Bit length** | **Min**     | **Max**    | **Factor** | **Offset** | **Unit** | **Byteorder** |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
-| CAN0_SIG_PackVolt_Battery                | 0                            | 32             | 0.0         | 4294967295 | 1.0        | 0.0        | none     | Intel         |
+| CAN0_SIG_PackVolt_Battery                | 0                            | 32             | 0.0         | 4294967295 | 1.0        | 0.0        | mV       | Intel         |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
-| CAN0_SIG_PackVolt_PowerNet               | 32                           | 32             | 0.0         | 4294967295 | 1.0        | 0.0        | none     | Intel         |
+| CAN0_SIG_PackVolt_PowerNet               | 32                           | 32             | 0.0         | 4294967295 | 1.0        | 0.0        | mV       | Intel         |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
 
 The signal ``CAN0_SIG_PackVolt_Battery`` provides the measured battery pack
@@ -979,15 +1027,40 @@ measured between ``Battery MINUS`` and ``Load PLUS`` (V2 Sense). See
 | CAN0_SIG_Mod0_volt_11                    | 40                           | 16             | 0.0         | 65535      | 1.0        | 0.0        | mV       | Intel         |
 +------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
 
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
+| **Message: CAN0_Cell_voltage_M0_4**      | **Message ID: 0x204**        | **DLC: 8**     |             |            |            |            |          |               |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
+| **Signal name**                          | **Start bit**                | **Bit length** | **Min**     | **Max**    | **Factor** | **Offset** | **Unit** | **Byteorder** |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
+| CAN0_SIG_Mod0_volt_valid_12_14           | 0                            | 8              | 0.0         | 255        | 1.0        | 0.0        | none     | Intel         |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
+| CAN0_SIG_Mod0_volt_12                    | 8                            | 16             | 0.0         | 65535      | 1.0        | 0.0        | mV       | Intel         |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
+| CAN0_SIG_Mod0_volt_13                    | 24                           | 16             | 0.0         | 65535      | 1.0        | 0.0        | mV       | Intel         |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
+| CAN0_SIG_Mod0_volt_14                    | 40                           | 16             | 0.0         | 65535      | 1.0        | 0.0        | mV       | Intel         |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
+
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
+| **Message: CAN0_Cell_voltage_M0_5**      | **Message ID: 0x205**        | **DLC: 8**     |             |            |            |            |          |               |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
+| **Signal name**                          | **Start bit**                | **Bit length** | **Min**     | **Max**    | **Factor** | **Offset** | **Unit** | **Byteorder** |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
+| CAN0_SIG_Mod0_volt_valid_15_17           | 0                            | 8              | 0.0         | 255        | 1.0        | 0.0        | none     | Intel         |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
+| CAN0_SIG_Mod0_volt_15                    | 8                            | 16             | 0.0         | 65535      | 1.0        | 0.0        | mV       | Intel         |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
+| CAN0_SIG_Mod0_volt_16                    | 24                           | 16             | 0.0         | 65535      | 1.0        | 0.0        | mV       | Intel         |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
+| CAN0_SIG_Mod0_volt_17                    | 40                           | 16             | 0.0         | 65535      | 1.0        | 0.0        | mV       | Intel         |
++------------------------------------------+------------------------------+----------------+-------------+------------+------------+------------+----------+---------------+
 
 Three cell voltages are transmitted within one CAN message. The signal ``CAN0_SIG_Modx_volt_valid_x_x`` contains three valid flags (bit 0, 1 and 2) for the voltages transmitted in
 the same messages. 0 --> valid cell voltage, 1 --> invalid cell voltage. Signal ``CAN0_SIG_Mod0_volt_valid_6_8`` for example indicates valid cell voltages with
 
 * bit[0]: Module 0 cell voltage 6
-* bit[0]: Module 0 cell voltage 7
-* bit[0]: Module 0 cell voltage 8
-
-Currently, the valid signals are not backed up with information and provided for forward-compatibility only. Therefore the flags always indicate valid cell voltages.
+* bit[1]: Module 0 cell voltage 7
+* bit[2]: Module 0 cell voltage 8
 
 ----------------
 

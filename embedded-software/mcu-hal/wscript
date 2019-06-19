@@ -37,13 +37,43 @@
 #
 # &Prime;This product is derived from foxBMS&reg;&Prime;
 
-"""WAF script lists the subdirectories of hal/ to be built
-"""
+
+import os
 
 
 def build(bld):
-    """Directories listed in dir_build_list are built, when the waf function
-    "build" is called.
-    """
-    dir_build_list = [bld.env.CPU_MAJOR + '_HAL_Driver']
-    bld.recurse(dir_build_list)
+    srcs = ' '.join([
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_adc.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_adc_ex.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_can.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_cortex.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_dma.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_ll_fmc.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_flash.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_flash_ex.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_gpio.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_iwdg.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_pwr.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_pwr_ex.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_rcc.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_rcc_ex.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_rtc.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_rtc_ex.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_sdram.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_spi.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_tim.c'),
+           os.path.join(bld.env.CPU_MAJOR + '_HAL_Driver', 'Src', 'stm32f4xx_hal_uart.c')])
+
+    includes = os.path.join(bld.bldnode.abspath()) + ' '
+    includes += bld.env.hal_dirs + ' '
+    includes += ' '.join([
+                bld.path.get_src().abspath(),
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'general', 'config'),
+                os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'general', 'config', bld.env.CPU_MAJOR)])
+
+    bld.stlib(target='foxbms-stmhal',
+              source=srcs,
+              includes=includes,
+              cflags=bld.env.CFLAGS_hal,
+              features=['size', 'check_includes'])

@@ -174,13 +174,14 @@ typedef struct {
  */
 typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
-    uint32_t timestamp;                         /*!< timestamp of database entry                */
-    uint32_t previous_timestamp;                /*!< timestamp of last database entry           */
-    uint16_t voltage[BS_NR_OF_BAT_CELLS];       /*!< unit: mV                                   */
-    uint32_t valid_voltPECs[BS_NR_OF_MODULES];  /*!< bitmask if PEC was okay. 0->ok, 1->error   */
-    uint32_t sumOfCells[BS_NR_OF_MODULES];      /*!< unit: mV                                   */
-    uint8_t valid_socPECs[BS_NR_OF_MODULES];   /*!< 0 -> if PEC okay; 1 -> PEC error           */
-    uint8_t state;                              /*!< for future use                             */
+    uint32_t timestamp;                         /*!< timestamp of database entry                         */
+    uint32_t previous_timestamp;                /*!< timestamp of last database entry                    */
+    uint16_t voltage[BS_NR_OF_BAT_CELLS];       /*!< unit: mV                                            */
+    uint32_t valid_volt[BS_NR_OF_MODULES];      /*!< bitmask if voltages are valid. 0->valid, 1->invalid */
+    uint32_t sumOfCells[BS_NR_OF_MODULES];      /*!< unit: mV                                            */
+    uint8_t valid_socPECs[BS_NR_OF_MODULES];    /*!< 0 -> if PEC okay; 1 -> PEC error                    */
+    uint32_t packVoltage_mV;                    /*!< uint: mV                                            */
+    uint8_t state;                              /*!< for future use                                      */
 } DATA_BLOCK_CELLVOLTAGE_s;
 
 /**
@@ -190,7 +191,7 @@ typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
     uint32_t timestamp;                     /*!< timestamp of database entry                */
     uint32_t previous_timestamp;            /*!< timestamp of last database entry           */
-    uint8_t openwire[BS_NR_OF_BAT_CELLS];   /*!< 1 -> open wire, 0 -> everything ok */
+    uint8_t openwire[BS_NR_OF_MODULES * (BS_NR_OF_BAT_CELLS_PER_MODULE+1)];   /*!< 1 -> open wire, 0 -> everything ok */
     uint8_t state;                          /*!< for future use                       */
 } DATA_BLOCK_OPENWIRE_s;
 
@@ -198,12 +199,12 @@ typedef struct {
  * data block struct of cell temperatures
  */
 typedef struct {
-    /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
-    uint32_t timestamp;                         /*!< timestamp of database entry                */
-    uint32_t previous_timestamp;                /*!< timestamp of last database entry           */
-    int16_t temperature[BS_NR_OF_TEMP_SENSORS];             /*!< unit: degree Celsius                       */
-    uint16_t valid_temperaturePECs[BS_NR_OF_MODULES];  /*!< bitmask if PEC was okay. 0->ok, 1->error   */
-    uint8_t state;                                          /*!< for future use                             */
+    /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock                      */
+    uint32_t timestamp;                            /*!< timestamp of database entry                             */
+    uint32_t previous_timestamp;                   /*!< timestamp of last database entry                        */
+    int16_t temperature[BS_NR_OF_TEMP_SENSORS];    /*!< unit: degree Celsius                                    */
+    uint16_t valid_temperature[BS_NR_OF_MODULES];  /*!< bitmask if temperatures are valid. 0->valid, 1->invalid */
+    uint8_t state;                                 /*!< for future use                                          */
 } DATA_BLOCK_CELLTEMPERATURE_s;
 
 /**
@@ -446,6 +447,7 @@ typedef struct {
     uint8_t can_cc_used;                             /*!< 0 -> not present, 1 -> present    */
     uint8_t mcuDieTemperature;                       /*!< 0 -> no error, 1 -> error        */
     uint8_t coinCellVoltage;                         /*!< 0 -> no error, 1 -> error        */
+    uint8_t plausibilityCheck;                       /*!< 0 -> no error, else: error       */
 } DATA_BLOCK_ERRORSTATE_s;
 
 
@@ -556,10 +558,11 @@ typedef struct {
  */
 typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
-    uint32_t timestamp;                                                       /*!< timestamp of database entry                */
-    uint32_t previous_timestamp;                                              /*!< timestamp of last database entry           */
-    uint16_t gpiovoltage[BS_NR_OF_MODULES * BS_NR_OF_GPIOS_PER_MODULE];       /*!< unit: mV                                   */
-    uint8_t state;                                                            /*!< for future use                             */
+    uint32_t timestamp;                                                  /*!< timestamp of database entry                         */
+    uint32_t previous_timestamp;                                         /*!< timestamp of last database entry                    */
+    uint16_t gpiovoltage[BS_NR_OF_MODULES * BS_NR_OF_GPIOS_PER_MODULE];  /*!< unit: mV                                            */
+    uint16_t valid_gpiovoltages[BS_NR_OF_MODULES];                       /*!< bitmask if voltages are valid. 0->valid, 1->invalid */
+    uint8_t state;                                                       /*!< for future use                                      */
 } DATA_BLOCK_ALLGPIOVOLTAGE_s;
 
 /*================== Constant and Variable Definitions ====================*/

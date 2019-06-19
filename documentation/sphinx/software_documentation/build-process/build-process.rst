@@ -6,8 +6,8 @@
 Build Process
 =============
 
-|foxbms| uses ``waf The meta build system`` for building binaries for the
-|foxbms| MCUs and the documentation.
+|foxbms| uses ``waf The meta build system`` for building binaries and the
+documentation.
 
 For detailed information on |waf| see `waf.io <https://waf.io/>`_. A short
 introcution to |waf| is given at
@@ -21,13 +21,14 @@ General
 Where to find the toolchain?
 ++++++++++++++++++++++++++++
 
-The |waf| toolchain is located in directory ``foxbms\tools``, and is
-```waf``. This archive is automatically unpacked in a directory named
-something like ``waf-{{X}}-{{X}}-{{X}}-{{some-hash-value}}`` containing the waf
-library, where ``{{X}}`` is the waf version. It is unpacked into ``foxbms\tools``.
-It is assumed that all commands are run from directory ``foxbms``.
-Therefore |waf| has to be always called by ``python tools\waf some-command``
-where ``some-command`` is an argument defined in the |wscript|.
+The |waf| toolchain is located in the directory ``foxbms\tools``, in the binary
+``waf``. This archive is automatically unpacked in a directory named
+something like ``waf-{{X}-{{some-hash-value}}`` containing the waf
+library, where ``{{X}}`` is the dash-separated version number of ``waf``. It is
+unpacked into ``foxbms\tools``. It is generally assumed that all commands are
+run from directory ``foxbms``. Therefore |waf| has to be always called by
+``python tools\waf some-command`` where ``some-command`` is an argument defined
+in the |wscript|.
 
 Additional build tools are located in ``foxbms\tools\waftools``. These are
 the tooles needed for building the documentation, i.e., ``doxygen`` and
@@ -50,12 +51,13 @@ to waf must be given relative to that directory. This path is ``tools\waf``.
     :caption: How to call waf
 
     cd path\to\foxbms
-    python tools\waf {{some command}}
+    python tools\waf {{some-command}}
 
 
 What commands can be used?
 ++++++++++++++++++++++++++
-To get an overview of support commands run ``--help`` on the |waf| library:
+To get an overview of support commands run ``--help`` or ``-h`` on the |waf|
+binary:
 
 ..  code-block::    console
     :name: wafhelp
@@ -63,10 +65,16 @@ To get an overview of support commands run ``--help`` on the |waf| library:
 
     python tools\waf --help
 
+This is the output in |foxbms| version |version|
+
 .. literalinclude:: help.txt
     :language: console
     :name: outputofwafhelp
     :caption: Waf help in |foxbms|
+
+The ``configure`` command
++++++++++++++++++++++++++
+
 
 Before building any binaries or documentation is possible, the project needs to
 be configured. A successfull ``configure`` command and its ouput is shown below:
@@ -79,8 +87,12 @@ be configured. A successfull ``configure`` command and its ouput is shown below:
     (...)
     'configure' finished successfully (0.340s)
 
+The ``build`` commands
+++++++++++++++++++++++
+
+
 After the project has been configured, a build can be triggered and it is
-generally exectued by the ``build`` command, but as |foxbms| requries building
+generally exectued by the ``build`` commands. As |foxbms| requries building
 variants, one has to use e.g., ``build_primary`` in order to build binaries
 for the primary MCU.
 
@@ -170,38 +182,58 @@ and the targets itself is listet below:
 
     As seen from ``--help`` the possible ``clean`` commands are
 
+    -   ``clean_all``
+    -   ``clean_libs``
     -   ``clean_primary``
+    -   ``clean_primary_bare``
     -   ``clean_secondary``
+    -   ``clean_secondary_bare``
     -   ``distclean``
 
-    Cleaning the general sphinx documentation alone is currently not supported.
+    Each command cleans the specified option, except for ``distclean``.
     However it is possible to make a complete clean by ``distclean``. After
-    distclean the entire build direcory and all lock files etc. are deleted and
-    the project needs to be configured again.
+    ``distclean`` the entire build directory and all lock files etc. are
+    deleted and the project needs to be configured again.
+    Cleaning the general sphinx documentation alone is currently not supported,
+    but it can be achivied by running ``distclean``.
 
 Targets
 -------
 
-As stated above thetargets and subtargets of the build process are shown by
-``list_x`` where ``x`` is the specified target. The main target is the ``*.elf``
-file. However some targets are build afterwards. After successfully linking the
-map file is generated.
+As stated above the targets and sub targets of the build process are shown by
+``list_x`` where ``x`` is the specified target. The main target is the
+``*.elf.unpatched`` file. The final targets are build afterwards. After
+successfully linking the map file is generated.
 
 These logging files are found in ``build`` and ``build\{{target}}``.
-Addiotional to the ``*.elf`` file a ``*.hex`` of the binary is generated.
+Additional to the ``*.elf.unpatched`` and ``*.elf`` files a ``*.hex`` and two
+``*.bin`` files of the binary are generated. The ``*.bin`` files are separated
+into the flash and the flashheader. The size of each object/binary is written
+to a log file.
 
-The ``*.hex`` is needed, as it is used to calculate the checksum of the binary.
-Afterwards the calculted checksum is written back into the ``*.elf`` and
-``*.hex`` files. Based on this binary the ``flash`` and ``flashheader`` are
-generated by gcc's ``objcopy``. The implementation of this can be found in
+The targets are build as follows (final targets are filled gray):
 
--   ``foxbms\tools\chksum\*``: All files in are neeed
--   ``foxbms\wscript``: See implementation of ``def add_chksum_task(self)``
-    and ``class chksum(Task.Task)``.
+..  graphviz::
+    :caption: |foxbms| build process targets
+    :name: foxbms_build_process_targets
 
-In a post build step the ``size`` is run on all binaries and generates a
-logfile.
-
+        digraph {
+            rankdir=TB;
+            graph [fontname = "monospace"];
+            node [fontname = "monospace"];
+            edge [fontname = "monospace"];
+            "foxbms_flash.bin" [style=filled];
+            "foxbms_flashheader.bin" [style=filled];
+            "foxbms.hex" [style=filled];
+            "foxbms.elf" [style=filled];
+            "foxbms.elf.unpatched" -> "foxbms_flash.bin" [label="objcopy"];
+            "foxbms.elf.unpatched" -> "foxbms_flashheader.bin.unpatchted" [label="objcopy"];
+            "foxbms_flash.bin" -> "checksum.yml" [label="tsk_cal_chksum"];
+            "foxbms_flashheader.bin.unpatchted" -> "checksum.yml" [label="tsk_cal_chksum"];
+            "checksum.yml" -> "foxbms.elf" [label="objdump"];
+            "foxbms.elf" -> "foxbms.hex" [label="objcopy"];
+            "foxbms.elf" -> "foxbms_flashheader.bin" [label="objcopy"];
+     }
 
 Build Process
 -------------
@@ -214,21 +246,36 @@ This sections gives an overview how the build process is defined. All features
 are generally defined in the top |wscript| located at
 |mainwscript|.
 
-The minimum of functions that need to be defined to build are in |waf|
+The minimum functions that are needed to be defined a build in |waf| are:
 
 - ``configure`` and
 - ``build``.
 
 As the toolchain needs more targets the following functions need to be
-implemented: ``options``, ``size``, ``dist``, ``doxygen``, ``sphinx``.
-Furthermore functions and classes for calculataing the checksum (``chksum``,
-``add_chksum_task``), stripping debug symbols in release mode (``strip``,
-``add_strip_task``), creating a ``hex`` file from the ``elf`` file (``hexgen``,
-``add_hexgen_task``), generating ``bin`` files from ``elf`` files
-(``binflashheadergen``, ``binflashgen``, ``add_bingen_task``) and compiling
-assembler files (``Sasm``, ``asm_hook``).
+implemented: ``doxygen`` and ``sphinx``.
 
-For implemenation details see the |wscript| itself.
+Furthermore the following features are needed:
+
+- for calculating the checksum based on the ``*.elf.unpatched`` file the
+  class ``tsk_cal_chksum`` and for creating the ``*.elf`` file the
+  ``tsk_wrt_chksum`` class and for adding these features the function
+  ``add_chksum_task``,
+- for stripping the debug symbols in release mode the class ``strip`` and the
+  function ``add_strip_task``,
+- for creating a ``hex`` file from the ``elf`` file the class
+  ``hexgen``  and the function ``add_hexgen_task``,
+- for generating ``bin`` files from ``elf`` files the classes
+  ``tsk_binflashheadergen``, ``tsk_binflashgen`` and the function
+  ``add_bingen_task`` and the class ``tsk_binflashheaderpatch`` and the
+  function ``add_patch_bin_task``,
+- for generating size information of the objects and binaries the class
+  ``size`` and the function ``process_sizes``,
+- for copying the libraries build by ``build_libs`` into the correct
+  directories the class ``copy_libs`` and the function ``add_copy_libs``,
+- for compiling assembler files ``*.s`` the class ``Sasm`` and the function
+  ``asm_hook``.
+
+For implementation details see the |wscript| itself.
 
 Some of these functionalities require scripts from ``foxbms\tools``.
 
@@ -333,22 +380,23 @@ Building and Linking with a Library
 -----------------------------------
 
 The toolchain enables to build a library and then links against the library.
-it is possible to build and link multiple libraries to the binaries.
+It is possible to build and link multiple libraries into the binaries.
 
 The ``wscript`` in ``embedded-software\libs`` lists the libraries to be build.
 Libraries that should be build have to be listed here. Based on the example
 library ``testlib`` it is shown how to include a library in |foxbms|.
 
 .. note::
-    Infact the ``libs`` directory contains two test libraries (``foxbms-user-lib`` and
-    ``my-foxbms-library``) in order to show how multiple libraries can be used.
-    The first example shows how to build one single library and in the second
-    example it is shown, how to build and use more than one library.
+    In fact the ``libs`` directory contains two test libraries
+    (``foxbms-user-lib`` and ``my-foxbms-library``) in order to show how
+    multiple libraries can be used. The first example shows how to build one
+    single library and in the second example it is shown, how to build and use
+    more than one library.
 
 **General Setup**
 
 The ``wscript`` in ``embedded-software\libs`` lists in the function
-``bld.recurse(...)`` the directories containg the sources for the to be build
+``bld.recurse(...)`` the directories containing the sources for the to be build
 library (see line 11 in :numref:`libs_wscript`).
 
 .. literalinclude:: ./../../../../embedded-software/libs/wscript
@@ -389,9 +437,6 @@ the library directory, for this example these are are ``testlib.c`` and
         For later on further expanding the ``advanced-algorithms`` example, the
         library name ``my-advanced-algorithm`` is assumed.
 
- -  All header files get copied to the output directory (see line 14-17).
-
-
 .. literalinclude:: ./../../../../embedded-software/libs/testlib/wscript
    :caption: wscript
    :name: wscript_for_testlib
@@ -400,12 +445,14 @@ the library directory, for this example these are are ``testlib.c`` and
    :lines: 43-
    :emphasize-lines: 5-6,11,14-
 
-- The object files (``*.o``) are found in ``build\libs\embedded-software\*``.
-- The library outputs (the ``*.a``\ -files) are stored in
+- The object files (``*.o``) and the library (``*.a``) are found in
+  ``build\libs\embedded-software\libs\testlib\``.
+- The libraries (the ``*.a``\ -files) are copied in
   ``build\lib\*.a``. When building the default dummy libraries these are
   ``build\lib\libfoxbms-user-lib.a`` and ``build\lib\libmy-foxbms-library.a``.
-  The *lib*-prefix is generated automatically.
-- The headers are copied to ``build\include``.
+  The *lib*-prefix is generated automatically. This task is generated by the
+  ``copy_lib`` feature (see line 14).
+- The headers are copied to ``build\include`` (see line 15-17).
 
 .. warning::
     **The header names for all library headers are checked for uniqueness.**
@@ -413,7 +460,7 @@ the library directory, for this example these are are ``testlib.c`` and
     will lead to a build error. This check needs to be performed, as all
     headers get copied to include directory at ``build\include``.
 
-**The library**
+**The Library**
 
 The library declaration of ``super_function(uint8_t a, uint8_t b)`` is in ``testlib.h``:
 
@@ -424,7 +471,8 @@ The library declaration of ``super_function(uint8_t a, uint8_t b)`` is in ``test
    :lines: 53-
    :emphasize-lines: 13
 
-The library defines a function ``super_function(uint8_t a, uint8_t b)`` in ``testlib.c``:
+The library defines a function ``super_function(uint8_t a, uint8_t b)`` in
+``testlib.c``:
 
 .. literalinclude:: ./../../../../embedded-software/libs/testlib/testlib.c
    :caption: testlib.c
@@ -434,7 +482,18 @@ The library defines a function ``super_function(uint8_t a, uint8_t b)`` in ``tes
 
 **Building**
 
-#.  Configure the |foxbms| project to work with a library, in the frist example
+#.  Build the library (or libraries):
+
+    ..  code-block::    console
+        :name: builthelibs
+        :caption: Build the libraries
+
+        python tools\waf build_libs
+
+    Now all libraries are present in ``build\libs`` and the headers are in
+    ``build\include``.
+
+#.  Configure the |foxbms| project to work with a library, in the first example
     it is the ``foxbms-user-lib`` library.
 
     ..  code-block::    console
@@ -450,16 +509,6 @@ The library defines a function ``super_function(uint8_t a, uint8_t b)`` in ``tes
     ..  code-block::    console
 
         python tools\waf configure --libs=my-advanced-algorithm
-
-
-
-#.  Build the library (or libraries):
-
-    ..  code-block::    console
-        :name: builthelibs
-        :caption: Build the libraries
-
-        python tools\waf build_libs
 
 #.  Include the headers needed for the functions in the sources and use the functions
     as needed.
@@ -498,7 +547,7 @@ A project may want to use multiple libraries. For this example the two provided
 dummy libraries are assumed (``foxbms-user-lib`` and ``my-foxbms-library``).
 
 #.  The project is configured to work with both libraries. The library names are
-    given as command line argument separated by comma (**no addtional \
+    given as command line argument separated by comma (**no additional \
     whitespace**).
 
     ..  code-block::    console
@@ -549,3 +598,24 @@ dummy libraries are assumed (``foxbms-user-lib`` and ``my-foxbms-library``).
         :caption: Build the |foxbms| binary
 
         python tools\waf build_primary
+
+Building the Test
+-----------------
+
+.. note::
+
+    The test builds described in this section are not mandatory. They can be
+    used as a simple check that the software architecture is kept (see
+    :ref:`foxbms_software_architecture`).
+
+In order to verify that low level drivers (i.e., the drivers in
+``embedded-software\mcu-common\driver``) do not relay on higher level modules
+(e.g., FreeRTOS, database, etc.) two tests are included. These can be build by
+
+    ..  code-block::    console
+        :name: build_bare_build
+        :caption: Build bare tests for primary and secondary mcu
+
+        python tools\waf configure
+        python tools\waf configure build_primary_bare
+        python tools\waf configure build_secondary_bare

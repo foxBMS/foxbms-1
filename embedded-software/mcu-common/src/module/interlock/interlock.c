@@ -435,10 +435,10 @@ void ILCK_CheckFeedback(void) {
 
     DB_WriteBlock(&ilckfeedback_tab, DATA_BLOCK_ID_ILCKFEEDBACK);
 
-    if (interlock_feedback != ILCK_GetInterlockSetValue()) {
-        DIAG_Handler(DIAG_CH_INTERLOCK_FEEDBACK, DIAG_EVENT_NOK, 0, NULL_PTR);
-    } else {
-        DIAG_Handler(DIAG_CH_INTERLOCK_FEEDBACK, DIAG_EVENT_OK, 0, NULL_PTR);
+    STD_RETURN_TYPE_e result = E_NOT_OK;
+    if (interlock_feedback == ILCK_GetInterlockSetValue()) {
+        result = E_OK;
     }
+    DIAG_checkEvent(result, DIAG_CH_INTERLOCK_FEEDBACK, 0);
 }
 #endif

@@ -2,6 +2,174 @@
 Changelog
 =========
 
+**Release 1.6.0**
+
+Software:
+
+* Toolchain:
+
+  * Updated to ``waf-2.0.15`` (from ``waf-2.0.14``)
+  * ``size`` is now implemented as a waf-feature to speed up build times
+  * foxBMS custom waf tasks displayed wrong information in the terminal about
+    the running processes (e.g., ``Compiling`` instead of
+    ``Creating hex file``)
+  * fixed a task order constraint when building the elf file. For details see
+    the updated build documentation (see section *Build Process*).
+  * added a simple test, that verifies that low level drivers do not relay on
+    higher level modules (e.g., FreeRTOS, database, etc.). A project can be
+    tested by running ``python tools\waf build_primary_bare`` or
+    ``python tools\waf build_secondary_bare`` (see section *Build Process*).
+  * removed unnecessary ``run_always`` attribute to reduce build time
+  * rewrote the build of libraries. Now libraries can be build independent from
+    the project configuration. Libraries can then later be added to the project
+    as needed with the ``configure --libs=...`` command (see section
+    *Build Process*).
+  * fixed ``clean_libs`` command as it did not remove all ``build_libs``
+    artifacts
+  * if an include directory does not exist, an error is raised
+  * if a directory is included more than once, an error is raised
+  * some build attributes of ``bld.env`` inside the ``wscript`` s haven been
+    renamed (``__inc_hal`` to ``hal_dirs``, ``__inc_FreeRTOS`` to
+    ``FreeRTOS_dirs``, ``__bld_common`` to ``common_dir``, ``__sw_dir`` to
+    ``es_dir`` and ``__bld_project`` to ``mcu_dir``
+  * an error is raised if the path to the foxBMS project directory contains
+    whitespace
+  * an error is raised if a comparison between signed and unsigned integers
+    is used
+  * ensured compatibility with PyYAML v5.1 by supplying a Loader-parameter
+    to calls of yaml.load()
+  * fixed generation of .hex file to only contain flash content
+  * raise the ``switch``-warning to error in GCC
+  * add a configuration for cppcheck to the repository
+  * raise the ``type-limits``-warning to error in GCC
+  * raise the ``double-promotion``-warning to error in GCC
+
+* Bugfixes:
+
+  * in the function ``LTC_RX_PECCheck()``, the LTC PEC (packet error code)
+    check of the last module in the daisy-chain was overriding the PEC check
+    of all preceding modules. If the PEC of the last module was correct, all
+    other PECs were detected as correct, even if some errors were
+    present (``ltc.c``)
+  * fixed compile error, when setting define ``MEAS_TEST_CELL_SOF_LIMITS``
+    to ``TRUE`` (``bms.c``)
+  * some variables used to store database content at the beginning of the
+    ``BMS_Trigger()`` function were defined as local variables. This could lead
+    to a stack overflow if a high number of modules was configured. These
+    variables have been defined as static to solve this issue (``bms.c``)
+  * the ``DIAG_GeneralHandler`` has been removed. The ``DIAG_Handler`` must be
+    used for all diagnosis instead, except for the diagnosis of the contactors,
+    which is handled by ``DIAG_ContHandler``.
+  * ``DIAG_Handler`` returned wrong value if it was called when an error has
+    already been detected (``diag.c``)
+  * If more cell voltages or temperatures were defined for CAN transmission
+    than for measurement in the battery system, during transmission, the array
+    boundaries of the local variables storing database entries were violated.
+    now boundary violations are checked and default values are sent for CAN
+    signals not corresponding to existing measurements. (``cansignal_cfg.c/h``)
+  * fixed incorrect array offset mapping CAN1 RX messages to respective CAN1 RX
+    signals (``cansignal.c``)
+  * moved fuse state error handling from ``CONT`` module to ``BMS`` module to
+    avoid ``CONT`` state machine switching into error state without ``BMS``
+    state machine transitioning into error state
+  * fixed an implicit cast to uint that prevented working protection of the
+    battery cells against overdischarge and -charge below zero degrees
+    (``bms.c``)
+  * moved checksum feature to main ``wscript``
+  * added initialization state flags to contactor-, BMS- and
+    balancing-statemachine in order to fix race-conditions between these
+    statemachines and the sys-statemachine
+    (``sys.c/h``, ``bal.c/h``, ``bms.c/h``, ``contactor.c/h``)
+  * fixed overlapping signals in dbc file for CAN message CAN_Cell_voltage_M2_0
+  * fixed function ``BMS_CheckCurrent()``. If contactors opened in case of
+    over-current, error flags remained set in spite of the current being
+    back to zero.
+  * allow for current thresholds in ``BMS_CheckCurrent()`` differing from the
+    cell-limits and adaptable to both charge and normal powerline
+    (``bms.c``, ``contactor.c/h``)
+
+* Enhancements:
+
+  * reimplemented UART COM Decoder as a non-realtime background task for easier
+    use
+  * removed direct register access in UART module to improve portability
+    (``uart.c/h``)
+  * added plausibility module to check pack voltage (``plausibility.c/h``)
+  * added plausibility module to check cell voltage and cell temperature
+    (``slaveplausibility.c/h``)
+  * the Python wrapper and DLL needed to run the graphical user interface
+    with a CAN-adapter from the company Peak are now redistributed with
+    foxBMS. Before using them, the conditions in the file ``readme.txt`` in
+    ``tools\gui`` must be read and accepted.
+  * updated STM32 HAL to version 1.7.4 and CMSIS to version 2.6.2
+  * rewrote CAN driver to work with new HAL CAN module introduced in
+    HAL version 1.7.0 (``can.c/h``, ``can_cfg.c/h``)
+  * updated FreeRTOS to version 10.2.0 and adapted FreeRTOSConfig.h accordingly
+  * added dedicated datasheet files for EPCOS B57251V5103J060, EPCOS
+    B57861S0103F045 and Vishay NTCALUG01A103G NTC sensors to calculate cell
+    temperatures using either a look-up table or polynomial approximation
+  * the diagnosis modules of primary and secondary were unified and moved to
+    mcu-common
+  * error and safe operating area flags are now written periodically (1ms) to
+    prevent erroneous database operations due to concurrency effects
+  * moved #define to configure current sensor response timeout from
+    ``cansignal_cfg.h`` to ``batterysystem_cfg.h``
+  * moved #define to select if current sensor is in cyclic or triggered mode
+    from ``can_cfg.h`` to ``batterysystem_cfg.h``
+  * added simple diag-function that allows to track the call period
+    of system tasks
+  * moved linker scripts from ``src`` to ``general\config\STM32F4xx``
+  * moved FreeRTOS configuration headers from ``src\general\config`` to
+    ``src\general\config\FreeRTOS``
+  * removed ``MCU_0_`` and ``MCU_1_`` from the pin defines in ``io_mcu_cfg``
+    to increase the readability of the drivers
+  * added deep-discharge flag that gets set if the deep-discharge voltage limit
+    is violated. Flag is stored in non-volatile backup SRAM and can only be
+    reset with CAN debug message. This prevents closing the contactors
+    before the affected cell has been replaced
+  * added support for FreeRTOS runtime stats. The stats can be accessed by the
+    new 'printstats' command in the COM module.
+  * added state transition functions for ltc-statemachine to reduce
+    code size (``ltc.c``)
+  * added stack overflow-handler that can be used for debugging and detecting
+    stack overflows during development
+  * disabled dynamic allocation for operating system, removed heap-implementation
+    and switched to static allocation for operating system components
+  * information about the git repository from which the binaries are built is
+    included in the binaries. The define ``BUILD_ALLOW_DIRTY_STARTUP`` has been
+    added in ``general.h`` to allow or disallow the startup of the BMS in case
+    of a non clean repository.
+  * set error flag if current flows in spite of all contactors being open
+    (``bms.c``)
+  * added support for TCA6408A port expander in ``LTC`` module (write output
+    pins and read input pins)
+  * added decoding for up to 18 cell voltages per module in foxBMS interface
+
+Hardware:
+
+* removed version number from hardware file names
+
+* Slave 12-cell v2.1.7
+
+  * EMI layout improvements (targeting UN ECE R10 Revision 5)
+  * added RC filters on NTC sensor inputs
+  * replaced linear regulators for LTC6811 5V supply with DC/DC converters
+  * added circuit for switching off 5V DC/DC converters in LTC sleep mode, thus
+    reducing the current consumption to less than 20µA
+
+* Interface LTC6820 v1.9.4
+
+  * replaced connectors J500 and J501 with TE 534206-4 due to clearance issues
+    in component placement
+
+Documentation:
+
+* added missing unit information for some CAN signals in section
+  ``Communicating with foxBMS``
+* added a section on how to configure ``conda`` to work behind a proxy.
+
+------------------------------------------------------------------------------
+
 **Release 1.5.5**
 
 Software:
@@ -12,37 +180,43 @@ Software:
 
 * Bugfixes:
 
-  * fixed UART Frame Error with floating RX pin by enabling Pull-Up
-  * fixed a bug, that read wrong wrong entry from database when checking
-    battery system current against SOF limits
-  * fixed a bug, that flag ``SPI transmit_ongoing`` flag was reset after
-    SPI dummy byte was transmitted. This lead to invalid measured cell voltages
-    if the daisy-chain was too long
-  * enabled simultaneous measurement of V_bat and MCU temperature in ADC module
-  * fixed temperature calculation in ADC module
-  * fixed a bug, that balancing threshold for voltage-based balancing was set
-    not in function ``BAL_Activate_Balancing_Voltage`` but in bal statemachine
-
+  * fixed UART frame error due to floating RX pin by enabling pull-up in the
+    MCU
+  * fixed reading wrong entry from database when checking battery system
+    current against SOF limits (``bms.c``)
+  * the flag SPI transmit_ongoing was reset incorrectly after SPI dummy byte
+    was transmitted. This lead to invalid measured cell voltages if the
+    daisy-chain was too long (i.e., more than 10 BMS-Slaves in the daisy-chain)
+  * enabled simultaneous measurement of lithium-coin-cell V_bat and MCU
+    temperature in ADC module
+  * fixed error calculating MCU temperature in ADC module
+  * balancing threshold for voltage-based balancing was set in the wrong place:
+    it is now set in the function BAL_Activate_Balancing_Voltage (``bal.c``)
 
 * Enhancements:
 
   * database entries are initialized with 0 to prevent undefined data if
     entries are read before valid values are written into the database
+    (``database.c``)
 
 Hardware:
 
-* Slave 18-cell v1.1.5
+* BMS-Slave 18-cell v1.1.5
 
-  * EMI layout improvements
-  * adapted component variants to other changes
-  * replaced DC/DC converter power inductor with AEC-Q compliant one
-  * added circuit for switching off DC/DC converters in LTC sleep mode
-  * added pull-ups on all GPIOs of the LTCs
+  * EMI layout improvements (targeting UN ECE R10 Revision 5)
+  * adapted component variations to simplify the management of component
+    variations in Altium Designer
+  * replaced DC/DC converter power inductor to comply with AEC-Q
+  * added circuit for switching off DC/DC converters in LTC sleep mode, thus
+    reducing the current consumption to less than 20µA
+  * added pull-ups on GPIOs 6-9 of the LTCs (open-drain outputs) to enable them
+    to be used as digital I/O
 
 Documentation:
 
-* Fixed pin 11 in the pinout of the interface connectors for 1.2.0 and above
-* Updated Slave 18-cell hardware documentation for version 1.1.5
+* BMS-Interface: fixed pin 11 in the pinout of the connectors for version 1.2.0
+  and above
+* Updated BMS-Slave 18-cell hardware documentation for version 1.1.5
 * Updated year in copyright
 * Fixed some wrong @file attributes in doxygen comments
 
@@ -567,6 +741,8 @@ The hardware changelog is now included in the regular changelog (since version
 *foxBMS Interface*
 
 +--------+------------------------------------------------------------------------------------------------------+
+| V1.9.4 | replaced connectors J500 and J501 with TE 534206-4 due to clearance issues in component placement    |
++--------+------------------------------------------------------------------------------------------------------+
 | V1.9.3 | replace NAND-gate with SN74LVC00AQPWRQ1                                                              |
 +--------+------------------------------------------------------------------------------------------------------+
 | V1.9.2 | replace OR-gate with NAND-gate and add direction pin                                                 |
@@ -590,6 +766,12 @@ The hardware changelog is now included in the regular changelog (since version
 
 *foxBMS Slave 12-cell (LTC6811-1)*
 
++--------+------------------------------------------------------------------------------------------------------+
+| V2.1.7 | | modified component designators to be compatible with 18-cell versions                              |
++--------+------------------------------------------------------------------------------------------------------+
+| V2.1.6 | | EMI improvements (layout)                                                                          |
+|        | | added RC filters on NTC sensor inputs                                                              |
+|        | | added DC/DC converters for 5V LTC supplies                                                         |
 +--------+------------------------------------------------------------------------------------------------------+
 | V2.1.5 | | Replaced Opamps, Port Expanders and Optocouplers with AEC-Q100 compliant ones                      |
 |        | | Modified silkscreen texts                                                                          |

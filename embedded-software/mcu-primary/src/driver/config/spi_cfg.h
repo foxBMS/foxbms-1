@@ -61,8 +61,6 @@
 
 /*================== Macros and Definitions ===============================*/
 
-#define IO_PIN_DATA_STORAGE_EEPROM_SPI_NSS IO_PIN_MCU_0_DATA_STORAGE_EEPROM_SPI_NSS
-
 #define SPI_TRANSMIT_WAKEUP         TRUE
 
 /**
@@ -75,7 +73,7 @@
  */
 #define SPI_WAKEUP_WAIT_TIME        0
 
-#define SPI_NSS_PORT1   IO_PIN_MCU_0_BMS_INTERFACE_SPI_NSS
+#define SPI_NSS_PORT1   IO_PIN_BMS_INTERFACE_SPI_NSS
 
 #define SPI_HASEEPROM
 

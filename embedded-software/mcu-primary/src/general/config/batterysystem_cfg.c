@@ -72,7 +72,7 @@ BS_CURRENT_DIRECTION_e BS_CheckCurrent_Direction(void) {
     return retVal;
 }
 
-BS_CURRENT_DIRECTION_e BS_CheckCurrentValue_Direction(float current) {
+BS_CURRENT_DIRECTION_e BS_CheckCurrentValue_Direction(int32_t current) {
     BS_CURRENT_DIRECTION_e retVal = BS_CURRENT_DISCHARGE;
 
     if (POSITIVE_DISCHARGE_CURRENT == TRUE) {

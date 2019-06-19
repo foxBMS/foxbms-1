@@ -17,12 +17,12 @@ Module Files
 ~~~~~~~~~~~~
 
 Driver:
- - ``embedded-software\mcu-common\src\driver\uart\uart.c``
- - ``embedded-software\mcu-common\src\driver\uart\uart.h``
+ - ``embedded-software\mcu-common\src\driver\uart\uart.c`` (:ref:`uartc`)
+ - ``embedded-software\mcu-common\src\driver\uart\uart.h`` (:ref:`uarth`)
 
 Driver Configuration:
- - ``embedded-software\mcu-primary\src\driver\config\uart_cfg.c``
- - ``embedded-software\mcu-primary\src\driver\config\uart_cfg.h``
+ - ``embedded-software\mcu-primary\src\driver\config\uart_cfg.c`` (:ref:`primaryuartcfgc`)
+ - ``embedded-software\mcu-primary\src\driver\config\uart_cfg.h`` (:ref:`primaryuartcfgh`)
 
 Detailed Description
 ~~~~~~~~~~~~~~~~~~~~

@@ -1,6 +1,10 @@
-.. include:: ../../../macros.rst
-
 :orphan:
+
+.. _SYS_SRC:
+
+==================
+Sys Module Sources
+==================
 
 .. contents:: :local:
 

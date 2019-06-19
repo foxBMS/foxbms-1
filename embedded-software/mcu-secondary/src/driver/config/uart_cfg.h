@@ -60,6 +60,7 @@
 
 /*================== Macros and Definitions ===============================*/
 
+#define UART_USEOS
 
 /*================== Constant and Variable Definitions ====================*/
 extern UART_HandleTypeDef uart_cfg[];

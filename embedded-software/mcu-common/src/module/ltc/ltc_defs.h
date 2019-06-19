@@ -126,7 +126,9 @@ typedef enum {
     LTC_STATEMACH_DIGITAL_FILTER            = 28,
     LTC_STATEMACH_VOLTMEAS_SUMOFCELLS       = 29,
     LTC_STATEMACH_EEPROM_READ_UID           = 30,   /*!< Control of the external EEPROM                 */
-    LTC_STATEMACH_UNDEFINED                 = 31,   /*!< undefined state                                */
+    LTC_STATEMACH_USER_IO_CONTROL_TI        = 32,   /*!< Control of the user port expander              */
+    LTC_STATEMACH_USER_IO_FEEDBACK_TI       = 33,   /*!< Control of the user port expander              */
+    LTC_STATEMACH_UNDEFINED                 = 34,   /*!< undefined state                                */
     LTC_STATEMACH_RESERVED1                 = 0x80, /*!< reserved state                                 */
     LTC_STATEMACH_ERROR_SPIFAILED           = 0xF0, /*!< Error-State: SPI error                         */
     LTC_STATEMACH_ERROR_PECFAILED           = 0xF1, /*!< Error-State: PEC error                         */
@@ -288,6 +290,24 @@ typedef enum {
     LTC_USER_IO_FINISHED                                            = 5,    /*!<    */
 } LTC_STATEMACH_USER_IO_CONTROL_e;
 
+
+/**
+ * Substates for the user IO control state, TI port expander
+ */
+typedef enum {
+    LTC_USER_IO_SET_DIRECTION_REGISTER_TI                              = 0,
+    LTC_USER_IO_SET_OUTPUT_REGISTER_TI                                 = 1,    /*!<    */
+    LTC_USER_IO_READ_INPUT_REGISTER_TI_FIRST                           = 2,    /*!<    */
+    LTC_USER_IO_READ_INPUT_REGISTER_TI_SECOND                          = 3,    /*!<    */
+    LTC_USER_IO_SEND_CLOCK_STCOMM_TI                                   = 4,    /*!<    */
+    LTC_USER_IO_READ_I2C_TRANSMISSION_RESULT_RDCOMM_TI                 = 5,    /*!<    */
+    LTC_USER_IO_READ_I2C_TRANSMISSION_RESULT_RDCOMM_TI_SECOND          = 6,    /*!<    */
+    LTC_USER_IO_READ_I2C_TRANSMISSION_RESULT_RDCOMM_TI_THIRD           = 7,    /*!<    */
+    LTC_USER_IO_READ_I2C_TRANSMISSION_RESULT_RDCOMM_TI_FOURTH          = 8,    /*!<    */
+    LTC_USER_IO_SAVE_DATA_TI                                           = 9,    /*!<    */
+    LTC_USER_IO_FINISHED_TI                                            = 10,    /*!<    */
+} LTC_STATEMACH_USER_IO_CONTROL_TI_e;
+
 /**
  * Substates for the EEPROM control state
  */
@@ -326,10 +346,12 @@ typedef enum {
 typedef enum {
     /* Init-Sequence */
     LTC_SET_MUX_CHANNEL_WRCOMM_MUXMEASUREMENT_CONFIG                = 0,    /*!<    */
-    LTC_SEND_CLOCK_STCOMM_MUXMEASUREMENT_CONFIG                     = 1,    /*!<    */
-    LTC_READ_I2C_TRANSMISSION_RESULT_RDCOMM_MUXMEASUREMENT_CONFIG   = 2,    /*!<    */
-    LTC_READ_I2C_TRANSMISSION_CHECK_MUXMEASUREMENT_CONFIG           = 3,    /*!<    */
-    LTC_START_GPIO_MEASUREMENT_MUXMEASUREMENT_CONFIG                = 4,    /*!<    */
+    LTC_SEND_CLOCK_STCOMM_MUXMEASUREMENT_CONFIG                     = 1,
+    LTC_SEND_CLOCK_STCOMM_DIRECTION_CONFIG                          = 2,    /*!<    */
+    LTC_SEND_CLOCK_STCOMM_WRITE_IO                                  = 3,    /*!<    */
+    LTC_READ_I2C_TRANSMISSION_RESULT_RDCOMM_MUXMEASUREMENT_CONFIG   = 4,    /*!<    */
+    LTC_READ_I2C_TRANSMISSION_CHECK_MUXMEASUREMENT_CONFIG           = 5,    /*!<    */
+    LTC_START_GPIO_MEASUREMENT_MUXMEASUREMENT_CONFIG                = 6,    /*!<    */
 } LTC_STATEMACH_MUXMEASUREMENT_CONFIG_SUB_e;
 
 /**
@@ -361,6 +383,8 @@ typedef enum {
     LTC_STATE_USER_IO_WRITE_REQUEST       = LTC_STATEMACH_USER_IO_CONTROL,          /*!<    */
     LTC_STATE_USER_IO_READ_REQUEST        = LTC_STATEMACH_USER_IO_FEEDBACK,          /*!<    */
     LTC_STATE_USER_IO_REQUEST             = LTC_STATEMACH_USER_IO_CONTROL,          /*!<    */
+    LTC_STATE_USER_IO_WRITE_REQUEST_TI    = LTC_STATEMACH_USER_IO_CONTROL_TI,          /*!<    */
+    LTC_STATE_USER_IO_READ_REQUEST_TI     = LTC_STATEMACH_USER_IO_FEEDBACK_TI,          /*!<    */
     LTC_STATE_EEPROM_READ_REQUEST         = LTC_STATEMACH_EEPROM_READ    ,          /*!<    */
     LTC_STATE_EEPROM_WRITE_REQUEST        = LTC_STATEMACH_EEPROM_WRITE    ,          /*!<    */
     LTC_STATE_EEPROM_READ_UID_REQUEST     = LTC_STATEMACH_EEPROM_READ    ,          /*!<    */
@@ -489,6 +513,15 @@ typedef enum {
     LTC_REUSE_READVOLT_FOR_ADOW_PUP = 1,
     LTC_REUSE_READVOLT_FOR_ADOW_PDOWN = 2,
 } LTC_REUSE_MODE_e;
+
+/**
+ *TI port expander IO direction (input or output)
+ *
+ */
+typedef enum {
+    LTC_PORT_EXPANDER_TI_OUTPUT   = 0x0,
+    LTC_PORT_EXPANDER_TI_INPUT    = 0xFF,
+} LTC_PORT_EXPANDER_TI_DIRECTION_e;
 
 /**
  * This structure contains all the variables relevant for the LTC state machine.

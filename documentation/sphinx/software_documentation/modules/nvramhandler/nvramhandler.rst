@@ -30,7 +30,8 @@ Driver Configuration:
 Structure
 ~~~~~~~~~
 
-The struct ``NVRAM_BLOCK_s`` contains the definition of an data block that is stored in the non-volatile ram..
+The struct ``NVRAM_BLOCK_s`` contains the definition of an data block that is
+ stored in the non-volatile ram..
 
 .. code-block:: C
 

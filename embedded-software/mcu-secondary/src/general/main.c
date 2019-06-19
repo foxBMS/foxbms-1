@@ -53,6 +53,7 @@
 
 /*================== Includes =============================================*/
 #include "main.h"
+
 #include "cpu_cfg.h"
 #include "os.h"
 #include "version.h"
@@ -62,15 +63,19 @@
 #include "dma.h"
 #include "spi.h"
 #include "led.h"
+#include "adc.h"
 #include "bkpsram.h"
+#include "uart.h"
+#include "syscall.h"
+#include "com.h"
 #include "chksum.h"
 #include "diag.h"
 #include "mcu.h"
 #include "wdg.h"
-#include "adc.h"
 #include "rtc.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "gitinfo_cfg.h"
 
 /*================== Macros and Definitions ===============================*/
 
@@ -101,42 +106,68 @@ int main(void) {
 #endif
     BKP_SRAM_Init();    /* at this point diagnosis event memory in BKP_SRAM will be available */
     SystemClock_Config();
-
+#if BUILD_MODULE_ENABLE_UART
+    UART_Init();
+    SYSCALL_Init();
+#endif
     retval = DIAG_Init(&diag_dev, RTC_getRegisterValueBKPSRAM(BKPREGISTER_BKPSRAM_DIAG_VALID));
     if (retval == E_OK) {
         RTC_setRegisterValueBKPSRAM(BKPREGISTER_BKPSRAM_DIAG_VALID, BKPREGISTER_VALID);
     }
+
     BOOT_Init();
     IO_Init(&io_cfg[0]);
-
     IO_TogglePin(LED_DEBUG_LED_1);
-
     DMA_Init(&dma_devices[0]);
     SPI_Init(&spi_devices[0]);
-
-    VIC_PreOsInterruptInit();
     LED_Init();
     ADC_Init(&adc_devices[0]);
 
     /* Initialize mutexes, events and tasks */
     OS_TaskInit();
-
     os_schedulerstarttime = OS_getOSSysTick();
 
     /* Initialize interrupts */
     retErrorCode = VIC_PreOsInterruptInit();
     if (retErrorCode != 0) {
         /* error event in vic init */
-        DIAG_Handler(DIAG_CH_VIC_INIT_FAILURE, DIAG_EVENT_NOK, retErrorCode, NULL);
+        DIAG_Handler(DIAG_CH_VIC_INIT_FAILURE, DIAG_EVENT_NOK, retErrorCode);
     }
 
     if (CHK_Flashchecksum(&ver_sw_validation) == E_OK) {
         chk_status.checksumstatus = CHK_CHECKSUM_PASSED;
     } else {
         chk_status.checksumstatus = CHK_CHECKSUM_FAILED;
-        if (DIAG_HANDLER_RETURN_OK != DIAG_Handler(DIAG_CH_FLASHCHECKSUM, DIAG_EVENT_NOK, 0, NULL)) {
+        if (DIAG_HANDLER_RETURN_OK != DIAG_Handler(DIAG_CH_FLASHCHECKSUM, DIAG_EVENT_NOK, 0)) {
             while (1) {
                 /* TODO: explain why infinite loop */
+            }
+        }
+    }
+
+    /* copy variable in order to prevent inlining */
+    GIT_ValidStruct_s git_validation_copy __attribute__((unused)) = git_validation;
+    if (GIT_checkStartup() == E_OK) {
+        /* in case of a good startup check based on then git information,
+         * it is always okay to start up
+         */
+        git_status.clean_repo_build = E_OK;
+        git_status.allow_startup = E_OK;
+    } else {
+        if (BUILD_ALLOW_DIRTY_STARTUP) {
+            /* Startup check was not okay, but a dirty startup was allowed by
+             * by configuration
+             */
+            git_status.clean_repo_build = E_NOT_OK;
+            git_status.allow_startup = E_OK;
+        } else {
+            while (1) {
+                /* dirty startup is not allowed by some configuration, therefore
+                 * no further startup, just set the struct for debugging
+                 * purposes and wait
+                 */
+                git_status.clean_repo_build = E_NOT_OK;
+                git_status.allow_startup = E_NOT_OK;
             }
         }
     }
@@ -166,7 +197,7 @@ void BOOT_Init(void) {
     errCode = MCU_SystemResetStatus(&main_state.CSR);
     /* Unexpected reset occurred */
     if (errCode != 0) {
-        DIAG_Handler(DIAG_CH_WATCHDOGRESET_FAILURE, DIAG_EVENT_NOK, errCode, NULL_PTR);
+        DIAG_Handler(DIAG_CH_WATCHDOGRESET_FAILURE, DIAG_EVENT_NOK, errCode);
     }
 
     RTC_getTime(&currTime);

@@ -40,9 +40,15 @@ Establishing Connection with PC
 Functionality
 ~~~~~~~~~~~~~
 
-The |mod_com| provides possibilities for communication with external devices using UART. For incoming requests, it provides some kind of basic command parser/handler and access to the |mod_sys|. Furthermore, it provides the user with some information about the system and a testmode where the system settings can be alternated and basic system tests can be performed.
+The |mod_com| provides possibilities for communication with external devices
+using UART. For incoming requests, it provides some kind of basic command
+parser/handler and access to the |mod_sys|. Furthermore, it provides the user
+with some information about the system and a testmode where the system
+settings can be alternated and basic system tests can be performed.
 
-The |mod_com| can be enabled by using the BUILD_MODULE_ENABLE_COM define. Its handler needs to be called periodically (e.g., by using ``ENG_TSK_Cyclic_10ms()``). Currently the COM_Decoder supports following commands:
+The |mod_com| can be enabled by using the BUILD_MODULE_ENABLE_COM define. Its
+handler needs to be called periodically (e.g., by using ``ENG_TSK_Cyclic_10ms()``).
+Currently the COM_Decoder supports following commands:
 
 ====================  ========================================================================================================
 Command               Description

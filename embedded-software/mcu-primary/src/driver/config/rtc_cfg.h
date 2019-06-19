@@ -69,6 +69,7 @@ typedef RTC_DateTypeDef     RTC_Date_s;
 #define RTC_BKPDIAG_DATAVALID_VARIABLE      (hrtc.Instance->BKP2R)  /* bpksram diag data valid */
 #define RTC_NVMRAM_DATAVALID_VARIABLE       (hrtc.Instance->BKP3R)  /* non-volatile data backups valid */
 #define RTC_WDG_RESETCOUNTER                (hrtc.Instance->BKP5R)  /* wdg resetcounter */
+#define RTC_DEEP_DISCHARGE_DETECTED         (hrtc.Instance->BKP6R)  /* deep-discharge detected - only clearable over CAN */
 
 /**
  * struct for the initialization and configuration of RTC
