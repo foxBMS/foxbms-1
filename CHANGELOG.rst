@@ -2,6 +2,32 @@
 Changelog
 =========
 
+**Release 1.6.1**
+
+Software:
+
+* Toolchain:
+
+  * none
+
+* Bugfixes:
+
+  * fixed the extension of the startup scripts (``*.S`` to ``*.s``)
+
+* Enhancements:
+
+  * none
+
+Hardware:
+
+* none
+
+Documentation:
+
+* none
+
+------------------------------------------------------------------------------
+
 **Release 1.6.0**
 
 Software:
