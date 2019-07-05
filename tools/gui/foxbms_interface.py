@@ -1754,7 +1754,7 @@ class MainFrame(wx.Frame):
                                        0x20 == 0 or (can_data.id - 0x203) %
                                        0x20 == 0 or (can_data.id - 0x204) %
                                        0x20 == 0 or (can_data.id - 0x205) % 0x20 == 0):
-            if can_data.id >= 0x200 and can_data.id <= 0x2f3:
+            if can_data.id >= 0x200:
                 module_number = -1
                 if (can_data.id - 0x200) % 0x20 == 0:
                     module_number = (can_data.id - 0x200) / 0x20
@@ -1830,7 +1830,7 @@ class MainFrame(wx.Frame):
         # temperatures
         if (can_data.id >= 0x200) and ((can_data.id - 0x210) % 0x20 == 0 or (can_data.id - 0x211) %
                                        0x20 == 0 or (can_data.id - 0x212) % 0x20 == 0 or (can_data.id - 0x213) % 0x20 == 0):
-            if can_data.id >= 0x200 and can_data.id <= 0x2f3:
+            if can_data.id >= 0x200:
                 module_number = -1
                 if (can_data.id - 0x210) % 0x20 == 0:
                     module_number = (can_data.id - 0x200) / 0x20

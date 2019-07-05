@@ -117,10 +117,11 @@ typedef enum {
     SYS_WAIT_FIRST_MEASUREMENT_CYCLE    = 7,    /*!< Substate to wait for first measurement cycle to complete   */
     SYS_WAIT_CURRENT_SENSOR_PRESENCE    = 8,    /*!< Substate to wait for first measurement cycle to complete   */
     SYS_CONT_INIT_ERROR                 = 9,    /*!< Substate error of contactor state machine initialization   */
-    SYS_ILCK_INIT_ERROR                 = 10,   /*!< Substate error of contactor state machine initialization   */
-    SYS_BMS_INIT_ERROR                  = 11,   /*!< Substate error of bms state machine initialization   */
-    SYS_MEAS_INIT_ERROR                 = 12,   /*!< Substate error if first measurement cycle does not complete   */
-    SYS_CURRENT_SENSOR_PRESENCE_ERROR   = 13,   /*!< Substate error if first measurement cycle does not complete   */
+    SYS_BAL_INIT_ERROR                  = 10,    /*!< Substate error of balancing state machine initialization   */
+    SYS_ILCK_INIT_ERROR                 = 11,   /*!< Substate error of contactor state machine initialization   */
+    SYS_BMS_INIT_ERROR                  = 12,   /*!< Substate error of bms state machine initialization   */
+    SYS_MEAS_INIT_ERROR                 = 13,   /*!< Substate error if first measurement cycle does not complete   */
+    SYS_CURRENT_SENSOR_PRESENCE_ERROR   = 14,   /*!< Substate error if first measurement cycle does not complete   */
 } SYS_STATEMACH_SUB_e;
 
 

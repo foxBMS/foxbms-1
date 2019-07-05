@@ -1,0 +1,123 @@
+# @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+#   angewandten Forschung e.V. All rights reserved.
+#
+# BSD 3-Clause License
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 1.  Redistributions of source code must retain the above copyright notice,
+#     this list of conditions and the following disclaimer.
+# 2.  Redistributions in binary form must reproduce the above copyright notice,
+#     this list of conditions and the following disclaimer in the documentation
+#     and/or other materials provided with the distribution.
+# 3.  Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived from this
+#     software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+# We kindly request you to use one or more of the following phrases to refer to
+# foxBMS in your hardware, software, documentation or advertising materials:
+#
+# &Prime;This product uses parts of foxBMS&reg;&Prime;
+#
+# &Prime;This product includes parts of foxBMS&reg;&Prime;
+#
+# &Prime;This product is derived from foxBMS&reg;&Prime;
+
+files:
+  include:
+    - "embedded-software/mcu-primary/**/*.[c|h]"
+    - "embedded-software/mcu-secondary/**/*.[c|h]"
+    - "embedded-software/mcu-common/**/*.[c|h]"
+  exclude:
+    - "ltc_pec.c"
+    - "ltc_pec.h"
+    - "stm32f4xx_hal_conf.h"
+    - "stm32f4xx_hal_msp.c"
+    - "stm32f4xx_it.c"
+    - "stm32f4xx_it.h"
+    - "system_stm32f4xx.c"
+
+filter:
+  - "-build/class"                        # no
+  - "-build/c++11"                        # no
+  - "-build/c++14"                        # no
+  - "-build/c++tr1"                       # no
+  - "+build/deprecated"                   # yes
+  - "+build/endif_comment"                # yes
+  - "-build/explicit_make_pair"           # no
+  - "-build/forward_decl"                 # no
+  - "-build/header_guard"                 # no
+  - "+build/include"                      # yes
+  - "-build/include_subdir"               # no
+  - "-build/include_alpha"                # maybe, we need to understand this first
+  - "-build/include_order"                # maybe, we need to understand this first
+  - "-build/include_what_you_use"         # no
+  - "-build/namespaces_literals"          # no
+  - "-build/namespaces"                   # no
+  - "-build/printf_format"                # no
+  - "-build/storage_class"                # no
+  - "-legal/copyright"                    # no
+  - "-readability/alt_tokens"             # no
+  - "+readability/braces"                 # yes
+  - "-readability/casting"                # no
+  - "-readability/check"                  # maybe, we need to understand this first
+  - "-readability/constructors"           # no
+  - "-readability/fn_size"                # maybe, add --v=5 for this
+  - "-readability/inheritance"            # no
+  - "-readability/multiline_comment"      # no
+  - "+readability/multiline_string"       # yes
+  - "-readability/namespace"              # no
+  - "+readability/nolint"                 # no
+  - "+readability/nul"                    # no
+  - "-readability/strings"                # maybe, we need to understand this first
+  - "-readability/todo"                   # no
+  - "+readability/utf8"                   # yes
+  - "+runtime/arrays"                     # yes
+  - "-runtime/casting"                    # no
+  - "-runtime/explicit"                   # no
+  - "+runtime/int"                        # yes
+  - "-runtime/init"                       # no
+  - "+runtime/invalid_increment"          # yes
+  - "-runtime/member_string_references"   # no
+  - "+runtime/memset"                     # yes
+  - "-runtime/indentation_namespace"      # no
+  - "-runtime/operator"                   # no
+  - "-runtime/printf"                     # no
+  - "-runtime/printf_format"              # no
+  - "-runtime/references"                 # no
+  - "-runtime/string"                     # no
+  - "-runtime/threadsafe_fn"              # no
+  - "-runtime/vlog"                       # no
+  - "+whitespace/blank_line"              # yes
+  - "+whitespace/braces"                  # yes
+  - "+whitespace/comma"                   # yes
+  - "+whitespace/comments"                # yes
+  - "+whitespace/empty_conditional_body"  # yes
+  - "+whitespace/empty_if_body"           # yes
+  - "+whitespace/empty_loop_body"         # yes
+  - "+whitespace/end_of_line"             # yes
+  - "+whitespace/ending_newline"          # yes
+  - "-whitespace/forcolon"                # no
+  - "+whitespace/indent"                  # yes
+  - "+whitespace/line_length"             # yes, linelength=300
+  - "+whitespace/newline"                 # yes
+  - "+whitespace/operators"               # yes
+  - "+whitespace/parens"                  # yes
+  - "+whitespace/semicolon"               # yes
+  - "+whitespace/tab"                     # yes
+  - "-whitespace/todo"                    # no
+
+linelength: 300
+
+output: "eclipse"

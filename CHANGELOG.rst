@@ -2,6 +2,45 @@
 Changelog
 =========
 
+**Release 1.6.2**
+
+Software:
+
+* Toolchain:
+
+  * added cpplint configuration file
+  * added cppcheck configuration file
+  * added flake8 configuration file
+  * added busmaster project file
+
+* Bugfixes:
+
+  * cell voltages for module 4 for cells 12 and upwards were not transmitted
+    via CAN (``cansignal_cfg.c``)
+  * ISO_MeasureInsulation() did not correctly utilize DIAG_SysMonNotify(),
+    which could lead to initialization errors (``isoguard.c``)
+  * cell voltages and temperatures are now depicted in foxBMS-GUI if more than
+    eight modules are selected (``foxbms_interface.py``)
+  * compiling primary or secondary MCU binaries without COM module enabled led
+    to a compile error
+  * SPI chipselect pin for FPGA extension board was erroneously set in EEPROM
+    module (``eepr.c``)
+
+* Enhancements:
+
+  * source code cleanup of interlock module (``interlock.c/h``)
+
+Hardware:
+
+* none
+
+Documentation:
+
+* fixed pinout of temperature sensor connectors X201 and X202 for 18-cell Slave
+  ``v1.1.3 and above``
+
+------------------------------------------------------------------------------
+
 **Release 1.6.1**
 
 Software:

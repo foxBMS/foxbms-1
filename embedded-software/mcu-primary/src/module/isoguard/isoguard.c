@@ -136,6 +136,8 @@ void ISO_ReInit(void) {
 void ISO_MeasureInsulation(void) {
 #ifdef ISO_ISOGUARD_ENABLE
 
+    DIAG_SysMonNotify(DIAG_SYSMON_ISOGUARD_ID, 0);        /* task is running, state = ok */
+
     /* Do not continue if ISOGUARD module is still uninitialized */
     if (iso_state == ISO_STATE_UNINITIALIZED) {
         return;
@@ -191,7 +193,5 @@ void ISO_MeasureInsulation(void) {
     /* Store data in database */
     DB_WriteBlock(&ISO_measData, DATA_BLOCK_ID_ISOGUARD);
 #endif
-
-    DIAG_SysMonNotify(DIAG_SYSMON_ISOGUARD_ID, 0);        /* task is running, state = ok */
 }
 #endif

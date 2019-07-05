@@ -50,7 +50,7 @@
  *
  */
 
-/*================== Includes =============================================*/
+/*================== Includes ===============================================*/
 #include "interlock.h"
 
 #include "database.h"
@@ -59,8 +59,7 @@
 #include "task.h"
 
 #if BUILD_MODULE_ENABLE_ILCK == 1
-/*================== Macros and Definitions ===============================*/
-
+/*================== Macros and Definitions =================================*/
 /**
  * Saves the last state and the last substate
  */
@@ -70,8 +69,7 @@
 #define ILCK_CLOSEINTERLOCK()   ILCK_SwitchInterlockOn();
 #define ILCK_OPENINTERLOCK()    ILCK_SwitchInterlockOff();
 
-/*================== Constant and Variable Definitions ====================*/
-
+/*================== Static Constant and Variable Definitions ===============*/
 /**
  * contains the state of the contactor state machine
  *
@@ -88,188 +86,20 @@ static ILCK_STATE_s ilck_state = {
     .counter                = 0,
 };
 
+/*================== Extern Constant and Variable Definitions ===============*/
 
-/*================== Function Prototypes ==================================*/
-
+/*================== Static Function Prototypes =============================*/
 static ILCK_RETURN_TYPE_e ILCK_CheckStateRequest(ILCK_STATE_REQUEST_e statereq);
 static ILCK_STATE_REQUEST_e ILCK_GetStateRequest(void);
 static ILCK_STATE_REQUEST_e ILCK_TransferStateRequest(void);
 static uint8_t ILCK_CheckReEntrance(void);
 static void ILCK_CheckFeedback(void);
+static ILCK_ELECTRICAL_STATE_TYPE_s ILCK_GetInterlockSetValue(void);
+static STD_RETURN_TYPE_e ILCK_SetInterlockState(ILCK_ELECTRICAL_STATE_TYPE_s requstedInterlockState);
+static STD_RETURN_TYPE_e ILCK_SwitchInterlockOff(void);
+static STD_RETURN_TYPE_e ILCK_SwitchInterlockOn(void);
 
-
-/*================== Function Implementations =============================*/
-
-ILCK_ELECTRICAL_STATE_TYPE_s ILCK_GetInterlockSetValue() {
-    ILCK_ELECTRICAL_STATE_TYPE_s interlockSetInformation = FALSE;
-    taskENTER_CRITICAL();
-    interlockSetInformation = ilck_interlock_state.set;
-    taskEXIT_CRITICAL();
-    return interlockSetInformation;
-}
-
-
-
-
-ILCK_ELECTRICAL_STATE_TYPE_s ILCK_GetInterlockFeedback(void) {
-    ILCK_ELECTRICAL_STATE_TYPE_s measuredInterlockState = ILCK_SWITCH_UNDEF;
-    IO_PIN_STATE_e pinstate = IO_PIN_RESET;
-    taskENTER_CRITICAL();
-    pinstate = IO_ReadPin(ilck_interlock_config.feedback_pin);
-    taskEXIT_CRITICAL();
-    if (IO_PIN_SET == pinstate) {
-        measuredInterlockState = ILCK_SWITCH_ON;
-    } else if (IO_PIN_RESET == pinstate) {
-        measuredInterlockState = ILCK_SWITCH_OFF;
-    }
-    ilck_interlock_state.feedback = measuredInterlockState;
-    return measuredInterlockState;
-}
-
-
-
-STD_RETURN_TYPE_e ILCK_SetInterlockState(ILCK_ELECTRICAL_STATE_TYPE_s requestedInterlockState) {
-    STD_RETURN_TYPE_e retVal = E_OK;
-
-    if (requestedInterlockState == ILCK_SWITCH_ON) {
-        ilck_interlock_state.set = ILCK_SWITCH_ON;
-        IO_WritePin(ilck_interlock_config.control_pin, IO_PIN_SET);
-    } else if (requestedInterlockState  ==  ILCK_SWITCH_OFF) {
-        ilck_interlock_state.set = ILCK_SWITCH_OFF;
-        IO_WritePin(ilck_interlock_config.control_pin, IO_PIN_RESET);
-    } else {
-        retVal = E_NOT_OK;
-    }
-
-    return retVal;
-}
-
-
-
-STD_RETURN_TYPE_e ILCK_SwitchInterlockOff(void) {
-    STD_RETURN_TYPE_e retVal = E_NOT_OK;
-    retVal = ILCK_SetInterlockState(ILCK_SWITCH_OFF);
-    return retVal;
-}
-
-
-STD_RETURN_TYPE_e ILCK_SwitchInterlockOn(void) {
-    STD_RETURN_TYPE_e retVal = E_NOT_OK;
-    retVal = ILCK_SetInterlockState(ILCK_SWITCH_ON);
-    return retVal;
-}
-
-
-
-
-/**
- * @brief   re-entrance check of ILCK state machine trigger function
- *
- * This function is not re-entrant and should only be called time- or event-triggered.
- * It increments the triggerentry counter from the state variable ilck_state.
- * It should never be called by two different processes, so if it is the case, triggerentry
- * should never be higher than 0 when this function is called.
- *
- * @return  retval  0 if no further instance of the function is active, 0xff else
- *
- */
-static uint8_t ILCK_CheckReEntrance(void) {
-    uint8_t retval = 0;
-
-    taskENTER_CRITICAL();
-    if (!ilck_state.triggerentry) {
-        ilck_state.triggerentry++;
-    } else {
-        retval = 0xFF;    /* multiple calls of function */
-    }
-    taskEXIT_CRITICAL();
-
-    return retval;
-}
-
-
-
-
-/**
- * @brief   gets the current state request.
- *
- * This function is used in the functioning of the ILCK state machine.
- *
- * @return  retval  current state request, taken from ILCK_STATE_REQUEST_e
- */
-static ILCK_STATE_REQUEST_e ILCK_GetStateRequest(void) {
-    ILCK_STATE_REQUEST_e retval = ILCK_STATE_NO_REQUEST;
-
-    taskENTER_CRITICAL();
-    retval    = ilck_state.statereq;
-    taskEXIT_CRITICAL();
-
-    return retval;
-}
-
-
-/**
- * @brief   gets the current state.
- *
- * This function is used in the functioning of the ILCK state machine.
- *
- * @return  current state, taken from ILCK_STATEMACH_e
- */
-ILCK_STATEMACH_e ILCK_GetState(void) {
-    return ilck_state.state;
-}
-
-
-/**
- * @brief   transfers the current state request to the state machine.
- *
- * This function takes the current state request from ilck_state and transfers it to the state machine.
- * It resets the value from ilck_state to ILCK_STATE_NO_REQUEST
- *
- * @return  retVal          current state request, taken from ILCK_STATE_REQUEST_e
- *
- */
-static ILCK_STATE_REQUEST_e ILCK_TransferStateRequest(void) {
-    ILCK_STATE_REQUEST_e retval = ILCK_STATE_NO_REQUEST;
-
-    taskENTER_CRITICAL();
-    retval    = ilck_state.statereq;
-    ilck_state.statereq = ILCK_STATE_NO_REQUEST;
-    taskEXIT_CRITICAL();
-
-    return retval;
-}
-
-
-/**
- * @brief   sets the current state request of the state variable ilck_state.
- *
- * This function is used to make a state request to the state machine,e.g, start voltage measurement,
- * read result of voltage measurement, re-initialization
- * It calls ILCK_CheckStateRequest() to check if the request is valid.
- * The state request is rejected if is not valid.
- * The result of the check is returned immediately, so that the requester can act in case
- * it made a non-valid state request.
- *
- * @param   statereq                state request to set
- *
- * @return  retVal                  current state request, taken from ILCK_STATE_REQUEST_e
- */
-ILCK_RETURN_TYPE_e ILCK_SetStateRequest(ILCK_STATE_REQUEST_e statereq) {
-    ILCK_RETURN_TYPE_e retVal = ILCK_STATE_NO_REQUEST;
-
-    taskENTER_CRITICAL();
-    retVal = ILCK_CheckStateRequest(statereq);
-
-    if (retVal == ILCK_OK) {
-            ilck_state.statereq = statereq;
-    }
-    taskEXIT_CRITICAL();
-
-    return retVal;
-}
-
-
+/*================== Static Function Implementations ========================*/
 /**
  * @brief   checks the state requests that are made.
  *
@@ -305,12 +135,196 @@ static ILCK_RETURN_TYPE_e ILCK_CheckStateRequest(ILCK_STATE_REQUEST_e statereq) 
     }
 }
 
+
 /**
- * @brief   trigger function for the ILCK driver state machine.
+* @brief   gets the current state request.
+*
+* This function is used in the functioning of the ILCK state machine.
+*
+* @return  retval  current state request, taken from ILCK_STATE_REQUEST_e
+*/
+static ILCK_STATE_REQUEST_e ILCK_GetStateRequest(void) {
+    ILCK_STATE_REQUEST_e retval = ILCK_STATE_NO_REQUEST;
+
+    taskENTER_CRITICAL();
+    retval    = ilck_state.statereq;
+    taskEXIT_CRITICAL();
+
+    return retval;
+}
+
+
+/**
+ * @brief   transfers the current state request to the state machine.
  *
- * This function contains the sequence of events in the ILCK state machine.
- * It must be called time-triggered, every 1ms.
+ * This function takes the current state request from ilck_state and transfers it to the state machine.
+ * It resets the value from ilck_state to ILCK_STATE_NO_REQUEST
+ *
+ * @return  retVal          current state request, taken from ILCK_STATE_REQUEST_e
  */
+static ILCK_STATE_REQUEST_e ILCK_TransferStateRequest(void) {
+    ILCK_STATE_REQUEST_e retval = ILCK_STATE_NO_REQUEST;
+
+    taskENTER_CRITICAL();
+    retval    = ilck_state.statereq;
+    ilck_state.statereq = ILCK_STATE_NO_REQUEST;
+    taskEXIT_CRITICAL();
+
+    return retval;
+}
+
+
+/**
+ * @brief   re-entrance check of ILCK state machine trigger function
+ *
+ * This function is not re-entrant and should only be called time- or event-triggered.
+ * It increments the triggerentry counter from the state variable ilck_state.
+ * It should never be called by two different processes, so if it is the case, triggerentry
+ * should never be higher than 0 when this function is called.
+ *
+ * @return  retval  0 if no further instance of the function is active, 0xff else
+ */
+static uint8_t ILCK_CheckReEntrance(void) {
+    uint8_t retval = 0;
+
+    taskENTER_CRITICAL();
+    if (!ilck_state.triggerentry) {
+        ilck_state.triggerentry++;
+    } else {
+        retval = 0xFF;    /* multiple calls of function */
+    }
+    taskEXIT_CRITICAL();
+
+    return retval;
+}
+
+
+/**
+* @brief   checks interlock feedback
+*
+* This function is used to check interlock feedback.
+*
+* @return  none (void)
+*/
+static void ILCK_CheckFeedback(void) {
+    DATA_BLOCK_ILCKFEEDBACK_s ilckfeedback_tab;
+    uint8_t interlock_feedback = 0;
+
+    interlock_feedback = ILCK_GetInterlockFeedback();
+
+    ilckfeedback_tab.interlock_feedback = interlock_feedback;
+
+    DB_WriteBlock(&ilckfeedback_tab, DATA_BLOCK_ID_ILCKFEEDBACK);
+
+    STD_RETURN_TYPE_e result = E_NOT_OK;
+    if (interlock_feedback == ILCK_GetInterlockSetValue()) {
+        result = E_OK;
+    }
+    DIAG_checkEvent(result, DIAG_CH_INTERLOCK_FEEDBACK, 0);
+}
+
+
+/**
+ * @brief   Gets the latest value (TRUE, FALSE) the interlock was set to.
+ *
+ * Meaning of the return value:
+ *   - FALSE means interlock was set to be opened
+ *   - TRUE means interlock was set to be closed
+ *
+ * @return  setInformation (type: ILCK_ELECTRICAL_STATE_TYPE_s)
+ */
+static ILCK_ELECTRICAL_STATE_TYPE_s ILCK_GetInterlockSetValue() {
+    ILCK_ELECTRICAL_STATE_TYPE_s interlockSetInformation = FALSE;
+    taskENTER_CRITICAL();
+    interlockSetInformation = ilck_interlock_state.set;
+    taskEXIT_CRITICAL();
+    return interlockSetInformation;
+}
+
+
+/**
+ * @brief   Sets the interlock state to its requested state, if the interlock is at that time not in the requested state.
+ *
+ * It returns E_OK if the requested state was successfully set or if the interlock was at the requested state before.
+ * @param   requstedInterlockState (type: ILCK_ELECTRICAL_STATE_TYPE_s)
+ * @return  retVal (type: STD_RETURN_TYPE_e)
+ */
+static STD_RETURN_TYPE_e ILCK_SetInterlockState(ILCK_ELECTRICAL_STATE_TYPE_s requestedInterlockState) {
+    STD_RETURN_TYPE_e retVal = E_OK;
+
+    if (requestedInterlockState == ILCK_SWITCH_ON) {
+        ilck_interlock_state.set = ILCK_SWITCH_ON;
+        IO_WritePin(ilck_interlock_config.control_pin, IO_PIN_SET);
+    } else if (requestedInterlockState  ==  ILCK_SWITCH_OFF) {
+        ilck_interlock_state.set = ILCK_SWITCH_OFF;
+        IO_WritePin(ilck_interlock_config.control_pin, IO_PIN_RESET);
+    } else {
+        retVal = E_NOT_OK;
+    }
+
+    return retVal;
+}
+
+
+/**
+ * @brief   Switches the interlock off and returns E_NOT_OK on success.
+ * @return  retVal (type: STD_RETURN_TYPE_e)
+ */
+static STD_RETURN_TYPE_e ILCK_SwitchInterlockOff(void) {
+    STD_RETURN_TYPE_e retVal = E_NOT_OK;
+    retVal = ILCK_SetInterlockState(ILCK_SWITCH_OFF);
+    return retVal;
+}
+
+
+/**
+ * @brief   Switches the interlock on and returns E_OK on success.
+ *
+ * @return  retVal (type: STD_RETURN_TYPE_e)
+ */
+STD_RETURN_TYPE_e ILCK_SwitchInterlockOn(void) {
+    STD_RETURN_TYPE_e retVal = E_NOT_OK;
+    retVal = ILCK_SetInterlockState(ILCK_SWITCH_ON);
+    return retVal;
+}
+
+/*================== Extern Function Implementations ========================*/
+ILCK_ELECTRICAL_STATE_TYPE_s ILCK_GetInterlockFeedback(void) {
+    ILCK_ELECTRICAL_STATE_TYPE_s measuredInterlockState = ILCK_SWITCH_UNDEF;
+    IO_PIN_STATE_e pinstate = IO_PIN_RESET;
+    taskENTER_CRITICAL();
+    pinstate = IO_ReadPin(ilck_interlock_config.feedback_pin);
+    taskEXIT_CRITICAL();
+    if (IO_PIN_SET == pinstate) {
+        measuredInterlockState = ILCK_SWITCH_ON;
+    } else if (IO_PIN_RESET == pinstate) {
+        measuredInterlockState = ILCK_SWITCH_OFF;
+    }
+    ilck_interlock_state.feedback = measuredInterlockState;
+    return measuredInterlockState;
+}
+
+
+ILCK_STATEMACH_e ILCK_GetState(void) {
+    return ilck_state.state;
+}
+
+
+ILCK_RETURN_TYPE_e ILCK_SetStateRequest(ILCK_STATE_REQUEST_e statereq) {
+    ILCK_RETURN_TYPE_e retVal = ILCK_STATE_NO_REQUEST;
+
+    taskENTER_CRITICAL();
+    retVal = ILCK_CheckStateRequest(statereq);
+
+    if (retVal == ILCK_OK) {
+            ilck_state.statereq = statereq;
+    }
+    taskEXIT_CRITICAL();
+
+    return retVal;
+}
+
+
 void ILCK_Trigger(void) {
     ILCK_STATE_REQUEST_e statereq = ILCK_STATE_NO_REQUEST;
 
@@ -332,7 +346,6 @@ void ILCK_Trigger(void) {
             return;    /* handle state machine only if timer has elapsed */
         }
     }
-
 
     switch (ilck_state.state) {
         /****************************UNINITIALIZED***********************************/
@@ -424,21 +437,4 @@ void ILCK_Trigger(void) {
     ilck_state.triggerentry--;
 }
 
-
-void ILCK_CheckFeedback(void) {
-    DATA_BLOCK_ILCKFEEDBACK_s ilckfeedback_tab;
-    uint8_t interlock_feedback = 0;
-
-    interlock_feedback = ILCK_GetInterlockFeedback();
-
-    ilckfeedback_tab.interlock_feedback = interlock_feedback;
-
-    DB_WriteBlock(&ilckfeedback_tab, DATA_BLOCK_ID_ILCKFEEDBACK);
-
-    STD_RETURN_TYPE_e result = E_NOT_OK;
-    if (interlock_feedback == ILCK_GetInterlockSetValue()) {
-        result = E_OK;
-    }
-    DIAG_checkEvent(result, DIAG_CH_INTERLOCK_FEEDBACK, 0);
-}
 #endif

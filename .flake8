@@ -1,0 +1,22 @@
+[flake8]
+ignore =
+    D203,
+    E501
+
+exclude =
+    .git,
+    build,
+    __pycache__,
+    cpplint.py,
+    waf*,
+    waftools*,
+    stm32interface.py,
+    stm32flasher.py,
+    qa-chain,
+    *PCANBasic.py
+
+filename =
+    *.py,
+    *wscript
+
+statistics = True

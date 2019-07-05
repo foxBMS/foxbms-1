@@ -12,7 +12,8 @@ Requirements
 
 The build process of |foxbms| heavily depends on Python, for example, for
 code generation purposes. |foxbms| hence comes with its own Python
-distribution, called |foxconda3|, powered by `Anaconda <https://continuum.io>`_.
+distribution, called |foxconda3|, powered by
+`Anaconda <https://continuum.io>`_.
 These build instructions assume that |foxconda3| was successfully installed and
 that the ``PATH`` environment has been adjusted accordingly. For further
 information refer to the |foxconda3| documentation
@@ -27,8 +28,8 @@ Download or clone the |foxbms| repository from
 ..  warning::
 
     Do not change directory names or the structure inside ``foxbms``. If this
-    is changed most, if not all, ``wscript``\ s, have to be heavily adpated and
-    this can get very complex extremly fast.
+    is changed most, if not all, ``wscript``\ s, have to be heavily adapted and
+    this can get very complex extremely fast.
 
 Building the Binaries and Documentation
 ---------------------------------------
@@ -68,9 +69,15 @@ This will create a directory ``build`` including the configuration files.
 
  - Binaries
 
+  .. note::
+    The output files where the filenames end with ``.unpatched`` are
+    intermediate build results which can not run on the hardware.
+
   - This target is built with ``python tools\waf build_primary``.
   - The output directory is ``build\primary\embedded-software``.
-  - The files generated in the directory ``build\primary\embedded-software\mcu-primary\src\general`` are:
+
+  - The files generated in the directory
+    ``build\primary\embedded-software\mcu-primary\src\general`` are:
 
     - ``foxbms_primary.elf``,
     - ``foxbms_primary_flash.bin``,
@@ -93,7 +100,8 @@ This will create a directory ``build`` including the configuration files.
 
    - This target is built with ``python tools\waf build_secondary``.
    - The output directory is ``build\secondary\embedded-software``.
-   - The files generated in the directory ``build\secondary\embedded-software\mcu-secondary\src\general`` are:
+   - The files generated in the directory
+     ``build\secondary\embedded-software\mcu-secondary\src\general`` are:
 
      - ``foxbms_secondary.elf``,
      - ``foxbms_secondary_flash.bin``,

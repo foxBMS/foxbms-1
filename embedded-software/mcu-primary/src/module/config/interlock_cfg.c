@@ -50,15 +50,15 @@
  *
  */
 
-/*================== Includes =============================================*/
+/*================== Includes ===============================================*/
 #include "interlock_cfg.h"
 
 #if BUILD_MODULE_ENABLE_ILCK == 1
-/*================== Macros and Definitions ===============================*/
+/*================== Macros and Definitions =================================*/
 
-/*================== Constant and Variable Definitions ====================*/
+/*================== Static Constant and Variable Definitions ===============*/
 
-
+/*================== Extern Constant and Variable Definitions ===============*/
 ILCK_CONFIG_s ilck_interlock_config = {
         ILCK_INTERLOCK_CONTROL,         ILCK_INTERLOCK_FEEDBACK,        ILCK_FEEDBACK_TYPE_DONT_CARE
 };
@@ -67,7 +67,10 @@ ILCK_ELECTRICAL_STATE_s ilck_interlock_state = {
         FALSE,     ILCK_SWITCH_OFF
 };
 
-/*================== Function Prototypes ==================================*/
+/*================== Static Function Prototypes =============================*/
 
-/*================== Function Implementations =============================*/
+/*================== Static Function Implementations ========================*/
+
+/*================== Extern Function Implementations ========================*/
+
 #endif

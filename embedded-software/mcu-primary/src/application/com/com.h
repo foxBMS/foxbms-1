@@ -153,6 +153,9 @@ extern void UART_uartWrite_intbuf(const uint8_t *source, uint16_t length);
 
 void SYSCALL_Init(void);
 
+__attribute__((weak)) void COM_Decoder(void);
+__attribute__((weak)) void COM_printHelpCommand(void);
+
 /*================== Function Implementations =============================*/
 
 #endif /* COM_H_ */
