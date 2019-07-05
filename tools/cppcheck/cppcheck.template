@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="1">
+    <builddir>{{ bld_dir }}</builddir>
+    <platform>unspecified</platform>
+    <analyze-all-vs-configs>true</analyze-all-vs-configs>
+    <includedir>
+{% for inc_dir in inc_dirs %}        <dir name="{{ inc_dir }}"/>{{ '\n' }}{%- endfor %}    </includedir>
+    <paths>
+        <dir name="{{ src_dir }}"/>
+    </paths>
+    <addons>
+{% for addon in addons %}        <addon>{{ addon }}</addon> {{ '\n' }}{%- endfor %}    </addons>
+</project>

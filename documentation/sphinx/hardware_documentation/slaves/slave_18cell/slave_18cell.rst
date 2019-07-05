@@ -138,20 +138,20 @@ unit and is described in :numref:`table %s <temp_sense_connector_18>`.
     Pin    Signal           Direction       Description
     ====   =============    ============    ========================
     1      T-SENSOR_0       Input           NTC Sensor 0 terminal 1
-    2      FUSED_VBAT-      Input           NTC Sensor 0 terminal 2
-    3      T-SENSOR_1       Input           NTC Sensor 1 terminal 1
-    4      FUSED_VBAT-      Input           NTC Sensor 1 terminal 2
-    5      T-SENSOR_2       Input           NTC Sensor 2 terminal 1
-    6      FUSED_VBAT-      Input           NTC Sensor 2 terminal 2
-    7      T-SENSOR_3       Input           NTC Sensor 3 terminal 1
-    8      FUSED_VBAT-      Input           NTC Sensor 3 terminal 2
-    9      T-SENSOR_4       Input           NTC Sensor 4 terminal 1
-    10     FUSED_VBAT-      Input           NTC Sensor 4 terminal 2
-    11     T-SENSOR_5       Input           NTC Sensor 5 terminal 1
-    12     FUSED_VBAT-      Input           NTC Sensor 5 terminal 2
-    13     T-SENSOR_6       Input           NTC Sensor 6 terminal 1
-    14     FUSED_VBAT-      Input           NTC Sensor 6 terminal 2
-    15     T-SENSOR_7       Input           NTC Sensor 7 terminal 1
+    2      T-SENSOR_1       Input           NTC Sensor 1 terminal 1
+    3      T-SENSOR_2       Input           NTC Sensor 2 terminal 1
+    4      T-SENSOR_3       Input           NTC Sensor 3 terminal 1
+    5      T-SENSOR_4       Input           NTC Sensor 4 terminal 1
+    6      T-SENSOR_5       Input           NTC Sensor 5 terminal 1
+    7      T-SENSOR_6       Input           NTC Sensor 6 terminal 1
+    8      T-SENSOR_7       Input           NTC Sensor 7 terminal 1
+    9      FUSED_VBAT-      Input           NTC Sensor 0 terminal 2
+    10     FUSED_VBAT-      Input           NTC Sensor 1 terminal 2
+    11     FUSED_VBAT-      Input           NTC Sensor 2 terminal 2
+    12     FUSED_VBAT-      Input           NTC Sensor 3 terminal 2
+    13     FUSED_VBAT-      Input           NTC Sensor 4 terminal 2
+    14     FUSED_VBAT-      Input           NTC Sensor 5 terminal 2
+    15     FUSED_VBAT-      Input           NTC Sensor 6 terminal 2
     16     FUSED_VBAT-      Input           NTC Sensor 7 terminal 2
     ====   =============    ============    ========================
 

@@ -23,8 +23,8 @@ Driver:
 
 Driver Configuration:
  - ``embedded-software\mcu-primary\src\engine\config\sys_cfg.c`` (:ref:`syscfgprimaryc`)
- - ``embedded-software\mcu-primary\src\engine\config\sys_cfg.h`` (:ref:`syscfgsecondaryc`)
- - ``embedded-software\mcu-secondary\src\engine\config\sys_cfg.c`` (:ref:`sysprimaryc`)
+ - ``embedded-software\mcu-primary\src\engine\config\sys_cfg.h`` (:ref:`syscfgprimaryh`)
+ - ``embedded-software\mcu-secondary\src\engine\config\sys_cfg.c`` (:ref:`syscfgsecondaryc`)
  - ``embedded-software\mcu-secondary\src\engine\config\sys_cfg.h`` (:ref:`syscfgsecondaryh`)
 
 Structure

@@ -1,0 +1,1643 @@
+//******************************BUSMASTER Messages and signals Database ******************************//
+
+[DATABASE_VERSION] 1.3
+
+[PROTOCOL] CAN
+
+[BUSMASTER_VERSION] [3.2.2]
+[NUMBER_OF_MESSAGES] 113
+
+[START_MSG] CAN_State_Request,288,8,1,1,S,
+[START_SIGNALS] CAN_SIG_State_request,8,2,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] CAN_MSG_SystemState_0,272,8,20,1,S,
+[START_SIGNALS] CAN_SIG_General_error,8,1,0,U,255,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Current_state,8,2,0,U,255,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Overtemp_charge_MSL,1,3,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Undertemp_charge_MSL,1,4,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Overtemp_dischrg_MSL,1,5,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Undertemp_dischrg_MSL,1,6,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Overcur_charge_MSL,1,7,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Overcur_discharge_MSL,1,8,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Overtemp_charge_RSL,1,3,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Overtemp_charge_MOL,1,3,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Undertemp_charge_RSL,1,4,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Undertemp_charge_MOL,1,4,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Overtemp_dischrg_RSL,1,5,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Overtemp_dischrg_MOL,1,5,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Undertemp_dischrg_RSL,1,6,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Undertemp_dischrg_MOL,1,6,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Overcur_charge_RSL,1,7,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Overcur_charge_MOL,1,7,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Overcur_discharge_RSL,1,8,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Overcur_discharge_MOL,1,8,2,B,1,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] CAN_MSG_SystemState_1,273,8,13,1,S,
+[START_SIGNALS] CAN_SIG_Overvoltage_MSL,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Undervoltage_MSL,1,2,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Temperature_MCU0,1,3,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Contactor,8,4,0,U,255,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Selftest,8,5,0,U,255,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_CAN_timing,8,6,0,U,255,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Current_sensor,8,7,0,U,255,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Balancing_active,8,8,0,U,255,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Overvoltage_RSL,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Overvoltage_MOL,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Undervoltage_RSL,1,2,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Undervoltage_MOL,1,2,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Deep_discharge,1,2,3,B,1,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] CAN_MSG_SystemState_2,274,8,20,1,S,
+[START_SIGNALS] CAN_SIG_Status_ctrs_plus_normal,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Status_ctrs_pchrg_normal,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Status_ctrs_minus_normal,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Status_ctrs_plus_charge,1,1,3,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Status_ctrs_pchrg_charge,1,1,4,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Status_ctrs_minus_charge,1,1,5,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Status_ctrs_interlock,1,2,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_GS2_plausCheck_CellVolt,1,8,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_error_insulation,1,3,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Status_fuse_normal,1,4,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Status_fuse_cont_normal,1,4,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Status_fuse_charge,1,4,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Status_fuse_cont_charge,1,4,3,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_lowCoinCellVoltage,2,5,0,U,3,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Open_Wire,1,6,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_daisyChain_PEC,1,7,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_daisyChain_SPI,1,7,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_daisyChain_Multiplexer,1,7,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_GS2_plausCheck_TempSens,1,8,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_GS2_plausCheck_PackVolt,1,8,2,B,1,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] CAN_MSG_SlaveState_0,277,8,1,1,S,
+[START_SIGNALS] CAN_SIG_Slave_status_0,64,1,0,U,1,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] CAN_MSG_SlaveState_1,278,8,1,1,S,
+[START_SIGNALS] CAN_SIG_Slave_status_1,64,1,0,U,1,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] CAN_RecOperatingCurrent,304,8,4,1,S,
+[START_SIGNALS] CAN_SIG_RecChargeCurrent,16,1,0,U,65530,0,1,0,0.1,A,,
+[START_SIGNALS] CAN_SIG_RecChargeCurrent_Peak,16,3,0,U,65530,0,1,0,0.1,A,,
+[START_SIGNALS] CAN_SIG_RecDischargeCurrent,16,5,0,U,65530,0,1,0,0.1,A,,
+[START_SIGNALS] CAN_SIG_RecDischargeCurrent_Peak,16,7,0,U,65530,0,1,0,0.1,A,,
+[END_MSG]
+
+[START_MSG] CAN_SOP,305,8,4,1,S,
+[START_SIGNALS] CAN_SIG_Power_charge_max,16,1,0,U,65530,0,1,0,0.1,kW,,
+[START_SIGNALS] CAN_SIG_Peak_power_charge_max,16,3,0,U,65530,0,1,0,0.1,kW,,
+[START_SIGNALS] CAN_SIG_Power_dischrg_max,16,5,0,U,65530,0,1,0,0.1,kW,,
+[START_SIGNALS] CAN_SIG_Peak_power_dischrg_max,16,7,0,U,65530,0,1,0,0.1,kW,,
+[END_MSG]
+
+[START_MSG] CAN_SOC,320,8,3,1,S,
+[START_SIGNALS] CAN_SIG_SOC_mean,16,1,0,U,65500,0,1,0,0.01,%,,
+[START_SIGNALS] CAN_SIG_SOC_minimum,16,3,0,U,65500,0,1,0,0.01,%,,
+[START_SIGNALS] CAN_SIG_SOC_maximum,16,5,0,U,65500,0,1,0,0.01,%,,
+[END_MSG]
+
+[START_MSG] CAN_SOH,336,8,3,1,S,
+[START_SIGNALS] CAN_SIG_SOH_mean,16,1,0,U,65500,0,1,0,0.01,%,,
+[START_SIGNALS] CAN_SIG_SOH_minimum,16,3,0,U,65500,0,1,0,0.01,%,,
+[START_SIGNALS] CAN_SIG_SOH_maximum,16,5,0,U,65500,0,1,0,0.01,%,,
+[END_MSG]
+
+[START_MSG] CAN_SOE,352,8,2,1,S,
+[START_SIGNALS] CAN_SIG_SOE,16,1,0,U,65500,0,1,0,0.01,%,,
+[START_SIGNALS] CAN_SIG_Remaining_energy,32,3,0,U,4294967295,0,1,0,1,Wh,,
+[END_MSG]
+
+[START_MSG] CAN_MinMaxCellVoltages,368,8,5,1,S,
+[START_SIGNALS] CAN_SIG_Cell_voltage_mean,16,1,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Cell_voltage_minimum,16,3,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Cell_voltage_maximum,16,5,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_nr_cell_volt_min,8,7,0,U,255,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_nr_cell_volt_max,8,8,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] CAN_SOV,369,8,1,1,S,
+[START_SIGNALS] CAN_SIG_State_of_voltage,16,1,0,U,65500,0,1,0,0.01,%,,
+[END_MSG]
+
+[START_MSG] CAN_MinMaxCellTemperatures,384,8,5,1,S,
+[START_SIGNALS] CAN_SIG_Cell_temperature_mean,16,1,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Cell_temperature_minimum,16,3,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Cell_temperature_maximum,16,5,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_nr_cell_temp_min,8,7,0,U,255,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_nr_cell_temp_max,8,8,0,U,255,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] CAN_Tempering,400,8,3,1,S,
+[START_SIGNALS] CAN_SIG_Cooling_needed,8,1,0,U,255,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Heating_needed,8,2,0,U,255,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Tempering_demand,32,3,0,U,4294967295,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] CAN_Insulation,416,8,2,1,S,
+[START_SIGNALS] CAN_SIG_Insulation_status,8,1,0,U,255,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Insulation_valve,16,2,0,U,65535,0,1,0,1,kOhm,,
+[END_MSG]
+
+[START_MSG] CAN_MovMeanPower_0,464,8,2,1,S,
+[START_SIGNALS] CAN_SIG_Moving_mean_power_1s,32,1,0,U,4294967295,0,1,-2.5e+006,1,W,,
+[START_SIGNALS] CAN_SIG_Moving_mean_power_5s,32,5,0,U,4294967295,0,1,-2.5e+006,1,W,,
+[END_MSG]
+
+[START_MSG] CAN_MovMeanPower_1,465,8,2,1,S,
+[START_SIGNALS] CAN_SIG_Moving_mean_power_10s,32,1,0,U,4294967295,0,1,-2.5e+006,1,W,,
+[START_SIGNALS] CAN_SIG_Moving_mean_power_30s,32,5,0,U,4294967295,0,1,-2.5e+006,1,W,,
+[END_MSG]
+
+[START_MSG] CAN_MovMeanPower_2,466,8,2,1,S,
+[START_SIGNALS] CAN_SIG_Moving_mean_power_60s,32,1,0,U,4294967295,0,1,-2.5e+006,1,W,,
+[START_SIGNALS] CAN_SIG_Moving_mean_power_config,32,5,0,U,4294967295,0,1,-2.5e+006,1,W,,
+[END_MSG]
+
+[START_MSG] CAN_MovMeanCurrent_0,480,8,2,1,S,
+[START_SIGNALS] CAN_SIG_Moving_mean_current_1s,32,1,0,U,4294967295,0,1,-2.5e+006,1,mA,,
+[START_SIGNALS] CAN_SIG_Moving_mean_current_5s,32,5,0,U,4294967295,0,1,-2.5e+006,1,mA,,
+[END_MSG]
+
+[START_MSG] CAN_MovMeanCurrent_1,481,8,2,1,S,
+[START_SIGNALS] CAN_SIG_Moving_mean_current_10s,32,1,0,U,4294967295,0,1,-2.5e+006,1,mA,,
+[START_SIGNALS] CAN_SIG_Moving_mean_current_30s,32,5,0,U,4294967295,0,1,-2.5e+006,1,mA,,
+[END_MSG]
+
+[START_MSG] CAN_MovMeanCurrent_2,482,8,2,1,S,
+[START_SIGNALS] CAN_SIG_Moving_mean_current_60s,32,1,0,U,4294967295,0,1,-2.5e+006,1,mA,,
+[START_SIGNALS] CAN_SIG_Moving_mean_current_cnfg,32,5,0,U,4294967295,0,1,-2.5e+006,1,mA,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M0_0,512,8,6,1,S,
+[START_SIGNALS] CAN_SIG_0_00_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_01_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_02_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_0,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_1,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_2,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M0_1,513,8,6,1,S,
+[START_SIGNALS] CAN_SIG_0_10_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_11_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_12_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_3,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_4,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_5,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M0_2,514,8,6,1,S,
+[START_SIGNALS] CAN_SIG_0_20_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_21_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_22_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_6,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_7,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_8,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M0_3,515,8,6,1,S,
+[START_SIGNALS] CAN_SIG_0_30_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_31_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_32_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_9,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_10,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_11,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M0_4,516,8,6,1,S,
+[START_SIGNALS] CAN_SIG_0_40_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_41_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_42_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_12,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_13,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_14,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M0_5,517,8,6,1,S,
+[START_SIGNALS] CAN_SIG_0_50_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_51_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_52_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_15,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_16,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_voltage_17,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M0_0,528,8,6,1,S,
+[START_SIGNALS] CAN_SIG_0_00_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_01_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_02_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_temp_0,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_temp_1,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_temp_2,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M0_1,529,8,6,1,S,
+[START_SIGNALS] CAN_SIG_0_10_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_11_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_12_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_temp_3,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_temp_4,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_temp_5,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M0_2,530,8,6,1,S,
+[START_SIGNALS] CAN_SIG_0_20_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_21_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_22_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_temp_6,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_temp_7,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_temp_8,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M0_3,531,8,6,1,S,
+[START_SIGNALS] CAN_SIG_0_30_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_31_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_0_32_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_temp_9,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_temp_10,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_0_cell_temp_11,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M1_0,544,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_00_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_01_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_02_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_0,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_1,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_2,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M1_1,545,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_10_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_11_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_12_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_3,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_4,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_5,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M1_2,546,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_20_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_21_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_22_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_6,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_7,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_8,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M1_3,547,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_30_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_31_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_32_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_9,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_10,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_11,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M1_4,548,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_40_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_41_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_42_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_12,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_13,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_14,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M1_5,549,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_50_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_51_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_52_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_15,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_16,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_voltage_17,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M1_0,560,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_00_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_01_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_02_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_temp_0,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_temp_1,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_temp_2,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M1_1,561,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_10_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_11_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_12_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_temp_3,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_temp_4,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_temp_5,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M1_2,562,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_20_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_21_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_22_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_temp_6,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_temp_7,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_temp_8,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M1_3,563,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_30_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_31_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_32_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_temp_9,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_temp_10,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_1_cell_temp_11,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M2_0,576,8,6,1,S,
+[START_SIGNALS] CAN_SIG_2_00_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_01_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_02_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_0,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_1,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_2,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M2_1,577,8,6,1,S,
+[START_SIGNALS] CAN_SIG_2_10_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_11_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_12_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_3,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_4,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_5,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M2_2,578,8,6,1,S,
+[START_SIGNALS] CAN_SIG_2_20_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_21_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_22_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_6,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_7,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_8,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M2_3,579,8,6,1,S,
+[START_SIGNALS] CAN_SIG_2_30_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_31_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_32_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_9,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_10,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_11,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M2_4,580,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_40_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_41_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_42_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_12,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_13,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_14,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M2_5,581,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_50_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_51_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_52_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_15,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_16,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_voltage_17,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M2_0,592,8,6,1,S,
+[START_SIGNALS] CAN_SIG_2_00_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_01_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_02_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_temp_0,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_temp_1,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_temp_2,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M2_1,593,8,6,1,S,
+[START_SIGNALS] CAN_SIG_2_10_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_11_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_12_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_temp_3,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_temp_4,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_temp_5,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M2_2,594,8,6,1,S,
+[START_SIGNALS] CAN_SIG_2_20_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_21_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_22_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_temp_6,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_temp_7,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_temp_8,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M2_3,595,8,6,1,S,
+[START_SIGNALS] CAN_SIG_2_30_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_31_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_2_32_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_temp_9,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_temp_10,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_2_cell_temp_11,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M3_0,608,8,6,1,S,
+[START_SIGNALS] CAN_SIG_3_00_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_01_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_02_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_0,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_1,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_2,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M3_1,609,8,6,1,S,
+[START_SIGNALS] CAN_SIG_3_10_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_11_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_12_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_3,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_4,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_5,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M3_2,610,8,6,1,S,
+[START_SIGNALS] CAN_SIG_3_20_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_21_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_22_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_6,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_7,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_8,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M3_3,611,8,6,1,S,
+[START_SIGNALS] CAN_SIG_3_30_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_31_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_32_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_9,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_10,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_11,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M3_4,612,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_40_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_41_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_42_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_12,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_13,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_14,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M3_5,613,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_50_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_51_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_52_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_15,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_16,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_voltage_17,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M3_0,624,8,6,1,S,
+[START_SIGNALS] CAN_SIG_3_00_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_01_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_02_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_temp_0,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_temp_1,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_temp_2,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M3_1,625,8,6,1,S,
+[START_SIGNALS] CAN_SIG_3_10_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_11_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_12_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_temp_3,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_temp_4,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_temp_5,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M3_2,626,8,6,1,S,
+[START_SIGNALS] CAN_SIG_3_20_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_21_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_22_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_temp_6,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_temp_7,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_temp_8,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M3_3,627,8,6,1,S,
+[START_SIGNALS] CAN_SIG_3_30_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_31_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_3_32_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_temp_9,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_temp_10,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_3_cell_temp_11,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M4_0,640,8,6,1,S,
+[START_SIGNALS] CAN_SIG_4_00_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_01_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_02_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_0,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_1,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_2,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M4_1,641,8,6,1,S,
+[START_SIGNALS] CAN_SIG_4_10_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_11_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_12_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_3,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_4,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_5,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M4_2,642,8,6,1,S,
+[START_SIGNALS] CAN_SIG_4_20_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_21_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_22_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_6,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_7,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_8,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M4_3,643,8,6,1,S,
+[START_SIGNALS] CAN_SIG_4_30_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_31_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_32_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_9,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_10,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_11,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M4_4,644,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_40_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_41_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_42_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_12,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_13,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_14,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M4_5,645,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_50_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_51_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_52_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_15,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_16,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_voltage_17,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M4_0,656,8,6,1,S,
+[START_SIGNALS] CAN_SIG_4_00_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_01_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_02_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_temp_0,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_temp_1,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_temp_2,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M4_1,657,8,6,1,S,
+[START_SIGNALS] CAN_SIG_4_10_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_11_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_12_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_temp_3,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_temp_4,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_temp_5,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M4_2,658,8,6,1,S,
+[START_SIGNALS] CAN_SIG_4_20_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_21_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_22_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_temp_6,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_temp_7,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_temp_8,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M4_3,659,8,6,1,S,
+[START_SIGNALS] CAN_SIG_4_30_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_31_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_4_32_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_temp_9,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_temp_10,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_4_cell_temp_11,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M5_0,672,8,6,1,S,
+[START_SIGNALS] CAN_SIG_5_00_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_01_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_02_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_0,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_1,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_2,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M5_1,673,8,6,1,S,
+[START_SIGNALS] CAN_SIG_5_10_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_11_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_12_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_3,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_4,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_5,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M5_2,674,8,6,1,S,
+[START_SIGNALS] CAN_SIG_5_20_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_21_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_22_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_6,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_7,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_8,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M5_3,675,8,6,1,S,
+[START_SIGNALS] CAN_SIG_5_30_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_31_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_32_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_9,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_10,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_11,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M5_4,676,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_40_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_41_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_42_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_12,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_13,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_14,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M5_5,677,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_50_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_51_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_52_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_15,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_16,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_voltage_17,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M5_0,688,8,6,1,S,
+[START_SIGNALS] CAN_SIG_5_00_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_01_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_02_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_temp_0,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_temp_1,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_temp_2,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M5_1,689,8,6,1,S,
+[START_SIGNALS] CAN_SIG_5_10_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_11_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_12_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_temp_3,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_temp_4,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_temp_5,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M5_2,690,8,6,1,S,
+[START_SIGNALS] CAN_SIG_5_20_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_21_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_22_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_temp_6,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_temp_7,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_temp_8,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M5_3,691,8,6,1,S,
+[START_SIGNALS] CAN_SIG_5_30_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_31_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_5_32_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_temp_9,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_temp_10,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_5_cell_temp_11,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M6_0,704,8,6,1,S,
+[START_SIGNALS] CAN_SIG_6_00_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_01_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_02_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_0,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_1,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_2,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M6_1,705,8,6,1,S,
+[START_SIGNALS] CAN_SIG_6_10_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_11_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_12_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_3,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_4,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_5,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M6_2,706,8,6,1,S,
+[START_SIGNALS] CAN_SIG_6_20_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_21_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_22_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_6,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_7,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_8,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M6_3,707,8,6,1,S,
+[START_SIGNALS] CAN_SIG_6_30_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_31_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_32_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_9,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_10,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_11,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M6_4,708,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_40_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_41_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_42_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_12,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_13,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_14,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M6_5,709,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_50_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_51_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_52_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_15,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_16,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_voltage_17,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M6_0,720,8,6,1,S,
+[START_SIGNALS] CAN_SIG_6_00_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_01_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_02_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_temp_0,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_temp_1,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_temp_2,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M6_1,721,8,6,1,S,
+[START_SIGNALS] CAN_SIG_6_10_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_11_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_12_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_temp_3,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_temp_4,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_temp_5,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M6_2,722,8,6,1,S,
+[START_SIGNALS] CAN_SIG_6_20_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_21_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_22_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_temp_6,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_temp_7,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_temp_8,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M6_3,723,8,6,1,S,
+[START_SIGNALS] CAN_SIG_6_30_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_31_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_6_32_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_temp_9,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_temp_10,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_6_cell_temp_11,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M7_0,736,8,6,1,S,
+[START_SIGNALS] CAN_SIG_7_00_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_01_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_02_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_0,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_1,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_2,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M7_1,737,8,6,1,S,
+[START_SIGNALS] CAN_SIG_7_10_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_11_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_12_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_3,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_4,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_5,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M7_2,738,8,6,1,S,
+[START_SIGNALS] CAN_SIG_7_20_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_21_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_22_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_6,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_7,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_8,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M7_3,739,8,6,1,S,
+[START_SIGNALS] CAN_SIG_7_30_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_31_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_32_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_9,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_10,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_11,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M7_4,740,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_40_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_41_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_42_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_12,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_13,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_14,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_voltage_M7_5,741,8,6,1,S,
+[START_SIGNALS] CAN_SIG_1_50_Cell_voltages_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_51_Cell_voltages_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_1_52_Cell_voltages_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_15,16,2,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_16,16,4,0,U,65535,0,1,0,1,mV,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_voltage_17,16,6,0,U,65535,0,1,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M7_0,752,8,6,1,S,
+[START_SIGNALS] CAN_SIG_7_00_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_01_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_02_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_temp_0,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_temp_1,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_temp_2,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M7_1,753,8,6,1,S,
+[START_SIGNALS] CAN_SIG_7_10_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_11_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_12_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_temp_3,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_temp_4,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_temp_5,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M7_2,754,8,6,1,S,
+[START_SIGNALS] CAN_SIG_7_20_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_21_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_22_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_temp_6,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_temp_7,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_temp_8,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_Cell_temperature_M7_3,755,8,6,1,S,
+[START_SIGNALS] CAN_SIG_7_30_Cell_temp_valid,1,1,0,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_31_Cell_temp_valid,1,1,1,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_7_32_Cell_temp_valid,1,1,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_temp_9,16,2,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_temp_10,16,4,0,U,65500,0,1,-128,0.01,°C,,
+[START_SIGNALS] CAN_SIG_Module_7_cell_temp_11,16,6,0,U,65500,0,1,-128,0.01,°C,,
+[END_MSG]
+
+[START_MSG] CAN_PackVoltage,496,8,2,1,S,
+[START_SIGNALS] CAN_SIG_PackVolt_Battery,32,1,0,U,4294967295,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_PackVolt_PowerNet,32,5,0,U,4294967295,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] CAN_IVT_Current,1313,6,3,0,S,
+[START_SIGNALS] CAN_SIG_IVT_Current_MuxID,8,1,0,U,255,0,0,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_Current_Status,8,2,0,U,255,0,0,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_Current,32,6,0,I,2147483647,-2147483648,0,0,1,mA,,
+[END_MSG]
+
+[START_MSG] CAN_IVT_Voltage_1,1314,6,3,0,S,
+[START_SIGNALS] CAN_SIG_IVT_Voltage_1_MuxID,8,1,0,U,255,0,0,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_Voltage_1_Status,8,2,0,U,255,0,0,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_Voltage_1,32,6,0,I,2147483647,-2147483648,0,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_IVT_Voltage_2,1315,6,3,0,S,
+[START_SIGNALS] CAN_SIG_IVT_Voltage_2_MuxID,8,1,0,U,255,0,0,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_Voltage_2_Status,8,2,0,U,255,0,0,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_Voltage_2,32,6,0,I,2147483647,-2147483648,0,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_IVT_Voltage_3,1316,6,3,0,S,
+[START_SIGNALS] CAN_SIG_IVT_Voltage_3_MuxID,8,1,0,U,255,0,0,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_Voltage_3_Status,8,2,0,U,255,0,0,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_Voltage_3,32,6,0,I,2147483647,-2147483648,0,0,1,mV,,
+[END_MSG]
+
+[START_MSG] CAN_IVT_Temperature,1317,6,3,0,S,
+[START_SIGNALS] CAN_SIG_IVT_Temperature_MuxID,8,1,0,U,255,0,0,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_Temperature_Status,8,2,0,U,255,0,0,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_Temperature,32,6,0,I,2147483647,-2147483648,0,0,1,0.1°C,,
+[END_MSG]
+
+[START_MSG] CAN_IVT_Power,1318,6,3,0,S,
+[START_SIGNALS] CAN_SIG_IVT_Power_MuxID,8,1,0,U,255,0,0,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_Power_Status,8,2,0,U,255,0,0,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_Power,32,6,0,I,2147483647,-2147483648,0,0,1,W,,
+[END_MSG]
+
+[START_MSG] CAN_IVT_CurrentCounter,1319,6,3,0,S,
+[START_SIGNALS] CAN_SIG_IVT_CurrentCounter_MuxID,8,1,0,I,127,-128,1,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_CC_Status,8,2,0,U,255,0,0,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_CurrentCounter,32,6,0,U,4294967295,0,0,0,1,As,,
+[END_MSG]
+
+[START_MSG] CAN_IVT_EnergyCounter,1320,6,3,0,S,
+[START_SIGNALS] CAN_SIG_IVT_EnergyCounter_MuxID,8,1,0,U,255,0,0,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_EnergyCounter_Status,8,2,0,U,255,0,0,0,1,,,
+[START_SIGNALS] CAN_SIG_IVT_EnergyCounter,32,6,0,U,4294967295,0,0,0,1,Wh,,
+[END_MSG]
+
+[START_MSG] CAN_MSG_BOOT,257,8,4,1,S,
+[START_SIGNALS] CAN_SIG_VersionNumberMajor,8,1,0,U,255,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_VersionNumberMinor,8,2,0,U,255,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_VersionNumberBugfix,8,3,0,U,255,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_Checksum,32,5,0,U,4294967295,0,1,0,1,,,
+[END_MSG]
+
+[START_MSG] CAN_GetReleaseVersion,1911,0,0,1,S,
+[END_MSG]
+
+[START_VALUE_TABLE]
+[END_VALUE_TABLE]
+
+[NODE] Vector__XXX
+
+[START_DESC]
+[START_DESC_NET]
+[END_DESC_NET]
+
+[START_DESC_NODE]
+[END_DESC_NODE]
+
+[START_DESC_MSG]
+1313 S "Isabellenhuette current sensor - current";
+1314 S "Isabellenhuette current sensor - voltage 1";
+1315 S "Isabellenhuette current sensor - voltage 2";
+1316 S "Isabellenhuette current sensor - voltage 3";
+1317 S "Isabellenhuette current sensor - temperature";
+1318 S "Isabellenhuette current sensor - power (referring to current and voltage V1)";
+1319 S "Isabellenhuette current sensor - CC";
+1320 S "Isabellenhuette current sensor -energy counter (referring to current and voltage V1)";
+[END_DESC_MSG]
+
+[START_DESC_SIG]
+[END_DESC_SIG]
+[END_DESC]
+
+[START_PARAM]
+[START_PARAM_NET]
+"BusType",STRING,"CAN"
+[END_PARAM_NET]
+
+[START_PARAM_NODE]
+[END_PARAM_NODE]
+
+[START_PARAM_MSG]
+"GenMsgCycleTime",INT,0,0,65535
+[END_PARAM_MSG]
+
+[START_PARAM_SIG]
+"GenSigStartValue",FLOAT,1.17549e-038,1.17549e-038,3
+[END_PARAM_SIG]
+
+[START_PARAM_NODE_RX_SIG]
+[END_PARAM_NODE_RX_SIG]
+
+[START_PARAM_NODE_TX_MSG]
+[END_PARAM_NODE_TX_MSG]
+[END_PARAM]
+
+[START_PARAM_VAL]
+[START_PARAM_NET_VAL]
+"BusType","CAN"
+[END_PARAM_NET_VAL]
+
+[START_PARAM_NODE_VAL]
+[END_PARAM_NODE_VAL]
+
+[START_PARAM_MSG_VAL]
+288,S,"GenMsgCycleTime",100
+[END_PARAM_MSG_VAL]
+
+[START_PARAM_SIG_VAL]
+288,S,CAN_SIG_State_request,"GenSigStartValue",0
+272,S,CAN_SIG_General_error,"GenSigStartValue",0
+272,S,CAN_SIG_Current_state,"GenSigStartValue",0
+272,S,CAN_SIG_Overtemp_charge_MSL,"GenSigStartValue",0
+272,S,CAN_SIG_Undertemp_charge_MSL,"GenSigStartValue",0
+272,S,CAN_SIG_Overtemp_dischrg_MSL,"GenSigStartValue",0
+272,S,CAN_SIG_Undertemp_dischrg_MSL,"GenSigStartValue",0
+272,S,CAN_SIG_Overcur_charge_MSL,"GenSigStartValue",0
+272,S,CAN_SIG_Overcur_discharge_MSL,"GenSigStartValue",0
+272,S,CAN_SIG_Overtemp_charge_RSL,"GenSigStartValue",0
+272,S,CAN_SIG_Overtemp_charge_MOL,"GenSigStartValue",0
+272,S,CAN_SIG_Undertemp_charge_RSL,"GenSigStartValue",0
+272,S,CAN_SIG_Undertemp_charge_MOL,"GenSigStartValue",0
+272,S,CAN_SIG_Overtemp_dischrg_RSL,"GenSigStartValue",0
+272,S,CAN_SIG_Overtemp_dischrg_MOL,"GenSigStartValue",0
+272,S,CAN_SIG_Undertemp_dischrg_RSL,"GenSigStartValue",0
+272,S,CAN_SIG_Undertemp_dischrg_MOL,"GenSigStartValue",0
+272,S,CAN_SIG_Overcur_charge_RSL,"GenSigStartValue",0
+272,S,CAN_SIG_Overcur_charge_MOL,"GenSigStartValue",0
+272,S,CAN_SIG_Overcur_discharge_RSL,"GenSigStartValue",0
+272,S,CAN_SIG_Overcur_discharge_MOL,"GenSigStartValue",0
+273,S,CAN_SIG_Overvoltage_MSL,"GenSigStartValue",0
+273,S,CAN_SIG_Undervoltage_MSL,"GenSigStartValue",0
+273,S,CAN_SIG_Temperature_MCU0,"GenSigStartValue",0
+273,S,CAN_SIG_Contactor,"GenSigStartValue",0
+273,S,CAN_SIG_Selftest,"GenSigStartValue",0
+273,S,CAN_SIG_CAN_timing,"GenSigStartValue",0
+273,S,CAN_SIG_Current_sensor,"GenSigStartValue",0
+273,S,CAN_SIG_Balancing_active,"GenSigStartValue",0
+273,S,CAN_SIG_Overvoltage_RSL,"GenSigStartValue",0
+273,S,CAN_SIG_Overvoltage_MOL,"GenSigStartValue",0
+273,S,CAN_SIG_Undervoltage_RSL,"GenSigStartValue",0
+273,S,CAN_SIG_Undervoltage_MOL,"GenSigStartValue",0
+273,S,CAN_SIG_Deep_discharge,"GenSigStartValue",0
+274,S,CAN_SIG_Status_ctrs_plus_normal,"GenSigStartValue",0
+274,S,CAN_SIG_Status_ctrs_pchrg_normal,"GenSigStartValue",0
+274,S,CAN_SIG_Status_ctrs_minus_normal,"GenSigStartValue",0
+274,S,CAN_SIG_Status_ctrs_plus_charge,"GenSigStartValue",0
+274,S,CAN_SIG_Status_ctrs_pchrg_charge,"GenSigStartValue",0
+274,S,CAN_SIG_Status_ctrs_minus_charge,"GenSigStartValue",0
+274,S,CAN_SIG_Status_ctrs_interlock,"GenSigStartValue",0
+274,S,CAN_SIG_GS2_plausCheck_CellVolt,"GenSigStartValue",0
+274,S,CAN_SIG_error_insulation,"GenSigStartValue",0
+274,S,CAN_SIG_Status_fuse_normal,"GenSigStartValue",0
+274,S,CAN_SIG_Status_fuse_cont_normal,"GenSigStartValue",0
+274,S,CAN_SIG_Status_fuse_charge,"GenSigStartValue",0
+274,S,CAN_SIG_Status_fuse_cont_charge,"GenSigStartValue",0
+274,S,CAN_SIG_lowCoinCellVoltage,"GenSigStartValue",0
+274,S,CAN_SIG_Open_Wire,"GenSigStartValue",0
+274,S,CAN_SIG_daisyChain_PEC,"GenSigStartValue",0
+274,S,CAN_SIG_daisyChain_SPI,"GenSigStartValue",0
+274,S,CAN_SIG_daisyChain_Multiplexer,"GenSigStartValue",0
+274,S,CAN_SIG_GS2_plausCheck_TempSens,"GenSigStartValue",0
+274,S,CAN_SIG_GS2_plausCheck_PackVolt,"GenSigStartValue",0
+277,S,CAN_SIG_Slave_status_0,"GenSigStartValue",0
+278,S,CAN_SIG_Slave_status_1,"GenSigStartValue",0
+304,S,CAN_SIG_RecChargeCurrent,"GenSigStartValue",0
+304,S,CAN_SIG_RecChargeCurrent_Peak,"GenSigStartValue",0
+304,S,CAN_SIG_RecDischargeCurrent,"GenSigStartValue",0
+304,S,CAN_SIG_RecDischargeCurrent_Peak,"GenSigStartValue",0
+305,S,CAN_SIG_Power_charge_max,"GenSigStartValue",0
+305,S,CAN_SIG_Peak_power_charge_max,"GenSigStartValue",0
+305,S,CAN_SIG_Power_dischrg_max,"GenSigStartValue",0
+305,S,CAN_SIG_Peak_power_dischrg_max,"GenSigStartValue",0
+320,S,CAN_SIG_SOC_mean,"GenSigStartValue",0
+320,S,CAN_SIG_SOC_minimum,"GenSigStartValue",0
+320,S,CAN_SIG_SOC_maximum,"GenSigStartValue",0
+336,S,CAN_SIG_SOH_mean,"GenSigStartValue",0
+336,S,CAN_SIG_SOH_minimum,"GenSigStartValue",0
+336,S,CAN_SIG_SOH_maximum,"GenSigStartValue",0
+352,S,CAN_SIG_SOE,"GenSigStartValue",0
+352,S,CAN_SIG_Remaining_energy,"GenSigStartValue",0
+368,S,CAN_SIG_Cell_voltage_mean,"GenSigStartValue",0
+368,S,CAN_SIG_Cell_voltage_minimum,"GenSigStartValue",0
+368,S,CAN_SIG_Cell_voltage_maximum,"GenSigStartValue",0
+368,S,CAN_SIG_Module_nr_cell_volt_min,"GenSigStartValue",0
+368,S,CAN_SIG_Module_nr_cell_volt_max,"GenSigStartValue",0
+369,S,CAN_SIG_State_of_voltage,"GenSigStartValue",0
+384,S,CAN_SIG_Cell_temperature_mean,"GenSigStartValue",12800
+384,S,CAN_SIG_Cell_temperature_minimum,"GenSigStartValue",12800
+384,S,CAN_SIG_Cell_temperature_maximum,"GenSigStartValue",12800
+384,S,CAN_SIG_Module_nr_cell_temp_min,"GenSigStartValue",0
+384,S,CAN_SIG_Module_nr_cell_temp_max,"GenSigStartValue",0
+400,S,CAN_SIG_Cooling_needed,"GenSigStartValue",0
+400,S,CAN_SIG_Heating_needed,"GenSigStartValue",0
+400,S,CAN_SIG_Tempering_demand,"GenSigStartValue",0
+416,S,CAN_SIG_Insulation_status,"GenSigStartValue",0
+416,S,CAN_SIG_Insulation_valve,"GenSigStartValue",0
+464,S,CAN_SIG_Moving_mean_power_1s,"GenSigStartValue",2.5e+006
+464,S,CAN_SIG_Moving_mean_power_5s,"GenSigStartValue",2.5e+006
+465,S,CAN_SIG_Moving_mean_power_10s,"GenSigStartValue",2.5e+006
+465,S,CAN_SIG_Moving_mean_power_30s,"GenSigStartValue",2.5e+006
+466,S,CAN_SIG_Moving_mean_power_60s,"GenSigStartValue",2.5e+006
+466,S,CAN_SIG_Moving_mean_power_config,"GenSigStartValue",2.5e+006
+480,S,CAN_SIG_Moving_mean_current_1s,"GenSigStartValue",2.5e+006
+480,S,CAN_SIG_Moving_mean_current_5s,"GenSigStartValue",2.5e+006
+481,S,CAN_SIG_Moving_mean_current_10s,"GenSigStartValue",2.5e+006
+481,S,CAN_SIG_Moving_mean_current_30s,"GenSigStartValue",2.5e+006
+482,S,CAN_SIG_Moving_mean_current_60s,"GenSigStartValue",2.5e+006
+482,S,CAN_SIG_Moving_mean_current_cnfg,"GenSigStartValue",2.5e+006
+512,S,CAN_SIG_0_00_Cell_voltages_valid,"GenSigStartValue",0
+512,S,CAN_SIG_0_01_Cell_voltages_valid,"GenSigStartValue",0
+512,S,CAN_SIG_0_02_Cell_voltages_valid,"GenSigStartValue",0
+512,S,CAN_SIG_Module_0_cell_voltage_0,"GenSigStartValue",0
+512,S,CAN_SIG_Module_0_cell_voltage_1,"GenSigStartValue",0
+512,S,CAN_SIG_Module_0_cell_voltage_2,"GenSigStartValue",0
+513,S,CAN_SIG_0_10_Cell_voltages_valid,"GenSigStartValue",0
+513,S,CAN_SIG_0_11_Cell_voltages_valid,"GenSigStartValue",0
+513,S,CAN_SIG_0_12_Cell_voltages_valid,"GenSigStartValue",0
+513,S,CAN_SIG_Module_0_cell_voltage_3,"GenSigStartValue",0
+513,S,CAN_SIG_Module_0_cell_voltage_4,"GenSigStartValue",0
+513,S,CAN_SIG_Module_0_cell_voltage_5,"GenSigStartValue",0
+514,S,CAN_SIG_0_20_Cell_voltages_valid,"GenSigStartValue",0
+514,S,CAN_SIG_0_21_Cell_voltages_valid,"GenSigStartValue",0
+514,S,CAN_SIG_0_22_Cell_voltages_valid,"GenSigStartValue",0
+514,S,CAN_SIG_Module_0_cell_voltage_6,"GenSigStartValue",0
+514,S,CAN_SIG_Module_0_cell_voltage_7,"GenSigStartValue",0
+514,S,CAN_SIG_Module_0_cell_voltage_8,"GenSigStartValue",0
+515,S,CAN_SIG_0_30_Cell_voltages_valid,"GenSigStartValue",0
+515,S,CAN_SIG_0_31_Cell_voltages_valid,"GenSigStartValue",0
+515,S,CAN_SIG_0_32_Cell_voltages_valid,"GenSigStartValue",0
+515,S,CAN_SIG_Module_0_cell_voltage_9,"GenSigStartValue",0
+515,S,CAN_SIG_Module_0_cell_voltage_10,"GenSigStartValue",0
+515,S,CAN_SIG_Module_0_cell_voltage_11,"GenSigStartValue",0
+516,S,CAN_SIG_0_40_Cell_voltages_valid,"GenSigStartValue",0
+516,S,CAN_SIG_0_41_Cell_voltages_valid,"GenSigStartValue",0
+516,S,CAN_SIG_0_42_Cell_voltages_valid,"GenSigStartValue",0
+516,S,CAN_SIG_Module_0_cell_voltage_12,"GenSigStartValue",0
+516,S,CAN_SIG_Module_0_cell_voltage_13,"GenSigStartValue",0
+516,S,CAN_SIG_Module_0_cell_voltage_14,"GenSigStartValue",0
+517,S,CAN_SIG_0_50_Cell_voltages_valid,"GenSigStartValue",0
+517,S,CAN_SIG_0_51_Cell_voltages_valid,"GenSigStartValue",0
+517,S,CAN_SIG_0_52_Cell_voltages_valid,"GenSigStartValue",0
+517,S,CAN_SIG_Module_0_cell_voltage_15,"GenSigStartValue",0
+517,S,CAN_SIG_Module_0_cell_voltage_16,"GenSigStartValue",0
+517,S,CAN_SIG_Module_0_cell_voltage_17,"GenSigStartValue",0
+528,S,CAN_SIG_0_00_Cell_temp_valid,"GenSigStartValue",0
+528,S,CAN_SIG_0_01_Cell_temp_valid,"GenSigStartValue",0
+528,S,CAN_SIG_0_02_Cell_temp_valid,"GenSigStartValue",0
+528,S,CAN_SIG_Module_0_cell_temp_0,"GenSigStartValue",12800
+528,S,CAN_SIG_Module_0_cell_temp_1,"GenSigStartValue",12800
+528,S,CAN_SIG_Module_0_cell_temp_2,"GenSigStartValue",12800
+529,S,CAN_SIG_0_10_Cell_temp_valid,"GenSigStartValue",0
+529,S,CAN_SIG_0_11_Cell_temp_valid,"GenSigStartValue",0
+529,S,CAN_SIG_0_12_Cell_temp_valid,"GenSigStartValue",0
+529,S,CAN_SIG_Module_0_cell_temp_3,"GenSigStartValue",12800
+529,S,CAN_SIG_Module_0_cell_temp_4,"GenSigStartValue",12800
+529,S,CAN_SIG_Module_0_cell_temp_5,"GenSigStartValue",12800
+530,S,CAN_SIG_0_20_Cell_temp_valid,"GenSigStartValue",0
+530,S,CAN_SIG_0_21_Cell_temp_valid,"GenSigStartValue",0
+530,S,CAN_SIG_0_22_Cell_temp_valid,"GenSigStartValue",0
+530,S,CAN_SIG_Module_0_cell_temp_6,"GenSigStartValue",12800
+530,S,CAN_SIG_Module_0_cell_temp_7,"GenSigStartValue",12800
+530,S,CAN_SIG_Module_0_cell_temp_8,"GenSigStartValue",12800
+531,S,CAN_SIG_0_30_Cell_temp_valid,"GenSigStartValue",0
+531,S,CAN_SIG_0_31_Cell_temp_valid,"GenSigStartValue",0
+531,S,CAN_SIG_0_32_Cell_temp_valid,"GenSigStartValue",0
+531,S,CAN_SIG_Module_0_cell_temp_9,"GenSigStartValue",12800
+531,S,CAN_SIG_Module_0_cell_temp_10,"GenSigStartValue",12800
+531,S,CAN_SIG_Module_0_cell_temp_11,"GenSigStartValue",12800
+544,S,CAN_SIG_1_00_Cell_voltages_valid,"GenSigStartValue",0
+544,S,CAN_SIG_1_01_Cell_voltages_valid,"GenSigStartValue",0
+544,S,CAN_SIG_1_02_Cell_voltages_valid,"GenSigStartValue",0
+544,S,CAN_SIG_Module_1_cell_voltage_0,"GenSigStartValue",0
+544,S,CAN_SIG_Module_1_cell_voltage_1,"GenSigStartValue",0
+544,S,CAN_SIG_Module_1_cell_voltage_2,"GenSigStartValue",0
+545,S,CAN_SIG_1_10_Cell_voltages_valid,"GenSigStartValue",0
+545,S,CAN_SIG_1_11_Cell_voltages_valid,"GenSigStartValue",0
+545,S,CAN_SIG_1_12_Cell_voltages_valid,"GenSigStartValue",0
+545,S,CAN_SIG_Module_1_cell_voltage_3,"GenSigStartValue",0
+545,S,CAN_SIG_Module_1_cell_voltage_4,"GenSigStartValue",0
+545,S,CAN_SIG_Module_1_cell_voltage_5,"GenSigStartValue",0
+546,S,CAN_SIG_1_20_Cell_voltages_valid,"GenSigStartValue",0
+546,S,CAN_SIG_1_21_Cell_voltages_valid,"GenSigStartValue",0
+546,S,CAN_SIG_1_22_Cell_voltages_valid,"GenSigStartValue",0
+546,S,CAN_SIG_Module_1_cell_voltage_6,"GenSigStartValue",0
+546,S,CAN_SIG_Module_1_cell_voltage_7,"GenSigStartValue",0
+546,S,CAN_SIG_Module_1_cell_voltage_8,"GenSigStartValue",0
+547,S,CAN_SIG_1_30_Cell_voltages_valid,"GenSigStartValue",0
+547,S,CAN_SIG_1_31_Cell_voltages_valid,"GenSigStartValue",0
+547,S,CAN_SIG_1_32_Cell_voltages_valid,"GenSigStartValue",0
+547,S,CAN_SIG_Module_1_cell_voltage_9,"GenSigStartValue",0
+547,S,CAN_SIG_Module_1_cell_voltage_10,"GenSigStartValue",0
+547,S,CAN_SIG_Module_1_cell_voltage_11,"GenSigStartValue",0
+548,S,CAN_SIG_1_40_Cell_voltages_valid,"GenSigStartValue",0
+548,S,CAN_SIG_1_41_Cell_voltages_valid,"GenSigStartValue",0
+548,S,CAN_SIG_1_42_Cell_voltages_valid,"GenSigStartValue",0
+548,S,CAN_SIG_Module_1_cell_voltage_12,"GenSigStartValue",0
+548,S,CAN_SIG_Module_1_cell_voltage_13,"GenSigStartValue",0
+548,S,CAN_SIG_Module_1_cell_voltage_14,"GenSigStartValue",0
+549,S,CAN_SIG_1_50_Cell_voltages_valid,"GenSigStartValue",0
+549,S,CAN_SIG_1_51_Cell_voltages_valid,"GenSigStartValue",0
+549,S,CAN_SIG_1_52_Cell_voltages_valid,"GenSigStartValue",0
+549,S,CAN_SIG_Module_1_cell_voltage_15,"GenSigStartValue",0
+549,S,CAN_SIG_Module_1_cell_voltage_16,"GenSigStartValue",0
+549,S,CAN_SIG_Module_1_cell_voltage_17,"GenSigStartValue",0
+560,S,CAN_SIG_1_00_Cell_temp_valid,"GenSigStartValue",0
+560,S,CAN_SIG_1_01_Cell_temp_valid,"GenSigStartValue",0
+560,S,CAN_SIG_1_02_Cell_temp_valid,"GenSigStartValue",0
+560,S,CAN_SIG_Module_1_cell_temp_0,"GenSigStartValue",12800
+560,S,CAN_SIG_Module_1_cell_temp_1,"GenSigStartValue",12800
+560,S,CAN_SIG_Module_1_cell_temp_2,"GenSigStartValue",12800
+561,S,CAN_SIG_1_10_Cell_temp_valid,"GenSigStartValue",0
+561,S,CAN_SIG_1_11_Cell_temp_valid,"GenSigStartValue",0
+561,S,CAN_SIG_1_12_Cell_temp_valid,"GenSigStartValue",0
+561,S,CAN_SIG_Module_1_cell_temp_3,"GenSigStartValue",12800
+561,S,CAN_SIG_Module_1_cell_temp_4,"GenSigStartValue",12800
+561,S,CAN_SIG_Module_1_cell_temp_5,"GenSigStartValue",12800
+562,S,CAN_SIG_1_20_Cell_temp_valid,"GenSigStartValue",0
+562,S,CAN_SIG_1_21_Cell_temp_valid,"GenSigStartValue",0
+562,S,CAN_SIG_1_22_Cell_temp_valid,"GenSigStartValue",0
+562,S,CAN_SIG_Module_1_cell_temp_6,"GenSigStartValue",12800
+562,S,CAN_SIG_Module_1_cell_temp_7,"GenSigStartValue",12800
+562,S,CAN_SIG_Module_1_cell_temp_8,"GenSigStartValue",12800
+563,S,CAN_SIG_1_30_Cell_temp_valid,"GenSigStartValue",0
+563,S,CAN_SIG_1_31_Cell_temp_valid,"GenSigStartValue",0
+563,S,CAN_SIG_1_32_Cell_temp_valid,"GenSigStartValue",0
+563,S,CAN_SIG_Module_1_cell_temp_9,"GenSigStartValue",12800
+563,S,CAN_SIG_Module_1_cell_temp_10,"GenSigStartValue",12800
+563,S,CAN_SIG_Module_1_cell_temp_11,"GenSigStartValue",12800
+576,S,CAN_SIG_2_00_Cell_voltages_valid,"GenSigStartValue",0
+576,S,CAN_SIG_2_01_Cell_voltages_valid,"GenSigStartValue",0
+576,S,CAN_SIG_2_02_Cell_voltages_valid,"GenSigStartValue",0
+576,S,CAN_SIG_Module_2_cell_voltage_0,"GenSigStartValue",0
+576,S,CAN_SIG_Module_2_cell_voltage_1,"GenSigStartValue",0
+576,S,CAN_SIG_Module_2_cell_voltage_2,"GenSigStartValue",0
+577,S,CAN_SIG_2_10_Cell_voltages_valid,"GenSigStartValue",0
+577,S,CAN_SIG_2_11_Cell_voltages_valid,"GenSigStartValue",0
+577,S,CAN_SIG_2_12_Cell_voltages_valid,"GenSigStartValue",0
+577,S,CAN_SIG_Module_2_cell_voltage_3,"GenSigStartValue",0
+577,S,CAN_SIG_Module_2_cell_voltage_4,"GenSigStartValue",0
+577,S,CAN_SIG_Module_2_cell_voltage_5,"GenSigStartValue",0
+578,S,CAN_SIG_2_20_Cell_voltages_valid,"GenSigStartValue",0
+578,S,CAN_SIG_2_21_Cell_voltages_valid,"GenSigStartValue",0
+578,S,CAN_SIG_2_22_Cell_voltages_valid,"GenSigStartValue",0
+578,S,CAN_SIG_Module_2_cell_voltage_6,"GenSigStartValue",0
+578,S,CAN_SIG_Module_2_cell_voltage_7,"GenSigStartValue",0
+578,S,CAN_SIG_Module_2_cell_voltage_8,"GenSigStartValue",0
+579,S,CAN_SIG_2_30_Cell_voltages_valid,"GenSigStartValue",0
+579,S,CAN_SIG_2_31_Cell_voltages_valid,"GenSigStartValue",0
+579,S,CAN_SIG_2_32_Cell_voltages_valid,"GenSigStartValue",0
+579,S,CAN_SIG_Module_2_cell_voltage_9,"GenSigStartValue",0
+579,S,CAN_SIG_Module_2_cell_voltage_10,"GenSigStartValue",0
+579,S,CAN_SIG_Module_2_cell_voltage_11,"GenSigStartValue",0
+580,S,CAN_SIG_1_40_Cell_voltages_valid,"GenSigStartValue",0
+580,S,CAN_SIG_1_41_Cell_voltages_valid,"GenSigStartValue",0
+580,S,CAN_SIG_1_42_Cell_voltages_valid,"GenSigStartValue",0
+580,S,CAN_SIG_Module_2_cell_voltage_12,"GenSigStartValue",0
+580,S,CAN_SIG_Module_2_cell_voltage_13,"GenSigStartValue",0
+580,S,CAN_SIG_Module_2_cell_voltage_14,"GenSigStartValue",0
+581,S,CAN_SIG_1_50_Cell_voltages_valid,"GenSigStartValue",0
+581,S,CAN_SIG_1_51_Cell_voltages_valid,"GenSigStartValue",0
+581,S,CAN_SIG_1_52_Cell_voltages_valid,"GenSigStartValue",0
+581,S,CAN_SIG_Module_2_cell_voltage_15,"GenSigStartValue",0
+581,S,CAN_SIG_Module_2_cell_voltage_16,"GenSigStartValue",0
+581,S,CAN_SIG_Module_2_cell_voltage_17,"GenSigStartValue",0
+592,S,CAN_SIG_2_00_Cell_temp_valid,"GenSigStartValue",0
+592,S,CAN_SIG_2_01_Cell_temp_valid,"GenSigStartValue",0
+592,S,CAN_SIG_2_02_Cell_temp_valid,"GenSigStartValue",0
+592,S,CAN_SIG_Module_2_cell_temp_0,"GenSigStartValue",12800
+592,S,CAN_SIG_Module_2_cell_temp_1,"GenSigStartValue",12800
+592,S,CAN_SIG_Module_2_cell_temp_2,"GenSigStartValue",12800
+593,S,CAN_SIG_2_10_Cell_temp_valid,"GenSigStartValue",0
+593,S,CAN_SIG_2_11_Cell_temp_valid,"GenSigStartValue",0
+593,S,CAN_SIG_2_12_Cell_temp_valid,"GenSigStartValue",0
+593,S,CAN_SIG_Module_2_cell_temp_3,"GenSigStartValue",12800
+593,S,CAN_SIG_Module_2_cell_temp_4,"GenSigStartValue",12800
+593,S,CAN_SIG_Module_2_cell_temp_5,"GenSigStartValue",12800
+594,S,CAN_SIG_2_20_Cell_temp_valid,"GenSigStartValue",0
+594,S,CAN_SIG_2_21_Cell_temp_valid,"GenSigStartValue",0
+594,S,CAN_SIG_2_22_Cell_temp_valid,"GenSigStartValue",0
+594,S,CAN_SIG_Module_2_cell_temp_6,"GenSigStartValue",12800
+594,S,CAN_SIG_Module_2_cell_temp_7,"GenSigStartValue",12800
+594,S,CAN_SIG_Module_2_cell_temp_8,"GenSigStartValue",12800
+595,S,CAN_SIG_2_30_Cell_temp_valid,"GenSigStartValue",0
+595,S,CAN_SIG_2_31_Cell_temp_valid,"GenSigStartValue",0
+595,S,CAN_SIG_2_32_Cell_temp_valid,"GenSigStartValue",0
+595,S,CAN_SIG_Module_2_cell_temp_9,"GenSigStartValue",12800
+595,S,CAN_SIG_Module_2_cell_temp_10,"GenSigStartValue",12800
+595,S,CAN_SIG_Module_2_cell_temp_11,"GenSigStartValue",12800
+608,S,CAN_SIG_3_00_Cell_voltages_valid,"GenSigStartValue",0
+608,S,CAN_SIG_3_01_Cell_voltages_valid,"GenSigStartValue",0
+608,S,CAN_SIG_3_02_Cell_voltages_valid,"GenSigStartValue",0
+608,S,CAN_SIG_Module_3_cell_voltage_0,"GenSigStartValue",0
+608,S,CAN_SIG_Module_3_cell_voltage_1,"GenSigStartValue",0
+608,S,CAN_SIG_Module_3_cell_voltage_2,"GenSigStartValue",0
+609,S,CAN_SIG_3_10_Cell_voltages_valid,"GenSigStartValue",0
+609,S,CAN_SIG_3_11_Cell_voltages_valid,"GenSigStartValue",0
+609,S,CAN_SIG_3_12_Cell_voltages_valid,"GenSigStartValue",0
+609,S,CAN_SIG_Module_3_cell_voltage_3,"GenSigStartValue",0
+609,S,CAN_SIG_Module_3_cell_voltage_4,"GenSigStartValue",0
+609,S,CAN_SIG_Module_3_cell_voltage_5,"GenSigStartValue",0
+610,S,CAN_SIG_3_20_Cell_voltages_valid,"GenSigStartValue",0
+610,S,CAN_SIG_3_21_Cell_voltages_valid,"GenSigStartValue",0
+610,S,CAN_SIG_3_22_Cell_voltages_valid,"GenSigStartValue",0
+610,S,CAN_SIG_Module_3_cell_voltage_6,"GenSigStartValue",0
+610,S,CAN_SIG_Module_3_cell_voltage_7,"GenSigStartValue",0
+610,S,CAN_SIG_Module_3_cell_voltage_8,"GenSigStartValue",0
+611,S,CAN_SIG_3_30_Cell_voltages_valid,"GenSigStartValue",0
+611,S,CAN_SIG_3_31_Cell_voltages_valid,"GenSigStartValue",0
+611,S,CAN_SIG_3_32_Cell_voltages_valid,"GenSigStartValue",0
+611,S,CAN_SIG_Module_3_cell_voltage_9,"GenSigStartValue",0
+611,S,CAN_SIG_Module_3_cell_voltage_10,"GenSigStartValue",0
+611,S,CAN_SIG_Module_3_cell_voltage_11,"GenSigStartValue",0
+612,S,CAN_SIG_1_40_Cell_voltages_valid,"GenSigStartValue",0
+612,S,CAN_SIG_1_41_Cell_voltages_valid,"GenSigStartValue",0
+612,S,CAN_SIG_1_42_Cell_voltages_valid,"GenSigStartValue",0
+612,S,CAN_SIG_Module_3_cell_voltage_12,"GenSigStartValue",0
+612,S,CAN_SIG_Module_3_cell_voltage_13,"GenSigStartValue",0
+612,S,CAN_SIG_Module_3_cell_voltage_14,"GenSigStartValue",0
+613,S,CAN_SIG_1_50_Cell_voltages_valid,"GenSigStartValue",0
+613,S,CAN_SIG_1_51_Cell_voltages_valid,"GenSigStartValue",0
+613,S,CAN_SIG_1_52_Cell_voltages_valid,"GenSigStartValue",0
+613,S,CAN_SIG_Module_3_cell_voltage_15,"GenSigStartValue",0
+613,S,CAN_SIG_Module_3_cell_voltage_16,"GenSigStartValue",0
+613,S,CAN_SIG_Module_3_cell_voltage_17,"GenSigStartValue",0
+624,S,CAN_SIG_3_00_Cell_temp_valid,"GenSigStartValue",0
+624,S,CAN_SIG_3_01_Cell_temp_valid,"GenSigStartValue",0
+624,S,CAN_SIG_3_02_Cell_temp_valid,"GenSigStartValue",0
+624,S,CAN_SIG_Module_3_cell_temp_0,"GenSigStartValue",12800
+624,S,CAN_SIG_Module_3_cell_temp_1,"GenSigStartValue",12800
+624,S,CAN_SIG_Module_3_cell_temp_2,"GenSigStartValue",12800
+625,S,CAN_SIG_3_10_Cell_temp_valid,"GenSigStartValue",0
+625,S,CAN_SIG_3_11_Cell_temp_valid,"GenSigStartValue",0
+625,S,CAN_SIG_3_12_Cell_temp_valid,"GenSigStartValue",0
+625,S,CAN_SIG_Module_3_cell_temp_3,"GenSigStartValue",12800
+625,S,CAN_SIG_Module_3_cell_temp_4,"GenSigStartValue",12800
+625,S,CAN_SIG_Module_3_cell_temp_5,"GenSigStartValue",12800
+626,S,CAN_SIG_3_20_Cell_temp_valid,"GenSigStartValue",0
+626,S,CAN_SIG_3_21_Cell_temp_valid,"GenSigStartValue",0
+626,S,CAN_SIG_3_22_Cell_temp_valid,"GenSigStartValue",0
+626,S,CAN_SIG_Module_3_cell_temp_6,"GenSigStartValue",12800
+626,S,CAN_SIG_Module_3_cell_temp_7,"GenSigStartValue",12800
+626,S,CAN_SIG_Module_3_cell_temp_8,"GenSigStartValue",12800
+627,S,CAN_SIG_3_30_Cell_temp_valid,"GenSigStartValue",0
+627,S,CAN_SIG_3_31_Cell_temp_valid,"GenSigStartValue",0
+627,S,CAN_SIG_3_32_Cell_temp_valid,"GenSigStartValue",0
+627,S,CAN_SIG_Module_3_cell_temp_9,"GenSigStartValue",12800
+627,S,CAN_SIG_Module_3_cell_temp_10,"GenSigStartValue",12800
+627,S,CAN_SIG_Module_3_cell_temp_11,"GenSigStartValue",12800
+640,S,CAN_SIG_4_00_Cell_voltages_valid,"GenSigStartValue",0
+640,S,CAN_SIG_4_01_Cell_voltages_valid,"GenSigStartValue",0
+640,S,CAN_SIG_4_02_Cell_voltages_valid,"GenSigStartValue",0
+640,S,CAN_SIG_Module_4_cell_voltage_0,"GenSigStartValue",0
+640,S,CAN_SIG_Module_4_cell_voltage_1,"GenSigStartValue",0
+640,S,CAN_SIG_Module_4_cell_voltage_2,"GenSigStartValue",0
+641,S,CAN_SIG_4_10_Cell_voltages_valid,"GenSigStartValue",0
+641,S,CAN_SIG_4_11_Cell_voltages_valid,"GenSigStartValue",0
+641,S,CAN_SIG_4_12_Cell_voltages_valid,"GenSigStartValue",0
+641,S,CAN_SIG_Module_4_cell_voltage_3,"GenSigStartValue",0
+641,S,CAN_SIG_Module_4_cell_voltage_4,"GenSigStartValue",0
+641,S,CAN_SIG_Module_4_cell_voltage_5,"GenSigStartValue",0
+642,S,CAN_SIG_4_20_Cell_voltages_valid,"GenSigStartValue",0
+642,S,CAN_SIG_4_21_Cell_voltages_valid,"GenSigStartValue",0
+642,S,CAN_SIG_4_22_Cell_voltages_valid,"GenSigStartValue",0
+642,S,CAN_SIG_Module_4_cell_voltage_6,"GenSigStartValue",0
+642,S,CAN_SIG_Module_4_cell_voltage_7,"GenSigStartValue",0
+642,S,CAN_SIG_Module_4_cell_voltage_8,"GenSigStartValue",0
+643,S,CAN_SIG_4_30_Cell_voltages_valid,"GenSigStartValue",0
+643,S,CAN_SIG_4_31_Cell_voltages_valid,"GenSigStartValue",0
+643,S,CAN_SIG_4_32_Cell_voltages_valid,"GenSigStartValue",0
+643,S,CAN_SIG_Module_4_cell_voltage_9,"GenSigStartValue",0
+643,S,CAN_SIG_Module_4_cell_voltage_10,"GenSigStartValue",0
+643,S,CAN_SIG_Module_4_cell_voltage_11,"GenSigStartValue",0
+644,S,CAN_SIG_1_40_Cell_voltages_valid,"GenSigStartValue",0
+644,S,CAN_SIG_1_41_Cell_voltages_valid,"GenSigStartValue",0
+644,S,CAN_SIG_1_42_Cell_voltages_valid,"GenSigStartValue",0
+644,S,CAN_SIG_Module_4_cell_voltage_12,"GenSigStartValue",0
+644,S,CAN_SIG_Module_4_cell_voltage_13,"GenSigStartValue",0
+644,S,CAN_SIG_Module_4_cell_voltage_14,"GenSigStartValue",0
+645,S,CAN_SIG_1_50_Cell_voltages_valid,"GenSigStartValue",0
+645,S,CAN_SIG_1_51_Cell_voltages_valid,"GenSigStartValue",0
+645,S,CAN_SIG_1_52_Cell_voltages_valid,"GenSigStartValue",0
+645,S,CAN_SIG_Module_4_cell_voltage_15,"GenSigStartValue",0
+645,S,CAN_SIG_Module_4_cell_voltage_16,"GenSigStartValue",0
+645,S,CAN_SIG_Module_4_cell_voltage_17,"GenSigStartValue",0
+656,S,CAN_SIG_4_00_Cell_temp_valid,"GenSigStartValue",0
+656,S,CAN_SIG_4_01_Cell_temp_valid,"GenSigStartValue",0
+656,S,CAN_SIG_4_02_Cell_temp_valid,"GenSigStartValue",0
+656,S,CAN_SIG_Module_4_cell_temp_0,"GenSigStartValue",12800
+656,S,CAN_SIG_Module_4_cell_temp_1,"GenSigStartValue",12800
+656,S,CAN_SIG_Module_4_cell_temp_2,"GenSigStartValue",12800
+657,S,CAN_SIG_4_10_Cell_temp_valid,"GenSigStartValue",0
+657,S,CAN_SIG_4_11_Cell_temp_valid,"GenSigStartValue",0
+657,S,CAN_SIG_4_12_Cell_temp_valid,"GenSigStartValue",0
+657,S,CAN_SIG_Module_4_cell_temp_3,"GenSigStartValue",12800
+657,S,CAN_SIG_Module_4_cell_temp_4,"GenSigStartValue",12800
+657,S,CAN_SIG_Module_4_cell_temp_5,"GenSigStartValue",12800
+658,S,CAN_SIG_4_20_Cell_temp_valid,"GenSigStartValue",0
+658,S,CAN_SIG_4_21_Cell_temp_valid,"GenSigStartValue",0
+658,S,CAN_SIG_4_22_Cell_temp_valid,"GenSigStartValue",0
+658,S,CAN_SIG_Module_4_cell_temp_6,"GenSigStartValue",12800
+658,S,CAN_SIG_Module_4_cell_temp_7,"GenSigStartValue",12800
+658,S,CAN_SIG_Module_4_cell_temp_8,"GenSigStartValue",12800
+659,S,CAN_SIG_4_30_Cell_temp_valid,"GenSigStartValue",0
+659,S,CAN_SIG_4_31_Cell_temp_valid,"GenSigStartValue",0
+659,S,CAN_SIG_4_32_Cell_temp_valid,"GenSigStartValue",0
+659,S,CAN_SIG_Module_4_cell_temp_9,"GenSigStartValue",12800
+659,S,CAN_SIG_Module_4_cell_temp_10,"GenSigStartValue",12800
+659,S,CAN_SIG_Module_4_cell_temp_11,"GenSigStartValue",12800
+672,S,CAN_SIG_5_00_Cell_voltages_valid,"GenSigStartValue",0
+672,S,CAN_SIG_5_01_Cell_voltages_valid,"GenSigStartValue",0
+672,S,CAN_SIG_5_02_Cell_voltages_valid,"GenSigStartValue",0
+672,S,CAN_SIG_Module_5_cell_voltage_0,"GenSigStartValue",0
+672,S,CAN_SIG_Module_5_cell_voltage_1,"GenSigStartValue",0
+672,S,CAN_SIG_Module_5_cell_voltage_2,"GenSigStartValue",0
+673,S,CAN_SIG_5_10_Cell_voltages_valid,"GenSigStartValue",0
+673,S,CAN_SIG_5_11_Cell_voltages_valid,"GenSigStartValue",0
+673,S,CAN_SIG_5_12_Cell_voltages_valid,"GenSigStartValue",0
+673,S,CAN_SIG_Module_5_cell_voltage_3,"GenSigStartValue",0
+673,S,CAN_SIG_Module_5_cell_voltage_4,"GenSigStartValue",0
+673,S,CAN_SIG_Module_5_cell_voltage_5,"GenSigStartValue",0
+674,S,CAN_SIG_5_20_Cell_voltages_valid,"GenSigStartValue",0
+674,S,CAN_SIG_5_21_Cell_voltages_valid,"GenSigStartValue",0
+674,S,CAN_SIG_5_22_Cell_voltages_valid,"GenSigStartValue",0
+674,S,CAN_SIG_Module_5_cell_voltage_6,"GenSigStartValue",0
+674,S,CAN_SIG_Module_5_cell_voltage_7,"GenSigStartValue",0
+674,S,CAN_SIG_Module_5_cell_voltage_8,"GenSigStartValue",0
+675,S,CAN_SIG_5_30_Cell_voltages_valid,"GenSigStartValue",0
+675,S,CAN_SIG_5_31_Cell_voltages_valid,"GenSigStartValue",0
+675,S,CAN_SIG_5_32_Cell_voltages_valid,"GenSigStartValue",0
+675,S,CAN_SIG_Module_5_cell_voltage_9,"GenSigStartValue",0
+675,S,CAN_SIG_Module_5_cell_voltage_10,"GenSigStartValue",0
+675,S,CAN_SIG_Module_5_cell_voltage_11,"GenSigStartValue",0
+676,S,CAN_SIG_1_40_Cell_voltages_valid,"GenSigStartValue",0
+676,S,CAN_SIG_1_41_Cell_voltages_valid,"GenSigStartValue",0
+676,S,CAN_SIG_1_42_Cell_voltages_valid,"GenSigStartValue",0
+676,S,CAN_SIG_Module_5_cell_voltage_12,"GenSigStartValue",0
+676,S,CAN_SIG_Module_5_cell_voltage_13,"GenSigStartValue",0
+676,S,CAN_SIG_Module_5_cell_voltage_14,"GenSigStartValue",0
+677,S,CAN_SIG_1_50_Cell_voltages_valid,"GenSigStartValue",0
+677,S,CAN_SIG_1_51_Cell_voltages_valid,"GenSigStartValue",0
+677,S,CAN_SIG_1_52_Cell_voltages_valid,"GenSigStartValue",0
+677,S,CAN_SIG_Module_5_cell_voltage_15,"GenSigStartValue",0
+677,S,CAN_SIG_Module_5_cell_voltage_16,"GenSigStartValue",0
+677,S,CAN_SIG_Module_5_cell_voltage_17,"GenSigStartValue",0
+688,S,CAN_SIG_5_00_Cell_temp_valid,"GenSigStartValue",0
+688,S,CAN_SIG_5_01_Cell_temp_valid,"GenSigStartValue",0
+688,S,CAN_SIG_5_02_Cell_temp_valid,"GenSigStartValue",0
+688,S,CAN_SIG_Module_5_cell_temp_0,"GenSigStartValue",12800
+688,S,CAN_SIG_Module_5_cell_temp_1,"GenSigStartValue",12800
+688,S,CAN_SIG_Module_5_cell_temp_2,"GenSigStartValue",12800
+689,S,CAN_SIG_5_10_Cell_temp_valid,"GenSigStartValue",0
+689,S,CAN_SIG_5_11_Cell_temp_valid,"GenSigStartValue",0
+689,S,CAN_SIG_5_12_Cell_temp_valid,"GenSigStartValue",0
+689,S,CAN_SIG_Module_5_cell_temp_3,"GenSigStartValue",12800
+689,S,CAN_SIG_Module_5_cell_temp_4,"GenSigStartValue",12800
+689,S,CAN_SIG_Module_5_cell_temp_5,"GenSigStartValue",12800
+690,S,CAN_SIG_5_20_Cell_temp_valid,"GenSigStartValue",0
+690,S,CAN_SIG_5_21_Cell_temp_valid,"GenSigStartValue",0
+690,S,CAN_SIG_5_22_Cell_temp_valid,"GenSigStartValue",0
+690,S,CAN_SIG_Module_5_cell_temp_6,"GenSigStartValue",12800
+690,S,CAN_SIG_Module_5_cell_temp_7,"GenSigStartValue",12800
+690,S,CAN_SIG_Module_5_cell_temp_8,"GenSigStartValue",12800
+691,S,CAN_SIG_5_30_Cell_temp_valid,"GenSigStartValue",0
+691,S,CAN_SIG_5_31_Cell_temp_valid,"GenSigStartValue",0
+691,S,CAN_SIG_5_32_Cell_temp_valid,"GenSigStartValue",0
+691,S,CAN_SIG_Module_5_cell_temp_9,"GenSigStartValue",12800
+691,S,CAN_SIG_Module_5_cell_temp_10,"GenSigStartValue",12800
+691,S,CAN_SIG_Module_5_cell_temp_11,"GenSigStartValue",12800
+704,S,CAN_SIG_6_00_Cell_voltages_valid,"GenSigStartValue",0
+704,S,CAN_SIG_6_01_Cell_voltages_valid,"GenSigStartValue",0
+704,S,CAN_SIG_6_02_Cell_voltages_valid,"GenSigStartValue",0
+704,S,CAN_SIG_Module_6_cell_voltage_0,"GenSigStartValue",0
+704,S,CAN_SIG_Module_6_cell_voltage_1,"GenSigStartValue",0
+704,S,CAN_SIG_Module_6_cell_voltage_2,"GenSigStartValue",0
+705,S,CAN_SIG_6_10_Cell_voltages_valid,"GenSigStartValue",0
+705,S,CAN_SIG_6_11_Cell_voltages_valid,"GenSigStartValue",0
+705,S,CAN_SIG_6_12_Cell_voltages_valid,"GenSigStartValue",0
+705,S,CAN_SIG_Module_6_cell_voltage_3,"GenSigStartValue",0
+705,S,CAN_SIG_Module_6_cell_voltage_4,"GenSigStartValue",0
+705,S,CAN_SIG_Module_6_cell_voltage_5,"GenSigStartValue",0
+706,S,CAN_SIG_6_20_Cell_voltages_valid,"GenSigStartValue",0
+706,S,CAN_SIG_6_21_Cell_voltages_valid,"GenSigStartValue",0
+706,S,CAN_SIG_6_22_Cell_voltages_valid,"GenSigStartValue",0
+706,S,CAN_SIG_Module_6_cell_voltage_6,"GenSigStartValue",0
+706,S,CAN_SIG_Module_6_cell_voltage_7,"GenSigStartValue",0
+706,S,CAN_SIG_Module_6_cell_voltage_8,"GenSigStartValue",0
+707,S,CAN_SIG_6_30_Cell_voltages_valid,"GenSigStartValue",0
+707,S,CAN_SIG_6_31_Cell_voltages_valid,"GenSigStartValue",0
+707,S,CAN_SIG_6_32_Cell_voltages_valid,"GenSigStartValue",0
+707,S,CAN_SIG_Module_6_cell_voltage_9,"GenSigStartValue",0
+707,S,CAN_SIG_Module_6_cell_voltage_10,"GenSigStartValue",0
+707,S,CAN_SIG_Module_6_cell_voltage_11,"GenSigStartValue",0
+708,S,CAN_SIG_1_40_Cell_voltages_valid,"GenSigStartValue",0
+708,S,CAN_SIG_1_41_Cell_voltages_valid,"GenSigStartValue",0
+708,S,CAN_SIG_1_42_Cell_voltages_valid,"GenSigStartValue",0
+708,S,CAN_SIG_Module_6_cell_voltage_12,"GenSigStartValue",0
+708,S,CAN_SIG_Module_6_cell_voltage_13,"GenSigStartValue",0
+708,S,CAN_SIG_Module_6_cell_voltage_14,"GenSigStartValue",0
+709,S,CAN_SIG_1_50_Cell_voltages_valid,"GenSigStartValue",0
+709,S,CAN_SIG_1_51_Cell_voltages_valid,"GenSigStartValue",0
+709,S,CAN_SIG_1_52_Cell_voltages_valid,"GenSigStartValue",0
+709,S,CAN_SIG_Module_6_cell_voltage_15,"GenSigStartValue",0
+709,S,CAN_SIG_Module_6_cell_voltage_16,"GenSigStartValue",0
+709,S,CAN_SIG_Module_6_cell_voltage_17,"GenSigStartValue",0
+720,S,CAN_SIG_6_00_Cell_temp_valid,"GenSigStartValue",0
+720,S,CAN_SIG_6_01_Cell_temp_valid,"GenSigStartValue",0
+720,S,CAN_SIG_6_02_Cell_temp_valid,"GenSigStartValue",0
+720,S,CAN_SIG_Module_6_cell_temp_0,"GenSigStartValue",12800
+720,S,CAN_SIG_Module_6_cell_temp_1,"GenSigStartValue",12800
+720,S,CAN_SIG_Module_6_cell_temp_2,"GenSigStartValue",12800
+721,S,CAN_SIG_6_10_Cell_temp_valid,"GenSigStartValue",0
+721,S,CAN_SIG_6_11_Cell_temp_valid,"GenSigStartValue",0
+721,S,CAN_SIG_6_12_Cell_temp_valid,"GenSigStartValue",0
+721,S,CAN_SIG_Module_6_cell_temp_3,"GenSigStartValue",12800
+721,S,CAN_SIG_Module_6_cell_temp_4,"GenSigStartValue",12800
+721,S,CAN_SIG_Module_6_cell_temp_5,"GenSigStartValue",12800
+722,S,CAN_SIG_6_20_Cell_temp_valid,"GenSigStartValue",0
+722,S,CAN_SIG_6_21_Cell_temp_valid,"GenSigStartValue",0
+722,S,CAN_SIG_6_22_Cell_temp_valid,"GenSigStartValue",0
+722,S,CAN_SIG_Module_6_cell_temp_6,"GenSigStartValue",12800
+722,S,CAN_SIG_Module_6_cell_temp_7,"GenSigStartValue",12800
+722,S,CAN_SIG_Module_6_cell_temp_8,"GenSigStartValue",12800
+723,S,CAN_SIG_6_30_Cell_temp_valid,"GenSigStartValue",0
+723,S,CAN_SIG_6_31_Cell_temp_valid,"GenSigStartValue",0
+723,S,CAN_SIG_6_32_Cell_temp_valid,"GenSigStartValue",0
+723,S,CAN_SIG_Module_6_cell_temp_9,"GenSigStartValue",12800
+723,S,CAN_SIG_Module_6_cell_temp_10,"GenSigStartValue",12800
+723,S,CAN_SIG_Module_6_cell_temp_11,"GenSigStartValue",12800
+736,S,CAN_SIG_7_00_Cell_voltages_valid,"GenSigStartValue",0
+736,S,CAN_SIG_7_01_Cell_voltages_valid,"GenSigStartValue",0
+736,S,CAN_SIG_7_02_Cell_voltages_valid,"GenSigStartValue",0
+736,S,CAN_SIG_Module_7_cell_voltage_0,"GenSigStartValue",0
+736,S,CAN_SIG_Module_7_cell_voltage_1,"GenSigStartValue",0
+736,S,CAN_SIG_Module_7_cell_voltage_2,"GenSigStartValue",0
+737,S,CAN_SIG_7_10_Cell_voltages_valid,"GenSigStartValue",0
+737,S,CAN_SIG_7_11_Cell_voltages_valid,"GenSigStartValue",0
+737,S,CAN_SIG_7_12_Cell_voltages_valid,"GenSigStartValue",0
+737,S,CAN_SIG_Module_7_cell_voltage_3,"GenSigStartValue",0
+737,S,CAN_SIG_Module_7_cell_voltage_4,"GenSigStartValue",0
+737,S,CAN_SIG_Module_7_cell_voltage_5,"GenSigStartValue",0
+738,S,CAN_SIG_7_20_Cell_voltages_valid,"GenSigStartValue",0
+738,S,CAN_SIG_7_21_Cell_voltages_valid,"GenSigStartValue",0
+738,S,CAN_SIG_7_22_Cell_voltages_valid,"GenSigStartValue",0
+738,S,CAN_SIG_Module_7_cell_voltage_6,"GenSigStartValue",0
+738,S,CAN_SIG_Module_7_cell_voltage_7,"GenSigStartValue",0
+738,S,CAN_SIG_Module_7_cell_voltage_8,"GenSigStartValue",0
+739,S,CAN_SIG_7_30_Cell_voltages_valid,"GenSigStartValue",0
+739,S,CAN_SIG_7_31_Cell_voltages_valid,"GenSigStartValue",0
+739,S,CAN_SIG_7_32_Cell_voltages_valid,"GenSigStartValue",0
+739,S,CAN_SIG_Module_7_cell_voltage_9,"GenSigStartValue",0
+739,S,CAN_SIG_Module_7_cell_voltage_10,"GenSigStartValue",0
+739,S,CAN_SIG_Module_7_cell_voltage_11,"GenSigStartValue",0
+740,S,CAN_SIG_1_40_Cell_voltages_valid,"GenSigStartValue",0
+740,S,CAN_SIG_1_41_Cell_voltages_valid,"GenSigStartValue",0
+740,S,CAN_SIG_1_42_Cell_voltages_valid,"GenSigStartValue",0
+740,S,CAN_SIG_Module_7_cell_voltage_12,"GenSigStartValue",0
+740,S,CAN_SIG_Module_7_cell_voltage_13,"GenSigStartValue",0
+740,S,CAN_SIG_Module_7_cell_voltage_14,"GenSigStartValue",0
+741,S,CAN_SIG_1_50_Cell_voltages_valid,"GenSigStartValue",0
+741,S,CAN_SIG_1_51_Cell_voltages_valid,"GenSigStartValue",0
+741,S,CAN_SIG_1_52_Cell_voltages_valid,"GenSigStartValue",0
+741,S,CAN_SIG_Module_7_cell_voltage_15,"GenSigStartValue",0
+741,S,CAN_SIG_Module_7_cell_voltage_16,"GenSigStartValue",0
+741,S,CAN_SIG_Module_7_cell_voltage_17,"GenSigStartValue",0
+752,S,CAN_SIG_7_00_Cell_temp_valid,"GenSigStartValue",0
+752,S,CAN_SIG_7_01_Cell_temp_valid,"GenSigStartValue",0
+752,S,CAN_SIG_7_02_Cell_temp_valid,"GenSigStartValue",0
+752,S,CAN_SIG_Module_7_cell_temp_0,"GenSigStartValue",12800
+752,S,CAN_SIG_Module_7_cell_temp_1,"GenSigStartValue",12800
+752,S,CAN_SIG_Module_7_cell_temp_2,"GenSigStartValue",12800
+753,S,CAN_SIG_7_10_Cell_temp_valid,"GenSigStartValue",0
+753,S,CAN_SIG_7_11_Cell_temp_valid,"GenSigStartValue",0
+753,S,CAN_SIG_7_12_Cell_temp_valid,"GenSigStartValue",0
+753,S,CAN_SIG_Module_7_cell_temp_3,"GenSigStartValue",12800
+753,S,CAN_SIG_Module_7_cell_temp_4,"GenSigStartValue",12800
+753,S,CAN_SIG_Module_7_cell_temp_5,"GenSigStartValue",12800
+754,S,CAN_SIG_7_20_Cell_temp_valid,"GenSigStartValue",0
+754,S,CAN_SIG_7_21_Cell_temp_valid,"GenSigStartValue",0
+754,S,CAN_SIG_7_22_Cell_temp_valid,"GenSigStartValue",0
+754,S,CAN_SIG_Module_7_cell_temp_6,"GenSigStartValue",12800
+754,S,CAN_SIG_Module_7_cell_temp_7,"GenSigStartValue",12800
+754,S,CAN_SIG_Module_7_cell_temp_8,"GenSigStartValue",12800
+755,S,CAN_SIG_7_30_Cell_temp_valid,"GenSigStartValue",0
+755,S,CAN_SIG_7_31_Cell_temp_valid,"GenSigStartValue",0
+755,S,CAN_SIG_7_32_Cell_temp_valid,"GenSigStartValue",0
+755,S,CAN_SIG_Module_7_cell_temp_9,"GenSigStartValue",12800
+755,S,CAN_SIG_Module_7_cell_temp_10,"GenSigStartValue",12800
+755,S,CAN_SIG_Module_7_cell_temp_11,"GenSigStartValue",12800
+496,S,CAN_SIG_PackVolt_Battery,"GenSigStartValue",0
+496,S,CAN_SIG_PackVolt_PowerNet,"GenSigStartValue",0
+1313,S,CAN_SIG_IVT_Current_MuxID,"GenSigStartValue",0
+1313,S,CAN_SIG_IVT_Current_Status,"GenSigStartValue",0
+1313,S,CAN_SIG_IVT_Current,"GenSigStartValue",0
+1314,S,CAN_SIG_IVT_Voltage_1_MuxID,"GenSigStartValue",0
+1314,S,CAN_SIG_IVT_Voltage_1_Status,"GenSigStartValue",0
+1314,S,CAN_SIG_IVT_Voltage_1,"GenSigStartValue",0
+1315,S,CAN_SIG_IVT_Voltage_2_MuxID,"GenSigStartValue",0
+1315,S,CAN_SIG_IVT_Voltage_2_Status,"GenSigStartValue",0
+1315,S,CAN_SIG_IVT_Voltage_2,"GenSigStartValue",0
+1316,S,CAN_SIG_IVT_Voltage_3_MuxID,"GenSigStartValue",0
+1316,S,CAN_SIG_IVT_Voltage_3_Status,"GenSigStartValue",0
+1316,S,CAN_SIG_IVT_Voltage_3,"GenSigStartValue",0
+1317,S,CAN_SIG_IVT_Temperature_MuxID,"GenSigStartValue",0
+1317,S,CAN_SIG_IVT_Temperature_Status,"GenSigStartValue",0
+1317,S,CAN_SIG_IVT_Temperature,"GenSigStartValue",0
+1318,S,CAN_SIG_IVT_Power_MuxID,"GenSigStartValue",0
+1318,S,CAN_SIG_IVT_Power_Status,"GenSigStartValue",0
+1318,S,CAN_SIG_IVT_Power,"GenSigStartValue",0
+1319,S,CAN_SIG_IVT_CurrentCounter_MuxID,"GenSigStartValue",0
+1319,S,CAN_SIG_IVT_CC_Status,"GenSigStartValue",0
+1319,S,CAN_SIG_IVT_CurrentCounter,"GenSigStartValue",0
+1320,S,CAN_SIG_IVT_EnergyCounter_MuxID,"GenSigStartValue",0
+1320,S,CAN_SIG_IVT_EnergyCounter_Status,"GenSigStartValue",0
+1320,S,CAN_SIG_IVT_EnergyCounter,"GenSigStartValue",0
+257,S,CAN_SIG_VersionNumberMajor,"GenSigStartValue",0
+257,S,CAN_SIG_VersionNumberMinor,"GenSigStartValue",0
+257,S,CAN_SIG_VersionNumberBugfix,"GenSigStartValue",0
+257,S,CAN_SIG_Checksum,"GenSigStartValue",0
+[END_PARAM_SIG_VAL]
+
+[END_PARAM_VAL]
+
+
+[START_NOT_SUPPORTED]
+[END_NOT_SUPPORTED]
+
+[START_NOT_PROCESSED]
+OF_:
+
+[END_NOT_PROCESSED]

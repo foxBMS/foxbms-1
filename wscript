@@ -90,7 +90,7 @@ for x in variants:
 def options(opt):
     opt.load('compiler_c')
     opt.load('python')
-    opt.load(['doxygen', 'sphinx_build', 'cpplint', 'flake8'],
+    opt.load(['doxygen', 'sphinx_build', 'cpplint', 'flake8', 'cppcheck'],
              tooldir=os.path.join('tools', 'waftools'))
     opt.add_option('-t', '--target', action='store', default='debug',
                    help='build target: debug (default)/release', dest='target')
@@ -143,7 +143,7 @@ def configure(conf):
     for key in c_compiler:  # force only using gcc
         c_compiler[key] = ['gcc']
     conf.load('compiler_c')
-    conf.load(['doxygen', 'sphinx_build', 'cpplint', 'flake8'])
+    conf.load(['doxygen', 'sphinx_build', 'cpplint', 'flake8', 'cppcheck'])
     print('General tools:')
     conf.find_program('python', var='PYTHON', mandatory=True)
     conf.find_program('git', var='GIT', mandatory=False)
@@ -307,6 +307,43 @@ def configure(conf):
     conf.env.flash_begin_adr = 0x080FFF48 & 0x00ffffff
     conf.env.flash_header_adr = 0x080FFF00 & 0x00ffffff
     conf.env.flash_end_adr = 0x080FFF4C & 0x00ffffff
+
+    # cppcheck configuration
+    if conf.env.CPPCHECK:
+        cppcheck_dir = conf.path.get_bld().make_node('cppcheck')
+        cppcheck_dir.mkdir()
+        templateLoader = jinja2.FileSystemLoader(searchpath=os.path.join('tools', 'cppcheck'))
+        templateEnv = jinja2.Environment(loader=templateLoader, newline_sequence=conf.env.jinja2_newline)
+        template = templateEnv.get_template('cppcheck.template')
+        outputText = template.render(
+            bld_dir=cppcheck_dir.path_from(conf.path),
+            src_dir=conf.path.find_node('embedded-software').relpath(),
+            inc_dirs=[conf.path.find_node('embedded-software/libs').relpath(),
+                      conf.path.find_node('embedded-software/mcu-common').relpath(),
+                      conf.path.find_node('embedded-software/mcu-primary').relpath(),
+                      conf.path.find_node('embedded-software/mcu-secondary').relpath()],
+            addons=['threadsafety', 'y2038', 'cert', 'misra'])
+
+        cppcheck_cfg = cppcheck_dir.make_node('cppcheck.cppcheck')
+        cppcheck_cfg.write(outputText)
+        conf.env.cppcheck_dir = cppcheck_dir.abspath()
+        conf.env.cppcheck_cfg = cppcheck_cfg.abspath()
+
+        # gui config
+        outputText = template.render(
+            bld_dir='.',
+            src_dir='../../embedded-software',
+            inc_dirs=['../../embedded-software/libs',
+                      '../../embedded-software/mcu-common',
+                      '../../embedded-software/mcu-primary',
+                      '../../embedded-software/mcu-secondary',
+                      '../../build/primary/embedded-software/mcu-primary/src/general',
+                      '../../build/secondary/embedded-software/mcu-secondary/src/general'],
+            addons=['threadsafety', 'y2038', 'cert', 'misra'])
+
+        cppcheckgui_cfg = cppcheck_dir.make_node('cppcheckgui.cppcheck')
+        cppcheckgui_cfg.write(outputText)
+        print(f'---\ncppcheck configuration:         {conf.env.cppcheck_cfg}')
 
     try:
         (std_out, std_err) = conf.cmd_and_log([conf.env.GIT[0], 'config', '--get', 'remote.origin.url'], output=waflib.Context.BOTH)

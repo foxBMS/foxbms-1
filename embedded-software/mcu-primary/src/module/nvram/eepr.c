@@ -67,7 +67,6 @@
 #include "eepr.h"
 
 #include "diag.h"
-#include "io.h"
 #include "os.h"
 #include "rtc.h"
 
@@ -1016,7 +1015,6 @@ void EEPR_Trigger(void) {
             if (eepr_state.substate == 0) {
                 eepr_ch_cfg[eepr_state.currentchannel].errorflag = EEPR_ERR_RD;
                 (void)(DIAG_Handler(DIAG_CH_CALIB_EEPR_FAILURE, DIAG_EVENT_NOK, 1));
-                IO_WritePin(IO_PIN_TO_FPGA_INTERFACE_SPI_NSS, IO_PIN_SET);
                 EEPR_ReEnterStateInit();
                 eepr_state.substate = 1;
             }

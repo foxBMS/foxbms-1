@@ -53,13 +53,12 @@
 #ifndef INTERLOCK_CFG_H_
 #define INTERLOCK_CFG_H_
 
-/*================== Includes =============================================*/
+/*================== Includes ===============================================*/
 #include "general.h"
 
 #include "io.h"
 
-/*================== Macros and Definitions ===============================*/
-
+/*================== Macros and Definitions =================================*/
 /*
  * The number of defines per contactor must be the same as the length
  *  of the array ilck_contactors_cfg in contactor_cfg.c
@@ -92,33 +91,22 @@
 
 #define ILCK_STATEMACH_SHORTTIME_MS     (ILCK_TASK_CYCLE_CONTEXT_MS)
 
-
-/*================== Constant and Variable Definitions ====================*/
-
-/**
- * Symbolic names for current flow direction in the battery
- */
-typedef enum {
-    ILCK_CURRENT_CHARGE     = 0,    /*!<       */
-    ILCK_CURRENT_DISCHARGE  = 1,    /*!<       */
-} ILCK_CURRENT_DIRECTION_e;
-
 /**
  * Symbolic names for contactors' possible states
  */
 typedef enum {
-    ILCK_SWITCH_OFF     = 0,    /*!< Contactor off         --> Contactor is open           */
-    ILCK_SWITCH_ON      = 1,    /*!< Contactor on          --> Contactor is closed         */
-    ILCK_SWITCH_UNDEF   = 2,    /*!< Contactor undefined   --> Contactor state not known   */
+    ILCK_SWITCH_OFF,    /*!< Contactor off         --> Contactor is open           */
+    ILCK_SWITCH_ON,     /*!< Contactor on          --> Contactor is closed         */
+    ILCK_SWITCH_UNDEF,  /*!< Contactor undefined   --> Contactor state not known   */
 } ILCK_ELECTRICAL_STATE_TYPE_s;
 
 /**
  * Symbolic names defining the electric behavior of the contactor
  */
 typedef enum {
-    ILCK_FEEDBACK_NORMALLY_OPEN     = 0,    /*!< Feedback line of a contactor is normally open      */
-    ILCK_FEEDBACK_NORMALLY_CLOSED   = 1,    /*!< Feedback line of a contactor is normally closed    */
-    ILCK_FEEDBACK_TYPE_DONT_CARE    = 0xFF  /*!< Feedback line of the contactor is not used         */
+    ILCK_FEEDBACK_NORMALLY_OPEN,    /*!< Feedback line of a contactor is normally open      */
+    ILCK_FEEDBACK_NORMALLY_CLOSED,  /*!< Feedback line of a contactor is normally closed    */
+    ILCK_FEEDBACK_TYPE_DONT_CARE,   /*!< Feedback line of the contactor is not used         */
 } ILCK_FEEDBACK_TYPE_e;
 
 typedef struct {
@@ -132,11 +120,10 @@ typedef struct {
     ILCK_FEEDBACK_TYPE_e feedback_pin_type;
 } ILCK_CONFIG_s;
 
+/*================== Extern Constant and Variable Declarations ==============*/
 extern ILCK_CONFIG_s ilck_interlock_config;
 extern ILCK_ELECTRICAL_STATE_s ilck_interlock_state;
 
-/*================== Function Prototypes ==================================*/
-
-/*================== Function Implementations =============================*/
+/*================== Extern Function Prototypes =============================*/
 
 #endif /* INTERLOCK_CFG_H_ */

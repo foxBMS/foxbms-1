@@ -399,7 +399,7 @@ void SYS_Trigger(void) {
                         if (sys_state.InitCounter > (100/SYS_TASK_CYCLE_CONTEXT_MS)) {
                             sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
                             sys_state.state = SYS_STATEMACH_ERROR;
-                            sys_state.substate = SYS_CONT_INIT_ERROR;
+                            sys_state.substate = SYS_BAL_INIT_ERROR;
                             break;
                         }
                         sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
@@ -410,6 +410,7 @@ void SYS_Trigger(void) {
 
                 break;
 
+            /**************************** Initialize Isoguard **************************/
             case SYS_STATEMACH_INITIALIZE_ISOGUARD:
 
 #if BUILD_MODULE_ENABLE_ISOGUARD == 1
