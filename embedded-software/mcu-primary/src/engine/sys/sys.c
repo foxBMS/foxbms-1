@@ -459,6 +459,17 @@ void SYS_Trigger(void) {
 
                 if (sys_state.substate == SYS_ENTRY) {
                     sys_state.InitCounter = 0;
+                    CANS_Enable_Periodic(TRUE);
+#if CURRENT_SENSOR_ISABELLENHUETTE_TRIGGERED
+                    /* If triggered mode is used, CAN trigger message needs to
+                     * be transmitted and current sensor response has to be
+                     * received afterwards. This may take some time, therefore
+                     * delay has to be increased.
+                     */
+                    sys_state.timer = SYS_STATEMACH_LONGTIME_MS;
+#else /* CURRENT_SENSOR_ISABELLENHUETTE_TRIGGERED */
+                    sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
+#endif /* CURRENT_SENSOR_ISABELLENHUETTE_TRIGGERED */
                     sys_state.substate = SYS_WAIT_CURRENT_SENSOR_PRESENCE;
                 } else if (sys_state.substate == SYS_WAIT_CURRENT_SENSOR_PRESENCE) {
                     if (CANS_IsCurrentSensorPresent() == TRUE) {
@@ -468,7 +479,6 @@ void SYS_Trigger(void) {
                         } else {
                             SOC_Init(FALSE);
                         }
-                        CANS_Enable_Periodic(TRUE);
                         sys_state.timer = SYS_STATEMACH_SHORTTIME_MS;
                         sys_state.state = SYS_STATEMACH_INITIALIZE_MISC;
                         sys_state.substate = SYS_ENTRY;

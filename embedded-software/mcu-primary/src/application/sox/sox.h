@@ -62,8 +62,10 @@
  *
  */
 typedef struct {
-    uint8_t sensor_cc_used;                 /*!< time in ms before the state machine processes the next state, e.g. in counts of 1ms    */
-    float cc_scaling;                       /*!< scaling for the C-C value from sensor */
+    uint8_t sensor_cc_used;  /*!< time in ms before the state machine processes the next state, e.g. in counts of 1ms    */
+    float cc_scaling;        /*!< scaling for the C-C value from sensor for average value */
+    float cc_scaling_min;    /*!< scaling for the C-C value from sensor for min value */
+    float cc_scaling_max;    /*!< scaling for the C-C value from sensor for max value */
     uint8_t counter;                        /*!< general purpose counter */
 } SOX_STATE_s;
 

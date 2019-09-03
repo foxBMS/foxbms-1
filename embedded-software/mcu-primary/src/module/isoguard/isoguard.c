@@ -134,10 +134,10 @@ void ISO_ReInit(void) {
 
 
 void ISO_MeasureInsulation(void) {
-#ifdef ISO_ISOGUARD_ENABLE
-
+    /* Call sysmon notify function */
     DIAG_SysMonNotify(DIAG_SYSMON_ISOGUARD_ID, 0);        /* task is running, state = ok */
 
+    #ifdef ISO_ISOGUARD_ENABLE
     /* Do not continue if ISOGUARD module is still uninitialized */
     if (iso_state == ISO_STATE_UNINITIALIZED) {
         return;

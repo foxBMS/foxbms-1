@@ -42,6 +42,21 @@ Height                                              15          mm
 Weight                                              122         g
 ==================================================  =======     =======
 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Mechanical Dimensions (BMS-Master Unit in housing)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The BMS-Master Unit consists of BMS-Master board, BMS-Interface board and BMS-Extension board and is mounted in an aluminum housing.
+
+==================================================  =======     =======
+Description                                         Value       Unit
+==================================================  =======     =======
+Width                                               124         mm
+Length                                              164         mm
+Height                                              49.2        mm
+Weight                                              785         g
+==================================================  =======     =======
+
 -----------------
 BMS-Slave 12-Cell
 -----------------

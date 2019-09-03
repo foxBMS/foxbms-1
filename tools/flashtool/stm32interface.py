@@ -187,8 +187,21 @@ class STM32Interface(object):
                 return True
             elif r == response["NACK"]:
                 return False
+            elif r == 0:
+                logging.info(type(r))
+                logging.info(r)
+                logging.debug(f"received 0 instead of {response['ACK']} or {response['NACK']}...trying again")
+                try:
+                    r = ord(self._port.read().decode('UTF-8'))
+                except:
+                    raise AckException("Can't read port or timeout")
+                else:
+                    if r == response["ACK"]:
+                        return True
+                    elif r == response["NACK"]:
+                        return False
             else:
-                raise AckException("Unknown response: "+hex(r))
+                return False
     def _readbytes(self, noOfBytes):
         bytes = []
         try:

@@ -50,7 +50,7 @@
  *
  */
 
-/*================== Includes =============================================*/
+/*================== Includes ===============================================*/
 #include "cansignal_cfg.h"
 
 #include "bal.h"
@@ -59,7 +59,14 @@
 #include "sox.h"
 #include "sys.h"
 
-/*================== Function Prototypes ==================================*/
+/*================== Macros and Definitions =================================*/
+static DATA_BLOCK_CURRENT_SENSOR_s cans_current_tab;
+
+#define CANS_MODULSIGNALS_VOLT      (CAN0_SIG_Mod0_temp_valid_0_2 - CAN0_SIG_Mod0_volt_valid_0_2)
+#define CANS_MODULSIGNALS_TEMP      (CAN0_SIG_Mod1_volt_valid_0_2 - CAN0_SIG_Mod0_temp_valid_0_2)
+
+
+/*================== Static Function Prototypes =============================*/
 
 static float cans_checkLimits(float value, uint32_t sigIdx);
 
@@ -89,14 +96,12 @@ static uint32_t cans_setSWversion(uint32_t, void *);
 #ifdef CURRENT_SENSOR_ISABELLENHUETTE_TRIGGERED
 static uint32_t cans_gettriggercurrent(uint32_t sigIdx, void *value);
 #endif /* CURRENT_SENSOR_ISABELLENHUETTE_TRIGGERED */
-/*================== Macros and Definitions ===============================*/
-static DATA_BLOCK_CURRENT_SENSOR_s cans_current_tab;
-
-#define CANS_MODULSIGNALS_VOLT      (CAN0_SIG_Mod0_temp_valid_0_2 - CAN0_SIG_Mod0_volt_valid_0_2)
-#define CANS_MODULSIGNALS_TEMP      (CAN0_SIG_Mod1_volt_valid_0_2 - CAN0_SIG_Mod0_temp_valid_0_2)
 
 
-/*================== Constant and Variable Definitions ====================*/
+
+/*================== Static Constant and Variable Definitions ===============*/
+
+/*================== Extern Constant and Variable Definitions ===============*/
 
 const CANS_signal_s cans_CAN0_signals_tx[] = {
     { {CAN0_MSG_SystemState_0}, 0, 3, 0, 7, 1, 0, NULL_PTR, &cans_getcanerr },  /*!< CAN0_SIG_GS0_general_error, */
@@ -590,7 +595,7 @@ const uint16_t cans_CAN1_signals_tx_length = sizeof(cans_CAN1_signals_tx)/sizeof
 const uint16_t cans_CAN0_signals_rx_length = sizeof(cans_CAN0_signals_rx)/sizeof(cans_CAN0_signals_rx[0]);
 const uint16_t cans_CAN1_signals_rx_length = sizeof(cans_CAN1_signals_rx)/sizeof(cans_CAN1_signals_rx[0]);
 
-/*================== Function Implementations =============================*/
+/*================== Static Function Implementations ========================*/
 
 static uint32_t cans_getvolt(uint32_t sigIdx, void *value) {
     static DATA_BLOCK_CELLVOLTAGE_s volt_tab;
@@ -2068,3 +2073,5 @@ float cans_checkLimits(float value, uint32_t sigIdx) {
 
     return retVal;
 }
+
+/*================== Extern Function Implementations ========================*/
