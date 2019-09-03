@@ -345,17 +345,18 @@ def configure(conf):
         cppcheckgui_cfg.write(outputText)
         print(f'---\ncppcheck configuration:         {conf.env.cppcheck_cfg}')
 
+    print('---\ngit information:')
     try:
         (std_out, std_err) = conf.cmd_and_log([conf.env.GIT[0], 'config', '--get', 'remote.origin.url'], output=waflib.Context.BOTH)
     except Errors.WafError as e:
-        Logs.error(e)
+        Logs.warn('--> directory is not a git repository')
         t = ('NOREMOTE', [True])
     else:
         t = (std_out.strip(), [False])
 
     conf.env.append_value('GIT_REPO_PATH', t[0])
     conf.env.append_value('GIT_DIRTY_ALWAYS', t[1])
-    print(f'---\ngit information:                {conf.env.GIT_REPO_PATH[0]}')
+    print(f'repository path:                {conf.env.GIT_REPO_PATH[0]}')
     if conf.env.GIT_DIRTY_ALWAYS[0]:
         print(f'no remote:                      {conf.env.GIT_DIRTY_ALWAYS[0]}')
     conf.env.FILE_TEMPLATE_C = conf.path.find_node('tools/styleguide/file-templates/template.c.jinja2').read()
@@ -424,24 +425,31 @@ def repostate(bld):
     templateh = jinja2.Environment(loader=jinja2.BaseLoader, keep_trailing_newline=True, newline_sequence=bld.env.jinja2_newline).from_string(bld.env.FILE_TEMPLATE_H)
     _date = datetime.datetime.today().strftime('%d.%m.%Y')
 
-    try:
-        (std_out, std_err) = bld.cmd_and_log([bld.env.GIT[0], 'rev-parse', 'HEAD'], output=waflib.Context.BOTH)
-    except Errors.WafError as e:
-        Logs.error(e)
+    if bld.env.GIT_REPO_PATH[0] == "NOREMOTE":
         bld.env.GIT_COMMIT_ID = 'NOVALIDCOMMIT'
-    else:
-        bld.env.GIT_COMMIT_ID = std_out.strip()
-    try:
-        (std_out, std_err) = bld.cmd_and_log([bld.env.GIT[0], 'status'], output=waflib.Context.BOTH)
-    except Errors.WafError as e:
-        Logs.error(e)
-        bld.fatal('Something went wrong')
-    if "nothing to commit, working tree clean" in std_out:
-        bld.env.CLEAN, bld.env.DIRTY = (1, 0)
-        bld.env.GIT_STATUS = 'GIT_CLEAN_STARTUP'
-    else:
         bld.env.CLEAN, bld.env.DIRTY = (0, 1)
         bld.env.GIT_STATUS = 'GIT_DIRTY_STARTUP'
+    else:
+        try:
+            (std_out, std_err) = bld.cmd_and_log([bld.env.GIT[0], 'rev-parse', 'HEAD'], output=waflib.Context.BOTH)
+        except Errors.WafError as e:
+            Logs.error(e)
+            bld.env.GIT_COMMIT_ID = 'NOVALIDCOMMIT'
+        else:
+            bld.env.GIT_COMMIT_ID = std_out.strip()
+
+        try:
+            (std_out, std_err) = bld.cmd_and_log([bld.env.GIT[0], 'status'], output=waflib.Context.BOTH)
+        except Errors.WafError as e:
+            std_out = None
+            Logs.error(e)
+        else:
+            if "nothing to commit, working tree clean" in std_out:
+                bld.env.CLEAN, bld.env.DIRTY = (1, 0)
+                bld.env.GIT_STATUS = 'GIT_CLEAN_STARTUP'
+            else:
+                bld.env.CLEAN, bld.env.DIRTY = (0, 1)
+                bld.env.GIT_STATUS = 'GIT_DIRTY_STARTUP'
     print(f'clean: {bld.env.CLEAN} \ndirty: {bld.env.DIRTY}')
 
     # header file

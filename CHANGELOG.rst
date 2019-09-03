@@ -2,6 +2,47 @@
 Changelog
 =========
 
+**Release 1.6.3**
+
+Software:
+
+* Toolchain:
+
+  * the flash process sometimes did not work correctly for the secondary MCU.
+    The robustness of the `_ack` function was generally improved and flashing
+    both, primary and secondary, MCU should no longer fail.
+  * if foxBMS was not developed inside a git repository, building the binaries
+    failed. For these cases building now succeeds and the binary is still
+    runnable. This requires the define ``BUILD_ALLOW_DIRTY_STARTUP`` to be set
+    to ``1`` (in ``general.h`` for both, primary and secondary MCU). Defining
+    ``BUILD_ALLOW_DIRTY_STARTUP`` to ``1`` is the default setting.
+
+* Bugfixes:
+
+  * minimum, maximum and average SOC were identically if Coulomb counting
+    feature of current sensors was used (``sox.c/h``)
+  * recommended safety limit flag for undertemperature in charge direction was
+    was never set. (``diag_cfg.c``)
+  * diagnosis system monitoring error occured if ``ISOGUARD``-module was
+    disabled (``isoguard.c``)
+  * current sensor detection failed always if triggered mode was selected, as
+    CAN TX messages were activated after check for current sensor (``sys.c``)
+
+* Enhancements:
+
+  * changed file structure to allow type definitions to be used as return
+    values for static function prototypes (``cansignal_cfg.c``)
+
+Hardware:
+
+* none
+
+Documentation:
+
+* none
+
+------------------------------------------------------------------------------
+
 **Release 1.6.2**
 
 Software:

@@ -65,7 +65,9 @@
 /*================== Constant and Variable Definitions ====================*/
 static SOX_STATE_s sox_state = {
     .sensor_cc_used         = 0,
-    .cc_scaling               = 0.0,
+    .cc_scaling             = 0.0,
+    .cc_scaling_min         = 0.0,
+    .cc_scaling_max         = 0.0,
     .counter                = 0,
 };
 
@@ -100,7 +102,7 @@ static void SOF_CalculateSocBased(float MinSoc, float MaxSoc, SOX_SOF_s *ResultV
 static void SOF_CalculateTemperatureBased(float MinTemp, float MaxTemp, SOX_SOF_s *ResultValues, const SOX_SOF_CONFIG_s *configLimitValues, SOF_curve_s* calcCurveValues);
 static void SOF_MinimumOfThreeSofValues(SOX_SOF_s Ubased, SOX_SOF_s Sbased, SOX_SOF_s Tbased, SOX_SOF_s *resultValues);
 static float SOF_MinimumOfThreeValues(float value1, float value2, float value3);
-static float SOC_GetFromVoltage(float voltage);
+static float SOC_GetFromVoltage(uint16_t voltage_mV);
 
 /*================== Function Implementations =============================*/
 
@@ -116,8 +118,12 @@ void SOC_Init(uint8_t cc_present) {
 
         if (POSITIVE_DISCHARGE_CURRENT == TRUE) {
             sox_state.cc_scaling = soc.mean + 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+            sox_state.cc_scaling_min = soc.min + 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+            sox_state.cc_scaling_max = soc.max + 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
         } else {
             sox_state.cc_scaling = soc.mean - 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+            sox_state.cc_scaling_min = soc.min - 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+            sox_state.cc_scaling_max = soc.max - 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
         }
 
 
@@ -175,9 +181,6 @@ void SOC_SetValue(float soc_value_min, float soc_value_max, float soc_value_mean
         sox.soc_mean = soc.mean;
         sox.soc_min = soc.min;
         sox.soc_max = soc.max;
-        sox.state = 0;
-        sox.timestamp = 0;
-        sox.previous_timestamp = 0;
 
         DB_WriteBlock(&sox, DATA_BLOCK_ID_SOX);
 
@@ -189,13 +192,17 @@ void SOC_SetValue(float soc_value_min, float soc_value_max, float soc_value_mean
 
         if (POSITIVE_DISCHARGE_CURRENT == TRUE) {
             sox_state.cc_scaling = soc.mean + 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+            sox_state.cc_scaling_min = soc.min + 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+            sox_state.cc_scaling_max = soc.max + 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
         } else {
             sox_state.cc_scaling = soc.mean - 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+            sox_state.cc_scaling_min = soc.min - 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+            sox_state.cc_scaling_max = soc.max - 100.0f*sox_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
         }
 
         sox.soc_mean = soc.mean;
-        sox.soc_min = sox.soc_mean;
-        sox.soc_max = sox.soc_mean;
+        sox.soc_min = soc.min;
+        sox.soc_max = soc.max;
         if (sox.soc_mean > 100.0f) { sox.soc_mean = 100.0; }
         if (sox.soc_mean < 0.0f)   { sox.soc_mean = 0.0;   }
         if (sox.soc_min > 100.0f)  { sox.soc_min = 100.0;  }
@@ -288,12 +295,14 @@ void SOC_Calculation(void) {
 
             if (POSITIVE_DISCHARGE_CURRENT == TRUE) {
                 sox.soc_mean = sox_state.cc_scaling - 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+                sox.soc_min = sox_state.cc_scaling_min - 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+                sox.soc_max = sox_state.cc_scaling_max - 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
             } else {
                 sox.soc_mean = sox_state.cc_scaling + 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+                sox.soc_min = sox_state.cc_scaling_min + 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+                sox.soc_max = sox_state.cc_scaling_max + 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
             }
 
-            sox.soc_min = sox.soc_mean;
-            sox.soc_max = sox.soc_mean;
             soc.mean = sox.soc_mean;
             soc.min = sox.soc_min;
             soc.max = sox.soc_max;
@@ -401,7 +410,7 @@ void SOF_Calculation(void) {
  * @return  SOC value
  */
 
-float SOC_GetFromVoltage(float voltage) {
+float SOC_GetFromVoltage(uint16_t voltage_mV) {
     float SOC = 0.50;
 
     return SOC;

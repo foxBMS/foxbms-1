@@ -43,8 +43,11 @@ class sphinx_build(Task.Task):
         if std_out:
             print(std_out)
         if std_err:
-            Logs.error('\nErrors/Warnings:\n' + std_err)
-            self.generator.bld.fatal('There are sphinx errors.')
+            if "RemovedInSphinx30Warning:" in std_err:
+                pass
+            else:
+                Logs.error('\nErrors/Warnings:\n' + std_err)
+                self.generator.bld.fatal('There are sphinx errors.')
         else:
             return proc.returncode
 

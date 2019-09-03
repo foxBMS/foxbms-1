@@ -473,7 +473,7 @@ static void DIAG_undertemperature_charge(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event)
         if (event == DIAG_EVENT_NOK) {
             msl_flags.under_temperature_charge = 1;
         }
-    } else if (DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_RSL) {
+    } else if (ch_id == DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_RSL) {
         if (event == DIAG_EVENT_RESET) {
             rsl_flags.under_temperature_charge = 0;
         }
