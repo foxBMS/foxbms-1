@@ -667,6 +667,7 @@ A problem with the daisy-chain communication is indicated with bitfield
 * Bit[0]: spi error
 * Bit[1]: ltc PEC error
 * Bit[2]: multiplexer error
+* Bit[3]: ltc configuration error
 
 Plausibility errors detected by on of the checks are indicated with bitfield
 ``CAN0_SIG_GS2_plausibilityCheck`` (0: no error, 1: error)

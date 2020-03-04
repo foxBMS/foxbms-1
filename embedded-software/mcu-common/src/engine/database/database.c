@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -51,29 +51,29 @@
  * Implementation of database module
  */
 
-/*================== Includes =============================================*/
+/*================== Includes ===============================================*/
 #include "database.h"
 
 #include "diag.h"
 #include <string.h>
 
-/*================== Macros and Definitions ===============================*/
+/*================== Macros and Definitions =================================*/
 /**
  * Maximum queue timeout time in milliseconds
  */
-#define DATA_QUEUE_TIMEOUT_MS   10u
+#define DATA_QUEUE_TIMEOUT_MS   (10u)
 
 /**
  * @brief Length of data Queue
  */
-#define DATA_QUEUE_LENGTH       1u
+#define DATA_QUEUE_LENGTH       (1u)
 
 /**
  * @brief Size of data Queue item
  */
 #define DATA_QUEUE_ITEM_SIZE    sizeof(DATA_QUEUE_MESSAGE_s)
 
-/*================== Constant and Variable Definitions ====================*/
+/*================== Static Constant and Variable Definitions ===============*/
 /* FIXME Some uninitialized variables */
 static DATA_BLOCK_ACCESS_s data_block_access[DATA_MAX_BLOCK_NR];
 QueueHandle_t data_queue;
@@ -85,54 +85,34 @@ QueueHandle_t data_queue;
  * The array to use as the queue's storage area.
  * This must be at least #DATA_QUEUE_LENGTH * #DATA_QUEUE_ITEM_SIZE
  */
-uint8_t dataQueueStorageArea[ DATA_QUEUE_LENGTH * DATA_QUEUE_ITEM_SIZE ];
+static uint8_t dataQueueStorageArea[ DATA_QUEUE_LENGTH * DATA_QUEUE_ITEM_SIZE ];
 
 /**
  * @brief structure for static data queue
  */
 static StaticQueue_t dataQueueStructure;
 
-/*================== Function Prototypes ==================================*/
+/*================== Extern Constant and Variable Definitions ===============*/
 
-/*================== Function Implementations =============================*/
+/*================== Static Function Prototypes =============================*/
 
-/*================== Public functions =====================================*/
+/*================== Static Function Implementations ========================*/
+
+/*================== Extern Function Implementations ========================*/
 void DATA_Init(void) {
     if (sizeof(data_base_dev) == 0) {
         /* todo fatal error! */
-
         while (1) {
             /* No database defined - this should not have happened! */
         }
     }
 
-    /* FIXME What is mymessage structures? */
-    /* Create a queue capable of containing 10 pointers to mymessage structures.
-       These should be passed by pointer as they contain a lot of data.
-       data_queueID = xQueueCreate(devptr->nr_of_blockheader, sizeof(DATA_QUEUE_MESSAGE_s)); */    /* FIXME number of queues=1 should be enough */
-
-/*     if (data_queueID  ==  NULL_PTR) {
-             Failed to create the queue
-           ;   @ TODO Error Handling
-       }
-*/
-
     /* Iterate over database and set respective read/write pointer for each database entry */
     for (uint16_t i = 0; i < data_base_dev.nr_of_blockheader; i++) {
         /* Set write pointer to database entry */
         data_block_access[i].WRptr = (void*)*(uint32_t*)(data_base_dev.blockheaderptr + i);
-
-        /* Set read pointer */
-        if ((data_base_dev.blockheaderptr + i)->buffertype  ==  DOUBLE_BUFFERING) {
-            /* If database entry is double buffered -> set read pointer to
-             * second section. After writing first database entry, pointer are
-             * swapped and read pointer then points to written entry. */
-            data_block_access[i].RDptr = (void*)((uint32_t)data_block_access[i].WRptr + (data_base_dev.blockheaderptr + i)->datalength);
-
-        } else {
-            /* Single buffering -> read = write pointer */
-            data_block_access[i].RDptr = data_block_access[i].WRptr;
-        }
+        /* Set read pointer: read = write pointer */
+        data_block_access[i].RDptr = data_block_access[i].WRptr;
 
         /* Initialize database entry with 0, set read and write pointer in case double
          * buffering is used for database entries */
@@ -197,7 +177,6 @@ void DATA_Task(void) {
     DATA_BLOCK_ID_TYPE_e blockID;
     DATA_BLOCK_ACCESS_TYPE_e    accesstype; /* read or write access type */
     uint16_t datalength;
-    DATA_BLOCK_BUFFER_TYPE_e buffertype;
 
     if (data_queue != NULL_PTR) {
         if (xQueueReceive(data_queue, (&receive_msg), (TickType_t) 1)) {  /* scan queue and wait for a message up to a maximum amount of 1ms (block time) */
@@ -210,14 +189,13 @@ void DATA_Task(void) {
                 if (accesstype == WRITE_ACCESS) {
                     /* write access to data blocks */
                     datalength = (data_base_dev.blockheaderptr + blockID)->datalength;
-                    buffertype = (data_base_dev.blockheaderptr + blockID)->buffertype;
                     dstdataptr = data_block_access[blockID].WRptr;
 
                         uint32_t *previousTimestampptr = NULL_PTR;
                         uint32_t *timestampptr = NULL_PTR;
 
                         /* Set timestamp pointer */
-                        timestampptr = (uint32_t *)srcdataptr;
+                        timestampptr = (uint32_t *)dstdataptr;
                         /* Set previous timestampptr */
                         previousTimestampptr = (uint32_t *)srcdataptr;
                         previousTimestampptr++;
@@ -229,29 +207,14 @@ void DATA_Task(void) {
 
                         memcpy(dstdataptr, srcdataptr, datalength);
 
-                        if (buffertype  ==  DOUBLE_BUFFERING) {
-                            /* swap the WR and RD pointers:
-                               WRptr always points to buffer to be written next time and changed afterwards
-                               RDptr always points to buffer to be read next time */
-                            data_block_access[blockID].WRptr = data_block_access[blockID].RDptr;
-                            data_block_access[blockID].RDptr = dstdataptr;
-                        }
                 } else if (accesstype == READ_ACCESS) {
                     /* Read access to data blocks */
                     datalength = (data_base_dev.blockheaderptr + blockID)->datalength;
-                    buffertype = (data_base_dev.blockheaderptr + blockID)->buffertype;
                     dstdataptr = srcdataptr;
 
-                    if (buffertype  ==  DOUBLE_BUFFERING) {
-                            srcdataptr = data_block_access[blockID].RDptr;
-                            if (srcdataptr != NULL_PTR) {
-                                memcpy(dstdataptr, srcdataptr, datalength);
-                            }
-                    } else if (buffertype  ==  SINGLE_BUFFERING) {
-                            srcdataptr = data_block_access[blockID].RDptr;
-                            if (srcdataptr != NULL_PTR) {
-                                memcpy(dstdataptr, srcdataptr, datalength);
-                            }
+                    srcdataptr = data_block_access[blockID].RDptr;
+                    if (srcdataptr != NULL_PTR) {
+                        memcpy(dstdataptr, srcdataptr, datalength);
                     }
                 } else {
             /* TODO: explain why empty else */
@@ -282,12 +245,6 @@ STD_RETURN_TYPE_e DB_ReadBlock(void *dataptrtoReceiver, DATA_BLOCK_ID_TYPE_e  bl
     xQueueSend(data_queue, (void *) &data_send_msg, queuetimeout);
 
     return E_OK;
-}
-
-/* FIXME not used  currently - delete? */
-void * DATA_GetTablePtrBeginCritical(DATA_BLOCK_ID_TYPE_e  blockID) {
-    /* FIXME block with semaphore */
-    return data_block_access[blockID].RDptr;
 }
 
 /*================== Static functions =====================================*/

@@ -74,12 +74,9 @@ Workspace for working with the |foxbms| sources.
     After downloading the ``.zip file`` and extracting it, ``eclipse.exe`` must
     be started to launch ``Eclipse CDT``.
 
--   The following plugins must be installed into ``Eclipse CDT``. ``PyDev``
-    (`PyDev project website <https://www.pydev.org/>`_) is mandatory, while
-    ``LiClipseText``
-    (`LiClipseText project website <http://www.liclipse.com/>`_) is optional.
-    However it is recommended to install both plugins. The plugins can be
-    installed from the ``Eclipse Marketplace``.
+-   The ``PyDev`` (`PyDev project website <https://www.pydev.org/>`_) plugin
+    can be installed into ``Eclipse CDT``. The plugin can be installed from
+    the ``Eclipse Marketplace``.
 
     .. _eclipse_marketplace:
     .. figure:: eclipse-marketplace.png
@@ -92,15 +89,6 @@ Workspace for working with the |foxbms| sources.
             .. figure:: eclipse-marketplace-pydev.png
 
                 ``PyDev`` Eclipse plugin
-
-        - Click |ECLIPSEINSTALL| to install the plugin.
-
-    - Installing ``LiClipseText``
-
-            .. _liclipsetext_plugin:
-            .. figure:: eclipse-marketplace-liclipsetext.png
-
-                ``LiClipseText`` Eclipse plugin
 
         - Click |ECLIPSEINSTALL| to install the plugin.
 
@@ -432,6 +420,15 @@ Testing the Project Setup
 
     To test flashing in the next step, binaries of the primary and secondary
     mcu need to be build again.
+
+.. note::
+
+    If problems occur while using the Eclipse workspace, it is possible to use
+    a VS Code setup. For details on |foxbms| and VS Code see
+    `here <https://github.com/foxBMS/foxbms/tree/v1.6.4/tools/vscode>`_.
+
+    **However, VS Code is not actively supported and should only be used in**
+    **cases where the Eclipse setup does not work.**
 
 
 Optional Settings

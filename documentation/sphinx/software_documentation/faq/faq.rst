@@ -458,22 +458,19 @@ structure type must be declared
 
 .. code-block:: C
 
-    DATA_BLOCK_CELLVOLTAGE_s data_block_cellvoltage[DOUBLE_BUFFERING];
+    DATA_BLOCK_CELLVOLTAGE_s data_block_cellvoltage;
 
-The user can choose ``SINGLE_BUFFERING`` or ``DOUBLE_BUFFERING``. The last
-step is to add an entry in the structure
+The last step is to add an entry in the structure
 ``DATA_BASE_HEADER_s data_base_header[]``:
 
 .. code-block:: C
 
    {
    (void*)(&data_block_cellvoltage[0]),
-   sizeof(DATA_BLOCK_CELLVOLTAGE_s),
-   DOUBLE_BUFFERING,
+   sizeof(DATA_BLOCK_CELLVOLTAGE_s)
    },
 
 
-With either ``SINGLE_BUFFERING`` or ``DOUBLE_BUFFERING`` (the same as in the structure declaration).
 When access to the created database entry is needed, a local variable with the corresponding type must be created in the module where it is needed:
 ``DATA_BLOCK_CELLVOLTAGE_s cellvoltage;``
 
@@ -487,7 +484,7 @@ Getting the data from the database in the local variable is made via:
 
 .. code-block:: C
 
-   DB_ReadBlock(&cellvoltage ,DATA_BLOCK_ID_CELLVOLTAGE)
+   DB_ReadBlock(&cellvoltage, DATA_BLOCK_ID_CELLVOLTAGE)
 
 Storing data from the local variable to the database is made via:
 
@@ -559,7 +556,7 @@ File: ``module/config/cansignal_cfg.c``
 
   .. code-block:: C
 
-    {CANS_MSG_Name}, 0, 8, 0, 255, 1, 0, NULL_PTR, &cans_getsignaldata
+    {CANS_MSG_Name}, 0, 8, 0, 255, 1, 0, littleEndian, &cans_getsignaldata
 
   The parameters are:
 
@@ -570,8 +567,9 @@ File: ``module/config/cansignal_cfg.c``
    - Maximum value (float)
    - Scaling factor (float)
    - Scaling offset (float)
-   - Callback function for setter (when CAN msg is received) (``NULL_PTR`` if no function needed, e.g., for transmit)
-   - Callback function gor getter (when CAN msg is transmitted) (``NULL_PTR`` if no function needed, e.g., for receive only)
+   - configuration if byte order is little-endian or big-endian
+   - Callback function for getter (when CAN msg is transmitted) or
+     setter function (when CAN msg is received)
 
 5. The callback functions must be declared and implemented in ``cansignal_cfg.c``.
 
@@ -680,48 +678,48 @@ to CAN0_SIG_Mod0_temp_11 because we only use temperatures 0-4. Repeat this proce
 .. code-block:: C
 
     /* Module 0 cell voltages */
-    { {CAN0_MSG_Mod0_Cellvolt_0}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_0_2 */
-    { {CAN0_MSG_Mod0_Cellvolt_0}, 8, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_0 */
-    { {CAN0_MSG_Mod0_Cellvolt_0}, 24, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_1 */
-    { {CAN0_MSG_Mod0_Cellvolt_0}, 40, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_2 */
-    { {CAN0_MSG_Mod0_Cellvolt_1}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_3_5 */
-    { {CAN0_MSG_Mod0_Cellvolt_1}, 8, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_3 */
-    { {CAN0_MSG_Mod0_Cellvolt_1}, 24, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_4 */
-    { {CAN0_MSG_Mod0_Cellvolt_1}, 40, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_5 */
-    { {CAN0_MSG_Mod0_Cellvolt_2}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_6_8 */
-    { {CAN0_MSG_Mod0_Cellvolt_2}, 8, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_6 */
-    { {CAN0_MSG_Mod0_Cellvolt_2}, 24, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_7 */
-    { {CAN0_MSG_Mod0_Cellvolt_2}, 40, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_8 */
-    { {CAN0_MSG_Mod0_Cellvolt_3}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_9_11 */
-    { {CAN0_MSG_Mod0_Cellvolt_3}, 8, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_9 */
-    { {CAN0_MSG_Mod0_Cellvolt_3}, 24, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_10 */
-    { {CAN0_MSG_Mod0_Cellvolt_3}, 40, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_11 */
-    { {CAN0_MSG_Mod0_Cellvolt_4}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_12_14 */
-    { {CAN0_MSG_Mod0_Cellvolt_4}, 8, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_12 */
-    { {CAN0_MSG_Mod0_Cellvolt_4}, 24, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_13 */
-    { {CAN0_MSG_Mod0_Cellvolt_4}, 40, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_14 */
-    { {CAN0_MSG_Mod0_Cellvolt_5}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_15_17 */
-    { {CAN0_MSG_Mod0_Cellvolt_5}, 8, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_15 */
-    { {CAN0_MSG_Mod0_Cellvolt_5}, 24, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_16 */
-    { {CAN0_MSG_Mod0_Cellvolt_5}, 40, 16, 0, UINT16_MAX, 1, 0, NULL_PTR, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_17 */
+    { {CAN0_MSG_Mod0_Cellvolt_0}, 0, 8, 0, UINT8_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_0_2 */
+    { {CAN0_MSG_Mod0_Cellvolt_0}, 8, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_0 */
+    { {CAN0_MSG_Mod0_Cellvolt_0}, 24, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_1 */
+    { {CAN0_MSG_Mod0_Cellvolt_0}, 40, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_2 */
+    { {CAN0_MSG_Mod0_Cellvolt_1}, 0, 8, 0, UINT8_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_3_5 */
+    { {CAN0_MSG_Mod0_Cellvolt_1}, 8, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_3 */
+    { {CAN0_MSG_Mod0_Cellvolt_1}, 24, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_4 */
+    { {CAN0_MSG_Mod0_Cellvolt_1}, 40, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_5 */
+    { {CAN0_MSG_Mod0_Cellvolt_2}, 0, 8, 0, UINT8_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_6_8 */
+    { {CAN0_MSG_Mod0_Cellvolt_2}, 8, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_6 */
+    { {CAN0_MSG_Mod0_Cellvolt_2}, 24, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_7 */
+    { {CAN0_MSG_Mod0_Cellvolt_2}, 40, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_8 */
+    { {CAN0_MSG_Mod0_Cellvolt_3}, 0, 8, 0, UINT8_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_9_11 */
+    { {CAN0_MSG_Mod0_Cellvolt_3}, 8, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_9 */
+    { {CAN0_MSG_Mod0_Cellvolt_3}, 24, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_10 */
+    { {CAN0_MSG_Mod0_Cellvolt_3}, 40, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_11 */
+    { {CAN0_MSG_Mod0_Cellvolt_4}, 0, 8, 0, UINT8_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_12_14 */
+    { {CAN0_MSG_Mod0_Cellvolt_4}, 8, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_12 */
+    { {CAN0_MSG_Mod0_Cellvolt_4}, 24, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_13 */
+    { {CAN0_MSG_Mod0_Cellvolt_4}, 40, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_14 */
+    { {CAN0_MSG_Mod0_Cellvolt_5}, 0, 8, 0, UINT8_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_valid_15_17 */
+    { {CAN0_MSG_Mod0_Cellvolt_5}, 8, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_15 */
+    { {CAN0_MSG_Mod0_Cellvolt_5}, 24, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_16 */
+    { {CAN0_MSG_Mod0_Cellvolt_5}, 40, 16, 0, UINT16_MAX, 1, 0, littleEndian, &cans_getvolt },  /*!< CAN0_SIG_Mod0_volt_17 */
 
     /* Module 0 cell temperatures */
-    { {CAN0_MSG_Mod0_Celltemp_0}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_volt_valid_0_2 */
-    { {CAN0_MSG_Mod0_Celltemp_0}, 8, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_0 */
-    { {CAN0_MSG_Mod0_Celltemp_0}, 24, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_1 */
-    { {CAN0_MSG_Mod0_Celltemp_0}, 40, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_2 */
-    { {CAN0_MSG_Mod0_Celltemp_1}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_volt_valid_3_5 */
-    { {CAN0_MSG_Mod0_Celltemp_1}, 8, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_3 */
-    { {CAN0_MSG_Mod0_Celltemp_1}, 24, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_4 */
-    { {CAN0_MSG_Mod0_Celltemp_1}, 40, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_5 */
-    { {CAN0_MSG_Mod0_Celltemp_2}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_volt_valid_6_8 */
-    { {CAN0_MSG_Mod0_Celltemp_2}, 8, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_6 */
-    { {CAN0_MSG_Mod0_Celltemp_2}, 24, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_7 */
-    { {CAN0_MSG_Mod0_Celltemp_2}, 40, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_8 */
-    { {CAN0_MSG_Mod0_Celltemp_3}, 0, 8, 0, UINT8_MAX, 1, 0, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_volt_valid_9_11 */
-    { {CAN0_MSG_Mod0_Celltemp_3}, 8, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_9 */
-    { {CAN0_MSG_Mod0_Celltemp_3}, 24, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_10 */
-    { {CAN0_MSG_Mod0_Celltemp_3}, 40, 16, -128, 527.35, 100, 128, NULL_PTR, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_11 */
+    { {CAN0_MSG_Mod0_Celltemp_0}, 0, 8, 0, UINT8_MAX, 1, 0, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_volt_valid_0_2 */
+    { {CAN0_MSG_Mod0_Celltemp_0}, 8, 16, -128, 527.35, 100, 128, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_0 */
+    { {CAN0_MSG_Mod0_Celltemp_0}, 24, 16, -128, 527.35, 100, 128, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_1 */
+    { {CAN0_MSG_Mod0_Celltemp_0}, 40, 16, -128, 527.35, 100, 128, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_2 */
+    { {CAN0_MSG_Mod0_Celltemp_1}, 0, 8, 0, UINT8_MAX, 1, 0, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_volt_valid_3_5 */
+    { {CAN0_MSG_Mod0_Celltemp_1}, 8, 16, -128, 527.35, 100, 128, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_3 */
+    { {CAN0_MSG_Mod0_Celltemp_1}, 24, 16, -128, 527.35, 100, 128, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_4 */
+    { {CAN0_MSG_Mod0_Celltemp_1}, 40, 16, -128, 527.35, 100, 128, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_5 */
+    { {CAN0_MSG_Mod0_Celltemp_2}, 0, 8, 0, UINT8_MAX, 1, 0, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_volt_valid_6_8 */
+    { {CAN0_MSG_Mod0_Celltemp_2}, 8, 16, -128, 527.35, 100, 128, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_6 */
+    { {CAN0_MSG_Mod0_Celltemp_2}, 24, 16, -128, 527.35, 100, 128, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_7 */
+    { {CAN0_MSG_Mod0_Celltemp_2}, 40, 16, -128, 527.35, 100, 128, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_8 */
+    { {CAN0_MSG_Mod0_Celltemp_3}, 0, 8, 0, UINT8_MAX, 1, 0, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_volt_valid_9_11 */
+    { {CAN0_MSG_Mod0_Celltemp_3}, 8, 16, -128, 527.35, 100, 128, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_9 */
+    { {CAN0_MSG_Mod0_Celltemp_3}, 24, 16, -128, 527.35, 100, 128, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_10 */
+    { {CAN0_MSG_Mod0_Celltemp_3}, 40, 16, -128, 527.35, 100, 128, littleEndian, &cans_gettemp },  /*!< CAN0_SIG_Mod0_temp_11 */
 
 Remove all unused struct entries depending on the number of used cells/sensors. Repeat this process for all modules.
 
@@ -819,49 +817,76 @@ How to add an entry for the diag module?
 ----------------------------------------
 
 
-Adding a new sensitivity level is done in ``src/engine/config/diag_cfg.h`` by adding a new ``#define`` in:
+Adding a new sensitivity level is done in ``src/engine/config/diag_cfg.h`` by
+adding a new ``#define`` in:
 
 .. code-block:: C
 
-   #define DIAG_ERROR_SENSITIVITY_HIGH        (0)   // logging at first event
-   #define DIAG_ERROR_SENSITIVITY_MID         (5)   // logging at fifth event
-   #define DIAG_ERROR_SENSITIVITY_LOW         (10)  // logging at tenth event
-   #define DIAG_ERROR_SENSITIVITY_CUSTOM      (100) // logging at 100th event
+   #define DIAG_ERROR_SENSITIVITY_HIGH         (0)    /* logging at first event */
+   #define DIAG_ERROR_SENSITIVITY_MID          (5)    /* logging at fifth event */
+   #define DIAG_ERROR_SENSITIVITY_LOW          (10)   /* logging at tenth event */
+   #define DIAG_ERROR_SENSITIVITY_CUSTOM      (100)   /* logging at 100th event */
 
-and errors can be defined:
+Additional errors are defined in ``src/engine/config/diag_cfg.h`` in the
+typedef enum ``DIAG_CH_ID_e``. No numbers need to be assigned to the entries
+of the enum. **The additional entry must not be after** ``DIAG_ID_MAX``\ **.**
 
 .. code-block:: C
 
-   #define     DIAG_CH_CUSTOM_FAILURE             DIAG_ID_XX
+   typedef enum {
+       DIAG_CH_FLASHCHECKSUM,                          /*  */
+       DIAG_CH_BKPDIAG_FAILURE,                        /*  */
+       /* ... */
+       DIAG_CH_DEEP_DISCHARGE_DETECTED, /* DoD was detected */
+       DIAG_CH_CUSTOM_FAILURE, /* a new error entry */
+       DIAG_ID_MAX, /* MAX indicator - do not change */
+   } DIAG_CH_ID_e;
 
-and the error is then added in ``DIAG_CH_CFG_s  diag_ch_cfg[]`` in file ``src/engine/config/diag_cfg.c``:
+and the error is then added in ``DIAG_CH_CFG_s diag_ch_cfg[]`` in file ``src/engine/config/diag_cfg.c``:
 
 .. code-block:: C
 
    DIAG_CH_CFG_s  diag_ch_cfg[] = {
-    {DIAG_CH_CUSTOM_FAILURE,        DIAG_GENERAL_TYPE, DIAG_ERROR_SENSITIVITY_HIGH,
+    /* ... */
+    {DIAG_CH_CUSTOM_FAILURE, "failure message", DIAG_ERROR_SENSITIVITY_HIGH,
      DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu},
+   }
 
 
 The number of logged error events can be changed by modifying the value of the macro:
 
 .. code-block:: C
 
-   #define DIAG_FAIL_ENTRY_LENGTH               (50)    // Number of errors that can be logged
+   #define DIAG_FAIL_ENTRY_LENGTH               (50)    /* Number of errors that can be logged */
 
 
 .. note::
-    The diag module is a powerful module for general error handling. The user has to be aware of timings when using custom diag entries. As example how to use this module correct syscontrol is choosen.
-    - The function ``SYSCTRL_Trigger()`` is called in the 10ms task (``ENG_TSK_Cyclic_10ms()``), meaning every 10ms this function must be executed.
-    - In the diagnosis-module header ``diag_cfg.h`` there is the enum ``DIAG_SYSMON_MODULE_ID_e`` for the different error types that are handeled by the diagnosismodule. For syscontrol errors there is ``DIAG_SYSMON_SYSCTRL_ID``.
-    - In the diagnosis-module source ``diag_cfg.c`` there is the ``diag_sysmon_ch_cfg[]`` array assigning timings to this error, in this case 20ms.
+    The diag module is a powerful module for general error handling. The user
+    has to be aware of timings when using custom diag entries. As example how
+    to use this module correct syscontrol is choosen.
+
+    - The function ``SYSCTRL_Trigger()`` is called in the 10ms task
+      (``ENG_TSK_Cyclic_10ms()``), meaning every 10ms this function must be
+      executed.
+    - In the diagnosis-module header ``diag_cfg.h`` there is the enum
+      ``DIAG_SYSMON_MODULE_ID_e`` for the different error types that are
+      handeled by the diagnosismodule. For syscontrol errors there is
+      ``DIAG_SYSMON_SYSCTRL_ID``.
+    - In the diagnosis-module source ``diag_cfg.c`` there is the
+      ``diag_sysmon_ch_cfg[]`` array assigning timings to this error, in this
+      case 20ms.
 
     .. code-block:: C
 
         {DIAG_SYSMON_SYSCTRL_ID, DIAG_SYSMON_CYCLICTASK, 20,
         DIAG_RECORDING_ENABLED, DIAG_ENABLED, dummyfu2},
 
-    This means every time ``SYSCTRL_Trigger()`` is called, the function indicating `syscontrol is running` has to be exectued. If this is not done, the diagnosis module will set the syscontrol to the error state. Therefore, the user must set up functions, which are wanted to be supervised by the diagnosis module, and that they are still running, in this way:
+    This means every time ``SYSCTRL_Trigger()`` is called, the function
+    indicating `syscontrol is running` has to be exectued. If this is not
+    done, the diagnosis module will set the syscontrol to the error state.
+    Therefore, the user must set up functions, which are wanted to be
+    supervised by the diagnosis module, and that they are still running, in
+    this way:
 
     .. code-block:: C
 
@@ -938,7 +963,8 @@ first byte (byte0) equal to 170 (0xAA).
 How to configure the voltage inputs?
 ------------------------------------
 
-This number is changed in ``batterysystem_cfg.h`` with the define ``BS_NR_OF_BAT_CELLS_PER_MODULE``. In addition, the variable
+This number is changed in ``batterysystem_cfg.h`` with the define
+``BS_NR_OF_BAT_CELLS_PER_MODULE``. In addition, the variable
 
 .. code-block:: C
 
@@ -946,7 +972,9 @@ This number is changed in ``batterysystem_cfg.h`` with the define ``BS_NR_OF_BAT
 
 must be adapted, too, in ``ltc_cfg.c``.
 
-It has the size of ``BS_MAX_SUPPORTED_CELLS``. If a cell voltage is connected to the LTC IC input, ``1`` must be written in the table. Otherwise, ``0`` must be written.
+It has the size of ``BS_MAX_SUPPORTED_CELLS``. If a cell voltage is connected
+to the LTC IC input, ``1`` must be written in the table. Otherwise, ``0`` must
+be written.
 
 For instance, if 5 cells are connected to inputs ``0``, ``2``, ``5``, ``7``, ``11``,
 
@@ -973,7 +1001,10 @@ must be used and
         1 ,
     };
 
-must be defined. The number of ``1`` in the table must be equal to ``BS_NR_OF_BAT_CELLS_PER_MODULE``.
+must be defined. The number of ``1`` in the table must be equal to
+``BS_NR_OF_BAT_CELLS_PER_MODULE``. If this is not the case the BMS will not
+start and LTC configuration error bit will be transmitted via CAN
+(see signal CAN_SIG_daisyChain_LTCConfig in .dbc file).
 
 .. _faq_temperature_sensor_configuration:
 

@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -61,7 +61,6 @@
 #include "general.h"
 
 #include "batterysystem_cfg.h"
-#include "diag_id_cfg.h"
 
 /*================== Macros and Definitions =================================*/
 #define DIAG_ERROR_SENSITIVITY_HIGH         (0)    /* logging at first event */
@@ -88,137 +87,82 @@
 
 #define DIAG_ERROR_INTERLOCK_SENSITIVITY        (10)
 
-/**
- * Number of errors that can be logged
- */
+/** Number of errors that can be logged */
 #define DIAG_FAIL_ENTRY_LENGTH              (50)
 
-/**
- * Maximum number of the same errors that are logged
- */
+/** Maximum number of the same errors that are logged */
 #define DIAG_MAX_ENTRIES_OF_ERROR           (5)
 
-/**
- * Number of contactor errors that are logged
- */
+/** Number of contactor errors that are logged */
 #define DIAG_FAIL_ENTRY_CONTACTOR_LENGTH    (50)
 
 
-/* FIXME simple doxygen comment for each define? */
-/* Initialization and startup events: 0-15 */
-#define DIAG_CH_FLASHCHECKSUM                              DIAG_ID_5            /*  */
-#define DIAG_CH_BKPDIAG_FAILURE                            DIAG_ID_6            /*  */
-#define DIAG_CH_WATCHDOGRESET_FAILURE                      DIAG_ID_7            /*  */
-#define DIAG_CH_POSTOSINIT_FAILURE                         DIAG_ID_8            /*  */
-#define DIAG_CH_CALIB_EEPR_FAILURE                         DIAG_ID_9            /*  */
-#define DIAG_CH_CAN_INIT_FAILURE                           DIAG_ID_10           /*  */
-#define DIAG_CH_VIC_INIT_FAILURE                           DIAG_ID_11
-
-/* HW-/SW-Runtime events: 16-31 */
-#define DIAG_CH_DIV_BY_ZERO_FAILURE                        DIAG_ID_16            /*  */
-#define DIAG_CH_UNDEF_INSTRUCTION_FAILURE                  DIAG_ID_17            /*  */
-#define DIAG_CH_DATA_BUS_FAILURE                           DIAG_ID_18            /*  */
-#define DIAG_CH_INSTRUCTION_BUS_FAILURE                    DIAG_ID_19            /*  */
-#define DIAG_CH_HARDFAULT_NOTHANDLED                       DIAG_ID_20            /*  */
-#define DIAG_CH_RUNTIME_ERROR_RESERVED_1                   DIAG_ID_21            /*  reserved for future needs */
-#define DIAG_CH_RUNTIME_ERROR_RESERVED_2                   DIAG_ID_22            /*  reserved for future needs */
-#define DIAG_CH_RUNTIME_ERROR_RESERVED_3                   DIAG_ID_23            /*  reserved for future needs */
-#define DIAG_CH_CONFIGASSERT                               DIAG_ID_24            /*  */
-#define DIAG_CH_SYSTEMMONITORING_TIMEOUT                   DIAG_ID_25            /*  */
-
-
-/* Measurement events: 32-47 */
-#define DIAG_CH_CANS_MAX_VALUE_VIOLATE                     DIAG_ID_32
-#define DIAG_CH_CANS_MIN_VALUE_VIOLATE                     DIAG_ID_33
-#define DIAG_CH_CANS_CAN_MOD_FAILURE                       DIAG_ID_34
-
-/**
- * Measured frequency too low or no new value captured during last cycle
- */
-#define DIAG_CH_ISOMETER_TIM_ERROR                         DIAG_ID_35
-
-/**
- * Ground error detected
- */
-#define DIAG_CH_ISOMETER_GROUNDERROR                       DIAG_ID_36
-
-/**
- * Device error, invalid measurement result
- */
-#define DIAG_CH_ISOMETER_ERROR                             DIAG_ID_37
-
- /**
-  * Measurement trustworthy or not, hysteresis to ground error flag
-  */
-#define DIAG_CH_ISOMETER_MEAS_INVALID                      DIAG_ID_38
-
-/**
- * Cell voltage limits violated
- */
-#define DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MSL                DIAG_ID_39
-#define DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MSL               DIAG_ID_42
-
-/**
- *  Temperature limits violated
- */
-#define DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL            DIAG_ID_45
-#define DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL         DIAG_ID_48
-#define DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL           DIAG_ID_51
-#define DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL        DIAG_ID_54
-
-/**
- * LTC
- */
-#define DIAG_CH_LTC_SPI                                    DIAG_ID_63
-#define DIAG_CH_LTC_PEC                                    DIAG_ID_64
-#define DIAG_CH_LTC_MUX                                    DIAG_ID_65
+typedef enum {
+    DIAG_CH_FLASHCHECKSUM,                          /*  */
+    DIAG_CH_BKPDIAG_FAILURE,                        /*  */
+    DIAG_CH_WATCHDOGRESET_FAILURE,                  /*  */
+    DIAG_CH_POSTOSINIT_FAILURE,                     /*  */
+    DIAG_CH_CALIB_EEPR_FAILURE,                     /*  */
+    DIAG_CH_CAN_INIT_FAILURE,                       /*  */
+    DIAG_CH_VIC_INIT_FAILURE,
+    /* HW-/SW-Runtime events: 16-31 */
+    DIAG_CH_DIV_BY_ZERO_FAILURE,                    /*  */
+    DIAG_CH_UNDEF_INSTRUCTION_FAILURE,              /*  */
+    DIAG_CH_DATA_BUS_FAILURE,                       /*  */
+    DIAG_CH_INSTRUCTION_BUS_FAILURE,                /*  */
+    DIAG_CH_HARDFAULT_NOTHANDLED,                   /*  */
+    DIAG_CH_RUNTIME_ERROR_RESERVED_1,               /*  reserved for future needs */
+    DIAG_CH_RUNTIME_ERROR_RESERVED_2,               /*  reserved for future needs */
+    DIAG_CH_RUNTIME_ERROR_RESERVED_3,               /*  reserved for future needs */
+    DIAG_CH_CONFIGASSERT,                           /*  */
+    DIAG_CH_SYSTEMMONITORING_TIMEOUT,               /*  */
+    /* Measurement events: 32-47 */
+    DIAG_CH_CANS_MAX_VALUE_VIOLATE,
+    DIAG_CH_CANS_MIN_VALUE_VIOLATE,
+    DIAG_CH_CANS_CAN_MOD_FAILURE,
+    DIAG_CH_ISOMETER_TIM_ERROR,                     /* Measured frequency too low or no new value captured during last cycle */
+    DIAG_CH_ISOMETER_GROUNDERROR,                   /* Ground error detected */
+    DIAG_CH_ISOMETER_ERROR,                         /* Device error, invalid measurement result */
+    DIAG_CH_ISOMETER_MEAS_INVALID,                  /* Measurement trustworthy or not, hysteresis to ground error flag */
+    DIAG_CH_CELLVOLTAGE_OVERVOLTAGE_MSL,            /* Cell voltage limits violated */
+    DIAG_CH_CELLVOLTAGE_UNDERVOLTAGE_MSL,           /* Cell voltage limits violated */
+    DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MSL,        /* Temperature limits violated */
+    DIAG_CH_TEMP_OVERTEMPERATURE_DISCHARGE_MSL,     /* Temperature limits violated */
+    DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MSL,       /* Temperature limits violated */
+    DIAG_CH_TEMP_UNDERTEMPERATURE_DISCHARGE_MSL,    /* Temperature limits violated */
+    DIAG_CH_LTC_SPI,                                /* LTC */
+    DIAG_CH_LTC_PEC,                                /* LTC */
+    DIAG_CH_LTC_MUX,                                /* LTC */
+    DIAG_CH_LTC_CONFIG,                             /* LTC */
 
 /* Contactor events: 64-79 */
-/**
- * @brief   Opening contactor at over current
- */
-#define DIAG_CH_CONTACTOR_DAMAGED                          DIAG_ID_69
+    DIAG_CH_CONTACTOR_DAMAGED, /* Opening contactor at over current */
+    DIAG_CH_CONTACTOR_OPENING, /* counter for contactor opening */
+    DIAG_CH_CONTACTOR_CLOSING, /* counter for contactor closing */
+    DIAG_CH_INTERLOCK_FEEDBACK, /* Interlock feedback error */
+    DIAG_CH_SLAVE_PCB_UNDERTEMPERATURE_MSL,
+    DIAG_CH_SLAVE_PCB_OVERTEMPERATURE_MSL,
+    DIAG_CH_ERROR_MCU_DIE_TEMPERATURE, /* MCU die temperature */
+    DIAG_CH_LOW_COIN_CELL_VOLTAGE, /* coin cell voltage */
+    DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE, /* coin cell voltage */
+    DIAG_CH_PLAUSIBILITY_CELL_VOLTAGE, /* plausibility checks */
+    DIAG_CH_PLAUSIBILITY_CELL_TEMP, /* plausibility checks */
+    DIAG_ID_MAX, /* MAX indicator - do not change */
+} DIAG_CH_ID_e;
 
-/**
- * @brief   counter for contactor opening
- */
-#define DIAG_CH_CONTACTOR_OPENING                           DIAG_ID_70
-
-/**
- * @brief   counter for contactor closing
- */
-#define DIAG_CH_CONTACTOR_CLOSING                           DIAG_ID_71
-
-/**
- * @brief   Interlock feedback error
- */
-#define DIAG_CH_INTERLOCK_FEEDBACK                          DIAG_ID_78
-
-#define DIAG_CH_SLAVE_PCB_UNDERTEMPERATURE_MSL              DIAG_ID_79
-#define DIAG_CH_SLAVE_PCB_OVERTEMPERATURE_MSL               DIAG_ID_82
-
-/**
- * @brief   MCU die temperature
- */
-#define DIAG_CH_ERROR_MCU_DIE_TEMPERATURE                   DIAG_ID_89
-
-/**
- * @brief   coin cell voltage
- */
-#define DIAG_CH_LOW_COIN_CELL_VOLTAGE                       DIAG_ID_90
-#define DIAG_CH_CRIT_LOW_COIN_CELL_VOLTAGE                  DIAG_ID_91
-/**
- * @brief   plausibility checks
- */
-#define DIAG_CH_PLAUSIBILITY_CELL_VOLTAGE                   DIAG_ID_95
-#define DIAG_CH_PLAUSIBILITY_CELL_TEMP                      DIAG_ID_97
+/** diagnosis check result (event) */
+typedef enum {
+    DIAG_EVENT_OK, /*!< diag channel event OK */
+    DIAG_EVENT_NOK, /*!< diag channel event NOK */
+    DIAG_EVENT_RESET, /*!< reset diag channel eventcounter to 0 */
+} DIAG_EVENT_e;
 
 /**
  * enable state of diagnosis entry
  */
 typedef enum {
-    DIAG_ENABLED  = 0,
-    DIAG_DISABLED = 1,
+    DIAG_ENABLED,
+    DIAG_DISABLED,
 } DIAG_ENABLE_STATE_e;
 
 
@@ -226,8 +170,8 @@ typedef enum {
  * diagnosis recording activation
  */
 typedef enum {
-    DIAG_RECORDING_ENABLED   = 0x00,    /*!< enable diagnosis event recording   */
-    DIAG_RECORDING_DISABLED  = 0x01,    /*!< disable diagnosis event recording  */
+    DIAG_RECORDING_ENABLED,    /*!< enable diagnosis event recording   */
+    DIAG_RECORDING_DISABLED,    /*!< disable diagnosis event recording  */
 } DIAG_TYPE_RECORDING_e;
 
 /*  FIXME some enums are typedefed with DIAG...TYPE_e, some with DIAG_TYPE..._e! Reconsider this */
@@ -235,27 +179,17 @@ typedef enum {
  * diagnosis types for system monitoring
  */
 typedef enum {
-    DIAG_SYSMON_CYCLICTASK  = 0x00,     /*!< */
-    DIAG_SYSMON_RESERVED    = 0x01      /*!< */
+    DIAG_SYSMON_CYCLICTASK, /*!< */
+    DIAG_SYSMON_RESERVED,   /*!< */
 } DIAG_SYSMON_TYPE_e;
 
 /**
  * diagnosis handling type for system monitoring
  */
 typedef enum {
-    DIAG_SYSMON_HANDLING_DONOTHING             = 0x00,     /*!< */
-    DIAG_SYSMON_HANDLING_SWITCHOFFCONTACTOR    = 0x01      /*!< */
+    DIAG_SYSMON_HANDLING_DONOTHING,             /*!< */
+    DIAG_SYSMON_HANDLING_SWITCHOFFCONTACTOR,    /*!< */
 } DIAG_SYSMON_HANDLING_TYPE_e;
-
-
-/**
- * @brief   symbolic names for diagnosis
- */
-typedef enum {
-    DIAG_OK     = 0,    /*!< diagnosis event ok     */
-    DIAG_NOT_OK = 1,    /*!< diagnosis event not ok */
-    DIAG_BUSY   = 2     /*!< diagnosis event busy   */
-} Diag_ReturnType;
 
 
 /**
@@ -264,17 +198,15 @@ typedef enum {
  * diag_sysmon_ch_cfg[]=
  */
 typedef enum {
-    DIAG_SYSMON_DATABASE_ID         = 0,    /*!< diag entry for database                */
-    DIAG_SYSMON_SYS_ID              = 1,    /*!< diag entry for sys              */
-    DIAG_SYSMON_BMS_ID              = 2,    /*!< diag entry for bms              */
-    DIAG_SYSMON_ILCK_ID              = 2,    /*!< diag entry for bms              */
-    DIAG_SYSMON_LTC_ID              = 3,    /*!< diag entry for ltc                     */
-    DIAG_SYSMON_ISOGUARD_ID         = 4,    /*!< diag entry for ioguard                 */
-    DIAG_SYSMON_CANS_ID             = 5,    /*!< diag entry for can                     */
-    DIAG_SYSMON_APPL_CYCLIC_1ms     = 6,    /*!< diag entry for application 10ms task   */
-    DIAG_SYSMON_APPL_CYCLIC_10ms    = 7,    /*!< diag entry for application 10ms task   */
-    DIAG_SYSMON_APPL_CYCLIC_100ms   = 8,    /*!< diag entry for application 100ms task  */
-    DIAG_SYSMON_MODULE_ID_MAX       = 9     /*!< end marker do not delete               */
+    DIAG_SYSMON_DATABASE_ID,        /*!< diag entry for database                */
+    DIAG_SYSMON_SYS_ID,             /*!< diag entry for sys              */
+    DIAG_SYSMON_BMS_ID,             /*!< diag entry for bms              */
+    DIAG_SYSMON_ILCK_ID,            /*!< diag entry for bms              */
+    DIAG_SYSMON_LTC_ID,             /*!< diag entry for ltc                     */
+    DIAG_SYSMON_APPL_CYCLIC_1ms,    /*!< diag entry for application 10ms task   */
+    DIAG_SYSMON_APPL_CYCLIC_10ms,   /*!< diag entry for application 10ms task   */
+    DIAG_SYSMON_APPL_CYCLIC_100ms,  /*!< diag entry for application 100ms task  */
+    DIAG_SYSMON_MODULE_ID_MAX,      /*!< end marker do not delete               */
 } DIAG_SYSMON_MODULE_ID_e;
 
 /*  FIXME doxygen comment */

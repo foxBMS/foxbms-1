@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -51,7 +51,6 @@
 
 /*================== Includes =============================================*/
 #include "batterysystem_cfg.h"
-#include "database.h"
 
 /*================== Macros and Definitions ===============================*/
 
@@ -60,37 +59,3 @@
 /*================== Function Prototypes ==================================*/
 
 /*================== Function Implementations =============================*/
-
-BS_CURRENT_DIRECTION_e BS_CheckCurrent_Direction(void) {
-    BS_CURRENT_DIRECTION_e retVal = BS_CURRENT_DISCHARGE;
-    DATA_BLOCK_CURRENT_SENSOR_s current_tab = {0};
-
-    DB_ReadBlock(&current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
-
-    retVal = BS_CheckCurrentValue_Direction(current_tab.current);
-
-    return retVal;
-}
-
-BS_CURRENT_DIRECTION_e BS_CheckCurrentValue_Direction(int32_t current) {
-    BS_CURRENT_DIRECTION_e retVal = BS_CURRENT_DISCHARGE;
-
-    if (POSITIVE_DISCHARGE_CURRENT == TRUE) {
-        if (current >= BS_REST_CURRENT_mA) {
-            retVal = BS_CURRENT_DISCHARGE;
-        } else if (current <= -BS_REST_CURRENT_mA) {
-            retVal = BS_CURRENT_CHARGE;
-        } else {
-            retVal = BS_CURRENT_NO_CURRENT;
-        }
-    } else {
-        if (current <= -BS_CURRENT_NO_CURRENT) {
-            retVal = BS_CURRENT_DISCHARGE;
-        } else if (current >= BS_REST_CURRENT_mA) {
-            retVal = BS_CURRENT_CHARGE;
-        } else {
-            retVal = BS_CURRENT_NO_CURRENT;
-        }
-    }
-    return retVal;
-}

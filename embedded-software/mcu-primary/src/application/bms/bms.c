@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -55,6 +55,7 @@
 
 #include "bal.h"
 #include "batterycell_cfg.h"
+#include "batterysystem_cfg.h"
 #include "database.h"
 #include "diag.h"
 #include "interlock.h"
@@ -78,16 +79,18 @@
  * contains the state of the contactor state machine
  */
 static BMS_STATE_s bms_state = {
-    .timer                  = 0,
-    .statereq               = BMS_STATE_NO_REQUEST,
-    .state                  = BMS_STATEMACH_UNINITIALIZED,
-    .substate               = BMS_ENTRY,
-    .laststate              = BMS_STATEMACH_UNINITIALIZED,
-    .lastsubstate           = 0,
-    .triggerentry           = 0,
-    .ErrRequestCounter      = 0,
-    .initFinished           = E_NOT_OK,
-    .counter                = 0,
+    .timer             = 0,
+    .statereq          = BMS_STATE_NO_REQUEST,
+    .state             = BMS_STATEMACH_UNINITIALIZED,
+    .substate          = BMS_ENTRY,
+    .currentFlowState  = BMS_RELAXATION,
+    .laststate         = BMS_STATEMACH_UNINITIALIZED,
+    .lastsubstate      = 0,
+    .triggerentry      = 0,
+    .ErrRequestCounter = 0,
+    .initFinished      = E_NOT_OK,
+    .restTimer_ms      = BS_RELAXATION_PERIOD_MS,
+    .counter           = 0,
 };
 
 static DATA_BLOCK_CELLVOLTAGE_s bms_tab_cellvolt;
@@ -105,6 +108,7 @@ static BMS_STATE_REQUEST_e BMS_TransferStateRequest(void);
 static uint8_t BMS_CheckReEntrance(void);
 static uint8_t BMS_CheckCANRequests(void);
 static STD_RETURN_TYPE_e BMS_CheckAnyErrorFlagSet(void);
+static void BMS_UpdateBatsysState(DATA_BLOCK_CURRENT_SENSOR_s *curSensor);
 static void BMS_GetMeasurementValues(void);
 static void BMS_CheckVoltages(void);
 static void BMS_CheckTemperatures(void);
@@ -240,6 +244,7 @@ void BMS_Trigger(void) {
 
     if (bms_state.state != BMS_STATEMACH_UNINITIALIZED) {
         BMS_GetMeasurementValues();
+        BMS_UpdateBatsysState(&bms_tab_cur_sensor);
         BMS_CheckVoltages();
         BMS_CheckTemperatures();
         BMS_CheckCurrent();
@@ -826,12 +831,11 @@ static void BMS_CheckVoltages(void) {
  * @details verify for cell temperature measurements (T), if minimum and maximum values are out of range
  */
 static void BMS_CheckTemperatures(void) {
-    int32_t i_current = bms_tab_cur_sensor.current;
     int16_t temp_min = bms_tab_minmax.temperature_min;
     int16_t temp_max = bms_tab_minmax.temperature_max;
 
     /* Over temperature check */
-    if (BS_CheckCurrentValue_Direction(i_current) == BS_CURRENT_DISCHARGE) {
+    if (BMS_GetBatterySystemState() == BMS_DISCHARGING) {
         /* Discharge */
         if (temp_max >= BC_TEMPMAX_DISCHARGE_MOL) {
             /* Over temperature maximum operating limit violated*/
@@ -859,7 +863,7 @@ static void BMS_CheckTemperatures(void) {
         }
 
     } else {
-        /* Charge */
+        /* Charge/Relaxation/At rest */
         if (temp_max >= BC_TEMPMAX_CHARGE_MOL) {
             /* Over temperature maximum operating limit violated */
             DIAG_Handler(DIAG_CH_TEMP_OVERTEMPERATURE_CHARGE_MOL, DIAG_EVENT_NOK, 0);
@@ -887,7 +891,7 @@ static void BMS_CheckTemperatures(void) {
     }
 
     /* Under temperature check */
-    if (BS_CheckCurrentValue_Direction(i_current) == BS_CURRENT_DISCHARGE) {
+    if (BMS_GetBatterySystemState() == BMS_DISCHARGING) {
         /* Discharge */
         if (temp_min <= BC_TEMPMIN_DISCHARGE_MOL) {
             /* Under temperature maximum operating limit violated */
@@ -914,7 +918,7 @@ static void BMS_CheckTemperatures(void) {
             }
         }
     } else {
-        /* Charge */
+        /* Charge/Relaxation/At rest */
         if (temp_min <= BC_TEMPMIN_CHARGE_MOL) {
             /* Under temperature maximum operating limit violated */
             DIAG_Handler(DIAG_CH_TEMP_UNDERTEMPERATURE_CHARGE_MOL, DIAG_EVENT_NOK, 0);
@@ -952,7 +956,7 @@ static void BMS_CheckTemperatures(void) {
 static void BMS_CheckCurrent(void) {
     int32_t i_current = bms_tab_cur_sensor.current;
     uint32_t i_current_abs = 0;
-    BS_CURRENT_DIRECTION_e i_dir = BS_CheckCurrentValue_Direction(i_current);
+    BMS_CURRENT_FLOW_STATE_e i_dir = BMS_GetBatterySystemState();
     if (i_current < 0) {
         i_current_abs = - i_current;
     } else {
@@ -1028,7 +1032,7 @@ static void BMS_CheckCurrent(void) {
     }
 
     /* check limits of battery system */
-    if (i_dir == BS_CURRENT_CHARGE) {
+    if (i_dir == BMS_CHARGING) {
         /* Charge */
         if (i_current_abs >= batsys_charge_limit_mol) {
             /* Over current maximum operating limit of batsys violated */
@@ -1054,7 +1058,7 @@ static void BMS_CheckCurrent(void) {
                 }
             }
         }
-    } else if (i_dir == BS_CURRENT_DISCHARGE) {
+    } else if (i_dir == BMS_DISCHARGING) {
         /* Discharge */
         if (i_current_abs >= batsys_discharge_limit_mol) {
             /* Over current maximum operating limit of batsys violated */
@@ -1099,7 +1103,7 @@ static void BMS_CheckCurrent(void) {
 
     /* check limits of cells */
 #if MEAS_TEST_CELL_SOF_LIMITS == TRUE
-    if (i_dir == BS_CURRENT_CHARGE) {
+    if (i_dir == BMS_CHARGING) {
         /* Charge */
         if (i_current_abs >= bms_tab_sof.continuous_charge_MOL) {
             /* Over current maximum operating limit violated */
@@ -1125,7 +1129,7 @@ static void BMS_CheckCurrent(void) {
                 }
             }
         }
-    } else if (i_dir == BS_CURRENT_DISCHARGE) {
+    } else if (i_dir == BMS_DISCHARGING) {
         /* Discharge */
         if (i_current_abs >= bms_tab_sof.continuous_discharge_MOL) {
             /* Over current maximum operating limit violated */
@@ -1156,7 +1160,7 @@ static void BMS_CheckCurrent(void) {
         /* BS_CURRENT_NO_CURRENT -> no check needed if no current is floating */
     }
 #else /* MEAS_TEST_CELL_SOF_LIMITS == FALSE */
-    if (i_dir == BS_CURRENT_CHARGE) {
+    if (i_dir == BMS_CHARGING) {
         /* Charge */
         if (i_current_abs >= BC_CURRENTMAX_CHARGE_MOL) {
             /* Over current maximum operating limit of cells violated */
@@ -1182,7 +1186,7 @@ static void BMS_CheckCurrent(void) {
                 }
             }
         }
-    } else if (i_dir == BS_CURRENT_DISCHARGE) {
+    } else if (i_dir == BMS_DISCHARGING) {
         /* Discharge */
         if (i_current_abs >= BC_CURRENTMAX_DISCHARGE_MOL) {
             /* Over current maximum operating limit of cells violated */
@@ -1304,6 +1308,7 @@ static STD_RETURN_TYPE_e BMS_CheckAnyErrorFlagSet(void) {
         error_flags.crc_error                 == 1 ||
         error_flags.mux_error                 == 1 ||
         error_flags.spi_error                 == 1 ||
+        error_flags.ltc_config_error          == 1 ||
         error_flags.currentsensorresponding   == 1 ||
         error_flags.open_wire                 == 1 ||
 #if BMS_OPEN_CONTACTORS_ON_INSULATION_ERROR == TRUE
@@ -1316,4 +1321,58 @@ static STD_RETURN_TYPE_e BMS_CheckAnyErrorFlagSet(void) {
     }
 
     return retVal;
+}
+
+
+/**
+ * @brief   Updates battery system state variable depending on measured/recent
+ *          current values
+ *
+ * @param   curSensor   recent measured values from current sensor
+ */
+static void BMS_UpdateBatsysState(DATA_BLOCK_CURRENT_SENSOR_s *curSensor) {
+    if (POSITIVE_DISCHARGE_CURRENT == TRUE) {
+        /* Positive current values equal a discharge of the battery system */
+        if (curSensor->current >= BS_REST_CURRENT_mA) {
+            bms_state.currentFlowState = BMS_DISCHARGING;
+            bms_state.restTimer_ms = BS_RELAXATION_PERIOD_MS;
+        } else if (curSensor->current <= -BS_REST_CURRENT_mA) {
+            bms_state.currentFlowState = BMS_CHARGING;
+            bms_state.restTimer_ms = BS_RELAXATION_PERIOD_MS;
+        } else {
+            /* Current below rest current: either battery system is at rest
+             * or the relaxation process is still ongoing */
+            if (bms_state.restTimer_ms == 0) {
+                /* Rest timer elapsed -> battery system at rest */
+                bms_state.currentFlowState = BMS_AT_REST;
+            } else {
+                bms_state.restTimer_ms--;
+                bms_state.currentFlowState = BMS_RELAXATION;
+            }
+        }
+    } else {
+        /* Negative current values equal a discharge of the battery system */
+        if (curSensor->current <= -BS_REST_CURRENT_mA) {
+            bms_state.currentFlowState = BMS_DISCHARGING;
+            bms_state.restTimer_ms = BS_RELAXATION_PERIOD_MS;
+        } else if (curSensor->current >= BS_REST_CURRENT_mA) {
+            bms_state.currentFlowState = BMS_CHARGING;
+            bms_state.restTimer_ms = BS_RELAXATION_PERIOD_MS;
+        } else {
+            /* Current below rest current: either battery system is at rest
+             * or the relaxation process is still ongoing */
+            if (bms_state.restTimer_ms == 0) {
+                /* Rest timer elapsed -> battery system at rest */
+                bms_state.currentFlowState = BMS_AT_REST;
+            } else {
+                bms_state.restTimer_ms--;
+                bms_state.currentFlowState = BMS_RELAXATION;
+            }
+        }
+    }
+}
+
+
+BMS_CURRENT_FLOW_STATE_e BMS_GetBatterySystemState(void) {
+    return bms_state.currentFlowState;
 }

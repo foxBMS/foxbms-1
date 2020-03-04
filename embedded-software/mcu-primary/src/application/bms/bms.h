@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -58,6 +58,17 @@
 #include "bms_cfg.h"
 
 /*================== Macros and Definitions ===============================*/
+
+/**
+ * Symbolic names for battery system state
+ */
+typedef enum {
+    BMS_CHARGING,     /*!< battery is charged */
+    BMS_DISCHARGING,  /*!< battery is discharged */
+    BMS_RELAXATION,   /*!< battery relaxation ongoing */
+    BMS_AT_REST,      /*!< battery is resting */
+} BMS_CURRENT_FLOW_STATE_e;
+
 
 /**
  * Symbolic names for busyness of the syscontrol
@@ -145,16 +156,18 @@ typedef enum {
  * The user can get the current state of the CONT state machine with this variable
  */
 typedef struct {
-    uint16_t timer;                         /*!< time in ms before the state machine processes the next state, e.g. in counts of 1ms    */
-    BMS_STATE_REQUEST_e statereq;           /*!< current state request made to the state machine                                        */
-    BMS_STATEMACH_e state;                  /*!< state of Driver State Machine                                                          */
-    BMS_STATEMACH_SUB_e substate;           /*!< current substate of the state machine                                                  */
-    BMS_STATEMACH_e laststate;              /*!< previous state of the state machine                                                    */
-    BMS_STATEMACH_SUB_e lastsubstate;       /*!< previous substate of the state machine                                                 */
-    uint32_t ErrRequestCounter;             /*!< counts the number of illegal requests to the LTC state machine                         */
-    STD_RETURN_TYPE_e initFinished;         /*!< #E_OK if the initialization has passed, #E_NOT_OK otherwise                            */
-    uint8_t triggerentry;                   /*!< counter for re-entrance protection (function running flag)                             */
-    uint8_t counter;                        /*!< general purpose counter                                                                */
+    uint16_t timer;                             /*!< time in ms before the state machine processes the next state, e.g. in counts of 1ms    */
+    BMS_STATE_REQUEST_e statereq;               /*!< current state request made to the state machine                                        */
+    BMS_STATEMACH_e state;                      /*!< state of Driver State Machine                                                          */
+    BMS_STATEMACH_SUB_e substate;               /*!< current substate of the state machine                                                  */
+    BMS_CURRENT_FLOW_STATE_e currentFlowState;  /*!< state of battery system                                                                */
+    BMS_STATEMACH_e laststate;                  /*!< previous state of the state machine                                                    */
+    BMS_STATEMACH_SUB_e lastsubstate;           /*!< previous substate of the state machine                                                 */
+    uint32_t ErrRequestCounter;                 /*!< counts the number of illegal requests to the LTC state machine                         */
+    STD_RETURN_TYPE_e initFinished;             /*!< #E_OK if the initialization has passed, #E_NOT_OK otherwise                            */
+    uint8_t triggerentry;                       /*!< counter for re-entrance protection (function running flag)                             */
+    uint32_t restTimer_ms;                     /*!< timer until battery system is at rest                                                  */
+    uint8_t counter;                            /*!< general purpose counter                                                                */
 } BMS_STATE_s;
 
 
@@ -200,5 +213,13 @@ STD_RETURN_TYPE_e BMS_GetInitializationState(void);
  */
 extern void BMS_Trigger(void);
 
+
+/**
+ * @brief   Returns current battery system state (charging/discharging,
+ *          resting or in relaxation phase)
+ *
+ * @return  BS_CHARGING, BS_DISCHARGING, BS_RELAXATION or BS_AT_REST
+ */
+extern BMS_CURRENT_FLOW_STATE_e BMS_GetBatterySystemState(void);
 
 #endif /* BMS_H_ */

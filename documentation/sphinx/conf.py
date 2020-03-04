@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+# @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
 #   angewandten Forschung e.V. All rights reserved.
 #
 # BSD 3-Clause License
@@ -88,7 +88,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'foxBMS'
-copyright = u'2010–2019, Fraunhofer-Gesellschaft zur Förderung der \
+copyright = u'2010–2020, Fraunhofer-Gesellschaft zur Förderung der \
 angewandten Forschung e.V. All rights reserved. See license section for \
 further information'
 
@@ -180,6 +180,9 @@ html_favicon = '_static/foxbms-icon.ico'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# override wide tables in RTD theme
+html_context = {"css_files": ["_static/theme_overrides.css"]}
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.

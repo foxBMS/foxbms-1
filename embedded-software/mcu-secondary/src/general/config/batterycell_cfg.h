@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -137,7 +137,7 @@
  * \par Default:
  * 2800
 */
-#define BC_VOLTMAX_MSL      2800
+#define BC_VOLTMAX_MSL      2650
 
 /**
  * @ingroup CONFIG_BATTERYCELL

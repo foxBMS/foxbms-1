@@ -13,7 +13,7 @@ Licenses
 |foxbms| Software License
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-|copy| 2010-2019, Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V. All rights reserved.
+|copy| 2010-2020, Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V. All rights reserved.
 
 The |foxbms| embedded software and computer software are licensed under the BSD 3-Clause License.
 
@@ -43,15 +43,15 @@ The |foxbms| embedded software and computer software are licensed under the BSD 
 
     .. parsed-literal::
 
-        This product uses parts of |foxbms| |reg|
-        This product includes parts of |foxbms| |reg|
-        This product is derived from |foxbms| |reg|
+        This product uses parts of |foxbms|\ |reg|
+        This product includes parts of |foxbms|\ |reg|
+        This product is derived from |foxbms|\ |reg|
 
 
 |foxbms| Hardware and Documentation License
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-|copy| 2010-2019, Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V. All rights reserved.
+|copy| 2010-2020, Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V. All rights reserved.
 
 
 
@@ -64,12 +64,51 @@ The |foxbms| hardware and documentation are licensed under the Creative Commons 
 
     .. parsed-literal::
 
-        This product uses parts of |foxbms| |reg|
-        This product includes parts of |foxbms| |reg|
-        This product is derived from |foxbms| |reg|
+        This product uses parts of |foxbms|\ |reg|
+        This product includes parts of |foxbms|\ |reg|
+        This product is derived from |foxbms|\ |reg|
 
 
 |cc1|
 
 .. |cc1| image:: cc_large.png
    :width: 20 %
+
+
+Third Party Licenses
+~~~~~~~~~~~~~~~~~~~~
+
+This is a summary of the third party tools used by foxBMS and their licenses.
+
+.. note::
+    This is not legal advice.
+
+.. csv-table:: Third Party Licenses
+   :file: ./third-party-licenses.csv
+   :header-rows: 1
+   :delim: ;
+
+.. [1]  depends on the installed version.
+
+.. [2]  GPL, GPL2, LGPL2, LGPL2.1, LGPL3, Expat License, GCC RUNTIME LIBRARY EXCEPTION
+
+.. [3]  see package (<foxconda-installdir>\\Library\\share\\doc\\gcc-arm-none-eabi\\license.txt)
+
+.. [4]  ``matplotlib`` is not distributed with the |foxconda3| installer.
+        However the
+        `GUI <https://github.com/foxBMS/foxbms/tree/master/tools/gui>`_
+        requires ``matplotlib``. As the package needs to be installed
+        manually by the user, no version information can be given here.
+
+.. [5]  This package is not distributed by the |foxbms| team, and manually
+        installed by the user. Therefore the |foxbms| team does cannot provide
+        version information.
+
+.. [6]  This package is not distributed by the |foxbms| team, and manually
+        installed by the user. Therefore the |foxbms| team does cannot provide
+        version information.
+
+.. [7]  see `HAL source files <https://github.com/foxBMS/foxbms/tree/master/embedded-software/mcu-hal/CMSIS>`_
+
+.. [8]  see `waf <https://github.com/foxBMS/foxbms/blob/master/tools/waf>`_ and
+        `waftools <https://github.com/foxBMS/foxbms/tree/master/tools/waftools>`_

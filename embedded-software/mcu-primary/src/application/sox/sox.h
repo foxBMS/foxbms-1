@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -152,7 +152,7 @@ extern void SOC_SetValue(float soc_value_min, float soc_value_max, float soc_val
 /**
  * @brief   initializes the SOC values with lookup table (mean, min and max).
  */
-extern void SOC_Set_Lookup_Table(void);
+extern void SOC_RecalibrateViaLookupTable(void);
 
 /**
  * @brief   integrates current over time to calculate SOC.

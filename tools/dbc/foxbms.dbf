@@ -50,7 +50,7 @@
 [START_SIGNALS] CAN_SIG_Deep_discharge,1,2,3,B,1,0,1,0,1,,,
 [END_MSG]
 
-[START_MSG] CAN_MSG_SystemState_2,274,8,20,1,S,
+[START_MSG] CAN_MSG_SystemState_2,274,8,21,1,S,
 [START_SIGNALS] CAN_SIG_Status_ctrs_plus_normal,1,1,0,B,1,0,1,0,1,,,
 [START_SIGNALS] CAN_SIG_Status_ctrs_pchrg_normal,1,1,1,B,1,0,1,0,1,,,
 [START_SIGNALS] CAN_SIG_Status_ctrs_minus_normal,1,1,2,B,1,0,1,0,1,,,
@@ -69,6 +69,7 @@
 [START_SIGNALS] CAN_SIG_daisyChain_PEC,1,7,1,B,1,0,1,0,1,,,
 [START_SIGNALS] CAN_SIG_daisyChain_SPI,1,7,0,B,1,0,1,0,1,,,
 [START_SIGNALS] CAN_SIG_daisyChain_Multiplexer,1,7,2,B,1,0,1,0,1,,,
+[START_SIGNALS] CAN_SIG_daisyChain_LTCConfig,1,7,3,B,1,0,1,0,1,,,
 [START_SIGNALS] CAN_SIG_GS2_plausCheck_TempSens,1,8,1,B,1,0,1,0,1,,,
 [START_SIGNALS] CAN_SIG_GS2_plausCheck_PackVolt,1,8,2,B,1,0,1,0,1,,,
 [END_MSG]
@@ -1016,6 +1017,9 @@
 
 [START_PARAM_MSG_VAL]
 288,S,"GenMsgCycleTime",100
+272,S,"GenMsgCycleTime",100
+273,S,"GenMsgCycleTime",100
+274,S,"GenMsgCycleTime",100
 [END_PARAM_MSG_VAL]
 
 [START_PARAM_SIG_VAL]
@@ -1073,6 +1077,7 @@
 274,S,CAN_SIG_daisyChain_Multiplexer,"GenSigStartValue",0
 274,S,CAN_SIG_GS2_plausCheck_TempSens,"GenSigStartValue",0
 274,S,CAN_SIG_GS2_plausCheck_PackVolt,"GenSigStartValue",0
+274,S,CAN_SIG_daisyChain_LTCConfig,"GenSigStartValue",0
 277,S,CAN_SIG_Slave_status_0,"GenSigStartValue",0
 278,S,CAN_SIG_Slave_status_1,"GenSigStartValue",0
 304,S,CAN_SIG_RecChargeCurrent,"GenSigStartValue",0

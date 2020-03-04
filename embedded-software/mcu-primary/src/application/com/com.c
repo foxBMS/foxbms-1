@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -328,21 +328,17 @@ uint8_t COM_testMode_Decoder(void) {
         commandValid = 1;
     } else if (strncmp(com_receivedbyte, "reset", 5) == 0) { /* RESET */
         printf("Software reset!\r\n");
-        commandValid = 1;
         HAL_NVIC_SystemReset();
     } else if (strncmp(com_receivedbyte, "watchdogtest", 12) == 0) {
         printf("WDG");
-        commandValid = 1;
         OS_taskDelay(1);
 
         /* disable global interrupt, no saving of interrupt status because of follwing reset */
         (void)MCU_DisableINT();
 
-      while (1) {
+        while (1) {
           /* stop system and wait for watchdog reset*/
-      }
-
-      return commandValid;
+        }
     } else if (strncmp(com_receivedbyte, "setsoc", 6) == 0) { /* Set soc */
         /* Set SOC */
         /* Command length = 14, +1 for \0 and +1 cause index always one step ahead "setsoc xxx.xxx"*/
@@ -365,6 +361,7 @@ uint8_t COM_testMode_Decoder(void) {
             if (0 <= value && value <= 100)
                 SOC_SetValue(value, value, value);
         }
+        com_tickcount = OS_getOSSysTick();
         commandValid = 1;
 #if BUILD_MODULE_ENABLE_CONTACTOR == 1
     /* SWITCH CONTACTORS */
@@ -376,13 +373,12 @@ uint8_t COM_testMode_Decoder(void) {
         /* Switch contactor */
         if ((0 <= contNumber) && (contNumber <= BS_NR_OF_CONTACTORS)) {
             /* Close contactor */
-            if (com_receivedbyte[1] == 'e') {
                 printf("Contactor %d", contNumber);
 
                 CONT_SetContactorState(contNumber, CONT_SWITCH_ON);
 
                 printf(" enabled\r\n");
-            }
+                com_tickcount = OS_getOSSysTick();
         } else {
              /* Invalid contactor number */
             uint8_t a = BS_NR_OF_CONTACTORS;
@@ -402,6 +398,7 @@ uint8_t COM_testMode_Decoder(void) {
                 CONT_SetContactorState(contNumber, CONT_SWITCH_OFF);
 
                 printf(" disabled\r\n");
+                com_tickcount = OS_getOSSysTick();
         } else {
              /* Invalid contactor number */
             uint8_t a = BS_NR_OF_CONTACTORS;
@@ -418,11 +415,6 @@ void COM_Decoder(void) {
     /* Command Received - Replace Carrier Return with null character */
     fgets(com_receivedbyte, UART_COM_RECEIVEBUFFER_LENGTH , stdin);
 
-    /* Command received and testmode enabled */
-    if (com_testmode_enabled) {
-        commandValid = COM_testMode_Decoder();
-    }
-
     if (commandValid > 0) {
 #if BUILD_MODULE_ENABLE_RUNTIMESTATS == 1
     } else if (strncmp(com_receivedbyte, "printstats", 10) == 0) {
@@ -431,7 +423,6 @@ void COM_Decoder(void) {
 #endif
     } else if (strncmp(com_receivedbyte, "teston", 6) == 0) { /* ENABLE TESTMODE */
         /* Set timeout */
-        com_tickcount = OS_getOSSysTick();
 
         if (!com_testmode_enabled) {
             /* Enable testmode */
@@ -477,15 +468,18 @@ void COM_Decoder(void) {
         commandValid = 1;
 #endif
     }
+
+    /* Command received and testmode enabled and no timeout*/
+    if (com_testmode_enabled && (com_tickcount + TESTMODE_TIMEOUT > OS_getOSSysTick()) && !commandValid) {
+        commandValid = COM_testMode_Decoder();
+    } else if (com_testmode_enabled && (com_tickcount + TESTMODE_TIMEOUT < OS_getOSSysTick())) {
+        com_testmode_enabled = 0;
+        printf("Testmode disabled on timeout!\r\n");
+    }
+
     if (!commandValid) {
         /* Invalid command */
         printf("Invalid command!\r\n%s\r\n", com_receivedbyte);
-    }
-
-    /* Timed out --> disable testmode */
-    if (com_tickcount + TESTMODE_TIMEOUT < OS_getOSSysTick() && com_testmode_enabled) {
-        com_testmode_enabled = 0;
-        printf("Testmode disabled on timeout!\r\n");
     }
 }
 #endif /* BUILD_MODULE_ENABLE_COM */

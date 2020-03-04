@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -52,133 +52,131 @@
  *
  */
 
-/*================== Includes =============================================*/
+/*================== Includes ===============================================*/
 #include "database_cfg.h"
 
-/*================== Macros and Definitions ===============================*/
+/*================== Macros and Definitions =================================*/
 
-/*================== Constant and Variable Definitions ====================*/
-
+/*================== Static Constant and Variable Definitions ===============*/
 /**
  * data block: cell voltage
  */
-DATA_BLOCK_CELLVOLTAGE_s data_block_cellvoltage[DOUBLE_BUFFERING];
+static DATA_BLOCK_CELLVOLTAGE_s data_block_cellvoltage;
 
 /**
  * data block: cell temperature
  */
-DATA_BLOCK_CELLTEMPERATURE_s data_block_celltemperature[DOUBLE_BUFFERING];
+static DATA_BLOCK_CELLTEMPERATURE_s data_block_celltemperature;
 
 /**
  * data block: sox
  */
-DATA_BLOCK_SOX_s data_block_sox[SINGLE_BUFFERING];
+static DATA_BLOCK_SOX_s data_block_sox;
 
 /**
  * data block: sof
  */
-DATA_BLOCK_SOF_s data_block_sof[SINGLE_BUFFERING];
+static DATA_BLOCK_SOF_s data_block_sof;
 
 /**
  * data block: balancing control
  */
-DATA_BLOCK_BALANCING_CONTROL_s data_block_control_balancing[DOUBLE_BUFFERING];
+static DATA_BLOCK_BALANCING_CONTROL_s data_block_control_balancing;
 
 /**
  * data block: balancing feedback
  */
-DATA_BLOCK_BALANCING_FEEDBACK_s data_block_feedback_balancing[DOUBLE_BUFFERING];
+static DATA_BLOCK_BALANCING_FEEDBACK_s data_block_feedback_balancing;
 
 /**
  * data block: current measurement
  */
-DATA_BLOCK_CURRENT_SENSOR_s data_block_curr_sensor[DOUBLE_BUFFERING];
+static DATA_BLOCK_CURRENT_SENSOR_s data_block_curr_sensor;
 
 /**
  * data block: ADC
  */
-DATA_BLOCK_HW_INFO_s data_block_hwinfo[SINGLE_BUFFERING];
+static DATA_BLOCK_HW_INFO_s data_block_hwinfo;
 
 /**
  * data block: can state request
  */
-DATA_BLOCK_STATEREQUEST_s data_block_staterequest[SINGLE_BUFFERING];
+static DATA_BLOCK_STATEREQUEST_s data_block_staterequest;
 
 /**
  * data block: LTC minimum and maximum values
  */
-DATA_BLOCK_MINMAX_s data_block_minmax[DOUBLE_BUFFERING];
+static DATA_BLOCK_MINMAX_s data_block_minmax;
 
 /**
  * data block: isometer measurement
  */
-DATA_BLOCK_ISOMETER_s data_block_isometer[SINGLE_BUFFERING];
+static DATA_BLOCK_ISOMETER_s data_block_isometer;
 
 /**
  * data block: error flags
  */
-DATA_BLOCK_ERRORSTATE_s data_block_errors[DOUBLE_BUFFERING];
+static DATA_BLOCK_ERRORSTATE_s data_block_errors;
 
 /**
  * data block: maximum safety limit violations
  */
-DATA_BLOCK_MSL_FLAG_s data_block_MSL[SINGLE_BUFFERING];
+static DATA_BLOCK_MSL_FLAG_s data_block_MSL;
 
 /**
  * data block: recommended safety limit violations
  */
-DATA_BLOCK_RSL_FLAG_s data_block_RSL[SINGLE_BUFFERING];
+static DATA_BLOCK_RSL_FLAG_s data_block_RSL;
 
 /**
  * data block: maximum operating limit violations
  */
-DATA_BLOCK_MOL_FLAG_s data_block_MOL[SINGLE_BUFFERING];
+static DATA_BLOCK_MOL_FLAG_s data_block_MOL;
 
 /**
  * data block: moving mean current and power
  */
-DATA_BLOCK_MOVING_AVERAGE_s data_block_mov_average[DOUBLE_BUFFERING];
+static DATA_BLOCK_MOVING_AVERAGE_s data_block_mov_average;
 
 /**
  * data block: contactor feedback
  */
-DATA_BLOCK_CONTFEEDBACK_s data_block_contfeedback[SINGLE_BUFFERING];
+static DATA_BLOCK_CONTFEEDBACK_s data_block_contfeedback;
 
 /**
  * data block: interlock feedback
  */
-DATA_BLOCK_ILCKFEEDBACK_s data_block_ilckfeedback[SINGLE_BUFFERING];
+static DATA_BLOCK_ILCKFEEDBACK_s data_block_ilckfeedback;
 
 /**
  * data block: slave control
  */
-DATA_BLOCK_SLAVE_CONTROL_s data_block_slave_control[SINGLE_BUFFERING];
+static DATA_BLOCK_SLAVE_CONTROL_s data_block_slave_control;
 
 /**
  * data block: system state
  */
-DATA_BLOCK_SYSTEMSTATE_s data_block_systemstate[SINGLE_BUFFERING];
+static DATA_BLOCK_SYSTEMSTATE_s data_block_systemstate;
 
 /**
  * data block: open wire check
  */
-DATA_BLOCK_OPENWIRE_s data_block_open_wire[DOUBLE_BUFFERING];
+static DATA_BLOCK_OPENWIRE_s data_block_open_wire;
 
 /**
  * data block: LTC diagnosis values
  */
-DATA_BLOCK_LTC_DEVICE_PARAMETER_s data_block_ltc_diagnosis[SINGLE_BUFFERING];
-
-
-/**
- * data block: LTC ADC accuracy verification
- */
-DATA_BLOCK_LTC_ADC_ACCURACY_s data_block_ltc_adc_accuracy[SINGLE_BUFFERING];
+static DATA_BLOCK_LTC_DEVICE_PARAMETER_s data_block_ltc_diagnosis;
 
 /**
  * data block: LTC ADC accuracy verification
  */
-DATA_BLOCK_ALLGPIOVOLTAGE_s data_block_ltc_allgpiovoltages[DOUBLE_BUFFERING];
+static DATA_BLOCK_LTC_ADC_ACCURACY_s data_block_ltc_adc_accuracy;
+
+/**
+ * data block: LTC ADC accuracy verification
+ */
+static DATA_BLOCK_ALLGPIOVOLTAGE_s data_block_ltc_allgpiovoltages;
 
 /**
  * @brief channel configuration of database (data blocks)
@@ -186,128 +184,107 @@ DATA_BLOCK_ALLGPIOVOLTAGE_s data_block_ltc_allgpiovoltages[DOUBLE_BUFFERING];
  * all data block managed by database are listed here (address,size,consistency type)
  *
  */
-DATA_BASE_HEADER_s  data_base_header[] = {
+static DATA_BASE_HEADER_s  data_base_header[] = {
     {
-            (void*)(&data_block_cellvoltage[0]),
-            sizeof(DATA_BLOCK_CELLVOLTAGE_s),
-            DOUBLE_BUFFERING,
+        (void*)(&data_block_cellvoltage),
+        sizeof(DATA_BLOCK_CELLVOLTAGE_s)
     },
     {
-            (void*)(&data_block_celltemperature[0]),
-            sizeof(DATA_BLOCK_CELLTEMPERATURE_s),
-            DOUBLE_BUFFERING,
+        (void*)(&data_block_celltemperature),
+        sizeof(DATA_BLOCK_CELLTEMPERATURE_s)
     },
     {
-            (void*)(&data_block_sox[0]),
-            sizeof(DATA_BLOCK_SOX_s),
-            SINGLE_BUFFERING,
+        (void*)(&data_block_sox),
+        sizeof(DATA_BLOCK_SOX_s)
     },
     {
-            (void*)(&data_block_control_balancing[0]),
-            sizeof(DATA_BLOCK_BALANCING_CONTROL_s),
-            DOUBLE_BUFFERING,
+        (void*)(&data_block_control_balancing),
+        sizeof(DATA_BLOCK_BALANCING_CONTROL_s)
     },
     {
-            (void*)(&data_block_feedback_balancing[0]),
-            sizeof(DATA_BLOCK_BALANCING_FEEDBACK_s),
-            DOUBLE_BUFFERING,
+        (void*)(&data_block_feedback_balancing),
+        sizeof(DATA_BLOCK_BALANCING_FEEDBACK_s)
     },
     {
-            (void*)(&data_block_curr_sensor[0]),
-            sizeof(DATA_BLOCK_CURRENT_SENSOR_s),
-            DOUBLE_BUFFERING,
+        (void*)(&data_block_curr_sensor),
+        sizeof(DATA_BLOCK_CURRENT_SENSOR_s)
     },
     {
-            (void*)(&data_block_hwinfo[0]),
-            sizeof(DATA_BLOCK_HW_INFO_s),
-            SINGLE_BUFFERING,
+        (void*)(&data_block_hwinfo),
+        sizeof(DATA_BLOCK_HW_INFO_s)
     },
     {
-            (void*)(&data_block_staterequest[0]),
-            sizeof(DATA_BLOCK_STATEREQUEST_s),
-            SINGLE_BUFFERING,
+        (void*)(&data_block_staterequest),
+        sizeof(DATA_BLOCK_STATEREQUEST_s)
     },
     {
-            (void*)(&data_block_minmax[0]),
-            sizeof(DATA_BLOCK_MINMAX_s),
-            DOUBLE_BUFFERING,
+        (void*)(&data_block_minmax),
+        sizeof(DATA_BLOCK_MINMAX_s)
     },
     {
-            (void*)(&data_block_isometer[0]),
-            sizeof(DATA_BLOCK_ISOMETER_s),
-            SINGLE_BUFFERING,
+        (void*)(&data_block_isometer),
+        sizeof(DATA_BLOCK_ISOMETER_s)
     },
     {
-            (void*)(&data_block_slave_control[0]),
-            sizeof(DATA_BLOCK_SLAVE_CONTROL_s),
-            SINGLE_BUFFERING,
+        (void*)(&data_block_slave_control),
+        sizeof(DATA_BLOCK_SLAVE_CONTROL_s)
     },
     {
-            (void*)(&data_block_open_wire[0]),
-            sizeof(DATA_BLOCK_OPENWIRE_s),
-            DOUBLE_BUFFERING,
+        (void*)(&data_block_open_wire),
+        sizeof(DATA_BLOCK_OPENWIRE_s)
     },
     {
-            (void*)(&data_block_ltc_diagnosis[0]),
-            sizeof(DATA_BLOCK_LTC_DEVICE_PARAMETER_s),
-            SINGLE_BUFFERING,
+        (void*)(&data_block_ltc_diagnosis),
+        sizeof(DATA_BLOCK_LTC_DEVICE_PARAMETER_s)
     },
     {
-            (void*)(&data_block_ltc_adc_accuracy[0]),
-            sizeof(DATA_BLOCK_LTC_ADC_ACCURACY_s),
-            SINGLE_BUFFERING,
+        (void*)(&data_block_ltc_adc_accuracy),
+        sizeof(DATA_BLOCK_LTC_ADC_ACCURACY_s)
     },
     {
-            (void*)(&data_block_errors[0]),
-            sizeof(DATA_BLOCK_ERRORSTATE_s),
-            DOUBLE_BUFFERING,
+        (void*)(&data_block_errors),
+        sizeof(DATA_BLOCK_ERRORSTATE_s)
     },
     {
-            (void*)(&data_block_MSL[0]),
-            sizeof(DATA_BLOCK_MSL_FLAG_s),
-            SINGLE_BUFFERING,
+        (void*)(&data_block_MSL),
+        sizeof(DATA_BLOCK_MSL_FLAG_s)
     },
     {
-            (void*)(&data_block_RSL[0]),
-            sizeof(DATA_BLOCK_RSL_FLAG_s),
-            SINGLE_BUFFERING,
+        (void*)(&data_block_RSL),
+        sizeof(DATA_BLOCK_RSL_FLAG_s)
     },
     {
-            (void*)(&data_block_MOL[0]),
-            sizeof(DATA_BLOCK_MOL_FLAG_s),
-            SINGLE_BUFFERING,
+        (void*)(&data_block_MOL),
+        sizeof(DATA_BLOCK_MOL_FLAG_s)
     },
     {
-            (void*)(&data_block_mov_average[0]),
-            sizeof(DATA_BLOCK_MOVING_AVERAGE_s),
-            DOUBLE_BUFFERING,
+        (void*)(&data_block_mov_average),
+        sizeof(DATA_BLOCK_MOVING_AVERAGE_s)
     },
     {
-            (void*)(&data_block_contfeedback[0]),
-            sizeof(DATA_BLOCK_CONTFEEDBACK_s),
-            SINGLE_BUFFERING,
+        (void*)(&data_block_contfeedback),
+        sizeof(DATA_BLOCK_CONTFEEDBACK_s)
     },
     {
-            (void*)(&data_block_ilckfeedback[0]),
-            sizeof(DATA_BLOCK_ILCKFEEDBACK_s),
-            SINGLE_BUFFERING,
+        (void*)(&data_block_ilckfeedback),
+        sizeof(DATA_BLOCK_ILCKFEEDBACK_s)
     },
     {
-            (void*)(&data_block_systemstate[0]),
-            sizeof(DATA_BLOCK_SYSTEMSTATE_s),
-            SINGLE_BUFFERING,
+        (void*)(&data_block_systemstate),
+        sizeof(DATA_BLOCK_SYSTEMSTATE_s)
     },
     {
-            (void*)(&data_block_sof[0]),
-            sizeof(DATA_BLOCK_SOF_s),
-            SINGLE_BUFFERING,
+        (void*)(&data_block_sof),
+        sizeof(DATA_BLOCK_SOF_s)
     },
     {
-            (void*)(&data_block_ltc_allgpiovoltages[0]),
-            sizeof(DATA_BLOCK_ALLGPIOVOLTAGE_s),
-            DOUBLE_BUFFERING,
+        (void*)(&data_block_ltc_allgpiovoltages),
+        sizeof(DATA_BLOCK_ALLGPIOVOLTAGE_s)
     },
 };
+
+
+/*================== Extern Constant and Variable Definitions ===============*/
 
 /**
  * @brief device configuration of database
@@ -319,6 +296,8 @@ const DATA_BASE_HEADER_DEV_s data_base_dev = {
     .blockheaderptr     = &data_base_header[0],
 };
 
-/*================== Function Prototypes ==================================*/
+/*================== Static Function Prototypes =============================*/
 
-/*================== Function Implementations =============================*/
+/*================== Static Function Implementations ========================*/
+
+/*================== Extern Function Implementations ========================*/

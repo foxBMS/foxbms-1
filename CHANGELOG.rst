@@ -2,6 +2,68 @@
 Changelog
 =========
 
+**Release 1.6.4**
+
+Software:
+
+* Toolchain:
+
+  * none
+
+* Bugfixes:
+
+  * Previous timestamp in database entries is now set with the timestamp value
+    from database, not from passed structure. (``database.c``)
+  * Removed double-buffering feature for database as no concurrent read/write
+    access to database with current software architecture is possible.
+    (``database.c/.h``)
+  * Fixed compile error if ``BS_SEPARATE_POWERLINES`` was set to 0.
+    (``contactor_cfg.h``)
+  * Fixed check of current direction. Current value was compared
+    with enum value instead of define for resting current limit.
+    (``batterysystem_cfg.c``)
+  * Fixed initialization of variable ``ltc_balancing_feedback.value[]`` in
+    ``LTC_Initialize_Database()``. It was iterated over ``BS_NR_OF_BAT_CELLS``
+    elements instead of BS_NR_OF_MODULES elements. (``ltc.c``)
+  * added missing includes to wscripts for building common drivers and modules.
+
+* Enhancements:
+
+  * Endianness of transmitted/received CAN data can now be configured. If data
+    is received/transmitted as big-endian (motorola) it will be converted
+    directly before transmission from little-endian to big-endian and vice
+    versa after receiving data. The native endianness of the MCU (STM32F429) is
+    little-endian (intel). (``cansignal.c``, ``cansignal_cfg.c/h``)
+  * Removed unnecessary distinction between getter and setter callback
+    functions for cansignals as this brought no advantage. (``cansignal.c``,
+    ``cansignal_cfg.c/h``)
+  * Simplified diagnosis module
+  * COM test mode duration to use the extended set of commands is now
+    automatically extended if valid command is received (``com.c``)
+  * If the number of inputs configured in the variable ``ltc_voltage_input_used``
+    in ``ltc_cfg.c`` does not match ``BS_NR_OF_BAT_CELLS_PER_MODULE`` in
+    ``batterysystem_cfg.h``, the first LTC measurement cycle is stoppped and the
+    ``SYS`` module goes in the error state. A corresponding error flag
+    (``ltc_config_error``) has been added to the error table and is
+    transmitted per CAN.
+  * SOC is now automatically recalibrated via LUT while battery system is at
+    rest. (``soc.c``)
+
+Hardware:
+
+* none
+
+Documentation:
+
+* Fixed error in pinout description for RS485 and isolated GPIOs
+  (``connectors.rst``)
+* Added section about monitored parameters by foxBMS to the sphinx
+  documentation (``monitored_parameters.rst``)
+* Fixed error that ``CR`` instead of ``LF`` shoould be used for communication
+  over UART with BMS
+
+------------------------------------------------------------------------------
+
 **Release 1.6.3**
 
 Software:

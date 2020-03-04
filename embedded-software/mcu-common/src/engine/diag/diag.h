@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -60,22 +60,22 @@
 
 /** diagnosis handler return types */
 typedef enum {
-    DIAG_HANDLER_RETURN_OK                  = 0,            /*!<  error not occurred or occurred but threshold not reached */
-    DIAG_HANDLER_RETURN_ERR_OCCURRED        = 1,            /*!<  error occurred and enabled */
-    DIAG_HANDLER_RETURN_WARNING_OCCURRED    = 2,            /*!<  warning occurred (error occurred but not enabled) */
-    DIAG_HANDLER_RETURN_WRONG_ID            = 3,            /*!<  wrong diagnosis id */
-    DIAG_HANDLER_RETURN_UNKNOWN             = 4,            /*!<  unknown return type */
-    DIAG_HANDLER_INVALID_TYPE               = 5,            /*!<  invalid diagnosis type, error in configuration */
-    DIAG_HANDLER_INVALID_DATA               = 6,            /*!<  invalid data, dependent of the diagHandler */
-    DIAG_HANDLER_RETURN_NOT_READY           = 0xFFFFFFFF,   /*!<  diagnosis handler not ready */
+    DIAG_HANDLER_RETURN_OK,               /*!<  error not occurred or occurred but threshold not reached */
+    DIAG_HANDLER_RETURN_ERR_OCCURRED,     /*!<  error occurred and enabled */
+    DIAG_HANDLER_RETURN_WARNING_OCCURRED, /*!<  warning occurred (error occurred but not enabled) */
+    DIAG_HANDLER_RETURN_WRONG_ID,         /*!<  wrong diagnosis id */
+    DIAG_HANDLER_RETURN_UNKNOWN,          /*!<  unknown return type */
+    DIAG_HANDLER_INVALID_TYPE,            /*!<  invalid diagnosis type, error in configuration */
+    DIAG_HANDLER_INVALID_DATA,            /*!<  invalid data, dependent of the diagHandler */
+    DIAG_HANDLER_RETURN_NOT_READY,        /*!<  diagnosis handler not ready */
 } DIAG_RETURNTYPE_e;
 
 /**
  * state of diagnosis module
  */
 typedef enum {
-    DIAG_STATE_UNINITIALIZED = 0,   /*!< diagnosis module not initialized              */
-    DIAG_STATE_INITIALIZED   = 1,   /*!< diagnosis module initialized (ready for use)  */
+    DIAG_STATE_UNINITIALIZED,   /*!< diagnosis module not initialized              */
+    DIAG_STATE_INITIALIZED,   /*!< diagnosis module initialized (ready for use)  */
 } DIAG_STATE_e;
 
 /**

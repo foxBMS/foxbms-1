@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -146,8 +146,6 @@ typedef struct {
     uint32_t ErrRequestCounter;             /*!< counts the number of illegal requests to the BAL state machine */
     STD_RETURN_TYPE_e initFinished;         /*!< E_OK if statemachine initialized, otherwise E_NOT_OK */
     uint8_t active;                         /*!< indicate if balancing active or not */
-    uint8_t resting;                        /*!< indicate if current flowing through battery or not */
-    uint32_t rest_timer;                    /*!< counter since last timestamp with no current flowing */
     uint32_t balancing_threshold;           /*!< effective balancing threshold */
     uint8_t balancing_allowed;              /*!< flag to disable balancing */
     uint8_t balancing_global_allowed;       /*!< flag to globally disable balancing */

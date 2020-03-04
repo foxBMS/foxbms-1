@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -55,12 +55,12 @@
 #ifndef DATABASE_CFG_H_
 #define DATABASE_CFG_H_
 
-/*================== Includes =============================================*/
+/*================== Includes ===============================================*/
 #include "general.h"
 
 #include "batterysystem_cfg.h"
 
-/*================== Macros and Definitions ===============================*/
+/*================== Macros and Definitions =================================*/
 
 /**
  * @brief maximum amount of data block
@@ -107,21 +107,9 @@ typedef enum {
  * read or write access types
  */
 typedef enum {
-    WRITE_ACCESS    = 0,    /*!< write access to data block   */
-    READ_ACCESS     = 1,    /*!< read access to data block   */
+    WRITE_ACCESS = 0,  /*!< write access to data block */
+    READ_ACCESS  = 1,  /*!< read access to data block  */
 } DATA_BLOCK_ACCESS_TYPE_e;
-
-/**
- * @brief data block consistency types
- *
- * recommendation: use single buffer for small data (e.g.,one variable) and less concurrent read and write accesses
- */
-typedef enum {
-    /* Init-Sequence */
-    SINGLE_BUFFERING    = 1,    /*!< single buffering   */
-    DOUBLE_BUFFERING    = 2,    /*!< double buffering   */
-    /* TRIPLEBUFFERING     = 3,     actually not supported */
-} DATA_BLOCK_BUFFER_TYPE_e;
 
 /**
  * configuration struct of database channel (data block)
@@ -129,7 +117,6 @@ typedef enum {
 typedef struct {
     void *blockptr;
     uint16_t datalength;
-    DATA_BLOCK_BUFFER_TYPE_e buffertype;
 } DATA_BASE_HEADER_s;
 
 /**
@@ -141,33 +128,34 @@ typedef struct {
 } DATA_BASE_HEADER_DEV_s;
 
 
-/*================== Macros and Definitions [USER CONFIGURATION] =============*/
-/* FIXME comments doxygen, is comment necessary? */
-/*Macros and Definitions for User Configuration*/
-#define     DATA_BLOCK_ID_CELLVOLTAGE                   DATA_BLOCK_00
-#define     DATA_BLOCK_ID_CELLTEMPERATURE               DATA_BLOCK_01
-#define     DATA_BLOCK_ID_SOX                           DATA_BLOCK_02
-#define     DATA_BLOCK_ID_BALANCING_CONTROL_VALUES      DATA_BLOCK_03
-#define     DATA_BLOCK_ID_BALANCING_FEEDBACK_VALUES     DATA_BLOCK_04
-#define     DATA_BLOCK_ID_CURRENT_SENSOR                DATA_BLOCK_05
-#define     DATA_BLOCK_ID_HW_INFO                       DATA_BLOCK_06
-#define     DATA_BLOCK_ID_STATEREQUEST                  DATA_BLOCK_07
-#define     DATA_BLOCK_ID_MINMAX                        DATA_BLOCK_08
-#define     DATA_BLOCK_ID_ISOGUARD                      DATA_BLOCK_09
-#define     DATA_BLOCK_ID_SLAVE_CONTROL                 DATA_BLOCK_10
-#define     DATA_BLOCK_ID_OPEN_WIRE                     DATA_BLOCK_11
-#define     DATA_BLOCK_ID_LTC_DEVICE_PARAMETER          DATA_BLOCK_12
-#define     DATA_BLOCK_ID_LTC_ACCURACY                  DATA_BLOCK_13
-#define     DATA_BLOCK_ID_ERRORSTATE                    DATA_BLOCK_14
-#define     DATA_BLOCK_ID_MSL                           DATA_BLOCK_15
-#define     DATA_BLOCK_ID_RSL                           DATA_BLOCK_16
-#define     DATA_BLOCK_ID_MOL                           DATA_BLOCK_17
-#define     DATA_BLOCK_ID_MOV_AVERAGE                   DATA_BLOCK_18
-#define     DATA_BLOCK_ID_CONTFEEDBACK                  DATA_BLOCK_19
-#define     DATA_BLOCK_ID_ILCKFEEDBACK                  DATA_BLOCK_20
-#define     DATA_BLOCK_ID_SYSTEMSTATE                   DATA_BLOCK_21
-#define     DATA_BLOCK_ID_SOF                           DATA_BLOCK_22
-#define     DATA_BLOCK_ID_ALLGPIOVOLTAGE                DATA_BLOCK_23
+/**
+ * Definitions for each database entry
+ */
+#define DATA_BLOCK_ID_CELLVOLTAGE                   DATA_BLOCK_00
+#define DATA_BLOCK_ID_CELLTEMPERATURE               DATA_BLOCK_01
+#define DATA_BLOCK_ID_SOX                           DATA_BLOCK_02
+#define DATA_BLOCK_ID_BALANCING_CONTROL_VALUES      DATA_BLOCK_03
+#define DATA_BLOCK_ID_BALANCING_FEEDBACK_VALUES     DATA_BLOCK_04
+#define DATA_BLOCK_ID_CURRENT_SENSOR                DATA_BLOCK_05
+#define DATA_BLOCK_ID_HW_INFO                       DATA_BLOCK_06
+#define DATA_BLOCK_ID_STATEREQUEST                  DATA_BLOCK_07
+#define DATA_BLOCK_ID_MINMAX                        DATA_BLOCK_08
+#define DATA_BLOCK_ID_ISOGUARD                      DATA_BLOCK_09
+#define DATA_BLOCK_ID_SLAVE_CONTROL                 DATA_BLOCK_10
+#define DATA_BLOCK_ID_OPEN_WIRE                     DATA_BLOCK_11
+#define DATA_BLOCK_ID_LTC_DEVICE_PARAMETER          DATA_BLOCK_12
+#define DATA_BLOCK_ID_LTC_ACCURACY                  DATA_BLOCK_13
+#define DATA_BLOCK_ID_ERRORSTATE                    DATA_BLOCK_14
+#define DATA_BLOCK_ID_MSL                           DATA_BLOCK_15
+#define DATA_BLOCK_ID_RSL                           DATA_BLOCK_16
+#define DATA_BLOCK_ID_MOL                           DATA_BLOCK_17
+#define DATA_BLOCK_ID_MOV_AVERAGE                   DATA_BLOCK_18
+#define DATA_BLOCK_ID_CONTFEEDBACK                  DATA_BLOCK_19
+#define DATA_BLOCK_ID_ILCKFEEDBACK                  DATA_BLOCK_20
+#define DATA_BLOCK_ID_SYSTEMSTATE                   DATA_BLOCK_21
+#define DATA_BLOCK_ID_SOF                           DATA_BLOCK_22
+#define DATA_BLOCK_ID_ALLGPIOVOLTAGE                DATA_BLOCK_23
+
 
 /**
  * data block struct of cell voltage
@@ -240,7 +228,9 @@ typedef struct {
 } DATA_BLOCK_SOF_s;
 
 
-/*  data structure declaration of DATA_BLOCK_BALANCING_CONTROL */
+/**
+ * data structure declaration of DATA_BLOCK_BALANCING_CONTROL
+ */
 typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
     uint32_t timestamp;                         /*!< timestamp of database entry                */
@@ -253,7 +243,9 @@ typedef struct {
     uint8_t state;                      /*!< for future use                             */
 } DATA_BLOCK_BALANCING_CONTROL_s;
 
-/*  data structure declaration of DATA_BLOCK_USER_IO_CONTROL */
+/**
+ * data structure declaration of DATA_BLOCK_USER_IO_CONTROL
+ */
 typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
     uint32_t timestamp;                         /*!< timestamp of database entry                */
@@ -273,7 +265,6 @@ typedef struct {
 /**
  * data block struct of cell balancing feedback
  */
-
 typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
     uint32_t timestamp;                         /*!< timestamp of database entry                */
@@ -291,7 +282,7 @@ typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
     uint32_t timestamp;                         /*!< timestamp of database entry                */
     uint32_t previous_timestamp;                /*!< timestamp of last database entry           */
-    uint16_t value[8*2*BS_NR_OF_MODULES];              /*!< unit: mV (mux voltage input)       */
+    uint16_t value[BS_N_MUX_CHANNELS_PER_MUX*BS_N_USER_MUX_PER_LTC*BS_NR_OF_MODULES];              /*!< unit: mV (mux voltage input)       */
     uint8_t state;                                  /*!< for future use                     */
 } DATA_BLOCK_USER_MUX_s;
 
@@ -302,7 +293,7 @@ typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
     uint32_t timestamp;                         /*!< timestamp of database entry                */
     uint32_t previous_timestamp;                /*!< timestamp of last database entry           */
-    float current;                                         /*!< unit: mA                */
+    int32_t current;                                       /*!< unit: mA                */
     float voltage[BS_NR_OF_VOLTAGES_FROM_CURRENT_SENSOR];  /*!< unit: mV                */
     float temperature;                                     /*!< unit: 0.1&deg;C             */
     float power;                                           /*!< unit: W                */
@@ -322,7 +313,6 @@ typedef struct {
     uint32_t timestamp_cc;                                 /*!< timestamp of C-C database entry   */
 } DATA_BLOCK_CURRENT_SENSOR_s;
 
-
 /**
  * data block struct of hardware info
  */
@@ -335,7 +325,6 @@ typedef struct {
     uint8_t state_vbat;                         /*!<                                              */
     uint8_t state_temperature;                  /*!<                                              */
 } DATA_BLOCK_HW_INFO_s;
-
 
 /**
  * data block struct of can state request
@@ -377,7 +366,6 @@ typedef struct {
     uint8_t state;
 } DATA_BLOCK_MINMAX_s;
 
-
 /**
  * data block struct of isometer measurement
  */
@@ -389,7 +377,6 @@ typedef struct {
     uint8_t state;                  /*!< 0 -> resistance/measurement OK , 1 -> resistance too low or error  */
     uint32_t resistance_kOhm;       /*!< insulation resistance measured in kOhm                             */
 } DATA_BLOCK_ISOMETER_s;
-
 
 /**
  * data block struct of ltc device parameter
@@ -410,7 +397,6 @@ typedef struct {
     uint8_t valid_GPIOs[BS_NR_OF_MODULES];              /*!< 0 -> valid, 1 -> invalid, bit0 -> GPIO0, bit1 -> GPIO1 ...         */
     uint8_t valid_LTC[BS_NR_OF_MODULES];                /*!< 0 -> LTC working, 1 -> LTC defect                                  */
 } DATA_BLOCK_LTC_DEVICE_PARAMETER_s;
-
 
 /**
  * data block struct of ltc adc accuracy measurement
@@ -442,6 +428,7 @@ typedef struct {
     uint8_t crc_error;                               /*!< 0 -> no error, 1 -> error         */
     uint8_t mux_error;                               /*!< 0 -> no error, 1 -> error         */
     uint8_t spi_error;                               /*!< 0 -> no error, 1 -> error         */
+    uint8_t ltc_config_error;                        /*!< 0 -> no error, 1 -> error         */
     uint8_t can_timing;                              /*!< 0 -> no error, 1 -> error         */
     uint8_t can_timing_cc;                           /*!< 0 -> no error, 1 -> error         */
     uint8_t can_cc_used;                             /*!< 0 -> not present, 1 -> present    */
@@ -449,7 +436,6 @@ typedef struct {
     uint8_t coinCellVoltage;                         /*!< 0 -> no error, 1 -> error        */
     uint8_t plausibilityCheck;                       /*!< 0 -> no error, else: error       */
 } DATA_BLOCK_ERRORSTATE_s;
-
 
 typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock  */
@@ -468,7 +454,6 @@ typedef struct {
     uint8_t pcb_under_temperature;          /*!< 0 -> MSL NOT violated, 1 -> MSL violated   */
 } DATA_BLOCK_MSL_FLAG_s;
 
-
 typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock  */
     uint32_t timestamp;                     /*!< timestamp of database entry                */
@@ -486,7 +471,6 @@ typedef struct {
     uint8_t pcb_under_temperature;          /*!< 0 -> RSL NOT violated, 1 -> RSL violated   */
 } DATA_BLOCK_RSL_FLAG_s;
 
-
 typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
     uint32_t timestamp;                     /*!< timestamp of database entry                */
@@ -503,7 +487,6 @@ typedef struct {
     uint8_t pcb_over_temperature;           /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
     uint8_t pcb_under_temperature;          /*!< 0 -> MOL NOT violated, 1 -> MOL violated    */
 } DATA_BLOCK_MOL_FLAG_s;
-
 
 typedef struct {
     /* Timestamp info needs to be at the beginning. Automatically written on DB_WriteBlock */
@@ -565,7 +548,7 @@ typedef struct {
     uint8_t state;                                                       /*!< for future use                                      */
 } DATA_BLOCK_ALLGPIOVOLTAGE_s;
 
-/*================== Constant and Variable Definitions ====================*/
+/*================== Extern Constant and Variable Declarations ==============*/
 
 /**
  * @brief device configuration of database
@@ -574,8 +557,6 @@ typedef struct {
  */
 extern const DATA_BASE_HEADER_DEV_s data_base_dev;
 
-/*================== Function Prototypes ==================================*/
-
-/*================== Function Implementations =============================*/
+/*================== Extern Function Prototypes =============================*/
 
 #endif /* DATABASE_CFG_H_ */

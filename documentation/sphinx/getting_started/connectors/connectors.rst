@@ -222,12 +222,12 @@ RS485 (X1301 on |BMS-Extension|)
 ====   =============    ============    ============
 Pin    Signal           Direction       Description
 ====   =============    ============    ============
-1      GND_EXT2         Output
-2      RS485_A          Input/Output
-3      RS485_B          Input/Output
-4      SUPPLY_EXT2      Output
-5      SUPPLY_EXT2      Input
-6      GND_EXT2         Input
+1      GND_EXT3         Output
+2      RS485_B          Input/Output
+3      RS485_A          Input/Output
+4      SUPPLY_EXT3      Input
+5      SUPPLY_EXT3      Input
+6      GND_EXT3         Output
 ====   =============    ============    ============
 
 The RS485 interface uses the ESD rugged transceiver LT1785. Moreover, the interface is galvanically isolated. An external supply has to be provided (12 - 24V).
@@ -242,14 +242,14 @@ Isolated GPIO (X1901 on |BMS-Extension|)
 ====   =============    ============    ============
 Pin    Signal           Direction       Description
 ====   =============    ============    ============
-1      ISOGPIO_IN0      Input
-2      ISOGPIO_IN1      Input
-3      ISOGPIO_IN2      Input
-4      ISOGPIO_IN3      Input
-5      ISOGPIO_OUT0     Output
-6      ISOGPIO_OUT1     Output
-7      ISOGPIO_OUT2     Output
-8      ISOGPIO_OUT3     Output
+1      ISOGPIO_OUT0     Output
+2      ISOGPIO_OUT1     Output
+3      ISOGPIO_OUT2     Output
+4      ISOGPIO_OUT3     Output
+5      ISOGPIO_IN0      Input
+6      ISOGPIO_IN1      Input
+7      ISOGPIO_IN2      Input
+8      ISOGPIO_IN3      Input
 9      GND_EXT0         Output
 10     GND_EXT0         Output
 ====   =============    ============    ============
@@ -292,18 +292,18 @@ Analog Inputs (X1701 on |BMS-Master|)
 ====   ====================    ============    ============
 Pin    Signal                  Direction       Description
 ====   ====================    ============    ============
-1      V_REF                   Output
+1      V_REF                   Output          2.5V
 2      ANALOG_IN_CH0           Input
-3      V_REF                   Output
+3      V_REF                   Output          2.5V
 4      ANALOG_IN_CH1           Input
-5      V_REF                   Output
+5      V_REF                   Output          2.5V
 6      ANALOG_IN_CH2           Input
-7      V_REF                   Output
+7      V_REF                   Output          2.5V
 8      ANALOG_IN_CH3           Input
-9      V_REF                   Output
+9      V_REF                   Output          2.5V
 10     ANALOG_IN_CH4           Input
-11     GND0                    Output
-12     GND0                    Output
+11     GND_0                   Output
+12     GND_0                   Output
 ====   ====================    ============    ============
 
 On the |BMS-Extension| 4 nonisolated analog inputs to |MCU0| are available. For applications using NTCs as temperature sensors, also a reference voltage of 2.5V is provided. The maximum input voltage is limited to 3.3V and is Zener protected. For further information on the input circuit, please refer to the |foxbms| :ref:`hardware_documentation_overview` and to the |foxbms| :ref:`hardware_design_resources`.

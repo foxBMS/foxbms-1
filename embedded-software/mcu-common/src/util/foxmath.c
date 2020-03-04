@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -66,8 +66,8 @@
 /*================== Extern Function Implementations ========================*/
 
 float MATH_linearInterpolation(float x1, float y1, float x2, float y2, float x_interpolate) {
-    float y_interpolate = 0.0;
-    float slope = 0.0;
+    float y_interpolate = 0.0f;
+    float slope = 0.0f;
 
     if (x1 != x2) {
         /* Calculate slope */
@@ -80,4 +80,19 @@ float MATH_linearInterpolation(float x1, float y1, float x2, float y2, float x_i
     y_interpolate = y1 + slope*(x_interpolate - x1);
 
     return y_interpolate;
+}
+
+uint16_t MATH_swapBytes_uint16_t(uint16_t val) {
+    return (val << 8) | (val >> 8 );
+}
+
+uint32_t MATH_swapBytes_uint32_t(uint32_t val) {
+    val = ((val << 8) & 0xFF00FF00u) | ((val >> 8) & 0xFF00FFu);
+    return (val << 16) | (val >> 16);
+}
+
+uint64_t MATH_swapBytes_uint64_t(uint64_t val) {
+    val = ((val << 8) & 0xFF00FF00FF00FF00ull) | ((val >> 8) & 0x00FF00FF00FF00FFull);
+    val = ((val << 16) & 0xFFFF0000FFFF0000ull) | ((val >> 16) & 0x0000FFFF0000FFFFull);
+    return (val << 32) | (val >> 32);
 }
