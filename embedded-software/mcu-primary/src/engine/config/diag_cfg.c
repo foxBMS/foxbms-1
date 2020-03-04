@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -226,6 +226,7 @@ DIAG_CH_CFG_s  diag_ch_cfg[] = {
     {DIAG_CH_LTC_SPI,                                   "LTC_SPI",                              DIAG_ERROR_LTC_SPI_SENSITIVITY,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_ltc},
     {DIAG_CH_LTC_PEC,                                   "LTC_PEC",                              DIAG_ERROR_LTC_PEC_SENSITIVITY,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_ltc},
     {DIAG_CH_LTC_MUX,                                   "LTC_MUX",                              DIAG_ERROR_LTC_MUX_SENSITIVITY,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_ltc},
+    {DIAG_CH_LTC_CONFIG,                                "LTC_CONFIG",                           DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_ltc},
 
     /* Communication events */
     {DIAG_CH_CAN_TIMING,                                "CAN_TIMING",                           DIAG_ERROR_CAN_TIMING_SENSITIVITY,        DIAG_RECORDING_ENABLED, DIAG_CAN_TIMING, DIAG_error_cantiming},
@@ -295,7 +296,7 @@ DIAG_CH_CFG_s  diag_ch_cfg[] = {
     /* Plausibility checks */
     {DIAG_CH_PLAUSIBILITY_CELL_VOLTAGE,    "PL_CELL_VOLT",    DIAG_ERROR_SENSITIVITY_HIGH, DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_plausibility_check},
     {DIAG_CH_PLAUSIBILITY_CELL_TEMP,       "PL_CELL_TEMP",    DIAG_ERROR_SENSITIVITY_HIGH, DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_plausibility_check},
-    {DIAG_CH_PLAUSIBILITY_PACK_VOLTAGE,    "PL_PACK_VOLT",    DIAG_ERROR_SENSITIVITY_HIGH, DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_plausibility_check},
+    {DIAG_CH_PLAUSIBILITY_PACK_VOLTAGE,    "PL_PACK_VOLT",    DIAG_ERROR_PLAUSIBILITY_PACK_SENSITIVITY, DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_plausibility_check},
 };
 
 
@@ -770,6 +771,13 @@ static void DIAG_error_ltc(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
         }
         if (event == DIAG_EVENT_NOK) {
             error_flags.mux_error = 1;
+        }
+    }  else if (ch_id == DIAG_CH_LTC_CONFIG) {
+        if (event == DIAG_EVENT_RESET) {
+            error_flags.ltc_config_error = 0;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            error_flags.ltc_config_error = 1;
         }
     }
 }

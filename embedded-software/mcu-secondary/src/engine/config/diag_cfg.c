@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -169,6 +169,7 @@ DIAG_CH_CFG_s  diag_ch_cfg[] = {
     {DIAG_CH_LTC_SPI,                                   "LTC_SPI",                              DIAG_ERROR_LTC_SPI_SENSITIVITY,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_ltc},
     {DIAG_CH_LTC_PEC,                                   "LTC_PEC",                              DIAG_ERROR_LTC_PEC_SENSITIVITY,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_ltc},
     {DIAG_CH_LTC_MUX,                                   "LTC_MUX",                              DIAG_ERROR_LTC_MUX_SENSITIVITY,           DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_ltc},
+    {DIAG_CH_LTC_CONFIG,                                "LTC_CONFIG",                           DIAG_ERROR_SENSITIVITY_HIGH,              DIAG_RECORDING_ENABLED, DIAG_ENABLED, DIAG_error_ltc},
 
 #if BUILD_MODULE_ENABLE_ILCK == 1
     /* Interlock Feedback Error */
@@ -201,10 +202,6 @@ DIAG_SYSMON_CH_CFG_s diag_sysmon_ch_cfg[] = {
     {DIAG_SYSMON_ILCK_ID,           DIAG_SYSMON_CYCLICTASK,  20, DIAG_RECORDING_DISABLED, DIAG_SYSMON_HANDLING_SWITCHOFFCONTACTOR, DIAG_DISABLED, dummyfu2},
 #endif
     {DIAG_SYSMON_LTC_ID,            DIAG_SYSMON_CYCLICTASK,   5, DIAG_RECORDING_ENABLED, DIAG_SYSMON_HANDLING_SWITCHOFFCONTACTOR, DIAG_ENABLED, dummyfu2},
-#if BUILD_MODULE_ENABLE_ISOGUARD == 1
-    {DIAG_SYSMON_ISOGUARD_ID,       DIAG_SYSMON_CYCLICTASK, 400, DIAG_RECORDING_DISABLED, DIAG_SYSMON_HANDLING_SWITCHOFFCONTACTOR, DIAG_DISABLED, dummyfu2},
-#endif
-    {DIAG_SYSMON_CANS_ID,           DIAG_SYSMON_CYCLICTASK,  20, DIAG_RECORDING_DISABLED, DIAG_SYSMON_HANDLING_SWITCHOFFCONTACTOR, DIAG_DISABLED, dummyfu2},
     {DIAG_SYSMON_APPL_CYCLIC_1ms,   DIAG_SYSMON_CYCLICTASK,   2, DIAG_RECORDING_ENABLED, DIAG_SYSMON_HANDLING_SWITCHOFFCONTACTOR, DIAG_ENABLED, dummyfu2},
     {DIAG_SYSMON_APPL_CYCLIC_10ms,  DIAG_SYSMON_CYCLICTASK,  20, DIAG_RECORDING_ENABLED, DIAG_SYSMON_HANDLING_SWITCHOFFCONTACTOR, DIAG_ENABLED, dummyfu2},
     {DIAG_SYSMON_APPL_CYCLIC_100ms, DIAG_SYSMON_CYCLICTASK, 200, DIAG_RECORDING_ENABLED, DIAG_SYSMON_HANDLING_SWITCHOFFCONTACTOR, DIAG_ENABLED, dummyfu2},
@@ -339,6 +336,13 @@ static void DIAG_error_ltc(DIAG_CH_ID_e ch_id, DIAG_EVENT_e event) {
         }
         if (event == DIAG_EVENT_NOK) {
             error_flags.mux_error = 1;
+        }
+    } else if (ch_id == DIAG_CH_LTC_CONFIG) {
+        if (event == DIAG_EVENT_RESET) {
+            error_flags.ltc_config_error = 0;
+        }
+        if (event == DIAG_EVENT_NOK) {
+            error_flags.ltc_config_error = 1;
         }
     }
 }

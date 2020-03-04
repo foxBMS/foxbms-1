@@ -34,7 +34,7 @@ Establishing Connection with PC
   - Baudrate: 115200 Bd
   - Databits: 8, Stopbits: 1, Parity: None
   - DTR: disabled, RTS: disabled
-  - Send on enter: CR
+  - Send on enter: LF
 
 
 Functionality
@@ -71,6 +71,6 @@ settime YY MM DD HH MM SS   set mcu time and date (YY-year, MM-month, DD-date, H
 reset                       enforces complete software reset using HAL_NVIC_SystemReset()
 watchdogtest                performs watchdog test, watchdog timeout results in system reset (predefined 1s)
 setsoc xxx.xxx              set SOC value (000.000% - 100.000%)
-ceX                         enables contactor number X (only possible if BMS is in no error state)
-cdX                         disables contactor number X (only possible if BMS is in no error state)
+contactor enable X          enables contactor number X (only possible if BMS is in no error state)
+contactor disable X         disables contactor number X (only possible if BMS is in no error state)
 ==========================  ==========================================================================================

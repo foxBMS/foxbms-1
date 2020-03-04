@@ -1,0 +1,21 @@
+{
+    "cSpell.enabled": false,
+    "extensions.ignoreRecommendations": true,
+    "C_Cpp.autoAddFileAssociations": true,
+    "yaml.validate": true,
+    "yaml.completion": true,
+    "yaml.format.enable": true,
+    "yaml.format.singleQuote": false,
+    "python.linting.enabled": false,
+    "python.terminal.activateEnvironment": true,
+    "python.pythonPath": "C:\\foxconda3\\python.exe",
+    "python.condaPath": "C:\\foxconda3\\Scripts\\conda.exe",
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "files.associations": {
+        "wscript": "python",
+        "*.h": "c",
+    },
+    "terminal.integrated.shell.windows": "C:\\Windows\\Sysnative\\cmd.exe"
+}

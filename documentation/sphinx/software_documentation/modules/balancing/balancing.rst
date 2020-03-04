@@ -46,7 +46,7 @@ be used by setting the switch ``BALANCING_VOLTAGE_BASED`` to ``TRUE``.
 When the current flowing through the battery is below the limit defined by
 ``BS_REST_CURRENT_mA`` in
 ``embedded-software\mcu-primary\src\general\config\batterysystem_cfg.h``,
-the |mod_bal| waits ``BAL_TIME_BEFORE_BALANCING_S`` seconds before starting to
+the |mod_bal| waits ``BS_RELAXATION_PERIOD_MS`` milliseconds before starting to
 perform balancing. The waiting time is re-initialized every time the current
 exceeds ``BS_REST_CURRENT_mA``.
 No balancing takes place if the voltage of the cells in the battery pack goes

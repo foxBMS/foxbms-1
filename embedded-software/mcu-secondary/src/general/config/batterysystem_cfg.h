@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -108,6 +108,17 @@
 #else
     #define BS_NR_OF_GPIOS_PER_MODULE               9
 #endif
+
+/**
+ * Number of user multiplexer used per LTC-IC
+ * The other type is temperature multiplexer
+ */
+#define BS_N_USER_MUX_PER_LTC               2
+
+/**
+ * Number of channels per multiplexer
+ */
+#define BS_N_MUX_CHANNELS_PER_MUX      8
 
 /*
  * specify the type of LTC connected to the battery module

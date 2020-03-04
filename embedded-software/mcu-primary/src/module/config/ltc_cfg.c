@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -207,7 +207,7 @@ const uint8_t ltc_muxsensortemperatur_cfg[BS_NR_OF_TEMP_SENSORS_PER_MODULE] = {
 
 const uint8_t ltc_voltage_input_used[BS_MAX_SUPPORTED_CELLS] = {
 #if BS_MAX_SUPPORTED_CELLS == 12 || BS_MAX_SUPPORTED_CELLS == 15 || BS_MAX_SUPPORTED_CELLS == 18
-    1,
+    1 ,
     1 ,
     1 ,
     1 ,

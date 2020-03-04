@@ -135,6 +135,7 @@ understand the |foxbms| hardware.
     ./software_documentation/components/components.rst
     ./software_documentation/architecture/architecture.rst
     ./software_documentation/overview/overview.rst
+    ./software_documentation/parameters/monitored_parameters.rst
     ./software_documentation/defines/defines.rst
     ./software_documentation/modules/modules.rst
     ./software_documentation/tools/tools.rst

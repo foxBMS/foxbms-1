@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+# @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
 #   angewandten Forschung e.V. All rights reserved.
 #
 # BSD 3-Clause License
@@ -53,6 +53,16 @@ except ImportError:
 from waflib import Utils, Options, Errors, Logs
 from waflib import Task, TaskGen
 from waflib.Tools.compiler_c import c_compiler
+from waflib.Tools.c import c
+from waflib.Tools import c_preproc
+
+
+# overwrite c task to use absolute paths for the input file
+class c(Task.Task):  # noqa: F811
+    run_str = '${CC} ${ARCH_ST:ARCH} ${CFLAGS} ${FRAMEWORKPATH_ST:FRAMEWORKPATH} ${CPPPATH_ST:INCPATHS} ${DEFINES_ST:DEFINES} ${CC_SRC_F}${SRC[0].abspath()} ${CC_TGT_F}${TGT[0].abspath()} ${CPPFLAGS}'
+    vars = ['CCDEPS']
+    ext_in = ['.h']
+    scan = c_preproc.scan
 
 
 out = 'build'
@@ -316,21 +326,6 @@ def configure(conf):
         templateEnv = jinja2.Environment(loader=templateLoader, newline_sequence=conf.env.jinja2_newline)
         template = templateEnv.get_template('cppcheck.template')
         outputText = template.render(
-            bld_dir=cppcheck_dir.path_from(conf.path),
-            src_dir=conf.path.find_node('embedded-software').relpath(),
-            inc_dirs=[conf.path.find_node('embedded-software/libs').relpath(),
-                      conf.path.find_node('embedded-software/mcu-common').relpath(),
-                      conf.path.find_node('embedded-software/mcu-primary').relpath(),
-                      conf.path.find_node('embedded-software/mcu-secondary').relpath()],
-            addons=['threadsafety', 'y2038', 'cert', 'misra'])
-
-        cppcheck_cfg = cppcheck_dir.make_node('cppcheck.cppcheck')
-        cppcheck_cfg.write(outputText)
-        conf.env.cppcheck_dir = cppcheck_dir.abspath()
-        conf.env.cppcheck_cfg = cppcheck_cfg.abspath()
-
-        # gui config
-        outputText = template.render(
             bld_dir='.',
             src_dir='../../embedded-software',
             inc_dirs=['../../embedded-software/libs',
@@ -341,8 +336,10 @@ def configure(conf):
                       '../../build/secondary/embedded-software/mcu-secondary/src/general'],
             addons=['threadsafety', 'y2038', 'cert', 'misra'])
 
-        cppcheckgui_cfg = cppcheck_dir.make_node('cppcheckgui.cppcheck')
-        cppcheckgui_cfg.write(outputText)
+        cppcheck_cfg = cppcheck_dir.make_node('cppcheck.cppcheck')
+        cppcheck_cfg.write(outputText)
+        conf.env.cppcheck_dir = cppcheck_dir.abspath()
+        conf.env.cppcheck_cfg = cppcheck_cfg.abspath()
         print(f'---\ncppcheck configuration:         {conf.env.cppcheck_cfg}')
 
     print('---\ngit information:')
@@ -664,13 +661,11 @@ def sphinx(bld):
     formatter = logging.Formatter('%(message)s')
     hdlr.setFormatter(formatter)
     bld.logger.addHandler(hdlr)
-    rst_srcs = f'CHANGELOG.rst {bld.env.sphinx_doc_dir_posix}/**/*.rst'
     bld(features='sphinx',
+        config=bld.path.find_node(bld.env.sphinx_conf_path),
         outdir='documentation',
-        source=bld.path.ant_glob(rst_srcs),
-        config=bld.env.sphinx_conf_path,
-        VERSION=bld.env.version,
-        RELEASE=bld.env.version)
+        version=bld.env.version,
+        )
 
 
 def clean_all(bld):
@@ -941,7 +936,7 @@ from waflib.TaskGen import extension  # noqa: E402
 
 class Sasm(Task.Task):
     color = 'BLUE'
-    run_str = '${CC} ${ASMFLAGS} ${CPPPATH_ST:INCPATHS} -o ${TGT} ${SRC}'
+    run_str = '${CC} ${ASMFLAGS} ${CPPPATH_ST:INCPATHS} -o ${TGT} ${SRC[0].abspath()}'
 
 
 @extension('.s')

@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -109,5 +109,26 @@
 * @return  interpolated value (float)
 */
 extern float MATH_linearInterpolation(float x1, float y1, float x2, float y2, float x_interpolate);
+
+/**
+ * @brief Swap bytes of uint16_t value
+ *
+ * @param   val:    value to swap bytes: 0x1234 -> 0x3412
+ */
+uint16_t MATH_swapBytes_uint16_t(uint16_t val);
+
+/**
+ * @brief Swap bytes of uint32_t value
+ *
+ * @param   val:    value to swap bytes: 0x12345678 -> 0x78563412
+ */
+uint32_t MATH_swapBytes_uint32_t(uint32_t val);
+
+/**
+ * @brief Swap bytes  of uint64_t value
+ *
+ * @param   val:    value to swap bytes: 0x1122334455667788 -> 0x8877665544332211
+ */
+uint64_t MATH_swapBytes_uint64_t(uint64_t val);
 
 #endif /* FOXMATH_H_ */

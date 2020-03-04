@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -55,6 +55,7 @@
 /*================== Includes =============================================*/
 #include "sox.h"
 
+#include "bms.h"
 #include "database.h"
 #include "batterycell_cfg.h"
 #include "batterysystem_cfg.h"
@@ -176,14 +177,10 @@ void SOC_SetValue(float soc_value_min, float soc_value_max, float soc_value_mean
         soc.mean = soc_value_mean;
         soc.min = soc_value_min;
         soc.max = soc_value_max;
-        NVM_setSOC(&soc);
 
         sox.soc_mean = soc.mean;
         sox.soc_min = soc.min;
         sox.soc_max = soc.max;
-
-        DB_WriteBlock(&sox, DATA_BLOCK_ID_SOX);
-
     } else {
         DB_ReadBlock(&sox_current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
         soc.mean = soc_value_mean;
@@ -209,19 +206,18 @@ void SOC_SetValue(float soc_value_min, float soc_value_max, float soc_value_mean
         if (sox.soc_min < 0.0f)    { sox.soc_min = 0.0;    }
         if (sox.soc_max > 100.0f)  { sox.soc_max = 100.0;  }
         if (sox.soc_max < 0.0f)    { sox.soc_max = 0.0;    }
-        NVM_setSOC(&soc);
-        DB_WriteBlock(&sox, DATA_BLOCK_ID_SOX);
     }
+    NVM_setSOC(&soc);
+    DB_WriteBlock(&sox, DATA_BLOCK_ID_SOX);
 }
 
 
-void SOC_Set_Lookup_Table(void) {
+void SOC_RecalibrateViaLookupTable(void) {
     float soc_min = 50.0f;
     float soc_max = 50.0f;
     float soc_mean = 50.0f;
 
     DB_ReadBlock(&cellminmax, DATA_BLOCK_ID_MINMAX);
-    DB_ReadBlock(&sox_current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
 
     soc_mean = SOC_GetFromVoltage((float)(cellminmax.voltage_mean));
     soc_min = SOC_GetFromVoltage((float)(cellminmax.voltage_min));
@@ -244,79 +240,85 @@ void SOC_Calculation(void) {
     SOX_SOC_s soc = {50.0, 50.0, 50.0, 0, 0, 0, 0};
     float deltaSOC = 0.0;
 
-    if (sox_state.sensor_cc_used == FALSE) {
-        DB_ReadBlock(&sox_current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
+    if (BMS_GetBatterySystemState() == BMS_AT_REST) {
+        /* Recalibrate SOC via LUT */
+        SOC_RecalibrateViaLookupTable();
+    } else {
+        /* Use coulomb/current counting */
+        if (sox_state.sensor_cc_used == FALSE) {
+            DB_ReadBlock(&sox_current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
 
-        timestamp = sox_current_tab.timestamp_cur;
-        previous_timestamp = sox_current_tab.previous_timestamp_cur;
+            timestamp = sox_current_tab.timestamp_cur;
+            previous_timestamp = sox_current_tab.previous_timestamp_cur;
 
-        if (soc_previous_current_timestamp != timestamp) {  /* check if current measurement has been updated */
-            timestep = timestamp - previous_timestamp;
-            if (timestep > 0) {
-                NVM_getSOC(&soc);
-                /* Current in charge direction negative means SOC increasing --> BAT naming, not ROB */
-                /* soc_mean = soc_mean - (sox_current_tab.current *mA* /(float)SOX_CELL_CAPACITY (*mAh*)) * (float)(timestep) * (10.0/3600.0); */ /*milliseconds*/
+            if (soc_previous_current_timestamp != timestamp) {  /* check if current measurement has been updated */
+                timestep = timestamp - previous_timestamp;
+                if (timestep > 0) {
+                    NVM_getSOC(&soc);
+                    /* Current in charge direction negative means SOC increasing --> BAT naming, not ROB */
+                    /* soc_mean = soc_mean - (sox_current_tab.current *mA* /(float)SOX_CELL_CAPACITY (*mAh*)) * (float)(timestep) * (10.0/3600.0); */ /*milliseconds*/
+
+                    if (POSITIVE_DISCHARGE_CURRENT == TRUE) {
+                        deltaSOC = (((sox_current_tab.current)*(float)(timestep)/10))/(3600.0f * SOX_CELL_CAPACITY); /* ((mA *ms *(1s/1000ms)) / (3600(s/h) *mAh)) *100% */
+                    } else {
+                        deltaSOC = -(((sox_current_tab.current)*(float)(timestep)/10))/(3600.0f * SOX_CELL_CAPACITY); /* ((mA *ms *(1s/1000ms)) / (3600(s/h) *mAh)) *100% */
+                    }
+                    soc.mean = soc.mean - deltaSOC;
+                    soc.min = soc.min - deltaSOC;
+                    soc.max = soc.max - deltaSOC;
+                    if (soc.mean > 100.0f) { soc.mean = 100.0; }
+                    if (soc.mean < 0.0f)   { soc.mean = 0.0;   }
+                    if (soc.min > 100.0f)  { soc.min = 100.0;  }
+                    if (soc.min < 0.0f)    { soc.min = 0.0;    }
+                    if (soc.max > 100.0f)  { soc.max = 100.0;  }
+                    if (soc.max < 0.0f)    { soc.max = 0.0;    }
+
+                    sox.soc_mean = soc.mean;
+                    sox.soc_min = soc.min;
+                    sox.soc_max = soc.max;
+
+                    NVM_setSOC(&soc);
+                    sox.state++;
+                    DB_WriteBlock(&sox, DATA_BLOCK_ID_SOX);
+                }
+            } /* end check if current measurement has been updated */
+            /* update the variable for the next check */
+            soc_previous_current_timestamp = sox_current_tab.timestamp;
+
+        } else {
+            DB_ReadBlock(&sox_current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
+
+            timestamp_cc = sox_current_tab.timestamp_cc;
+            previous_timestamp_cc = sox_current_tab.previous_timestamp_cc;
+
+            if (previous_timestamp_cc != timestamp_cc) {  /* check if cc measurement has been updated */
+                DB_ReadBlock(&cans_current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
 
                 if (POSITIVE_DISCHARGE_CURRENT == TRUE) {
-                    deltaSOC = (((sox_current_tab.current)*(float)(timestep)/10))/(3600.0f * SOX_CELL_CAPACITY); /* ((mA *ms *(1s/1000ms)) / (3600(s/h) *mAh)) *100% */
+                    sox.soc_mean = sox_state.cc_scaling - 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+                    sox.soc_min = sox_state.cc_scaling_min - 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+                    sox.soc_max = sox_state.cc_scaling_max - 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
                 } else {
-                    deltaSOC = -(((sox_current_tab.current)*(float)(timestep)/10))/(3600.0f * SOX_CELL_CAPACITY); /* ((mA *ms *(1s/1000ms)) / (3600(s/h) *mAh)) *100% */
+                    sox.soc_mean = sox_state.cc_scaling + 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+                    sox.soc_min = sox_state.cc_scaling_min + 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
+                    sox.soc_max = sox_state.cc_scaling_max + 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
                 }
-                soc.mean = soc.mean - deltaSOC;
-                soc.min = soc.min - deltaSOC;
-                soc.max = soc.max - deltaSOC;
-                if (soc.mean > 100.0f) { soc.mean = 100.0; }
-                if (soc.mean < 0.0f)   { soc.mean = 0.0;   }
-                if (soc.min > 100.0f)  { soc.min = 100.0;  }
-                if (soc.min < 0.0f)    { soc.min = 0.0;    }
-                if (soc.max > 100.0f)  { soc.max = 100.0;  }
-                if (soc.max < 0.0f)    { soc.max = 0.0;    }
 
-                sox.soc_mean = soc.mean;
-                sox.soc_min = soc.min;
-                sox.soc_max = soc.max;
-
+                soc.mean = sox.soc_mean;
+                soc.min = sox.soc_min;
+                soc.max = sox.soc_max;
+                if (sox.soc_mean > 100.0f) { sox.soc_mean = 100.0; }
+                if (sox.soc_mean < 0.0f)   { sox.soc_mean = 0.0;   }
+                if (sox.soc_min > 100.0f)  { sox.soc_min = 100.0;  }
+                if (sox.soc_min < 0.0f)    { sox.soc_min = 0.0;    }
+                if (sox.soc_max > 100.0f)  { sox.soc_max = 100.0;  }
+                if (sox.soc_max < 0.0f)    { sox.soc_max = 0.0;    }
                 NVM_setSOC(&soc);
                 sox.state++;
                 DB_WriteBlock(&sox, DATA_BLOCK_ID_SOX);
             }
-        } /* end check if current measurement has been updated */
-        /* update the variable for the next check */
-        soc_previous_current_timestamp = sox_current_tab.timestamp;
-
-    } else {
-        DB_ReadBlock(&sox_current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
-
-        timestamp_cc = sox_current_tab.timestamp_cc;
-        previous_timestamp_cc = sox_current_tab.previous_timestamp_cc;
-
-        if (previous_timestamp_cc != timestamp_cc) {  /* check if cc measurement has been updated */
-            DB_ReadBlock(&cans_current_tab, DATA_BLOCK_ID_CURRENT_SENSOR);
-
-            if (POSITIVE_DISCHARGE_CURRENT == TRUE) {
-                sox.soc_mean = sox_state.cc_scaling - 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
-                sox.soc_min = sox_state.cc_scaling_min - 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
-                sox.soc_max = sox_state.cc_scaling_max - 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
-            } else {
-                sox.soc_mean = sox_state.cc_scaling + 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
-                sox.soc_min = sox_state.cc_scaling_min + 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
-                sox.soc_max = sox_state.cc_scaling_max + 100.0f*cans_current_tab.current_counter/(3600.0f*(SOX_CELL_CAPACITY/1000.0f));
-            }
-
-            soc.mean = sox.soc_mean;
-            soc.min = sox.soc_min;
-            soc.max = sox.soc_max;
-            if (sox.soc_mean > 100.0f) { sox.soc_mean = 100.0; }
-            if (sox.soc_mean < 0.0f)   { sox.soc_mean = 0.0;   }
-            if (sox.soc_min > 100.0f)  { sox.soc_min = 100.0;  }
-            if (sox.soc_min < 0.0f)    { sox.soc_min = 0.0;    }
-            if (sox.soc_max > 100.0f)  { sox.soc_max = 100.0;  }
-            if (sox.soc_max < 0.0f)    { sox.soc_max = 0.0;    }
-            NVM_setSOC(&soc);
-            sox.state++;
-            DB_WriteBlock(&sox, DATA_BLOCK_ID_SOX);
+            soc_previous_current_timestamp_cc = sox_current_tab.timestamp_cc;
         }
-        soc_previous_current_timestamp_cc = sox_current_tab.timestamp_cc;
     }
 }
 
@@ -407,11 +409,11 @@ void SOF_Calculation(void) {
  *
  * @param   voltage: voltage of battery cell
  *
- * @return  SOC value
+ * @return  SOC value from 0.00% - 100.0%
  */
 
 float SOC_GetFromVoltage(uint16_t voltage_mV) {
-    float SOC = 0.50;
+    float SOC = 50.0f;
 
     return SOC;
 }

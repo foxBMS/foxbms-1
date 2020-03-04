@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -74,12 +74,6 @@
  * BAL statemachine balancing time in 100*ms
  */
 #define BAL_STATEMACH_BALANCINGTIME_100MS     10
-
-/**
- * BAL time to wait in seconds before balancing once no current flowing
- */
-
-#define BAL_TIME_BEFORE_BALANCING_S     600
 
 /**
  * BAL voltage threshold for balancing in mV

@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -88,21 +88,27 @@
 /* #define LTC_DISCARD_MUX_CHECK TRUE */
 #define LTC_DISCARD_MUX_CHECK FALSE
 
-
 /**
  * Number of used LTC-ICs
  */
-
 #define LTC_N_LTC                       BS_NR_OF_MODULES
+
 /**
- * Number of multiplexer used per LTC-IC
+ * Total number of multiplexer used per LTC-IC
+ * (1 temperature multiplexer + 2 user multiplexers)
  */
 #define LTC_N_MUX_PER_LTC               3
 
 /**
+ * Number of user multiplexer used per LTC-IC
+ * The other type is temperature multiplexer
+ */
+#define LTC_N_USER_MUX_PER_LTC               BS_N_USER_MUX_PER_LTC
+
+/**
  * Number of channels per multiplexer
  */
-#define LTC_N_MUX_CHANNELS_PER_MUX      8
+#define LTC_N_MUX_CHANNELS_PER_MUX      BS_N_MUX_CHANNELS_PER_MUX
 
 /**
  * Number of multiplexer measurements per LTC cycle

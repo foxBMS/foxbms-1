@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+# @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
 #   angewandten Forschung e.V. All rights reserved.
 #
 # BSD 3-Clause License
@@ -81,11 +81,18 @@ def build(bld):
     includes += bld.env.hal_dirs + ' '
     includes += ' '.join([
                 bld.path.get_src().abspath(),
+                os.path.join('adc'),
                 os.path.join('assert'),
+                os.path.join('chksum'),
                 os.path.join('dma'),
                 os.path.join('io'),
                 os.path.join('mcu'),
+                os.path.join('rcc'),
+                os.path.join('rtc'),
                 os.path.join('spi'),
+                os.path.join('uart'),
+                os.path.join('vic'),
+                os.path.join('watchdog'),
 
                 os.path.join(bld.top_dir, bld.env.es_dir, bld.env.mcu_dir, 'src', 'driver', 'config'),
 

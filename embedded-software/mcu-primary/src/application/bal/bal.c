@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -54,6 +54,7 @@
 #include "bal.h"
 
 #include "batterycell_cfg.h"
+#include "bms.h"
 #include "database.h"
 #include "FreeRTOS.h"
 #include "sox.h"
@@ -89,8 +90,6 @@ static BAL_STATE_s bal_state = {
     .ErrRequestCounter        = 0,
     .initFinished             = E_NOT_OK,
     .active                   = FALSE,
-    .resting                  = TRUE,
-    .rest_timer               = BAL_TIME_BEFORE_BALANCING_S*10,
     .balancing_threshold      = BAL_THRESHOLD_MV + BAL_HYSTERESIS_MV,
     .balancing_allowed        = TRUE,
     .balancing_global_allowed = FALSE,
@@ -405,10 +404,6 @@ void BAL_Trigger(void) {
     BAL_STATE_REQUEST_e statereq = BAL_STATE_NO_REQUEST;
     uint8_t finished = FALSE;
 
-    if (bal_state.rest_timer > 0) {
-        bal_state.rest_timer--;
-    }
-
     /* Check re-entrance of function */
     if (BAL_CheckReEntrance()) {
         return;
@@ -419,16 +414,6 @@ void BAL_Trigger(void) {
             bal_state.triggerentry--;
             return;    /* handle state machine only if timer has elapsed */
         }
-    }
-
-    /* Check if battery is resting */
-    if (BS_CheckCurrent_Direction() == BS_CURRENT_NO_CURRENT) {
-        if (bal_state.resting == FALSE) {
-            bal_state.resting = TRUE;
-            bal_state.rest_timer = BAL_TIME_BEFORE_BALANCING_S*10;
-        }
-    } else {
-        bal_state.resting = FALSE;
     }
 
     switch (bal_state.state) {
@@ -503,7 +488,7 @@ void BAL_Trigger(void) {
                 bal_state.timer = BAL_STATEMACH_SHORTTIME_100MS;
                 break;
             } else if (bal_state.substate == BAL_COMPUTE_IMBALANCES) {
-                if (bal_state.rest_timer == 0) {
+                if (BMS_GetBatterySystemState() == BMS_AT_REST) {
                     BAL_Compute_Imbalances();
                     bal_state.state = BAL_STATEMACH_BALANCE;
                     bal_state.substate = BAL_ENTRY;
@@ -572,7 +557,7 @@ void BAL_Trigger(void) {
                 BAL_Deactivate();
                 bal_state.active = FALSE;
             } else {
-                if (bal_state.rest_timer == 0) {
+                if (BMS_GetBatterySystemState() == BMS_AT_REST) {
                     bal_state.state = BAL_STATEMACH_BALANCE;
                     bal_state.substate = BAL_ENTRY;
                 }
@@ -633,7 +618,7 @@ void BAL_Trigger(void) {
                 bal_state.timer = BAL_STATEMACH_BALANCINGTIME_100MS;
                 break;
             } else if (bal_state.substate == BAL_CHECK_CURRENT) {
-                if (bal_state.rest_timer == 0) {
+                if (BMS_GetBatterySystemState() == BMS_AT_REST) {
                     bal_state.substate = BAL_ACTIVATE_BALANCING;
                 } else {
                     if (bal_state.active == TRUE) {

@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -58,6 +58,7 @@
 
 #include "database.h"
 #include "diag.h"
+#include "foxmath.h"
 #include "os.h"
 
 /*================== Macros and Definitions ===============================*/
@@ -253,14 +254,31 @@ static uint64_t CANS_GetBitmask(uint8_t bitlength) {
  * @param[in]  dataPtr   CAN message data, from which signal data is extracted
  */
 static void CANS_GetSignalData(uint64_t *dst, CANS_signal_s signal, uint8_t *dataPtr) {
-    uint8_t bitposition = signal.bit_position;
-    uint8_t bitlength = (uint8_t)signal.bit_length;
     uint64_t bitmask = 0x00000000;
     uint64_t *dataPtr64 = (uint64_t *)dataPtr;
-
-    bitmask = CANS_GetBitmask(bitlength);
-    *dst = (((*dataPtr64) >> bitposition) & bitmask);
+    /* Get signal data */
+    bitmask = CANS_GetBitmask(signal.bit_length);
+    *dst = (((*dataPtr64) >> signal.bit_position) & bitmask);
+    /* Swap byte order if necessary */
+    if (signal.byteOrder == littleEndian) {
+        /* No need to switch byte order as native MCU endianness is little-endian (intel) */
+    } else if (signal.byteOrder == bigEndian) {
+        if (signal.bit_length <= 8) {
+            /* No need to switch byte order as signal length is smaller than one byte */
+        } else if (signal.bit_length <= 16) {
+            /* Swap byte order */
+            *dst = (uint64_t)MATH_swapBytes_uint16_t((uint16_t)*dst);
+        } else if (signal.bit_length <= 32) {
+            /* Swap byte order */
+            *dst = (uint64_t)MATH_swapBytes_uint32_t((uint32_t)*dst);
+        } else {  /* (signal.bit_length <= 64) */
+            /* Swap byte order */
+            *dst = MATH_swapBytes_uint64_t(*dst);
+        }
+    }
 }
+
+
 /**
  * assembles signal data in CAN message data
  *
@@ -269,14 +287,31 @@ static void CANS_GetSignalData(uint64_t *dst, CANS_signal_s signal, uint8_t *dat
  * @param dataPtr   CAN message data, in which the signal data is inserted
  */
 static void CANS_SetSignalData(CANS_signal_s signal, uint64_t value, uint8_t *dataPtr) {
-    uint8_t bitposition = signal.bit_position;
-    uint8_t bitlength = (uint8_t)signal.bit_length;
     uint64_t bitmask = 0x0000000000000000;
     uint64_t *dataPtr64 = (uint64_t *)dataPtr;
 
-    bitmask = CANS_GetBitmask(bitlength);
-    dataPtr64[0] &= ~(((uint64_t)bitmask) << bitposition);
-    dataPtr64[0] |= ((((uint64_t)value) & bitmask) << bitposition);
+    /* Swap byte order if necessary */
+    if (signal.byteOrder == littleEndian) {
+        /* No need to switch byte order as native MCU endianness is little-endian (intel) */
+    } else if (signal.byteOrder == bigEndian) {
+        if (signal.bit_length <= 8) {
+            /* No need to switch byte order as signal length is smaller than one byte */
+        } else if (signal.bit_length <= 16) {
+            /* Swap byte order */
+            value = (uint64_t)MATH_swapBytes_uint16_t((uint16_t)value);
+        } else if (signal.bit_length <= 32) {
+            /* Swap byte order */
+            value = (uint64_t)MATH_swapBytes_uint32_t((uint32_t)value);
+        } else {  /* (signal.bit_length <= 64) */
+            /* Swap byte order */
+            value = MATH_swapBytes_uint64_t(value);
+        }
+    }
+
+    /* Set can data according to configuration */
+    bitmask = CANS_GetBitmask(signal.bit_length);
+    dataPtr64[0] &= ~(((uint64_t)bitmask) << signal.bit_position);
+    dataPtr64[0] |= ((((uint64_t)value) & bitmask) << signal.bit_position);
 }
 
 /**
@@ -306,8 +341,8 @@ static void CANS_ComposeMessage(CAN_NodeTypeDef_e canNode, CANS_messagesTx_e msg
         if (cans_signals_tx[i].msgIdx.Tx == msgIdx) {
             /* simple, not multiplexed signal */
             uint64_t value = 0;
-            if (cans_signals_tx[i].getter != NULL_PTR) {
-                cans_signals_tx[i].getter(i, &value);
+            if (cans_signals_tx[i].callback != NULL_PTR) {
+                cans_signals_tx[i].callback(i, &value);
             }
             CANS_SetSignalData(cans_signals_tx[i], value, dataptr);
         } else {
@@ -334,8 +369,8 @@ static void CANS_ParseMessage(CAN_NodeTypeDef_e canNode, CANS_messagesRx_e msgId
             if (cans_CAN0_signals_rx[i].msgIdx.Rx  ==  msgIdx) {
                 uint64_t value = 0;
                 CANS_GetSignalData(&value, cans_CAN0_signals_rx[i], dataptr);
-                if (cans_CAN0_signals_rx[i].setter != NULL_PTR) {
-                    cans_CAN0_signals_rx[i].setter(i, &value);
+                if (cans_CAN0_signals_rx[i].callback != NULL_PTR) {
+                    cans_CAN0_signals_rx[i].callback(i, &value);
                 }
             }
         }
@@ -346,8 +381,8 @@ static void CANS_ParseMessage(CAN_NodeTypeDef_e canNode, CANS_messagesRx_e msgId
             if (cans_CAN1_signals_rx[i].msgIdx.Rx  ==  msgIdx) {
                 uint64_t value = 0;
                 CANS_GetSignalData(&value, cans_CAN1_signals_rx[i], dataptr);
-                if (cans_CAN1_signals_rx[i].setter != NULL_PTR) {
-                    cans_CAN1_signals_rx[i].setter(i, &value);
+                if (cans_CAN1_signals_rx[i].callback != NULL_PTR) {
+                    cans_CAN1_signals_rx[i].callback(i, &value);
                 }
             }
         }

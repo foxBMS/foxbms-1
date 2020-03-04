@@ -23,10 +23,8 @@ Driver:
 Driver Configuration:
  - ``embedded-software\mcu-primary\src\engine\config\diag_cfg.c``      (:ref:`diagcfgprimaryc`)
  - ``embedded-software\mcu-primary\src\engine\config\diag_cfg.h``      (:ref:`diagcfgprimaryh`)
- - ``embedded-software\mcu-primary\src\engine\config\diag_id_cfg.h``   (:ref:`diagidcfgprimaryh`)
  - ``embedded-software\mcu-secondary\src\engine\config\diag_cfg.c`` (:ref:`diagcfgsecondaryc`)
  - ``embedded-software\mcu-secondary\src\engine\config\diag_cfg.h`` (:ref:`diagcfgsecondaryh`)
- - ``embedded-software\mcu-secondary\src\engine\config\diag_id_cfg.h`` (:ref:`diagidcfgsecondaryh`)
 
 Description
 ~~~~~~~~~~~
@@ -58,20 +56,34 @@ Usage
 Diagnosis Handling
 ------------------
 
-For using the diagnosis handler for a specific check in a module, a free
-diagnosis id has to be defined in ``diag_cfg.h`` and included as an additional
-diagnosis channel in ``diag_cfg.c``:
+For using the diagnosis handler for a specific check in a module, the enum
+``DIAG_CH_ID_e`` in ``diag_cfg.h`` and the array ``diag_ch_cfg`` in
+``diag_cfg.c`` have to be adapted. This example illustrates how the diagnosis
+of the isolation monitoring is implemented. A minor difference to the actual
+implementation is that this example also shows how a callback function is
+added, which is not true for the actual implementation of the
+``DIAG_CH_ISOMETER_ERROR`` error handling:
+
+``diag_cfg.h``:
 
 .. code-block:: C
 
-   diag_cfg.h:
-   #define     DIAG_ISOMETER_ERROR                 DIAG_ID_37           // Device error, invalid measurement result
+   typedef enum {
+       /* ... */
+       DIAG_CH_ISOMETER_ERROR,  /* Device error, invalid measurement result */
+       /* ... */
+       DIAG_ID_MAX, /* MAX indicator - do not change */
+   } DIAG_CH_ID_e;
 
-   diag_cfg.c:
-   DIAG_CH_CFG_s  diag_ch_cfg[]= {
-     ...
-     {DIAG_ISOMETER_ERROR, DIAG_ERROR_SENSITIVITY_MID,  DIAG_RECORDING_ENABLED, DIAG_ENABLED, callbackfunction},
-     ...
+``diag_cfg.c``:
+
+.. code-block:: C
+
+   DIAG_CH_CFG_s  diag_ch_cfg[] = {
+       /* ... */
+       {DIAG_CH_ISOMETER_ERROR, "ISOMETER_ERROR", DIAG_ERROR_SENSITIVITY_MID,
+           DIAG_RECORDING_ENABLED, DIAG_ENABLED, callbackfunction},
+       /* ... */
    };
 
 Where error counting is needed, the diagnosis handler has to be called in the
@@ -118,18 +130,18 @@ channel ID has to be defined in ``diag_cfg.h``:
 .. code-block:: C
 
    typedef enum {
-       DIAG_SYSMON_DATABASE_ID         = 0,   /*!< diag entry for database               */
-       DIAG_SYSMON_SYS_ID              = 1,   /*!< diag entry for sys                    */
-       DIAG_SYSMON_BMS_ID              = 2,   /*!< diag entry for bms                    */
-       DIAG_SYSMON_CONT_ID             = 3,   /*!< diag entry for contactors             */
-       DIAG_SYSMON_ILCK_ID             = 4,   /*!< diag entry for contactors             */
-       DIAG_SYSMON_LTC_ID              = 5,   /*!< diag entry for ltc                    */
-       DIAG_SYSMON_ISOGUARD_ID         = 6,   /*!< diag entry for ioguard                */
-       DIAG_SYSMON_CANS_ID             = 7,   /*!< diag entry for can                    */
-       DIAG_SYSMON_APPL_CYCLIC_1ms     = 8,   /*!< diag entry for application 10ms task  */
-       DIAG_SYSMON_APPL_CYCLIC_10ms    = 9,   /*!< diag entry for application 10ms task  */
-       DIAG_SYSMON_APPL_CYCLIC_100ms   = 10,  /*!< diag entry for application 100ms task */
-       DIAG_SYSMON_MODULE_ID_MAX       = 11   /*!< end marker do not delete              */
+       DIAG_SYSMON_DATABASE_ID,        /*!< diag entry for database               */
+       DIAG_SYSMON_SYS_ID,             /*!< diag entry for sys                    */
+       DIAG_SYSMON_BMS_ID,             /*!< diag entry for bms                    */
+       DIAG_SYSMON_CONT_ID,            /*!< diag entry for contactors             */
+       DIAG_SYSMON_ILCK_ID,            /*!< diag entry for contactors             */
+       DIAG_SYSMON_LTC_ID,             /*!< diag entry for ltc                    */
+       DIAG_SYSMON_ISOGUARD_ID,        /*!< diag entry for isoguard               */
+       DIAG_SYSMON_CANS_ID,            /*!< diag entry for can                    */
+       DIAG_SYSMON_APPL_CYCLIC_1ms,    /*!< diag entry for application 10ms task  */
+       DIAG_SYSMON_APPL_CYCLIC_10ms,   /*!< diag entry for application 10ms task  */
+       DIAG_SYSMON_APPL_CYCLIC_100ms,  /*!< diag entry for application 100ms task */
+       DIAG_SYSMON_MODULE_ID_MAX,      /*!< end marker do not delete              */
    } DIAG_SYSMON_MODULE_ID_e;
 
 and a new channel configured in  ``diag_cfg.c``:

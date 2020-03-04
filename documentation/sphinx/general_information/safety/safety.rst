@@ -6,11 +6,11 @@
 Safety
 ======
 
-This document describes the hazard risk analysis and assessment done for the |foxbms| platform. The content of this document must be read and understood before any tests are done with the |foxbms| hardware. All physical quantities and units used in the document are SI based.
+This document describes the Hazard Analysis and Risk Assessment (HARA) done for the |foxbms| platform. The content of this document must be read and understood before any tests are done with the |foxbms| hardware. All physical quantities and units used in the document are SI based.
 
 
-Hazard Risk Analysis and Assessment
------------------------------------
+Hazard Analysis and Risk Assessment (HARA)
+------------------------------------------
 
 The risk analysis and assessment was last performed in May 2017. Following persons were involved:
 

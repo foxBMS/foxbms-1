@@ -50,16 +50,6 @@ diag_cfg.h (primary)
 
 ------------------------------------------------------------------------------
 
-.. _diagidcfgprimaryh:
-
-diag_id_cfg.h (primary)
------------------------
-
-.. literalinclude:: ../../../../../embedded-software/mcu-primary/src/engine/config/diag_id_cfg.h
-    :language: c
-
-------------------------------------------------------------------------------
-
 .. _diagcfgsecondaryc:
 
 diag_cfg.c (secondary)
@@ -76,14 +66,4 @@ diag_cfg.h (secondary)
 ----------------------
 
 .. literalinclude:: ../../../../../embedded-software/mcu-secondary/src/engine/config/diag_cfg.h
-    :language: c
-
-------------------------------------------------------------------------------
-
-.. _diagidcfgsecondaryh:
-
-diag_id_cfg.h (secondary)
--------------------------
-
-.. literalinclude:: ../../../../../embedded-software/mcu-secondary/src/engine/config/diag_id_cfg.h
     :language: c

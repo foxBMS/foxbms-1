@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -349,10 +349,8 @@ typedef struct {
 
 
 typedef enum {
-    CONT_POWERLINE_NORMAL   = 0,
-#if BS_SEPARATE_POWERLINES == 1
-    CONT_POWERLINE_CHARGE   = 1
-#endif /* BS_SEPARATE_POWERLINES == 1 */
+    CONT_POWERLINE_NORMAL,
+    CONT_POWERLINE_CHARGE
 } CONT_WHICH_POWERLINE_e;
 
 extern const CONT_CONFIG_s cont_contactors_config[BS_NR_OF_CONTACTORS];

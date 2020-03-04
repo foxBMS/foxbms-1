@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -213,17 +213,18 @@ static uint8_t ltc_TXPECBufferClock[4+9];
 
 
 /*================== Function Prototypes ==================================*/
-
+/* Init functions */
+static STD_RETURN_TYPE_e LTC_Init(void);
 static void LTC_Initialize_Database(void);
+static STD_RETURN_TYPE_e LTC_CheckConfiguration(void);
+
 static void LTC_SaveBalancingFeedback(uint8_t *DataBufferSPI_RX);
 static void LTC_Get_BalancingControlValues(void);
 static void LTC_StateTransition(LTC_STATEMACH_e state, uint8_t substate, uint16_t timer_ms);
 static void LTC_CondBasedStateTransition(STD_RETURN_TYPE_e retVal, DIAG_CH_ID_e diagCode, uint8_t state_ok, uint8_t substate_ok, uint16_t timer_ms_ok, uint8_t state_nok, uint8_t substate_nok, uint16_t timer_ms_nok);
 
 static STD_RETURN_TYPE_e LTC_BalanceControl(uint8_t registerSet);
-
 static void LTC_ResetErrorTable(void);
-static STD_RETURN_TYPE_e LTC_Init(void);
 
 static STD_RETURN_TYPE_e LTC_StartVoltageMeasurement(LTC_ADCMODE_e adcMode, LTC_ADCMEAS_CHAN_e  adcMeasCh);
 static STD_RETURN_TYPE_e LTC_StartGPIOMeasurement(LTC_ADCMODE_e adcMode, LTC_ADCMEAS_CHAN_e  adcMeasCh);
@@ -281,84 +282,55 @@ static STD_RETURN_TYPE_e LTC_TimerElapsedAndSPITransmitOngoing(uint16_t timer);
 static void LTC_Initialize_Database(void) {
     uint16_t i = 0;
 
-    ltc_cellvoltage.state = 0;
-    ltc_cellvoltage.timestamp = 0;
-    ltc_minmax.voltage_min = 0;
-    ltc_minmax.voltage_max = 0;
-    ltc_minmax.voltage_module_number_min = 0;
-    ltc_minmax.voltage_module_number_max = 0;
-    ltc_minmax.voltage_cell_number_min = 0;
-    ltc_minmax.voltage_cell_number_max = 0;
     for (i=0; i < BS_NR_OF_BAT_CELLS; i++) {
-        ltc_cellvoltage.voltage[i] = 0;
         ltc_openwire_pup_buffer[i] = 0;
         ltc_openwire_pdown_buffer[i] = 0;
         ltc_openwire_delta[i] = 0;
     }
 
-    ltc_celltemperature.state = 0;
-    ltc_celltemperature.timestamp = 0;
-    ltc_minmax.temperature_min = 0;
-    ltc_minmax.temperature_max = 0;
-    ltc_minmax.temperature_module_number_min = 0;
-    ltc_minmax.temperature_module_number_max = 0;
-    ltc_minmax.temperature_sensor_number_min = 0;
-    ltc_minmax.temperature_sensor_number_max = 0;
-    for (i=0; i < BS_NR_OF_TEMP_SENSORS; i++) {
-        ltc_celltemperature.temperature[i] = 0;
-    }
-
-    ltc_balancing_feedback.state = 0;
-    ltc_balancing_feedback.timestamp = 0;
-    ltc_balancing_control.state = 0;
-    ltc_balancing_control.timestamp = 0;
-    for (i=0; i < BS_NR_OF_BAT_CELLS; i++) {
-        ltc_balancing_feedback.value[i] = 0;
-        ltc_balancing_control.balancing_state[i] = 0;
-    }
-
-    ltc_slave_control.state = 0;
-    ltc_slave_control.timestamp = 0;
-    ltc_slave_control.previous_timestamp = 0;
-    for (i=0; i < BS_NR_OF_MODULES; i++) {
-        ltc_slave_control.io_value_in[i] = 0;
-        ltc_slave_control.io_value_out[i] = 0;
-        ltc_slave_control.external_sensor_temperature[i] = 0;
-        ltc_slave_control.eeprom_value_read[i] = 0;
-        ltc_slave_control.eeprom_value_write[i] = 0;
-    }
-    ltc_slave_control.eeprom_read_address_last_used = 0xFFFFFFFF;
-    ltc_slave_control.eeprom_read_address_to_use = 0xFFFFFFFF;
-    ltc_slave_control.eeprom_write_address_last_used = 0xFFFFFFFF;
-    ltc_slave_control.eeprom_write_address_to_use = 0xFFFFFFFF;
-
-    ltc_allgpiovoltage.timestamp = 0;
-    ltc_allgpiovoltage.previous_timestamp = 0;
-    ltc_allgpiovoltage.state = 0;
-    for (i=0; i < BS_NR_OF_MODULES * BS_NR_OF_GPIOS_PER_MODULE; i++) {
-        ltc_allgpiovoltage.gpiovoltage[i] = 0;
-    }
-
-    for (i = 0; i < BS_NR_OF_MODULES * (BS_NR_OF_BAT_CELLS_PER_MODULE+1); i++) {
-        ltc_openwire.openwire[i] = 0;
-    }
-    ltc_openwire.state = 0;
-
-    DB_WriteBlock(&ltc_cellvoltage, DATA_BLOCK_ID_CELLVOLTAGE);
-    DB_WriteBlock(&ltc_celltemperature, DATA_BLOCK_ID_CELLTEMPERATURE);
-    DB_WriteBlock(&ltc_minmax, DATA_BLOCK_ID_MINMAX);
-    DB_WriteBlock(&ltc_balancing_feedback, DATA_BLOCK_ID_BALANCING_FEEDBACK_VALUES);
-    DB_WriteBlock(&ltc_balancing_control, DATA_BLOCK_ID_BALANCING_CONTROL_VALUES);
-    DB_WriteBlock(&ltc_slave_control, DATA_BLOCK_ID_SLAVE_CONTROL);
-    DB_WriteBlock(&ltc_openwire, DATA_BLOCK_ID_OPEN_WIRE);
-
-    for (i=0; i < (8*2*BS_NR_OF_MODULES); i++) {
+    for (i=0; i < (LTC_N_MUX_CHANNELS_PER_MUX*LTC_N_USER_MUX_PER_LTC*BS_NR_OF_MODULES); i++) {
         ltc_user_mux.value[i] = 0;
     }
     ltc_user_mux.previous_timestamp = 0;
     ltc_user_mux.timestamp = 0;
     ltc_user_mux.state = 0;
+
+
+    /* Read database entries to initialize all local copies with 0 */
+    DB_ReadBlock(&ltc_cellvoltage, DATA_BLOCK_ID_CELLVOLTAGE);
+    DB_ReadBlock(&ltc_celltemperature, DATA_BLOCK_ID_CELLTEMPERATURE);
+    DB_ReadBlock(&ltc_minmax, DATA_BLOCK_ID_MINMAX);
+    DB_ReadBlock(&ltc_balancing_feedback, DATA_BLOCK_ID_BALANCING_FEEDBACK_VALUES);
+    DB_ReadBlock(&ltc_balancing_control, DATA_BLOCK_ID_BALANCING_CONTROL_VALUES);
+    DB_ReadBlock(&ltc_slave_control, DATA_BLOCK_ID_SLAVE_CONTROL);
+    DB_ReadBlock(&ltc_openwire, DATA_BLOCK_ID_OPEN_WIRE);
 }
+
+
+/**
+ * @brief   function to check configuration of config struct
+ *          ltc_voltage_input_used
+ *
+ * @return  E_OK if valid configuration detected, otherwise E_NOT_OK
+ */
+STD_RETURN_TYPE_e LTC_CheckConfiguration(void) {
+    STD_RETURN_TYPE_e retval = E_OK;
+    uint8_t configuredCells = 0;
+
+    /* Iterate over struct to check configuration of LTC input struct */
+    for (uint8_t i = 0; i < BS_MAX_SUPPORTED_CELLS; i++) {
+        if (ltc_voltage_input_used[i] == 1) {
+            configuredCells++;
+        }
+    }
+
+    if (configuredCells != BS_NR_OF_BAT_CELLS_PER_MODULE) {
+        retval = E_NOT_OK;
+    }
+
+    return retval;
+}
+
 
 /**
  * @brief   function for setting LTC_Trigger state transitions
@@ -776,8 +748,12 @@ void LTC_Trigger(void) {
 
         /****************************INITIALIZED*************************************/
         case LTC_STATEMACH_INITIALIZED:
+            retVal = LTC_CheckConfiguration();
             LTC_SAVELASTSTATES();
-            LTC_StateTransition(LTC_STATEMACH_STARTMEAS, LTC_ENTRY, LTC_STATEMACH_SHORTTIME);
+            /* Stay in INITIALIZED state if configuration error detected */
+            LTC_CondBasedStateTransition(retVal, DIAG_CH_LTC_CONFIG,
+                    LTC_STATEMACH_STARTMEAS, LTC_ENTRY, LTC_STATEMACH_SHORTTIME,
+                    LTC_STATEMACH_INITIALIZED, LTC_ENTRY_INITIALIZATION, LTC_STATEMACH_SHORTTIME);
             break;
 
         /****************************START MEASUREMENT*******************************/
@@ -2017,9 +1993,9 @@ static void LTC_SaveMuxMeasurement(uint8_t *rxBuffer, LTC_MUX_CH_CFG_s  *muxseqp
             else
                 ch_idx = 8 + muxseqptr->muxCh;    /* channel index 8..15 */
 
-            if (ch_idx < 2*8) {
+            if (ch_idx < LTC_N_USER_MUX_PER_LTC*LTC_N_MUX_CHANNELS_PER_MUX) {
                 val_ui =*((uint16_t *)(&rxBuffer[6+1*i*8]));        /* raw values, all mux on all LTCs */
-                ltc_user_mux.value[i*8*2+ch_idx] = (uint16_t)(((float)(val_ui))*100e-6f*1000.0f);  /* Unit -> in V -> in mV */
+                ltc_user_mux.value[i*LTC_N_MUX_CHANNELS_PER_MUX*LTC_N_USER_MUX_PER_LTC+ch_idx] = (uint16_t)(((float)(val_ui))*100e-6f*1000.0f);  /* Unit -> in V -> in mV */
             }
         }
     } else {
@@ -2111,7 +2087,7 @@ static void LTC_SaveRXtoVoltagebuffer(uint8_t registerSet, uint8_t *rxBuffer) {
             /* index considering maximum number of cells */
             voltage_index = j+i_offset;
 
-            if (ltc_voltage_input_used[voltage_index] == 1) {
+            if ((ltc_voltage_input_used[voltage_index] == 1) && (ltc_used_cells_index < BS_NR_OF_BAT_CELLS_PER_MODULE)) {
                 val_ui = *((uint16_t *)(&rxBuffer[4+2*j+i*8]));
                 voltage = (uint16_t)(((float)(val_ui))*100e-6f*1000.0f);        /* Unit V -> in mV */
                 /* Check PEC for every LTC in the daisy-chain */

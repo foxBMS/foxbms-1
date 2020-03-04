@@ -1,0 +1,50 @@
+{
+    "env": {
+        "ProjectCompiler": "C:\\foxconda3\\Library\\bin\\arm-none-eabi-gcc.exe"
+    },
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/build/config/**",
+                "${workspaceFolder}/build/include/**",
+                "${workspaceFolder}/build/primary/embedded-software/mcu-primary/src/general/**",
+                "${workspaceFolder}/embedded-software/libs/**",
+                "${workspaceFolder}/embedded-software/mcu-common/**",
+                "${workspaceFolder}/embedded-software/mcu-freertos/Source/**",
+                "${workspaceFolder}/embedded-software/mcu-hal/**",
+                "${workspaceFolder}/embedded-software/mcu-primary/**",
+                "C:\\foxconda3\\Library\\arm-none-eabi\\include\\**",
+                "C:\\foxconda3\\Library\\lib\\gcc\\arm-none-eabi\\4.9.3\\include\\**"
+            ],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/build/config/**",
+                    "${workspaceFolder}/build/include/**",
+                    "${workspaceFolder}/build/primary/embedded-software/mcu-primary/src/general/**",
+                    "${workspaceFolder}/embedded-software/libs/**",
+                    "${workspaceFolder}/embedded-software/mcu-common/**",
+                    "${workspaceFolder}/embedded-software/mcu-freertos/Source/**",
+                    "${workspaceFolder}/embedded-software/mcu-hal/**",
+                    "${workspaceFolder}/embedded-software/mcu-primary/**",
+                    "C:\\foxconda3\\Library\\arm-none-eabi\\include\\**",
+                    "C:\\foxconda3\\Library\\lib\\gcc\\arm-none-eabi\\4.9.3\\include\\**"
+                        ],
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "${ProjectCompiler}",
+            "cStandard": "c99",
+            "defines": [
+                "STM32F429xx",
+                "DEBUG",
+                "USE_FULL_ASSERT",
+                "TRACE",
+                "OS_USE_TRACE_ITM",
+                "USE_HAL_DRIVER",
+                "HSE_VALUE=8000000"
+            ]
+        }
+    ],
+    "version": 4
+}

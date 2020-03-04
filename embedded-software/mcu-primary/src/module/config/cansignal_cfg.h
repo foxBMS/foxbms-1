@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -724,6 +724,11 @@ typedef enum {
     CAN_TX_DIRECTION = 1
 } CANS_messageDirection_t;
 
+typedef enum {
+    littleEndian = 0,
+    bigEndian = 1
+} CANS_byteOrder_e;
+
 typedef union {
     CANS_messagesTx_e Tx;
     CANS_messagesRx_e Rx;
@@ -752,8 +757,8 @@ typedef struct  {
     float max;
     float factor;
     float offset;
-    can_callback_funcPtr setter;
-    can_callback_funcPtr getter;
+    CANS_byteOrder_e byteOrder;
+    can_callback_funcPtr callback;
 } CANS_signal_s;
 
 /*================== Constant and Variable Definitions ====================*/

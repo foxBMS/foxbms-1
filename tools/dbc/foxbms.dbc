@@ -1,4 +1,4 @@
-VERSION "foxBMS-1.6.3"
+VERSION "foxBMS-1.6.4"
 
 
 NS_ :
@@ -69,8 +69,10 @@ SG_ CAN_SIG_Open_Wire : 40|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_daisyChain_PEC : 49|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_daisyChain_SPI : 48|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_daisyChain_Multiplexer : 50|1@1+ (1,0) [0|1] "" Vector__XXX
+SG_ CAN_SIG_daisyChain_LTCConfig : 51|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_GS2_plausCheck_TempSens : 57|1@1+ (1,0) [0|1] "" Vector__XXX
 SG_ CAN_SIG_GS2_plausCheck_PackVolt : 58|1@1+ (1,0) [0|1] "" Vector__XXX
+
 
 
 BO_ 277 CAN_MSG_SlaveState_0: 8 Vector__XXX
@@ -976,6 +978,9 @@ BA_DEF_DEF_  "GenSigStartValue" 0;
 BA_ "BusType" "CAN";
 
 BA_ "GenMsgCycleTime" BO_ 288 100;
+BA_ "GenMsgCycleTime" BO_ 272 100;
+BA_ "GenMsgCycleTime" BO_ 273 100;
+BA_ "GenMsgCycleTime" BO_ 274 100;
 
 BA_ "GenSigStartValue" SG_ 288 CAN_SIG_State_request 0;
 BA_ "GenSigStartValue" SG_ 272 CAN_SIG_General_error 0;
@@ -1031,6 +1036,7 @@ BA_ "GenSigStartValue" SG_ 274 CAN_SIG_daisyChain_SPI 0;
 BA_ "GenSigStartValue" SG_ 274 CAN_SIG_daisyChain_Multiplexer 0;
 BA_ "GenSigStartValue" SG_ 274 CAN_SIG_GS2_plausCheck_TempSens 0;
 BA_ "GenSigStartValue" SG_ 274 CAN_SIG_GS2_plausCheck_PackVolt 0;
+BA_ "GenSigStartValue" SG_ 274 CAN_SIG_daisyChain_LTCConfig 0;
 BA_ "GenSigStartValue" SG_ 277 CAN_SIG_Slave_status_0 0;
 BA_ "GenSigStartValue" SG_ 278 CAN_SIG_Slave_status_1 0;
 BA_ "GenSigStartValue" SG_ 304 CAN_SIG_RecChargeCurrent 0;

@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -55,13 +55,14 @@
 #ifndef DATABASE_H_
 #define DATABASE_H_
 
-/*================== Includes =============================================*/
+/*================== Includes ===============================================*/
 #include "database_cfg.h"
 #include "os.h"
 
-
-/*================== Macros and Definitions ===============================*/
-/* FIXME doxygen comments */
+/*================== Macros and Definitions =================================*/
+/**
+ * struct for database queue, contains pointer to data, database entry and access type
+ */
 typedef struct {
     /* FIXME what is the intention of this union? isn't it dangerous if someone expects a pointer to and accesses via .u32ptr, but there is a value stored in value? */
     union {
@@ -74,17 +75,20 @@ typedef struct {
 } DATA_QUEUE_MESSAGE_s;
 
 
+/**
+ * database access type definition: read or write
+ */
 typedef struct {
-    void                           *RDptr;
-    void                           *WRptr;
-    DATA_BLOCK_BUFFER_TYPE_e  nr_of_buffer;    /* todo really needed? */
+    void *RDptr;
+    void *WRptr;
 } DATA_BLOCK_ACCESS_s;
 
-/*================== Constant and Variable Definitions ====================*/
+/*================== Static Constant and Variable Definitions ===============*/
+
+/*================== Extern Constant and Variable Definitions ===============*/
 extern QueueHandle_t data_queue;
 
-
-/*================== Function Prototypes ==================================*/
+/*================== Extern Function Prototypes =============================*/
 /**
  * @brief   Initialization of database manager
  */
@@ -112,18 +116,8 @@ extern void DB_WriteBlock(void *dataptrfromSender, DATA_BLOCK_ID_TYPE_e  blockID
 extern STD_RETURN_TYPE_e DB_ReadBlock(void *dataptrtoReceiver, DATA_BLOCK_ID_TYPE_e  blockID);
 
  /**
- * @brief   Gets a pointer to datablock in database ()
- * @param   blockID (type: DATA_BLOCK_ID_TYPE_e)
- * @return  void* RDptr
-  */
-extern void * DATA_GetTablePtrBeginCritical(DATA_BLOCK_ID_TYPE_e  blockID);
-
- /**
   * @brief   trigger of database manager
   */
 extern void DATA_Task(void);
-
-/*================== Function Implementations =============================*/
-
 
 #endif /* DATABASE_H_ */

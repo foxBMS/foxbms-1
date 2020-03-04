@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -53,6 +53,7 @@
 /*================== Includes =============================================*/
 #include "contactor.h"
 
+#include "bms.h"
 #include "database.h"
 #include "diag.h"
 #include "FreeRTOS.h"
@@ -493,7 +494,7 @@ void CONT_Trigger(void) {
                 cont_state.substate = CONT_OPEN_FIRST_CONTACTOR;
                 break;
             } else if (cont_state.substate == CONT_OPEN_FIRST_CONTACTOR) {
-                if (BS_CheckCurrent_Direction() == BS_CURRENT_DISCHARGE) {
+                if (BMS_GetBatterySystemState() == BMS_DISCHARGING) {
                     CONT_OPENPLUS();
                     #if BS_SEPARATE_POWERLINES == 1
                         CONT_OPENCHARGEPLUS();
@@ -777,7 +778,7 @@ void CONT_Trigger(void) {
                 break;
 
             } else if (cont_state.substate == CONT_OPEN_FIRST_CONTACTOR) {
-                if (BS_CheckCurrent_Direction() == BS_CURRENT_DISCHARGE) {
+                if (BMS_GetBatterySystemState() == BMS_DISCHARGING) {
                     CONT_OPENPLUS();
                     #if BS_SEPARATE_POWERLINES == 1
                         CONT_OPENCHARGEPLUS();

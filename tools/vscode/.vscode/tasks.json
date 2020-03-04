@@ -1,0 +1,161 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build primary",
+            "type": "shell",
+            "group": "build",
+            "command": "C:\\foxconda3\\Scripts\\activate && python ${workspaceFolder}\\tools\\waf build_primary",
+            "problemMatcher": {
+                "base": "$gcc",
+                "fileLocation": ["absolute"],
+                "pattern": {
+                    "regexp": "^(err: ){0,1}(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 2,
+                    "line": 3,
+                    "column": 4,
+                    "severity": 5,
+                    "message": 6
+                }
+            },
+        },
+        {
+            "label": "build secondary",
+            "type": "shell",
+            "group": "build",
+            "command": "C:\\foxconda3\\Scripts\\activate && python ${workspaceFolder}\\tools\\waf build_secondary",
+            "problemMatcher": {
+                "base": "$gcc",
+                "fileLocation": ["absolute"],
+                "pattern": {
+                    "regexp": "^(err: ){0,1}(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 2,
+                    "line": 3,
+                    "column": 4,
+                    "severity": 5,
+                    "message": 6
+                }
+            },
+        },
+        {
+            "label": "rebuild primary",
+            "type": "shell",
+            "group": "build",
+            "command": "C:\\foxconda3\\Scripts\\activate && python ${workspaceFolder}\\tools\\waf clean_primary build_primary",
+            "problemMatcher": {
+                "base": "$gcc",
+                "fileLocation": ["absolute"],
+                "pattern": {
+                    "regexp": "^(err: ){0,1}(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 2,
+                    "line": 3,
+                    "column": 4,
+                    "severity": 5,
+                    "message": 6
+                }
+            },
+        },
+        {
+            "label": "rebuild secondary",
+            "type": "shell",
+            "group": "build",
+            "command": "C:\\foxconda3\\Scripts\\activate && python ${workspaceFolder}\\tools\\waf clean_secondary build_secondary",
+            "problemMatcher": {
+                "base": "$gcc",
+                "fileLocation": ["absolute"],
+                "pattern": {
+                    "regexp": "^(err: ){0,1}(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 2,
+                    "line": 3,
+                    "column": 4,
+                    "severity": 5,
+                    "message": 6
+                }
+            },
+        },
+        {
+            "label": "configure",
+            "type": "shell",
+            "group": "build",
+            "command": "C:\\foxconda3\\Scripts\\activate && python ${workspaceFolder}\\tools\\waf configure",
+            "problemMatcher": []
+        },
+        {
+            "label": "clean primary",
+            "type": "shell",
+            "group": "build",
+            "command": "C:\\foxconda3\\Scripts\\activate && python ${workspaceFolder}\\tools\\waf clean_primary",
+            "problemMatcher": []
+        },
+        {
+            "label": "clean secondary",
+            "type": "shell",
+            "group": "build",
+            "command": "C:\\foxconda3\\Scripts\\activate && python ${workspaceFolder}\\tools\\waf clean_secondary",
+            "problemMatcher": []
+        },
+        {
+            "label": "distclean",
+            "type": "shell",
+            "group": "build",
+            "command": "C:\\foxconda3\\Scripts\\activate && python ${workspaceFolder}\\tools\\waf distclean",
+            "problemMatcher": []
+        },
+        {
+            "label": "doxygen primary",
+            "type": "shell",
+            "group": "build",
+            "command": "C:\\foxconda3\\Scripts\\activate && python ${workspaceFolder}\\tools\\waf doxygen_primary",
+            "problemMatcher": {
+                "fileLocation": ["absolute"],
+                "pattern": {
+                    "regexp": "^(err: ){0,1}(.*):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 2,
+                    "line": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+
+        },
+        {
+            "label": "doxygen secondary",
+            "type": "shell",
+            "group": "build",
+            "command": "C:\\foxconda3\\Scripts\\activate && python ${workspaceFolder}\\tools\\waf doxygen_secondary",
+            "problemMatcher": {
+                "fileLocation": ["absolute"],
+                "pattern": {
+                    "regexp": "^(err: ){0,1}(.*):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 2,
+                    "line": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        },
+        {
+            "label": "flash primary",
+            "type": "shell",
+            "group": "build",
+            "command": "C:\\foxconda3\\Scripts\\activate && python tools\\flashtool\\flash.py 0",
+            "problemMatcher": []
+        },
+        {
+            "label": "flash secondary",
+            "type": "shell",
+            "group": "build",
+            "command": "C:\\foxconda3\\Scripts\\activate && python tools\\flashtool\\flash.py 1",
+            "problemMatcher": []
+        },
+        {
+            "label": "sphinx",
+            "type": "shell",
+            "group": "build",
+            "command": "C:\\foxconda3\\Scripts\\activate && python ${workspaceFolder}\\tools\\waf sphinx",
+            "problemMatcher": []
+        },
+    ]
+}

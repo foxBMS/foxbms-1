@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2019, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -61,17 +61,6 @@
 
 /*================== Macros and Definitions ===============================*/
 
-
-/**
- * Symbolic names for current flow direction in the battery
- */
-typedef enum {
-    BS_CURRENT_CHARGE     = 0,    /*!< battery charging */
-    BS_CURRENT_DISCHARGE  = 1,    /*!< battery discharging */
-    BS_CURRENT_NO_CURRENT = 2,    /*!< battery resting */
-} BS_CURRENT_DIRECTION_e;
-
-
 /**
  * Define if discharge current are positive negative, default is positive
  */
@@ -117,6 +106,17 @@ typedef enum {
 #else
     #define BS_NR_OF_GPIOS_PER_MODULE               9
 #endif
+
+/**
+ * Number of user multiplexer used per LTC-IC
+ * The other type is temperature multiplexer
+ */
+#define BS_N_USER_MUX_PER_LTC               2
+
+/**
+ * Number of channels per multiplexer
+ */
+#define BS_N_MUX_CHANNELS_PER_MUX      8
 
 /*
  * specify the type of LTC connected to the battery module
@@ -356,7 +356,15 @@ typedef enum {
  * current threshold for determing rest state of battery. If absolute current is below
  * this limit value the battery is resting.
  */
-#define BS_REST_CURRENT_mA                          200
+#define BS_REST_CURRENT_mA                          (200)
+
+
+/**
+ * Wait time in milliseconds before battery system is at rest. Balancing
+ * for example only starts if battery system is at rest.
+ */
+#define BS_RELAXATION_PERIOD_MS                   (600000u)
+
 
 /**
  * current sensor threshold for 0 current in mA as the sensor has a jitter.
@@ -402,22 +410,6 @@ typedef enum {
 /*================== Constant and Variable Definitions ====================*/
 
 /*================== Function Prototypes ==================================*/
-
-/**
- * @brief   Checks current direction, read current from database
- *
- * @return  BS_CURRENT_DISCHARGE or BS_CURRENT_CHARGE depending
- *          on current direction ((type: BS_CURRENT_DIRECTION_e)
- */
-extern BS_CURRENT_DIRECTION_e BS_CheckCurrent_Direction(void);
-
- /**
-  * @brief   Checks current direction, current value as function parameter
-  *
-  * @return  BS_CURRENT_DISCHARGE or BS_CURRENT_CHARGE depending
-  *          on current direction ((type: BS_CURRENT_DIRECTION_e)
-  */
-extern BS_CURRENT_DIRECTION_e BS_CheckCurrentValue_Direction(int32_t current);
 
 /*================== Function Implementations =============================*/
 
