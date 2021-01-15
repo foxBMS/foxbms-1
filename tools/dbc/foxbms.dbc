@@ -1,4 +1,4 @@
-VERSION "foxBMS-1.6.4"
+VERSION "foxBMS-1.6.5"
 
 
 NS_ :
@@ -1593,5 +1593,3 @@ BA_ "GenSigStartValue" SG_ 257 CAN_SIG_VersionNumberMajor 0;
 BA_ "GenSigStartValue" SG_ 257 CAN_SIG_VersionNumberMinor 0;
 BA_ "GenSigStartValue" SG_ 257 CAN_SIG_VersionNumberBugfix 0;
 BA_ "GenSigStartValue" SG_ 257 CAN_SIG_Checksum 0;
-
-

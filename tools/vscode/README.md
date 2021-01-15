@@ -2,7 +2,7 @@
 
 This directory contains a VS Code setup for development with the primary MCU.
 The supported IDE for development with foxBMS is Eclipse. VS Code support is
-experimental and should only be
+experimental and should only be used in case the Eclipse setup does not work.
 
 **This setup contains only settings for Windows.**
 

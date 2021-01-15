@@ -13,7 +13,7 @@ Licenses
 |foxbms| Software License
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-|copy| 2010-2020, Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V. All rights reserved.
+|copy| 2010 - 2021, Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V. All rights reserved.
 
 The |foxbms| embedded software and computer software are licensed under the BSD 3-Clause License.
 
@@ -51,7 +51,7 @@ The |foxbms| embedded software and computer software are licensed under the BSD 
 |foxbms| Hardware and Documentation License
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-|copy| 2010-2020, Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V. All rights reserved.
+|copy| 2010 - 2021, Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V. All rights reserved.
 
 
 
