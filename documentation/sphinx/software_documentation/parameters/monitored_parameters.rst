@@ -12,23 +12,24 @@ Monitored parameters
     the corresponding counter is increased, otherwise it is decreased. If the
     threshold configured for the parameter is exceeded by the counter, an error
     occured and the BMS takes an appropriate action. This mechanism
-    avoids false error detections, e.g. in case of short peaks. As the
+    avoids false error detections, e.g. in case of short current peaks. As the
     parameters are monitored periodically via the periodic tasks, the counter
     threshold corresponds to the *response time* between error happening
-    and error detection. A default *response time* of 100ms is selected as a
-    trade-off between peak detection and safety. It must be adapted to the
-    application. |foxbms| provides three different error levels. The first
-    error level is called *Maximum operating limit* (MOL), the second error
-    level is called *Recommended Safety Limit* (RSL) and the third error level
-    is called *Maximum Safety Limit* (MSL). The first two error levels indicate
-    that a parameter is reaching the limits of the recommended operating area
-    and counter measures should be initiated to prevent an unwanted opening of
-    the contactors. A violation of a *Maximum Safety Limit* means the safety of
-    the system and the persons cannot be guaranted anymore and leads to the
-    opening of the contactors. The BMS state machine consequently switches to
-    the *Error State* to prevent a further closing of the contactors. The
-    *Error State* can only be left if the cause of the error has been removed
-    and the *Standby State* is requested. After that the BMS is back in normal
+    and error detection. A default *response time* of 100ms is selected for
+    overcurrent events as a trade-off between peak detection and safety. It
+    must be adapted to the application. |foxbms| provides three different error
+    levels. The first and lowest error level is called *Maximum operating
+    limit* (MOL), the second error level is called *Recommended Safety Limit*
+    (RSL) and the third and highest error level is called *Maximum Safety
+    Limit* (MSL). The first two error levels indicate that a parameter is
+    reaching the limits of the recommended operating area and counter measures
+    should be initiated to prevent an unwanted opening of the contactors. A
+    violation of a *Maximum Safety Limit* means the safety of the system and
+    the persons cannot be guaranted anymore and leads to the opening of the
+    contactors. The BMS state machine consequently switches to the *Error
+    State* to prevent a further closing of the contactors. The *Error State*
+    can only be left if the cause of the error has been removed and the
+    *Standby State* is requested. After that the BMS is back in normal
     operational mode. All error flags are available on CAN messages, allowing
     the system to react accordingly to prevent hazardous situations.
 
@@ -77,12 +78,12 @@ Parameter: Cell temperature
 +------------------------+---------------+-----------------------+-------------------------+-------------------------------------------+
 | Error condition        | Response time | Cause                 | Counter measures        | Actions of the BMS                        |
 +========================+===============+=======================+=========================+===========================================+
-| Cell temperature >     | 100 ms        | - Current too high    | - Reduce/stop charge    | - Set flag at violation of MOL (35 °C)    |
+| Cell temperature >     | 500 ms        | - Current too high    | - Reduce/stop charge    | - Set flag at violation of MOL (35 °C)    |
 | overtemperature        |               | - Ambient temperature |   current               | - Set flag at violation of RSL (40 °C)    |
 | limit charge           |               | - Cooling defect      | - Increase cooling      | - Set flag at violation of MSL (45 °C)    |
 |                        |               |                       |                         |   and switch to *Error State*             |
 +------------------------+---------------+-----------------------+-------------------------+-------------------------------------------+
-| Cell temperature >     | 100 ms        | - Current too high    | - Reduce/stop discharge | - Set flag at violation of MOL (55 °C)    |
+| Cell temperature >     | 500 ms        | - Current too high    | - Reduce/stop discharge | - Set flag at violation of MOL (55 °C)    |
 | overtemperature        |               | - Ambient temperature |   current               | - Set flag at violation of RSL (50 °C)    |
 | limit discharge        |               | - Cooling defect      | - Increase cooling      | - Set flag at violation of MSL (45 °C)    |
 |                        |               |                       |                         |   and switch to *Error State*             |
@@ -92,7 +93,7 @@ Parameter: Cell temperature
 | limit charge           |               |                       | - Activate heating      | - Set flag at violation of MSL (-20 °C)   |
 |                        |               |                       |                         |   and switch to *Error State*             |
 +------------------------+---------------+-----------------------+-------------------------+-------------------------------------------+
-| Cell temperature <     | 100 ms        | Ambient temperature   | - Reduce/stop discharge | - Set flag at violation of MOL (-10 °C)   |
+| Cell temperature <     | 500 ms        | Ambient temperature   | - Reduce/stop discharge | - Set flag at violation of MOL (-10 °C)   |
 | undertemperature       |               |                       |   current               | - Set flag at violation of RSL (-15 °C)   |
 | limit discharge        |               |                       | - Activate heating      | - Set flag at violation of MSL (-20 °C)   |
 |                        |               |                       |                         |   and switch to *Error State*             |
@@ -109,7 +110,7 @@ Parameter: Cell current
 | charge current            |               |                  |                            | - Set flag at violation of MSL (180A)  |
 |                           |               |                  |                            |   and switch to *Error State*          |
 +---------------------------+---------------+------------------+----------------------------+----------------------------------------+
-| Cell current >            | 100 ms        | - Derating error | Reduce discharge current   | - Set flag at violation of RSL (170A)  |
+| Cell current >            | 100 ms        | - Derating error | Reduce discharge current   | - Set flag at violation of MOL (170A)  |
 | maximum discharge current |               | - Short circuit  |                            | - Set flag at violation of RSL (175A)  |
 |                           |               |                  |                            | - Set flag at violation of MSL (180A)  |
 |                           |               |                  |                            |   and switch to *Error State*          |
@@ -148,7 +149,8 @@ Parameter: HV measurement
 |                                              |                  |                              |                     |   *Error State*                         |
 +----------------------------------------------+------------------+------------------------------+---------------------+-----------------------------------------+
 | Fuse tripped (Vbat - Vfuse) >                | 100 ms           | Fuse tripped                 | Replace fuse        | Set warning flag that tripped fuse is   |
-| limit                                        |                  |                              |                     | detected (10000mV)                      |
+| limit                                        |                  |                              |                     | detected (10000mV) and switch to *Error |
+|                                              |                  |                              |                     | State*                                  |
 +----------------------------------------------+------------------+------------------------------+---------------------+-----------------------------------------+
 | Voltage difference                           | 100 ms           | Precharge contactor defect   | Check contactor     | Measurement only done when contactors   |
 | (Vfuse - Vdc,link) < limit                   |                  |                              |                     | are open. Set error flag that defect    |
@@ -165,7 +167,7 @@ Contactor feedback
 +============================+===============+=========================+===================+=============================================+
 | Contactor feedback         | 100 ms        | - Contactor defect      | Check contactor   | Set warning flag that measured              |
 | unequal to requested state |               | - Wiring error/defecter |                   | contactor feedback is different from        |
-|                            |               |                         |                   | requested state. switch to *Error State*    |
+|                            |               |                         |                   | requested state and switch to *Error State* |
 +----------------------------+---------------+-------------------------+-------------------+---------------------------------------------+
 
 -----------------

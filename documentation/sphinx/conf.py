@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
+# @copyright &copy; 2010 - 2021, Fraunhofer-Gesellschaft zur Foerderung der
 #   angewandten Forschung e.V. All rights reserved.
 #
 # BSD 3-Clause License
@@ -88,7 +88,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'foxBMS'
-copyright = u'2010–2020, Fraunhofer-Gesellschaft zur Förderung der \
+copyright = u'2010 – 2021, Fraunhofer-Gesellschaft zur Förderung der \
 angewandten Forschung e.V. All rights reserved. See license section for \
 further information'
 

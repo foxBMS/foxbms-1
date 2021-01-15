@@ -2,6 +2,39 @@
 Changelog
 =========
 
+**Release 1.6.5**
+
+Software:
+
+* Toolchain:
+
+  * none
+
+* Bugfixes:
+
+  * Fixed PEC for commands ``ltc2_BC_cmdADOW_PUP_filtered_DCP0`` and
+    ``ltc2_BC_cmdADOW_PDOWN_filtered_DCP0`` in the LTC driver.
+    (``embedded-software/mcu-common/src/module/ltc/ltc.c``)
+
+* Enhancements:
+
+  * none
+
+Hardware:
+
+* none
+
+Documentation:
+
+* Added supply current values to the specifications section of the 12 cell and
+  18 cell slaves.
+  (``documentation/sphinx/hardware_documentation/specifications/specifications.rst``)
+* Updated year in copyright.
+* Fix typo in changelog entry for release 1.6.4.
+* Fix typos in docu section about monitored parameters (``monitored_parameters.rst``)
+
+------------------------------------------------------------------------------
+
 **Release 1.6.4**
 
 Software:
@@ -24,7 +57,7 @@ Software:
     (``batterysystem_cfg.c``)
   * Fixed initialization of variable ``ltc_balancing_feedback.value[]`` in
     ``LTC_Initialize_Database()``. It was iterated over ``BS_NR_OF_BAT_CELLS``
-    elements instead of BS_NR_OF_MODULES elements. (``ltc.c``)
+    elements instead of ``BS_NR_OF_MODULES`` elements. (``ltc.c``)
   * added missing includes to wscripts for building common drivers and modules.
 
 * Enhancements:

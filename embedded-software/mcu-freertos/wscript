@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
+# @copyright &copy; 2010 - 2021, Fraunhofer-Gesellschaft zur Foerderung der
 #   angewandten Forschung e.V. All rights reserved.
 #
 # BSD 3-Clause License

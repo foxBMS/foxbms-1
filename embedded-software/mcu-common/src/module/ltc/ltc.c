@@ -1,6 +1,6 @@
 /**
  *
- * @copyright &copy; 2010 - 2020, Fraunhofer-Gesellschaft zur Foerderung der
+ * @copyright &copy; 2010 - 2021, Fraunhofer-Gesellschaft zur Foerderung der
  *  angewandten Forschung e.V. All rights reserved.
  *
  * BSD 3-Clause License
@@ -200,8 +200,8 @@ static const uint8_t ltc_cmdADAX_fast_ALLGPIOS[4] = {0x04, 0xE0, 0x1F, 0xCA};   
 /* Open-wire */
 static const uint8_t ltc2_BC_cmdADOW_PUP_normal_DCP0[4] = {0x03, 0x68, 0x1C, 0x62};    /*!< Broadcast, Pull-up current, All cells, normal mode, discharge not permitted (DCP=0)   */
 static const uint8_t ltc2_BC_cmdADOW_PDOWN_normal_DCP0[4] = {0x03, 0x28, 0xFB, 0xE8};  /*!< Broadcast, Pull-down current, All cells, normal mode, discharge not permitted (DCP=0) */
-static const uint8_t ltc2_BC_cmdADOW_PUP_filtered_DCP0[4] = {0x03, 0xE8, 0x1C, 0x62};    /*!< Broadcast, Pull-up current, All cells, filtered mode, discharge not permitted (DCP=0)   */
-static const uint8_t ltc2_BC_cmdADOW_PDOWN_filtered_DCP0[4] = {0x03, 0xA8, 0xFB, 0xE8};  /*!< Broadcast, Pull-down current, All cells, filtered mode, discharge not permitted (DCP=0) */
+static const uint8_t ltc2_BC_cmdADOW_PUP_filtered_DCP0[4] = {0x03, 0xE8, 0x58, 0x44};    /*!< Broadcast, Pull-up current, All cells, filtered mode, discharge not permitted (DCP=0)   */
+static const uint8_t ltc2_BC_cmdADOW_PDOWN_filtered_DCP0[4] = {0x03, 0xA8, 0xBF, 0xCE};  /*!< Broadcast, Pull-down current, All cells, filtered mode, discharge not permitted (DCP=0) */
 
 
 static uint8_t ltc_RXPECbuffer[LTC_N_BYTES_FOR_DATA_TRANSMISSION];
