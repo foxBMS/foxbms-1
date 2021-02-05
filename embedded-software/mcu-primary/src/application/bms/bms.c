@@ -978,7 +978,14 @@ static void BMS_CheckCurrent(void) {
     DIAG_CH_ID_e batsys_discharge_limit_diag_mol = DIAG_CH_OVERCURRENT_DISCHARGE_PL0_MOL;
 
     /* get active power line */
+#if BUILD_MODULE_ENABLE_CONTACTOR == 1
     CONT_POWER_LINE_e powerline = CONT_GetActivePowerLine();
+#else
+    /* No different power lines exist if project is compiled without contactors
+     * -> always check current against current limits of power line 0 */
+#warning "Contactors disabled! Current limits always checked against limits of power line 0"
+    CONT_POWER_LINE_e powerline = CONT_POWER_LINE_0;
+#endif
 
     /* set limits for batterysystem according to current power line */
     if (powerline == CONT_POWER_LINE_0) {

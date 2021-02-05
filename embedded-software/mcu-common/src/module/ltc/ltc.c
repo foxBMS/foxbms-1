@@ -2234,43 +2234,33 @@ static uint8_t LTC_I2CCheckACK(uint8_t *DataBufferSPI_RX, int mux) {
     uint16_t i = 0;
 
     for (i=0; i < BS_NR_OF_MODULES; i++) {
-        if (mux == 0) {
-            if ((DataBufferSPI_RX[4+1+LTC_NUMBER_OF_LTC_PER_MODULE*i*8] & 0x0F) != 0x07) {  /* ACK = 0xX7 */
-                if (LTC_DISCARD_MUX_CHECK == FALSE) {
+        if ((DataBufferSPI_RX[4+1+LTC_NUMBER_OF_LTC_PER_MODULE*i*8] & 0x0F) != 0x07) {  /* ACK = 0xX7 */
+            if (LTC_DISCARD_MUX_CHECK == FALSE) {
+                if (mux == 0) {
                     LTC_ErrorTable[i].mux0 = 1;
                 }
-                mux_error = E_NOT_OK;
-            } else {
-                LTC_ErrorTable[i].mux0 = 0;
-            }
-        }
-        if (mux == 1) {
-            if ((DataBufferSPI_RX[4+1+LTC_NUMBER_OF_LTC_PER_MODULE*i*8] & 0x0F) != 0x27) {
-                if (LTC_DISCARD_MUX_CHECK == FALSE) {
+                if (mux == 1) {
                     LTC_ErrorTable[i].mux1 = 1;
                 }
-                mux_error = E_NOT_OK;
-            } else {
-                LTC_ErrorTable[i].mux1 = 0;
-            }
-        }
-        if (mux == 2) {
-            if ((DataBufferSPI_RX[4+1+LTC_NUMBER_OF_LTC_PER_MODULE*i*8] & 0x0F) != 0x47) {
-                if (LTC_DISCARD_MUX_CHECK == FALSE) {
+                if (mux == 2) {
                     LTC_ErrorTable[i].mux2 = 1;
                 }
-                mux_error = E_NOT_OK;
-            } else {
-                LTC_ErrorTable[i].mux2 = 0;
-            }
-        }
-        if (mux == 3) {
-            if ((DataBufferSPI_RX[4+1+LTC_NUMBER_OF_LTC_PER_MODULE*i*8] & 0x0F) != 0x67) {
-                if (LTC_DISCARD_MUX_CHECK == FALSE) {
+                if (mux == 3) {
                     LTC_ErrorTable[i].mux3 = 1;
                 }
-                mux_error = E_NOT_OK;
-            } else {
+            }
+            mux_error = E_NOT_OK;
+        } else {
+            if (mux == 0) {
+                LTC_ErrorTable[i].mux0 = 0;
+            }
+            if (mux == 1) {
+                LTC_ErrorTable[i].mux1 = 0;
+            }
+            if (mux == 2) {
+                LTC_ErrorTable[i].mux2 = 0;
+            }
+            if (mux == 3) {
                 LTC_ErrorTable[i].mux3 = 0;
             }
         }
@@ -2846,27 +2836,27 @@ static void LTC_SetMUXChCommand(uint8_t *DataBufferSPI_TX, uint8_t mux, uint8_t 
 #if SLAVE_BOARD_VERSION == 2
 
         /* using ADG728 */
-        uint8_t address = 0x4C | (mux % 3);
-        uint8_t data = 1 << (channel % 8);
-        if (channel == 0xFF) {  /* no channel selected, output of multiplexer is high impedance */
+        uint8_t address = 0x98u | ((mux % 4u) << 1u);
+        uint8_t data    = 1u << (channel % 8u);
+        if (channel == 0xFFu) { /* no channel selected, output of multiplexer is high impedance */
             data = 0x00;
         }
 
 #else
 
         /* using LTC1380 */
-        uint8_t address = 0x48 | (mux % 4);
-        uint8_t data = 0x08 | (channel % 8);
-        if (channel == 0xFF) {  /* no channel selected, output of multiplexer is high impedance */
+        uint8_t address = 0x90u | ((mux % 4u) << 1u);
+        uint8_t data    = 0x08u | (channel % 8u);
+        if (channel == 0xFFu) { /* no channel selected, output of multiplexer is high impedance */
             data = 0x00;
         }
 
 #endif
 
-        DataBufferSPI_TX[0 + i * 6] = LTC_ICOM_START | (address >> 3);        /* 0x6 : LTC6804: ICOM START from Master */
-        DataBufferSPI_TX[1 + i * 6] = LTC_FCOM_MASTER_NACK | (address << 5);
-        DataBufferSPI_TX[2 + i * 6] = LTC_ICOM_BLANK | (data >> 4);
-        DataBufferSPI_TX[3 + i * 6] = LTC_FCOM_MASTER_NACK_STOP | (data << 4);
+        DataBufferSPI_TX[0 + i * 6] = LTC_ICOM_START | ((address >> 4u) & 0x0Fu); /* 0x6 : LTC6804: ICOM START from Master */
+        DataBufferSPI_TX[1 + i * 6] = LTC_FCOM_MASTER_NACK | ((address << 4u) & 0xF0u);
+        DataBufferSPI_TX[2 + i * 6] = LTC_ICOM_BLANK | ((data >> 4u) & 0x0Fu);
+        DataBufferSPI_TX[3 + i * 6] = LTC_FCOM_MASTER_NACK_STOP | ((data << 4u) & 0xF0u);
         DataBufferSPI_TX[4 + i * 6] = LTC_ICOM_NO_TRANSMIT;        /* 0x1 : ICOM-STOP */
         DataBufferSPI_TX[5 + i * 6] = 0x00;        /* 0x0 : dummy (Dn) */
                                                    /* 9: MASTER NACK + STOP (FCOM) */

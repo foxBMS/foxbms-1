@@ -2,6 +2,48 @@
 Changelog
 =========
 
+**Release 1.6.6**
+
+Software:
+
+* Toolchain:
+
+  * VS Code C/C++ extension does now support an intellisense mode setting for
+    gcc to ARM (``windows-gcc-arm``). This is set as the new default value for
+    the ``IntelliSenseMode`` key. (``c_cpp_properties.json``)
+
+* Bugfixes:
+
+  * Automatic retransmission mode for CAN messages was DISABLED instead of
+    ENABLED. The logic in HAL configuration struct has been inverted with HAL
+    update performed in ``v1.6.0``. Now automatic retransmission is ENABLED
+    again. (``can_cfg.c``)
+  * Fixed compile error if ``BUILD_MODULE_ENABLE_CONTACTOR`` was set to 0. If
+    contactor module is disabled, current limits are now always checked against
+    configured current limits of power line 0. (``bms.c``)
+  * Corrected the function LTC_I2CCheckACK() that did not check the acknowledge
+    signal of multiplexer over I2C communication. (``ltc.c``)
+  * Corrected the function LTC_SetMUXChCommand() because message content for
+    I2C communication with multiplexers was wrong. (``ltc.c``)
+
+* Enhancements:
+
+  * none
+
+Hardware:
+
+* none
+
+Documentation:
+
+* Following difference is now made between warning and error flags: warning flags
+  are for information purpose only whereas error flags will trigger a reaction of
+  the bms. (``monitored_parameters.rst``)
+* Added the ``.vscode`` directory to the list of ignored directories for git.
+  (``.gitignore``)
+
+------------------------------------------------------------------------------
+
 **Release 1.6.5**
 
 Software:
