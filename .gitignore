@@ -5,6 +5,9 @@
 /*eclipse*
 /qa-chain/
 
+# VS Code directory
+.vscode/
+
 # ignore complete build directory
 /build/
 

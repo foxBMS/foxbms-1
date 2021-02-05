@@ -176,9 +176,9 @@ CAN_HandleTypeDef hcan0 = {
         .Init.AutoWakeUp = ENABLE,    /* automatic wake-up mode */
                             /* ENABLE: automatically leave sleep mode on message receiving */
                             /* DISABLE: SLEEP bit needs to be deleted by software */
-        .Init.AutoRetransmission = DISABLE,   /* automatic retransition mode; */
-                            /* DISABLE: retransmit the message until it has been successfully transmitted */
-                            /* ENABLE: transmit only once, independently of transmission result */
+        .Init.AutoRetransmission = ENABLE,   /* automatic retransition mode */
+                            /* ENABLE: retransmit the message until it has been successfully transmitted */
+                            /* DISABLE: transmit only once, independently of transmission result */
         .Init.ReceiveFifoLocked = ENABLE,    /* Receive FIFO locked against overrun. */
                             /* DISABLE: A new incoming message overwrites the last received message. */
                             /* ENABLE: Once a receive FIFO is full the next incoming message will be discarded. */
@@ -293,9 +293,9 @@ CAN_HandleTypeDef hcan1 = {
         .Init.AutoWakeUp = ENABLE,     /* automatic wake-up mode */
                             /* ENABLE: automatically leave sleep mode on message receiving */
                             /* DISABLE: SLEEP bit needs to be deleted by software */
-        .Init.AutoRetransmission = DISABLE,     /* automatic retransition mode; */
-                            /* DISABLE: retransmit the message until it has been successfully transmitted */
-                            /* ENABLE: transmit only once, independently of transmission result */
+        .Init.AutoRetransmission = ENABLE,     /* automatic retransition mode */
+                            /* ENABLE: retransmit the message until it has been successfully transmitted */
+                            /* DISABLE: transmit only once, independently of transmission result */
         .Init.ReceiveFifoLocked = ENABLE,    /* Receive FIFO locked against overrun. */
                             /* DISABLE: A new incoming message overwrites the last received message. */
                             /* ENABLE: Once a receive FIFO is full the next incoming message will be discarded. */
