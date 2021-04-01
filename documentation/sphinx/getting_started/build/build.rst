@@ -23,7 +23,7 @@ Obtaining the Sources
 ---------------------
 
 Download or clone the |foxbms| repository from
-`github.com/foxBMS/ <https://github.com/foxBMS/foxbms>`_.
+`github.com/foxBMS/ <https://github.com/foxBMS/foxbms-1>`_.
 
 ..  warning::
 

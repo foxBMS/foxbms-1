@@ -28,10 +28,10 @@ Installation of the Needed Software via the |foxconda3| Distribution
 
 The first step is to install the software environment needed to compile and
 flash the |foxbms| sources. First, the |foxconda3| installer must be downloaded
-from the `server <https://iisb-foxbms.iisb.fraunhofer.de/foxbms/>`_ containing
-the |foxconda3| installers. For Windows, the installer is run by executing
-|installer archive|. The installer version with the highest version and build
-number must always be used.
+from the `server <https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/>`_
+containing the |foxconda3| installers. For Windows, the installer is run by
+executing |installer archive|. The installer version with the highest version
+and build number must always be used.
 
 ..  warning::
     -   Setting the installation directory from ``C:\foxconda3`` to

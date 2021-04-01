@@ -73,9 +73,9 @@
  * <table>
  * <tr><th><b>Latest online available documentation</b>                                                                                                                                <th> <b>Version available if the documentation was locally build</b>
  * <tr><td>@warning The links to documentaions in this column always points to the latest realsed version on GitHub and your local changes can not be found in that online version. <td> @warning The links to documentaions in this column only exist after building the documentation locally. If this was not done, the link will not work.
- * <tr><td><a target="_blank" href="https://foxbms.readthedocs.io/"><b>Online</b> foxBMS General Documentation</a>                                                                     <td> <a target="_blank" href="../../../documentation/index.html"><b>Local</b> foxBMS General Documentation</a>
- * <tr><td><a target="_blank" href="https://iisb-foxbms.iisb.fraunhofer.de/foxbms/documentation/primary/html/index.html"><b>Online</b> Primary MCU Source Code Documentation</a>       <td> <a target="_blank" href="../../../primary/doxygen/html/index.html"><b>Local</b> Primary MCU Source Code Documentation</a>
- * <tr><td><a target="_blank" href="https://iisb-foxbms.iisb.fraunhofer.de/foxbms/documentation/secondary/html/index.html"><b>Online</b> Secondary MCU Source Code Documentation</a>   <td> <a target="_blank" href="../../../secondary/doxygen/html/index.html"><b>Local</b> Secondary MCU Source Code Documentation</a>
+ * <tr><td><a target="_blank" href="https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/docs/html/latest/"><b>Online</b> foxBMS General Documentation</a>                                                                     <td> <a target="_blank" href="../../../documentation/index.html"><b>Local</b> foxBMS General Documentation</a>
+ * <tr><td><a target="_blank" href="https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/docs/doxygen/primary/html/index.html"><b>Online</b> Primary MCU Source Code Documentation</a>       <td> <a target="_blank" href="../../../primary/doxygen/html/index.html"><b>Local</b> Primary MCU Source Code Documentation</a>
+ * <tr><td><a target="_blank" href="https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/docs/doxygen/secondary/html/index.html"><b>Online</b> Secondary MCU Source Code Documentation</a>   <td> <a target="_blank" href="../../../secondary/doxygen/html/index.html"><b>Local</b> Secondary MCU Source Code Documentation</a>
  * </table>
  *
  * <h3>User Configurable Options</h3>

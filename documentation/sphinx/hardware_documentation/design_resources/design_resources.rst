@@ -6,7 +6,7 @@
 Design Resources
 ================
 
-The hardware design packages for the |BMS-Master|, the |BMS-Extension|, the |BMS-Interface| and the |BMS-Slaves| are available in the common `GitHub repository <https://github.com/foxBMS/foxbms>`_. The packages include:
+The hardware design packages for the |BMS-Master|, the |BMS-Extension|, the |BMS-Interface| and the |BMS-Slaves| are available in the common `GitHub repository <https://github.com/foxBMS/foxbms-1>`_. The packages include:
 
 * Altium Designer Source Files
 
