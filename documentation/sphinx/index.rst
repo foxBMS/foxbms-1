@@ -6,6 +6,13 @@
 The |foxbms| Documentation
 ==========================
 
+.. attention::
+
+    - This is the documentation of the **first generation** of foxBMS
+      (https://github.com/foxBMS/foxbms-1)
+    - The **second generation** of foxBMS (foxBMS 2) is also found on Github
+      (https://github.com/foxBMS/foxbms-2)
+
 Welcome to the `foxBMS <https://www.foxbms.org/>`_ documentation of the first
 modular open source BMS development platform from the `Fraunhofer IISB
 <http://www.iisb.fraunhofer.de/>`_. |foxBMS| is a free, open and flexible
@@ -14,9 +21,9 @@ systems.
 
 .. note::
     The present version of the |foxbms| Sphinx documentation is |version|. It
-    is available in HTML, PDF and EPUB formats through the bottom left menu on
-    `Read the Docs <https://foxbms.readthedocs.io>`_. More detailed information
-    on the version history can be found in the
+    is available in HTML
+    at https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/docs/html/latest/.
+    More detailed information on the version history can be found in the
     :ref:`general_information_releases` section. This documentation was
     generated on |timestamp|.
 

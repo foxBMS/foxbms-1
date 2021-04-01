@@ -161,9 +161,9 @@ A complete list of switches can be found here:
        and the local changes can not be found in that online version.
 
     -   `Online documentation: Primary switches
-        <https://iisb-foxbms.iisb.fraunhofer.de/foxbms/documentation/primary/html/CONFIG_PAGE.html>`_
+        <https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/docs/doxygen/primary/html/CONFIG_PAGE.html>`_
     -   `Online documentation: Secondary switches
-        <https://iisb-foxbms.iisb.fraunhofer.de/foxbms/documentation/secondary/html/CONFIG_PAGE.html>`_
+        <https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/docs/doxygen/secondary/html/CONFIG_PAGE.html>`_
 
 -   If the project was compiled locally, this documentation can be accesed here:
 

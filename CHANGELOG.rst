@@ -2,6 +2,44 @@
 Changelog
 =========
 
+**Release 1.6.7**
+
+Software:
+
+* Toolchain:
+
+  * none
+
+* Bugfixes:
+
+  * none
+
+* Enhancements:
+
+  * none
+
+Hardware:
+
+* none
+
+Documentation:
+
+* Added permanent links to documentation of |foxbms| 1. The base URL for
+  |foxbms| 1 related downloads and documentation is
+  https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/.
+  The latest version of the |foxbms| 1 documentation is now found at
+  https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/docs/html/latest. Previous
+  versions of the project documnetation can be found at
+  https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/docs/html. The doxygen
+  documentation of the latest version is found at
+  https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/docs/doxygen/primary/html/
+  for the primary MCU and at
+  https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/docs/doxygen/secondary/html/
+  for the secondary MCU. Previous versions of the doxygen documentation can be
+  found at https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/docs/doxygen.
+
+------------------------------------------------------------------------------
+
 **Release 1.6.6**
 
 Software:

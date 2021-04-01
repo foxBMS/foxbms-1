@@ -14,7 +14,7 @@ We therefore release foxBMS with permissive licenses:
 - Software: **BSD 3-Clause License**
 
 For details see the [LICENSE](../LICENSE) file and the
-[license documentation](https://iisb-foxbms.iisb.fraunhofer.de/foxbms/docs/latest/general_information/licenses/licenses.html).
+[license documentation](https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/docs/html/latest/general_information/licenses/licenses.html).
 
 However foxBMS is not openly developed on GitHub (or any other platform). The
 main development on this project is done by members of the Fraunhofer IISB and

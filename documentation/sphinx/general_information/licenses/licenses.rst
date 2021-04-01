@@ -96,7 +96,7 @@ This is a summary of the third party tools used by foxBMS and their licenses.
 
 .. [4]  ``matplotlib`` is not distributed with the |foxconda3| installer.
         However the
-        `GUI <https://github.com/foxBMS/foxbms/tree/master/tools/gui>`_
+        `GUI <https://github.com/foxBMS/foxbms-1/tree/master/tools/gui>`_
         requires ``matplotlib``. As the package needs to be installed
         manually by the user, no version information can be given here.
 
@@ -108,7 +108,7 @@ This is a summary of the third party tools used by foxBMS and their licenses.
         installed by the user. Therefore the |foxbms| team does cannot provide
         version information.
 
-.. [7]  see `HAL source files <https://github.com/foxBMS/foxbms/tree/master/embedded-software/mcu-hal/CMSIS>`_
+.. [7]  see `HAL source files <https://github.com/foxBMS/foxbms-1/tree/master/embedded-software/mcu-hal/CMSIS>`_
 
-.. [8]  see `waf <https://github.com/foxBMS/foxbms/blob/master/tools/waf>`_ and
-        `waftools <https://github.com/foxBMS/foxbms/tree/master/tools/waftools>`_
+.. [8]  see `waf <https://github.com/foxBMS/foxbms-1/blob/master/tools/waf>`_ and
+        `waftools <https://github.com/foxBMS/foxbms-1/tree/master/tools/waftools>`_
