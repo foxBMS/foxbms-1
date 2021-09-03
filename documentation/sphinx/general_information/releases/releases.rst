@@ -40,8 +40,10 @@ released. The first line is the most recent one, the last one the oldest one.
 **Versions 1.5.0 and higher:**
 
 +--------+----------+--------------+------------------------------------------------------------------------+
-| foxbms | foxconda | Release date | Documentation Permament Link                                           |
+| foxbms | foxconda | Release date | Documentation Permanent Link                                           |
 +========+==========+==============+========================================================================+
+| v1.6.8 | 3.0.3    | 2021-09-03   | https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/docs/html/v1.6.8/   |
++--------+----------+--------------+------------------------------------------------------------------------+
 | v1.6.7 | 3.0.3    | 2021-04-01   | https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/docs/html/v1.6.7/   |
 +--------+----------+--------------+------------------------------------------------------------------------+
 | v1.6.6 | 3.0.3    | 2021-02-05   | https://iisb-foxbms.iisb.fraunhofer.de/foxbms/gen1/docs/html/v1.6.6/   |

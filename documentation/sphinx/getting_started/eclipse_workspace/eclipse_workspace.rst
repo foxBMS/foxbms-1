@@ -425,7 +425,7 @@ Testing the Project Setup
 
     If problems occur while using the Eclipse workspace, it is possible to use
     a VS Code setup. For details on |foxbms| and VS Code see
-    `here <https://github.com/foxBMS/foxbms-1/tree/v1.6.7/tools/vscode>`_.
+    `here <https://github.com/foxBMS/foxbms-1/tree/v1.6.8/tools/vscode>`_.
 
     **However, VS Code is not actively supported and should only be used in**
     **cases where the Eclipse setup does not work.**
