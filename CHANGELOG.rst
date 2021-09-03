@@ -2,6 +2,32 @@
 Changelog
 =========
 
+**Release 1.6.8**
+
+Software:
+
+* Toolchain:
+
+  * none
+
+* Bugfixes:
+
+  * none
+
+* Enhancements:
+
+  * none
+
+Hardware:
+
+* none
+
+Documentation:
+
+* Updated the repository README and aligned the license information.
+
+------------------------------------------------------------------------------
+
 **Release 1.6.7**
 
 Software:
