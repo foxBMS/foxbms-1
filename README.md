@@ -1,10 +1,15 @@
 # foxBMS
 
-> **_NOTE:_**
-> - This is the repository of the **first generation** of foxBMS
->   (https://github.com/foxBMS/foxbms)
-> - The **second generation** of foxBMS (foxBMS 2) is also found on Github
->   (https://github.com/foxBMS/foxbms-2)
+## ⚠️ Refer to foxBMS 2 as foxBMS 1 is no longer supported or updated ⚠️
+
+This is the repository of the **first generation** of foxBMS
+(<https://github.com/foxBMS/foxbms-1>).
+
+**The first generation of foxBMS, i.e., this repository, will no longer be
+supported or updated.**
+
+However, the newly developed **second generation** of foxBMS (foxBMS 2) is also
+found on Github (<https://github.com/foxBMS/foxbms-2>)
 
 foxBMS is a free, open and flexible development environment to design battery
 management systems. It is the first modular open source BMS development
